@@ -41,7 +41,7 @@
                   Procedura dedicata all'inserimento di una nuova candidatura.
                 </p>
 
-                <a href="#" class="card-link">Accedi al servizio</a>
+                <a href="{{ route('newcand') }}" class="card-link">Accedi al servizio</a>
                 
               </div>
             </div>
@@ -67,7 +67,7 @@
                 <h6 class="card-title">Elenco candidature</h6>
 
                 <p class="card-text">Procedura contenente l'elenco delle candidature con possibilità di modifica/cancellazione e passaggio in assunzione</p>
-                <a href="#" class="btn btn-primary">Accedi al servizio</a>
+                <a href="{{ route('listcand') }}" class="btn btn-primary">Accedi al servizio</a>
               </div>
             </div>
 
@@ -93,3 +93,12 @@
   <!-- /.content-wrapper -->
   
  @endsection
+ 
+@section('content_plugin')
+	<!-- jQuery -->
+	<script src="plugins/jquery/jquery.min.js"></script>
+	<!-- Bootstrap 4 -->
+	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<!-- AdminLTE App -->
+	<script src="dist/js/adminlte.min.js"></script>
+@endsection

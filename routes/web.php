@@ -19,4 +19,10 @@ Route::get('/', function () {
 
 Route::get('dashboard', [ 'as' => 'dashboard', 'uses' => 'App\Http\Controllers\MainController@dashboard'])->middleware(['auth']);
 
+Route::get('newcand', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['auth']);
+
+Route::get('listcand', [ 'as' => 'listcand', 'uses' => 'App\Http\Controllers\MainController@listcand'])->middleware(['auth']);
+
+
+
 require __DIR__.'/auth.php';
