@@ -178,7 +178,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-       All rights reserved.
+       Sviluppo prototipale by Misericordia
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; <?php echo date("Y"); ?>

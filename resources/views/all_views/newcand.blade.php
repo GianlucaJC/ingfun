@@ -315,7 +315,7 @@
 						<div class="col-lg-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
-							<select class="form-select" id="soc_ass" aria-label="Società assunzione" name='soc_ass' required>
+							<select class="form-select" id="soc_ass" aria-label="Società assunzione" name='soc_ass' >
 								<option value=''>Select...</option>
 							</select>
 							<label for="soc_ass">Società di assunzione</label>
@@ -328,7 +328,7 @@
 						<div class="col-lg-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
-							<select class="form-select" id="divisione" aria-label="Divisione" name='divisione' required>
+							<select class="form-select" id="divisione" aria-label="Divisione" name='divisione' >
 								<option value=''>Select...</option>
 							</select>
 							<label for="divisione">Divisione</label>
@@ -345,7 +345,7 @@
 						<div class="col-lg-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
-							<select class="form-select" id="area_impiego" aria-label="Area impiego" name='area_impiego' required>
+							<select class="form-select" id="area_impiego" aria-label="Area impiego" name='area_impiego' >
 								<option value=''>Select...</option>
 							</select>
 							<label for="area_impiego">Area di impiego</label>
@@ -358,7 +358,7 @@
 						<div class="col-lg-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
-							<select class="form-select" id="mansione" aria-label="Mansione" name='mansione' required>
+							<select class="form-select" id="mansione" aria-label="Mansione" name='mansione' >
 								<option value=''>Select...</option>
 							</select>
 							<label for="mansione">Mansione</label>
@@ -367,10 +367,100 @@
 							</a>
 							</div>
 						</div>
+					</div>		
 
-						
-					</div>					
+					<div class="row mb-3">							
+						<div class="col-lg-12">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="centro_costo" aria-label="Centro di Costo" name='centro_costo' >
+								<option value=''>Select...</option>
+							</select>
+							<label for="centro_costo">Centro di Costo</label>
+							<a href="#" class="link-primary" target='_blank'>
+								Definisci nuova
+							</a>	
+							</div>
+						</div>
+					</div>		
+
+				<div class="row mb-3">
+					<div class="col-md-4">
+						<div class="form-floating">
+							<input class="form-control" id="netto_concordato" name='netto_concordato' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value=""  />
+							<label for="netto_concordato">Netto concordato</label>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="form-floating">
+							<input class="form-control" id="costo_azienda" name='costo_azienda' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value=""  />
+
+							<label for="costo_azienda">Costo azienda</label>
+						</div>
+					</div>
+
+					<div class="col-md-4">
+						<div class="form-floating">
+							<input class="form-control" id="zona_lavoro" name='zona_lavoro' type="text"  maxlength=100 value=""  />
+							<label for="zona_lavoro">Zona di lavoro</label>
+						</div>
+					</div>
+				</div>	
+
+					<div class="row mb-3">
+						<div class="col-md-6">
+							<div class="form-floating">
+								<input class="form-control" id="n_scarpe" name='n_scarpe' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value=""  />
+								<label for="n_scarpe">N° Scarpe</label>
+							</div>
+						</div>
+
+						<div class="col-md-6">
+							<div class="form-floating">
+								<input class="form-control" id="taglia" name='taglia' type="text" value="" maxlength=20/>
+
+								<label for="taglia">Taglia</label>
+							</div>
+						</div>
+
+
+					</div>
 					
+					<div class="row mb-3">
+						<div class="col-md-12">
+							  <div class="form-floating mb-3 mb-md-0">
+								
+								<select class="form-select" id="status_candidatura" aria-label="status_candidatura" name='status_candidatura' >
+									<option value=''>Select...</option>
+									<option value='1'>ASSUNZIONE</option>
+								</select>
+								<label for="status_candidatura">Status Candidatura</label>
+								</div>
+
+						</div>
+
+					</div>	
+
+					<div class="row mb-3">
+						<div class="col-md-12">
+							<div class="form-floating">
+								<textarea class="form-control" id="note" name="note" rows="4"></textarea>
+								<label for="note">Note e considerazioni</label>
+							</div>
+						</div>
+
+
+
+					</div>					
+						
+				</div>			
+				
+					
+		
+					
+					
+
 			
 			</div>
 			<!-- End Right Window !-->
