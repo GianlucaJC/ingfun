@@ -272,7 +272,104 @@
 
 						</div>
 
-					</div>						
+					</div>	
+
+
+					<div class="row mb-3">							
+						<div class="col-lg-4">
+							<div class="form-check ml-1">
+							  <input class="form-check-input" type="checkbox" value="" id="libero_p" name="libero_p">
+							  <label class="form-check-label" for="libero_p">
+								Libero professionista
+							  </label>
+							</div>
+
+						</div>
+
+						<div class="col-lg-4">
+
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="tipo_contratto" aria-label="Tipologia contratto" name='tipo_contratto' >
+								<option value=''>Select...</option>
+								<option value='1'>DETERMINATO</option>
+								<option value='2'>INDETERMINATO</option>
+								<option value='3'>TIROCINIO GARANZIA GIOVANI</option>
+								<option value='4'>APPRENDISTATO</option>
+								<option value='5'>INCARICO PROFESSIONALE</option>
+								<option value='6'>TIROCINIO EXTRACURRICULARE</option>
+							</select>
+							<label for="tipo_contratto">Tipologia contratto</label>
+							</div>
+						</div>
+						
+						<div class="col-lg-4">
+							<div class="form-floating mb-3 mb-md-0">
+								<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control" name="ore_sett" id="ore_sett"/>		  
+								<label for="ore_sett">Ore settimanali</label>
+							</div>		
+						</div>	
+					</div>		
+
+					<div class="row mb-3">							
+						<div class="col-lg-6">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="soc_ass" aria-label="Società assunzione" name='soc_ass' required>
+								<option value=''>Select...</option>
+							</select>
+							<label for="soc_ass">Società di assunzione</label>
+							<a href="#" class="link-primary" target='_blank'>
+								Definisci nuova
+							</a>	
+							</div>
+						</div>
+
+						<div class="col-lg-6">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="divisione" aria-label="Divisione" name='divisione' required>
+								<option value=''>Select...</option>
+							</select>
+							<label for="divisione">Divisione</label>
+							<a href="#" target='_blank'>
+								Definisci nuova
+							</a>
+							</div>
+						</div>
+
+						
+					</div>		
+
+					<div class="row mb-3">							
+						<div class="col-lg-6">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="area_impiego" aria-label="Area impiego" name='area_impiego' required>
+								<option value=''>Select...</option>
+							</select>
+							<label for="area_impiego">Area di impiego</label>
+							<a href="#" class="link-primary" target='_blank'>
+								Definisci nuova
+							</a>	
+							</div>
+						</div>
+
+						<div class="col-lg-6">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="mansione" aria-label="Mansione" name='mansione' required>
+								<option value=''>Select...</option>
+							</select>
+							<label for="mansione">Mansione</label>
+							<a href="#" target='_blank'>
+								Definisci nuova
+							</a>
+							</div>
+						</div>
+
+						
+					</div>					
 					
 			
 			</div>
