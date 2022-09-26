@@ -170,6 +170,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   
    @extends('all_views.viewmaster.sidemenu')
 
+   <center>Sviluppo prototipale by <b>Misericordia</b></center>
    @yield('content_main')  
 
    @extends('all_views.viewmaster.sidebar')
@@ -178,12 +179,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <footer class="main-footer">
     <!-- To the right -->
     <div class="float-right d-none d-sm-inline">
-       Sviluppo prototipale by Misericordia
+       All rights reserved.
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; <?php echo date("Y"); ?>
 	<a href="http://www.gruppoingenious.com/">Gruppo INGENIOUS </a>.</strong>
   </footer>
+  
 </div>
 <!-- ./wrapper -->
 
