@@ -171,7 +171,7 @@
 			
 				<center><h4>DATI SPECIFICI</h4></center>
 					<div class="row mb-3">							
-						<div class="col-lg-4">
+						<div class="col-md-4">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="stato_occ" aria-label="Stato Occupazione" name='stato_occ' required>
@@ -182,7 +182,7 @@
 							</div>
 						</div>
 
-						<div class="col-lg-4">
+						<div class="col-md-4">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="rdc" aria-label="Reddido Cittadinanza" name='rdc' required>
@@ -204,7 +204,7 @@
 					
 
 					<div class="row mb-3">							
-						<div class="col-lg-4">
+						<div class="col-md-4">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="titolo_studio" aria-label="Titolo di studio" name='titolo_studio' >
@@ -213,11 +213,11 @@
 								<option value='2'>Diploma Istituto Superiore</option>
 								<option value='3'>Laurea</option>
 							</select>
-							<label for="titolo_studio">Titolo di studio conseguito</label>
+							<label for="titolo_studio">Titolo di studio</label>
 							</div>
 						</div>
 
-						<div class="col-lg-4">
+						<div class="col-md-4">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<input class="form-control" id="istituto_conseguimento" name='istituto_conseguimento' type="text" placeholder="Istituto" required maxlength=150 value=""  />
@@ -235,7 +235,7 @@
 
 
 					<div class="row mb-3">							
-						<div class="col-lg-4">
+						<div class="col-md-4">
 						  
 						  <div class="form-floating mb-3 mb-md-0">
 							
@@ -260,7 +260,7 @@
 							</div>
 						</div>
 
-						<div class="col-lg-8">
+						<div class="col-md-8">
 
 							  <div class="form-group">
 								
@@ -276,7 +276,7 @@
 
 
 					<div class="row mb-3">							
-						<div class="col-lg-4">
+						<div class="col-md-4">
 							<div class="form-check ml-1">
 							  <input class="form-check-input" type="checkbox" value="" id="libero_p" name="libero_p">
 							  <label class="form-check-label" for="libero_p">
@@ -286,7 +286,7 @@
 
 						</div>
 
-						<div class="col-lg-4">
+						<div class="col-md-4">
 
 						  <div class="form-floating mb-3 mb-md-0">
 							
@@ -303,7 +303,7 @@
 							</div>
 						</div>
 						
-						<div class="col-lg-4">
+						<div class="col-md-4">
 							<div class="form-floating mb-3 mb-md-0">
 								<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control" name="ore_sett" id="ore_sett"/>		  
 								<label for="ore_sett">Ore settimanali</label>
@@ -312,7 +312,7 @@
 					</div>		
 
 					<div class="row mb-3">							
-						<div class="col-lg-6">
+						<div class="col-md-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="soc_ass" aria-label="Società assunzione" name='soc_ass' >
@@ -325,7 +325,7 @@
 							</div>
 						</div>
 
-						<div class="col-lg-6">
+						<div class="col-md-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="divisione" aria-label="Divisione" name='divisione' >
@@ -342,7 +342,7 @@
 					</div>		
 
 					<div class="row mb-3">							
-						<div class="col-lg-6">
+						<div class="col-md-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="area_impiego" aria-label="Area impiego" name='area_impiego' >
@@ -355,7 +355,7 @@
 							</div>
 						</div>
 
-						<div class="col-lg-6">
+						<div class="col-md-6">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="mansione" aria-label="Mansione" name='mansione' >
@@ -370,7 +370,7 @@
 					</div>		
 
 					<div class="row mb-3">							
-						<div class="col-lg-12">
+						<div class="col-md-12">
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="centro_costo" aria-label="Centro di Costo" name='centro_costo' >
