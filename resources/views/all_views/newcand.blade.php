@@ -2,6 +2,12 @@
 
 @section('title', 'IngFUN')
 
+@section('extra_style')  
+  <!-- Select2 -->
+  <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+@endsection
+
 @section('content_main')
 
   <!-- Content Wrapper. Contains page content -->
@@ -195,6 +201,79 @@
 					</div>
 						
 					</div>
+					
+
+					<div class="row mb-3">							
+						<div class="col-lg-4">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="titolo_studio" aria-label="Titolo di studio" name='titolo_studio' >
+								<option value=''>Select...</option>
+								<option value='1'>Licenza Media</option>
+								<option value='2'>Diploma Istituto Superiore</option>
+								<option value='3'>Laurea</option>
+							</select>
+							<label for="titolo_studio">Titolo di studio conseguito</label>
+							</div>
+						</div>
+
+						<div class="col-lg-4">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<input class="form-control" id="istituto_conseguimento" name='istituto_conseguimento' type="text" placeholder="Istituto" required maxlength=150 value=""  />
+							<label for="istituto_conseguimento">Istituto di conseguimento</label>
+							</div>
+						</div>
+					<div class="col-md-4">
+						<div class="form-floating">
+							<input class="form-control"  id="anno_mese" name='anno_mese' type="month" placeholder="YYYY-MM" maxlength=7/>
+							<label for="anno_mese">Anno e mese</label>
+						</div>
+					</div>
+						
+					</div>
+
+
+					<div class="row mb-3">							
+						<div class="col-lg-4">
+						  
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select select2" id="patenti" aria-label="Patenti" name='patenti' multiple="multiple" >
+								<option value='AM'>AM</option>
+								<option value='A1'>A1</option>
+								<option value='A2'>A2</option>
+								<option value='A'>A</option>
+								<option value='B'>B</option>
+								<option value='BE'>BE</option>
+								<option value='C1'>C1</option>
+								<option value='C1E'>C1E</option>
+								<option value='C'>C</option>
+								<option value='C3'>C3</option>
+								<option value='D1'>D1</option>
+								<option value='D1E'>D1E</option>
+								<option value='D'>D</option>
+								<option value='DE'>DE</option>
+
+							</select>
+							<b>Patenti</b>
+							</div>
+						</div>
+
+						<div class="col-lg-8">
+
+							  <div class="form-group">
+								
+								<input type="range" class="custom-range" id="capacita" name="capacita" value="0" oninput="$('#out').html(this.value)">
+								<label for="capacita">Livello Capacità</label> <span id='out'></span>
+								
+								
+							  </div>
+
+						</div>
+
+					</div>						
+					
 			
 			</div>
 			<!-- End Right Window !-->
@@ -219,6 +298,7 @@
 	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=1.1"></script>
-
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=1.2"></script>
+	<!--select2 !-->
+	<script src="plugins/select2/js/select2.full.min.js"></script>
 @endsection 
