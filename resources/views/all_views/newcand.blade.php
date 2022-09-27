@@ -195,7 +195,7 @@
 						</div>
 					<div class="col-md-4">
 						<div class="form-floating">
-							<input class="form-control" id="cat_pro" name='cat_pro' type="text" placeholder="categoria protetta" maxlength=5 value=""  />
+							<input class="form-control" id="cat_pro" name='cat_pro' type="text" placeholder="categoria protetta" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"  maxlength=5 value=""  />
 							<label for="telefono">Categoria protetta (%)</label>
 						</div>
 					</div>
@@ -465,7 +465,7 @@
 			</div>
 			<!-- End Right Window !-->
 
-         
+		<button type="submit" name='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
 
 			
         </div>
