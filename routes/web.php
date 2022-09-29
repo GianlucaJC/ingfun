@@ -21,8 +21,15 @@ Route::get('dashboard', [ 'as' => 'dashboard', 'uses' => 'App\Http\Controllers\M
 
 Route::get('newcand', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['auth']);
 
+Route::post('save_newcand', [ 'as' => 'save_newcand', 'uses' => 'App\Http\Controllers\MainController@save_newcand'])->middleware(['auth']);
+
+
 Route::get('listcand', [ 'as' => 'listcand', 'uses' => 'App\Http\Controllers\MainController@listcand'])->middleware(['auth']);
 
+
+Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
+Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
+Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');
 
 
 require __DIR__.'/auth.php';

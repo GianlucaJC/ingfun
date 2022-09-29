@@ -5,8 +5,8 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class candidati extends Model
+class regioni extends Model
 {
-	protected $table="candidatis";
+	protected $table="italy_regions";
     use HasFactory;
 }

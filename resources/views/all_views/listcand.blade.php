@@ -28,6 +28,9 @@
     <div class="content">
       <div class="container-fluid">
 	  
+	  <?php
+		print_r($_POST);
+	  ?>
         <div class="row">
           <div class="col-lg-12">
 				<table id='tbl_list_cand'>
