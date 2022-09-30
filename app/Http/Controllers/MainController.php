@@ -9,6 +9,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use App\Models\candidati;
 use App\Models\regioni;
+use App\Models\italy_cities;
 
 use DB;
 
@@ -22,7 +23,9 @@ class mainController extends Controller
 
 	public function newcand() {		
 		$regioni = regioni::orderBy('regione')->get();
-		return view('all_views/newcand')->with('regioni', $regioni);
+		$all_comuni = italy_cities::orderBy('comune')->get();
+
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni);
 	}
 
 	public function save_newcand(Request $request) {		

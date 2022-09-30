@@ -86,7 +86,7 @@
 					</div>
 					<div class="col-md-6">
 						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-control" name="provincia" id="provincia" onchange='popola_comuni(this.value)' aria-label="Provincia" placeholder="Provincia" required>
+							<select class="form-control" name="provincia" id="provincia" onchange="popola_comuni(this.value,'0')" aria-label="Provincia" placeholder="Provincia" required>
 							<option value=''>Select...</option>
 							<?php
 								/*
@@ -162,8 +162,25 @@
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="comunenasc" name='comunenasc' type="text" placeholder="Comune/Località" required maxlength=150 value=""  />
-							<label for="comune">Comune di Nascita*</label>
+							<!--
+							<input class="form-control" id="comunenasc" name='comunenasc' type="text" placeholder="Comune/Località" required maxlength=150 value="" onkeyup="popola_comuni('0',this.value)"  />
+							!-->
+							
+							<select class="form-select select2" id="comunenasc" aria-label="Comune nascita" name='comunenasc' required>
+								<option value="">Select...</option>
+								<?php
+								
+								foreach ($all_comuni as $comuni) {
+									$istat=$comuni->istat;		
+									$comunenasc=$comuni->comune;
+									echo "<option value='".$istat."' ";
+									//if ($regione==$k) echo " selected ";
+									echo ">".$comunenasc."</option>";
+								}
+								?>php 
+							</select>
+							
+							Comune di Nascita*
 						</div>
 					</div>
 
@@ -540,7 +557,7 @@
 	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.0"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.16"></script>
 	<!--select2 !-->
 	<script src="plugins/select2/js/select2.full.min.js"></script>
 @endsection 

@@ -34,6 +34,7 @@ $(document).ready( function () {
 
 
 
+
 function validaCodiceFiscale(cf){
           var validi, i, s, set1, set2, setpari, setdisp;
           if( cf == '' )  return '';
@@ -93,12 +94,14 @@ $("#cap").val('');
 	});
 }
 
-function popola_comuni(sigla) {
-$("#comune")
-    .find('option')
-    .remove()
-    .end();	
-$("#cap").val('');
+function popola_comuni(sigla,comune_search) {
+if (comune_search=="0") {
+	$("#comune")
+		.find('option')
+		.remove()
+		.end();	
+	$("#cap").val('');
+}
 
 	$.ajaxSetup({
 		headers: {
@@ -109,13 +112,15 @@ $("#cap").val('');
 	$.ajax({
 		type: 'POST',
 		url: "lista_comuni",
-		data: {sigla: sigla, _token: CSRF_TOKEN},
+		data: {sigla: sigla, comune_search:comune_search, _token: CSRF_TOKEN},
 		success: function (data) {
-			let result_tag = "";
-			$('#comune').append('<option value="">Select...</option>');
-			  $.each(JSON.parse(data), function (i, item) {
-				$('#comune').append('<option value="' + item.istat + '">' + item.comune + '</option>');
-			 });	
+			if (comune_search=="0") {
+				let result_tag = "";
+				$('#comune').append('<option value="">Select...</option>');
+				  $.each(JSON.parse(data), function (i, item) {
+					$('#comune').append('<option value="' + item.istat + '">' + item.comune + '</option>');
+				 });
+			}
 			
 		}
 	});	
@@ -142,3 +147,5 @@ $("#cap").val('');
 		}
 	});	
 }
+
+

@@ -21,7 +21,13 @@ class AjaxControllerCand extends Controller
 		$comuni=array();
 		
 		$sigla = $request->input('sigla');
-        $comuni = italy_cities::where('provincia', '=', $sigla)->orderBy('comune')->get();
+		$comune_search = $request->input('comune_search');
+		if ($comune_search=="0")
+			$comuni = italy_cities::where('provincia', '=', $sigla)->orderBy('comune')->get();
+		else {
+			$comuni = italy_cities::where('comune', 'like', "%".$comune_search."%")->orderBy('comune')->get();
+		}	
+	
 		
         return json_encode($comuni);
 
