@@ -28,9 +28,6 @@
     <div class="content">
       <div class="container-fluid">
 	  
-	  <?php
-		print_r($_POST);
-	  ?>
         <div class="row">
           <div class="col-lg-12">
 				<table id='tbl_list_cand'>
@@ -51,44 +48,22 @@
 						</tr>
 					</thead>
 					<tbody>
-					<?php 
-						$nome="";
-						for ($sca=1;$sca<=20;$sca++) {
-							if ($sca==1) $nome="ROSSI AAA";
-							if ($sca==2) $nome="ROSSI BBB";
-							if ($sca==3) $nome="ROSSI CCC";
-							if ($sca==4) $nome="ROSSI DDD";
-							if ($sca==5) $nome="ROSSI EEE";
-							if ($sca==6) $nome="ROSSI FFF";
-							if ($sca==7) $nome="ROSSI GGG";
-							if ($sca==8) $nome="ROSSI HHH";
-							if ($sca==9) $nome="ROSSI III";
-							if ($sca==10) $nome="ROSSI JJJ";
-							if ($sca==11) $nome="ROSSI KKK";
-							if ($sca==12) $nome="ROSSI LLL";
-							if ($sca==13) $nome="ROSSI MMM";
-							if ($sca==14) $nome="ROSSI NNN";
-							if ($sca==15) $nome="ROSSI OOO";
-							if ($sca==16) $nome="ROSSI PPP";
-							if ($sca==17) $nome="ROSSI QQQ";
-							if ($sca==18) $nome="ROSSI RRR";
-							if ($sca==19) $nome="ROSSI SSS";
-							if ($sca==20) $nome="ROSSI TTT";
-							?>
-						
+						@foreach($candidati as $candidato)
 							<tr>
-								<td>{{$sca}}</td>
-								<td>{{ $nome }}</td>
-								<td>Mansione {{$sca}}</td>
-								<td>Zona {{$sca}}</td>
-								<td>01/01/2022 00:00</td>
+								<td>{{ $candidato->id }}</td>
+								<td>
+									{{ $candidato->nominativo }}
+								</td>
+								<td>{{ $candidato->mansione }}</td>
+								<td>{{ $candidato->zona_lavoro }}</td>
+								<td>{{ $candidato->updated_at }}</td>
 								<td>Ufficio</td>
 								<td>-----</td>
 								<td></td>
 								<td></td>
 								<td></td>
 							</tr>
-					<?php } ?>	
+						@endforeach
 					</tbody>
 				</table>
           </div>

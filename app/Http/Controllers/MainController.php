@@ -32,8 +32,10 @@ class mainController extends Controller
 			$id_user=Auth::user()->id;
 			$candidati = new candidati;
 			//Dati Anagrafici
+			$nominativo=$request->input('cognome')." ".$request->input('nome');
 			$candidati->cognome = $request->input('cognome');
 			$candidati->nome = $request->input('nome');
+			$candidati->nominativo = $nominativo;
 			$candidati->indirizzo = $request->input('indirizzo');
 			$candidati->cap = $request->input('cap');
 			$candidati->comune = $request->input('comune');
@@ -88,8 +90,8 @@ class mainController extends Controller
 	}
 
 	public function listcand() {
-		$name="";
-		return view('all_views/listcand')->with('name', $name);
+		$candidati = candidati::orderBy('nominativo')->get();
+		return view('all_views/listcand')->with('candidati', $candidati);
 	}
 
 }

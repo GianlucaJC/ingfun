@@ -166,14 +166,15 @@
 							<input class="form-control" id="comunenasc" name='comunenasc' type="text" placeholder="Comune/Località" required maxlength=150 value="" onkeyup="popola_comuni('0',this.value)"  />
 							!-->
 							
-							<select class="form-select select2" id="comunenasc" aria-label="Comune nascita" name='comunenasc' required>
+							<select class="form-select select2" id="comunenasc" aria-label="Comune nascita" name='comunenasc' required onchange="$('#pro_nasc').val(this.value)">
 								<option value="">Select...</option>
+								<option value="0">Altro</option>
 								<?php
 								
 								foreach ($all_comuni as $comuni) {
-									$istat=$comuni->istat;		
+									$prov=$comuni->provincia;		
 									$comunenasc=$comuni->comune;
-									echo "<option value='".$istat."' ";
+									echo "<option value='".$prov."' ";
 									//if ($regione==$k) echo " selected ";
 									echo ">".$comunenasc."</option>";
 								}

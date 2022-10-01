@@ -48,13 +48,13 @@
             </a>
             <ul class="nav nav-treeview">
               <li class="nav-item">
-                <a href="#" class="nav-link active">
+                <a href="{{ route('newcand') }}" class="nav-link active">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Nuova candidatura</p>
                 </a>
               </li>
               <li class="nav-item">
-                <a href="#" class="nav-link">
+                <a href="{{ route('listcand') }}" class="nav-link">
                   <i class="far fa-circle nav-icon"></i>
                   <p>Lista candidature</p>
                 </a>
