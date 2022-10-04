@@ -1,4 +1,9 @@
 
+<?php
+use App\Models\User;
+	$id = Auth::user()->id;
+	$user = User::find($id);
+?>
 
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
@@ -13,8 +18,11 @@
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-
-          <img src="dist/img/AdminLTELogo.png" class="img-circle elevation-2" alt="User Image">
+			@if ($user->hasPermissionTo('gestione_archivi'))
+				<img src="dist/img/AdminLTELogo.png" class="img-circle elevation-2" alt="User Image">
+			@else
+				<img src="dist/img/avatar1.png" class="img-circle elevation-2" alt="User Image">
+			@endif
         </div>
         <div class="info">
           <a href="#" class="d-block">{{ Auth::user()->name }}</a>
@@ -41,8 +49,7 @@
           <li class="nav-item menu">
             <a href="#" class="nav-link active">
               <i class="nav-icon fas fa-tachometer-alt"></i>
-              <p>
-                Candidature
+              <p>Candidature
                 <i class="right fas fa-angle-left"></i>
               </p>
             </a>
@@ -62,6 +69,36 @@
 
             </ul>
           </li>
+
+
+			@if ($user->hasPermissionTo('gestione_archivi'))
+			
+			  <li class="nav-item menu">
+				<a href="#" class="nav-link">
+				  <i class="fas fa-cogs"></i> 
+				  <p>
+					Archivi
+					<i class="right fas fa-angle-left"></i>
+				  </p>
+				</a>
+				<ul class="nav nav-treeview">
+				  <li class="nav-item">
+					<a href="{{ route('tipo_contratto') }}" class="nav-link active">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Tipologie di contratto</p>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('listcand') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Mansioni</p>
+					</a>
+				  </li>
+
+				</ul>
+			  </li>		  
+			 @endif 
+			
           
 
 	  

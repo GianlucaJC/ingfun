@@ -364,12 +364,9 @@
 							
 							<select class="form-select" id="tipo_contratto" aria-label="Tipologia contratto" name='tipo_contratto' >
 								<option value=''>Select...</option>
-								<option value='1'>DETERMINATO</option>
-								<option value='2'>INDETERMINATO</option>
-								<option value='3'>TIROCINIO GARANZIA GIOVANI</option>
-								<option value='4'>APPRENDISTATO</option>
-								<option value='5'>INCARICO PROFESSIONALE</option>
-								<option value='6'>TIROCINIO EXTRACURRICULARE</option>
+								@foreach($tipoc as $tipo)
+										<option value='{{ $tipo->id }}'>{{ $tipo->descrizione }}</option>
+								@endforeach								
 							</select>
 							<label for="tipo_contratto">Tipologia contratto</label>
 							</div>

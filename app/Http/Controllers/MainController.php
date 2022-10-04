@@ -10,8 +10,14 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\candidati;
 use App\Models\regioni;
 use App\Models\italy_cities;
+use App\Models\tipoc;
 
 use DB;
+
+
+
+use Spatie\Permission\Models\Role;
+use Spatie\Permission\Models\Permission;
 
 
 class mainController extends Controller
@@ -24,8 +30,8 @@ class mainController extends Controller
 	public function newcand() {		
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
-
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni);
+		$tipoc=tipoc::orderBy('descrizione')->get();
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc);
 	}
 
 	public function save_newcand(Request $request) {		
@@ -78,14 +84,11 @@ class mainController extends Controller
 			$candidati->status_candidatura = $request->input('status_candidatura');
 			$candidati->note = $request->input('note');
 
-
-
-			
-			
 			
 			$candidati->save();		
 		$name="";
-		return view('all_views/listcand')->with('name', $name);
+		$candidati = candidati::orderBy('nominativo')->get();
+		return view('all_views/listcand')->with('candidati', $candidati);
 
 	}
 
