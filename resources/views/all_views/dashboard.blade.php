@@ -37,7 +37,7 @@ use App\Models\User;
 			<div class="row">
 				<div class="col-md-6">
 				<a href="{{ route('newcand') }}">
-					<div class="d-grid gap-2">
+					<div class="d-grid gap-2 mt-2">
 					  <button class="btn btn-primary" type="button">
 						<i class="fas fa-cube" style='font-size:36px'></i><br>
 						NUOVA CANDIDATURA
@@ -47,7 +47,7 @@ use App\Models\User;
 				</div>
 				<div class="col-md-6">
 				<a href="{{ route('listcand') }}">
-					<div class="d-grid gap-2">
+					<div class="d-grid gap-2 mt-2">
 					  <button class="btn btn-primary" type="button">
 					  <i class="fas fa-cubes" style='font-size:36px'></i><br>
 						LISTA CANDIDATURE
