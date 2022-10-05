@@ -37,6 +37,13 @@ $(document).ready( function () {
 } );
 
 
+function edit_elem(id_elem) {
+	descrizione=$("#id_descr"+id_elem).data("descr")
+	$("#descr_contr").val(descrizione)
+	$("#edit_elem").val(id_elem)
+	$('#div_definition').show(150)
+}
+
 function dele_element(value) {
 	if(!confirm('Sicuri di eliminare l\'elemento?')) 
 		event.preventDefault() 

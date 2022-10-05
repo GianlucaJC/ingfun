@@ -43,8 +43,13 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		<!-- form new contratti !-->	
+		@include('all_views.gestione.newcontr')
+
 		<form method='post' action="{{ route('tipo_contratto') }}" id='frm_tipoc' name='frm_tipoc' autocomplete="off">
-	  
+			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+
+
         <div class="row">
           <div class="col-lg-12">
 		  
@@ -64,18 +69,26 @@
 								 @if ($tipo->dele=="1") 
 									<font color='red'><del> 
 								 @endif
-									{{ $tipo->descrizione }}
+									<span id='id_descr{{$tipo->id}}' data-descr='{{ $tipo->descrizione }}'>
+										{{ $tipo->descrizione }}
+									</span>	
 								 @if ($tipo->dele=="1") 
 									 </del></font>
 								 @endif	
 								</td>	
 								<td>
 									@if ($tipo->dele=="0") 
-										<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-										<button type="submit" name='dele_ele' onclick="dele_element({{$tipo->id}})" class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+										<a href='#' onclick="edit_elem({{$tipo->id}})">
+											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+										</a>
+										<a href='#' onclick="dele_element({{$tipo->id}})">
+											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+										</a>
 									@endif
 									@if ($tipo->dele=="1") 
-										<button type="submit" class="btn btn-warning" onclick="restore_element({{$tipo->id}})" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+										<a href='#'onclick="restore_element({{$tipo->id}})" >
+											<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+										</a>
 									@endif
 									
 									
@@ -103,10 +116,9 @@
 			$check="";
 			if ($view_dele=="1") $check="checked";
 		?>
-		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			<div class="row">
 			    <div class="col-lg-12">
-					<button type="button" class="btn btn-primary">
+					<button type="button" class="btn btn-primary" onclick="$('#div_definition').toggle(150)">
 						<i class="fa fa-plus-circle"></i> Nuova Tipologia
 					</button>
 					<div class="form-check form-switch mt-3 ml-3">
@@ -149,6 +161,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/tipo_contr.js?ver=1.45"></script>
+	<script src="{{ URL::asset('/') }}dist/js/tipo_contr.js?ver=1.47"></script>
 
 @endsection
