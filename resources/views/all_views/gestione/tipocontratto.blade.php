@@ -39,12 +39,15 @@
     </div>
     <!-- /.content-header -->
 
+
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		<form method='post' action="{{ route('tipo_contratto') }}" id='frm_tipoc' name='frm_tipoc' autocomplete="off">
 	  
         <div class="row">
           <div class="col-lg-12">
+		  
 				<table id='tbl_list_contr' class="display">
 					<thead>
 						<tr>
@@ -57,31 +60,62 @@
 						@foreach($tipoc as $tipo)
 							<tr>
 								<td>{{ $tipo->id }}</td>	
-								<td>{{ $tipo->descrizione }}</td>	
 								<td>
-									<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-									<button type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+								 @if ($tipo->dele=="1") 
+									<font color='red'><del> 
+								 @endif
+									{{ $tipo->descrizione }}
+								 @if ($tipo->dele=="1") 
+									 </del></font>
+								 @endif	
+								</td>	
+								<td>
+									@if ($tipo->dele=="0") 
+										<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+										<button type="submit" name='dele_ele' onclick="dele_element({{$tipo->id}})" class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+									@endif
+									@if ($tipo->dele=="1") 
+										<button type="submit" class="btn btn-warning" onclick="restore_element({{$tipo->id}})" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+									@endif
+									
 									
 								</td>	
 							</tr>
 						@endforeach
+						
 					</tbody>
-        <tfoot>
-            <tr>
-                <th>ID</th>
-                <th>Descrizione</th>
-                <th></th>
-            </tr>
-        </tfoot>					
+					<tfoot>
+						<tr>
+							<th>ID</th>
+							<th>Descrizione</th>
+							<th></th>
+						</tr>
+					</tfoot>					
 				</table>
-				
-				<button type="button" class="btn btn-primary">
-				<i class="fa fa-plus-circle"></i> Nuova Tipologia
-				
-				</button>
+				<input type='hidden' id='dele_contr' name='dele_contr'>
+				<input type='hidden' id='restore_contr' name='restore_contr'>
+			
           </div>
 
         </div>
+		<?php
+		
+			$check="";
+			if ($view_dele=="1") $check="checked";
+		?>
+		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+			<div class="row">
+			    <div class="col-lg-12">
+					<button type="button" class="btn btn-primary">
+						<i class="fa fa-plus-circle"></i> Nuova Tipologia
+					</button>
+					<div class="form-check form-switch mt-3 ml-3">
+					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_tipoc').submit()" {{ $check }}>
+					  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
+					</div>
+				</div>
+			</div>	
+		</form>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -115,6 +149,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/tipo_contr.js?ver=1.43"></script>
+	<script src="{{ URL::asset('/') }}dist/js/tipo_contr.js?ver=1.45"></script>
 
 @endsection
