@@ -1,3 +1,8 @@
+<?php
+use App\Models\User;
+	$id = Auth::user()->id;
+	$user = User::find($id);
+?>
 @extends('all_views.viewmaster.index')
 
 @section('title', 'IngFUN')
@@ -27,65 +32,134 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-        <div class="row">
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-body">
-                <h5 class="card-title">
-					<b>
-					Nuova Candidatura
-					</b>
-				</h5>
 
-                <p class="card-text">
-                  Procedura dedicata all'inserimento di una nuova candidatura.
-                </p>
+	    @if ($user->hasRole('admin'))
+			<div class="row">
+				<div class="col-md-6">
+				<a href="{{ route('newcand') }}">
+					<div class="d-grid gap-2">
+					  <button class="btn btn-primary" type="button">
+						<i class="fas fa-cube" style='font-size:36px'></i><br>
+						NUOVA CANDIDATURA
+					  </button>
+					</div>
+				</a>
+				</div>
+				<div class="col-md-6">
+				<a href="{{ route('listcand') }}">
+					<div class="d-grid gap-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-cubes" style='font-size:36px'></i><br>
+						LISTA CANDIDATURE
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>
+		
+			<div class="row">
+				<div class="col-md-6">
+					<a href="#">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary disabled" type="button">
+						  <i class="fas fa-users" style='font-size:36px'></i><br>
+							GESTIONE PERSONALE
+						  </button>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-6">
+					<a href="#">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary disabled" type="button">
+						  <i class="far fa-address-card" style='font-size:36px'></i><br>
+							GESTIONE LIBERI PROFESSIONISTI
+						  </button>
+						</div>
+					</a>
+				</div>
+			</div>
 
-                <a href="{{ route('newcand') }}" class="card-link">Accedi al servizio</a>
-                
-              </div>
-            </div>
 
-            <div class="card card-primary card-outline">
-              <div class="card-body">
-                <h5 class="card-title">Card title</h5>
+			<div class="row">
+				<div class="col-md-6">
+					<a href="#">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary disabled" type="button">
+						  <i class="fas fa-file-signature" style='font-size:36px'></i><br>
+							GESTIONE SCADENZA CONTRATTI
+						  </button>
+						</div>
+					</a>
+				</div>	
 
-                <p class="card-text">
-                  Servizio da implementare...
-                </p>
-                <a href="#" class="card-link">Accedi al serivizo</a>
-              </div>
-            </div><!-- /.card -->
-          </div>
-          <!-- /.col-md-6 -->
-          <div class="col-lg-6">
-            <div class="card">
-              <div class="card-header">
-                <h5 class="m-0">LISTA Candidature</h5>
-              </div>
-              <div class="card-body">
-                <h6 class="card-title">Elenco candidature</h6>
+				<div class="col-md-6">
+					
+					<a href="#">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary disabled" type="button">
+						  <i class="fas fa-list" style='font-size:36px'></i><br>
+							REGISTRO PRESENZE
+						  </button>
+						</div>
+					</a>
+				</div>	
+			</div>
 
-                <p class="card-text">Procedura contenente l'elenco delle candidature con possibilità di modifica/cancellazione e passaggio in assunzione</p>
-                <a href="{{ route('listcand') }}" class="btn btn-primary">Accedi al servizio</a>
-              </div>
-            </div>
 
-            <div class="card card-primary card-outline">
-              <div class="card-header">
-                <h5 class="m-0">Servizio...</h5>
-              </div>
-              <div class="card-body">
-                <h6 class="card-title">Da implementare...</h6>
+			<div class="row">
+				<div class="col-md-6">
+					<a href="#">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary disabled" type="button">
+						  <i class="fas fa-clipboard-list" style='font-size:36px'></i><br>
+							DOCUMENTI SOSPESI
+						  </button>
+						</div>
+					</a>
+				</div>
+				<div class="col-md-6">
+					<a href="#">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary disabled" type="button">
+						  <i class="fas fa-clipboard-check" style='font-size:36px'></i><br>
+							CEDOLINI
+						  </button>
+						</div>
+					</a>
+				</div>	
+			</div>		
 
-                <p class="card-text">Questa procedura...</p>
-                <a href="#" class="btn btn-primary">Accedi al servizio</a>
-              </div>
-            </div>
-          </div>
-          <!-- /.col-md-6 -->
-        </div>
-        <!-- /.row -->
+			<a href="#">
+				<div class="d-grid gap-2 mt-2">
+				  <button class="btn btn-primary disabled" type="button">
+				  <i class="fas fa-upload" style='font-size:36px'></i><br>
+					UPLOAD CEDOLINI
+				  </button>
+				</div>
+			</a>
+
+			<a href="#">
+				<div class="d-grid gap-2 mt-2">
+				  <button class="btn btn-primary disabled" type="button">
+				  <i class="fas fa-users-cog" style='font-size:36px'></i><br>
+					GESTIONE ASSENZE PERSONALI
+				  </button>
+				</div>
+			</a>
+
+			<a href="#">
+				<div class="d-grid gap-2 mt-2">
+				  <button class="btn btn-primary disabled" type="button">
+				  
+				  <i class="fas fa-cogs" style='font-size:36px'></i><br>
+					ARCHIVI
+				  </button>
+				</div>
+			</a>			
+
+
+		@endif	
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
