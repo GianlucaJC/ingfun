@@ -40,6 +40,7 @@ Route::group(['middleware' => ['auth']], function () {
 Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
 Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
 Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');
+Route::post('refresh_tipoc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipoc');
 
 
 require __DIR__.'/auth.php';

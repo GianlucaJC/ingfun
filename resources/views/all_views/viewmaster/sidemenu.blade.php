@@ -18,7 +18,7 @@ use App\Models\User;
       <!-- Sidebar user panel (optional) -->
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
-			@if ($user->hasPermissionTo('gestione_archivi'))
+			@if ($user->hasRole('admin'))
 				<img src="dist/img/AdminLTELogo.png" class="img-circle elevation-2" alt="User Image">
 			@else
 				<img src="dist/img/avatar1.png" class="img-circle elevation-2" alt="User Image">
@@ -71,7 +71,7 @@ use App\Models\User;
           </li>
 
 
-			@if ($user->hasPermissionTo('gestione_archivi'))
+			@if ($user->hasRole('admin'))
 			
 			  <li class="nav-item menu">
 				<a href="#" class="nav-link">

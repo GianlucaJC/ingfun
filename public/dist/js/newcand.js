@@ -33,6 +33,34 @@ $(document).ready( function () {
 
 
 
+function refresh_tipoc() {
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: "refresh_tipoc",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up1").hide(150)
+			$("#tipo_contratto")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#tipo_contratto').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#tipo_contratto').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
 
 
 function validaCodiceFiscale(cf){

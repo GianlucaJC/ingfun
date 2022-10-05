@@ -1,9 +1,23 @@
 @extends('all_views.viewmaster.index')
 
 @section('title', 'IngFUN')
+@section('extra_style') 
+<!-- x button export -->
 
+<link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
+<!-- -->
+@endsection
+
+
+
+<style>
+	tfoot input {
+        width: 100%;
+        padding: 3px;
+        box-sizing: border-box;
+    }
+</style>
 @section('content_main')
-
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -31,7 +45,7 @@
 	  
         <div class="row">
           <div class="col-lg-12">
-				<table id='tbl_list_contr'>
+				<table id='tbl_list_contr' class="display">
 					<thead>
 						<tr>
 							<th>ID</th>
@@ -42,13 +56,29 @@
 					<tbody>
 						@foreach($tipoc as $tipo)
 							<tr>
-								<th>{{ $tipo->id }}</th>	
-								<th>{{ $tipo->descrizione }}</th>	
-								<th>--</th>	
+								<td>{{ $tipo->id }}</td>	
+								<td>{{ $tipo->descrizione }}</td>	
+								<td>
+									<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+									<button type="button" class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+									
+								</td>	
 							</tr>
 						@endforeach
 					</tbody>
+        <tfoot>
+            <tr>
+                <th>ID</th>
+                <th>Descrizione</th>
+                <th></th>
+            </tr>
+        </tfoot>					
 				</table>
+				
+				<button type="button" class="btn btn-primary">
+				<i class="fa fa-plus-circle"></i> Nuova Tipologia
+				
+				</button>
           </div>
 
         </div>
@@ -69,9 +99,22 @@
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
 
-	
-    <script type="text/javascript" charset="utf8" src="https://cdn.datatables.net/1.12.1/js/jquery.dataTables.js"></script>
 
-	<script src="{{ URL::asset('/') }}dist/js/tipo_contr.js?ver=1.2"></script>
+	
+	<!-- inclusione standard
+		per personalizzare le dipendenze DataTables in funzione delle opzioni da aggiungere: https://datatables.net/download/
+	!-->
+	
+	<!-- dipendenze DataTables !-->
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.css"/>
+		 
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.js"></script>
+	<!-- fine DataTables !-->
+	
+	
+
+	<script src="{{ URL::asset('/') }}dist/js/tipo_contr.js?ver=1.43"></script>
 
 @endsection

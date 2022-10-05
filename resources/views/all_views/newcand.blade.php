@@ -361,13 +361,25 @@
 						<div class="col-md-4">
 
 						  <div class="form-floating mb-3 mb-md-0">
-							
 							<select class="form-select" id="tipo_contratto" aria-label="Tipologia contratto" name='tipo_contratto' >
 								<option value=''>Select...</option>
 								@foreach($tipoc as $tipo)
 										<option value='{{ $tipo->id }}'>{{ $tipo->descrizione }}</option>
 								@endforeach								
 							</select>
+							<a href="{{ route('tipo_contratto') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up1').show()">
+								Definisci nuovo
+							</a>
+							
+							<span id='div_up1' class='up' style='display:none'>
+								<a href='#' class='ml-2' onclick='refresh_tipoc()'>
+									<font color='green'>
+										<i class="fas fa-sync-alt"></i>
+									</font>	
+								</a>	
+							</span>
+
+							
 							<label for="tipo_contratto">Tipologia contratto</label>
 							</div>
 						</div>
@@ -555,7 +567,7 @@
 	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.16"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.22"></script>
 	<!--select2 !-->
 	<script src="plugins/select2/js/select2.full.min.js"></script>
 @endsection 

@@ -6,9 +6,15 @@ use Illuminate\Http\Request;
 use App\Models\italy_provincies;
 use App\Models\italy_cities;
 use App\Models\italy_cap;
+use App\Models\tipoc;
 
 class AjaxControllerCand extends Controller
 {
+	public function refresh_tipoc(){
+		$tipoc = tipoc::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($tipoc);
+	}
+
 	public function lista_province(Request $request){
 
 		$id_regione = $request->input('id_regione');;
