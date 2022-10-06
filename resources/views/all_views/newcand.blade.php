@@ -8,6 +8,7 @@
   <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 @endsection
 
+
 @section('content_main')
 <form method='post' action="{{ route('save_newcand') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" novalidate>
 
@@ -65,75 +66,93 @@
 					</div>
 				</div>
 				
-				<div class="row mb-3">
-					<div class="col-md-6">
-						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-select" id="regione" aria-label="Regione" name='regione' onchange='popola_province(this.value)' placeholder="Regione" required>
+				<?php if(1==2) { ?>
+					<div class="row mb-3">
+						<div class="col-md-6">
+							<div class="form-floating mb-3 mb-md-0">
+								<select class="form-select" id="regione" aria-label="Regione" name='regione' onchange='popola_province(this.value)' placeholder="Regione" required>
+									<option value=''>Select...</option>
+									<?php
+
+										foreach ($regioni as $reg) {
+											$id_regione=$reg->id_regione;		
+											$descr_reg=$reg->regione;
+											echo "<option value='".$id_regione."' ";
+											//if ($regione==$k) echo " selected ";
+											echo ">".$descr_reg."</option>";
+										}
+									?>
+								</select>
+								<label for="regione">Regione</label>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-floating mb-3 mb-md-0">
+								<select class="form-control" name="provincia" id="provincia" onchange="popola_comuni(this.value,'0')" aria-label="Provincia" placeholder="Provincia" required>
 								<option value=''>Select...</option>
 								<?php
-
-									foreach ($regioni as $reg) {
-										$id_regione=$reg->id_regione;		
-										$descr_reg=$reg->regione;
-										echo "<option value='".$id_regione."' ";
-										//if ($regione==$k) echo " selected ";
-										echo ">".$descr_reg."</option>";
+									/*
+									if (count($province_from_reg)!=0) {
+										foreach($province_from_reg as $sigla=>$prov) {
+											echo "<option value='".$sigla."'";
+											if ($sigla==$provincia) echo " selected ";
+											echo ">".$prov."</option>";
+										}													
 									}
+									*/
 								?>
-							</select>
-							<label for="regione">Regione</label>
-						</div>
-					</div>
-					<div class="col-md-6">
-						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-control" name="provincia" id="provincia" onchange="popola_comuni(this.value,'0')" aria-label="Provincia" placeholder="Provincia" required>
-							<option value=''>Select...</option>
-							<?php
-								/*
-								if (count($province_from_reg)!=0) {
-									foreach($province_from_reg as $sigla=>$prov) {
-										echo "<option value='".$sigla."'";
-										if ($sigla==$provincia) echo " selected ";
-										echo ">".$prov."</option>";
-									}													
-								}
-								*/
-							?>
-							</select>
-							<label for="provincia">Provincia</label>
-						</div>
-					</div>					
-					
-				</div>			
+								</select>
+								<label for="provincia">Provincia</label>
+							</div>
+						</div>					
+						
+					</div>	
+				<?php } ?>			
 				
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating mb-3 mb-md-0">
+						<!--
 							<select class="form-select" name="comune" id="comune"  onchange='popola_cap(this.value)' placeholder="Comune" required aria-label="Comune" required >
 							<option value=''>Select...</option>
-							<?php
-								/*
-								if (count($comuni_from_sigla)!=0) {
-									foreach($comuni_from_sigla as $istat=>$comu) {
-										echo "<option value='".$istat."'";
-										if ($comune==$istat) echo " selected ";
-										echo ">".$comu."</option>";
-									}													
-								}
-								*/
-							?>
 							</select>
+						!-->
+						
+							<select class="form-control" name="comune" id="comune" aria-label="Comune" required  onchange='popola_cap_pro(this.value)'>
+								<option value=''>Select...</option>
+								<option value="">Altro</option>
+
+								<?php
+								
+								foreach ($all_comuni as $comuni) {
+									$prov=$comuni->provincia;		
+									$cap=$comuni->cap;
+									$comune=$comuni->comune;
+									echo "<option value='".$cap."|".$prov."' ";
+									//if ($regione==$k) echo " selected ";
+									echo ">".$comune."</option>";
+								}
+								?>
+							</select>
+
+							
 							<label for="comune">Comune*</label>
 						</div>	
 					</div>
 
-					<div class="col-md-6">
+					<div class="col-md-3">
 						<div class="form-floating">
-							<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P." required readonly maxlength=5 value=""  />
+							<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P." required  maxlength=5 value=""  />
 							<label for="cognome">Cap*</label>
 						</div>
 					</div>
-
+					
+					<div class="col-md-3">
+						<div class="form-floating">
+							<input class="form-control" id="provincia" name='provincia' type="text" placeholder="Provincia" required  maxlength=10 value=""  />
+							<label for="cognome">Provincia*</label>
+						</div>
+					</div>
 
 				</div>
 
@@ -161,14 +180,11 @@
 
 				<div class="row mb-3">
 					<div class="col-md-6">
-						<div class="form-floating">
-							<!--
-							<input class="form-control" id="comunenasc" name='comunenasc' type="text" placeholder="Comune/Località" required maxlength=150 value="" onkeyup="popola_comuni('0',this.value)"  />
-							!-->
-							
-							<select class="form-select select2" id="comunenasc" aria-label="Comune nascita" name='comunenasc' required onchange="$('#pro_nasc').val(this.value)">
-								<option value="">Select...</option>
-								<option value="0">Altro</option>
+						<div class="form-floating mb-3 mb-md-0">
+							<select class="form-control" name="comunenasc" id="comunenasc" aria-label="Comune nascita" required  onchange="$('#pro_nasc').val(this.value)">
+								<option value=''>Select...</option>
+								<option value="">Altro</option>
+
 								<?php
 								
 								foreach ($all_comuni as $comuni) {
@@ -180,8 +196,8 @@
 								}
 								?>php 
 							</select>
+							<label for="comunenasc">Comune di Nascita*</label>
 							
-							Comune di Nascita*
 						</div>
 					</div>
 
@@ -567,7 +583,7 @@
 	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.22"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.24"></script>
 	<!--select2 !-->
 	<script src="plugins/select2/js/select2.full.min.js"></script>
 @endsection 

@@ -30,7 +30,7 @@ class mainController extends Controller
 	public function newcand() {		
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
-		$tipoc=tipoc::orderBy('descrizione')->get();
+		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
 		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc);
 	}
 
@@ -87,14 +87,24 @@ class mainController extends Controller
 			
 			$candidati->save();		
 		$name="";
+		$this->listcand();
+		/*
 		$candidati = candidati::orderBy('nominativo')->get();
 		return view('all_views/listcand')->with('candidati', $candidati);
+		*/
 
 	}
 
-	public function listcand() {
-		$candidati = candidati::orderBy('nominativo')->get();
-		return view('all_views/listcand')->with('candidati', $candidati);
+	public function listcand(Request $request) {
+		$view_dele=0;
+		if ($request->has("view_dele")) $view_dele=$request->input("view_dele");
+		if ($view_dele=="on") $view_dele=1;
+		$candidati=DB::table('candidatis')
+		->when($view_dele=="0", function ($candidati) {
+			return $candidati->where('dele', "=","0");
+		})
+		->orderBy('nominativo')->get();
+		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele);
 	}
 
 }

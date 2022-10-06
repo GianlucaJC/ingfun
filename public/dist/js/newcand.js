@@ -154,6 +154,12 @@ if (comune_search=="0") {
 	});	
 }
 
+function popola_cap_pro(value) {
+	$("#cap").val('');$("#provincia").val('')
+	$("#cap").val(value.split("|")[0])
+	$("#provincia").val(value.split("|")[1])
+}
+
 
 function popola_cap(istat) {
 $("#cap").val('');

@@ -185,7 +185,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     </div>
     <!-- Default to the left -->
     <strong>Copyright &copy; <?php echo date("Y"); ?>
-	<a href="http://www.gruppoingenious.com/">Gruppo INGENIOUS </a>.</strong>
+	<a href="#">Misericordia</a></strong>
   </footer>
   
 </div>

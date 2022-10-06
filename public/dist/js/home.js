@@ -1,15 +1,4 @@
-$(document).ready( function () {
-    $('#tbl_list_cand').DataTable({
-        language: {
-            lengthMenu: 'Visualizza _MENU_ records per pagina',
-            zeroRecords: 'Nessuna candidatura trovata',
-            info: 'Pagina _PAGE_ di _PAGES_',
-            infoEmpty: 'Non sono disponibili candidature',
-            infoFiltered: '(Filtrati da _MAX_ candidature totali)',
-        },
-    });	
-	
-} );
+
 
 function set_tipo_imp(value) {
 	/*
