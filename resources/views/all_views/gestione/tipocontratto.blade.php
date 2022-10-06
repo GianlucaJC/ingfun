@@ -51,7 +51,7 @@
 
 
         <div class="row">
-          <div class="col-lg-12">
+          <div class="col-md-12">
 		  
 				<table id='tbl_list_contr' class="display">
 					<thead>
@@ -118,7 +118,7 @@
 		?>
 			<div class="row">
 			    <div class="col-lg-12">
-					<button type="button" class="btn btn-primary" onclick="$('#div_definition').toggle(150)">
+					<button type="button" class="btn btn-primary" onclick="$('#edit_elem').val('');$('#descr_contr').val('');$('#div_definition').show(150)">
 						<i class="fa fa-plus-circle"></i> Nuova Tipologia
 					</button>
 					<div class="form-check form-switch mt-3 ml-3">
