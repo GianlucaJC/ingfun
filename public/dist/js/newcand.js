@@ -182,4 +182,36 @@ $("#cap").val('');
 	});	
 }
 
+function set_sezione() {
+
+	if ($("#body_dialog").is(":visible")) {
+		$("#body_dialog").hide(150);
+		return false;
+	}
+	$(".allegati").empty();
+	fetch('class_allegati.php', {
+		method: 'post',
+		//cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached		
+		headers: {
+		  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+		},
+		body: 'operazione=refresh_tipo'
+	})
+	.then(response => {
+		if (response.ok) {
+		   return response.text();
+		}
+		
+	})
+	.then(resp=>{
+		$("#body_dialog").html(resp);
+		$("#body_dialog").show(150);
+		set_class_allegati("",""); //in demo-config.js
+	})
+	.catch(status, err => {
+		
+		return console.log(status, err);
+	})
+}
+
 

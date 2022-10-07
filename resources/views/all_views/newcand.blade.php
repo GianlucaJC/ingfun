@@ -6,6 +6,10 @@
   <!-- Select2 -->
   <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
   <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+ <!-- per upload -->
+  <link href="{{ URL::asset('/') }}dist/css/upload/jquery.dm-uploader.min.css" rel="stylesheet">
+  <!-- per upload -->  
+  <link href="{{ URL::asset('/') }}dist/css/upload/styles.css?ver=1.1" rel="stylesheet">  
 @endsection
 
 
@@ -244,8 +248,13 @@
 
 				<div class="row mb-3">
 					<div class="col-md-12">
-					  <label for="curr" class="form-label">Curriculum vitae</label>
-					  <input class="form-control" type="file" id="curr" name='curr'>
+					  <a href="javascript:void(0)" onclick="set_sezione()">
+						<span>Allega Curriculum Vitae (solo pdf,doc,jpg)</span>
+					  </a>	
+					<div class="mb-3" id='body_dialog' style='display:none'>
+
+					</div>					
+
 					</div>
 				</div>
 
@@ -583,7 +592,13 @@
 	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.24"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.25"></script>
 	<!--select2 !-->
 	<script src="plugins/select2/js/select2.full.min.js"></script>
+	
+	<!-- per upload -->
+	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.23"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.25"></script>
+	<!-- fine upload -->		
 @endsection 
