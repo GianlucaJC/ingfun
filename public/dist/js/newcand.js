@@ -159,6 +159,10 @@ function popola_cap_pro(value) {
 	$("#cap").val(value.split("|")[0])
 	$("#provincia").val(value.split("|")[1])
 }
+function popola_pronasc(value) {
+	$("#pro_nasc").val('')
+	$("#pro_nasc").val(value.split("|")[1])
+}
 
 
 function popola_cap(istat) {
@@ -213,5 +217,3 @@ function set_sezione() {
 		return console.log(status, err);
 	})
 }
-
-

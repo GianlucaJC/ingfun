@@ -27,11 +27,37 @@ class mainController extends Controller
 		return view('all_views/dashboard')->with('name', $name);
 	}
 
-	public function newcand() {		
+	public function init_newcand() {
+		$candidati=array();
+		$candidati[0]['cognome']=null;
+		$candidati[0]['nome']=null;
+		$candidati[0]['indirizzo']=null;
+		$candidati[0]['comune']=null;
+		$candidati[0]['cap']=null;
+		$candidati[0]['provincia']=null;
+		$candidati[0]['codfisc']=null;
+		$candidati[0]['datanasc']=null;
+		$candidati[0]['comunenasc']=null;
+		$candidati[0]['pro_nasc']=null;
+		$candidati[0]['email']=null;
+		$candidati[0]['telefono']=null;
+		$candidati[0]['pec']=null;
+		$candidati[0]['iban']=null;
+
+		return $candidati;
+	}
+
+	public function newcand($id=0) {
+		$candidati=array();
+		
+		//in caso di nuovo form l'array candidati è vuoto...per cui lo inizializzo 
+		$candidati=$this->init_newcand();
+		if ($id!=0) $candidati=candidati::where('id', "=", $id)->get();
+
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati);
 	}
 
 	public function save_newcand(Request $request) {		
@@ -99,6 +125,18 @@ class mainController extends Controller
 		$view_dele=0;
 		if ($request->has("view_dele")) $view_dele=$request->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;
+		$restore_cand=$request->input("restore_cand");
+		$dele_cand=$request->input("dele_cand");
+
+		if (strlen($dele_cand)!=0) {
+			candidati::where('id', $dele_cand)
+			  ->update(['dele' => 1]);			
+		}		
+		if (strlen($restore_cand)!=0) {
+			candidati::where('id', $restore_cand)
+			  ->update(['dele' => 0]);			
+		}				
+		
 		$candidati=DB::table('candidatis')
 		->when($view_dele=="0", function ($candidati) {
 			return $candidati->where('dele', "=","0");

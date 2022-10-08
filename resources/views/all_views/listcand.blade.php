@@ -89,7 +89,7 @@
 									<td></td>	
 									<td>
 										@if ($candidato->dele=="0") 
-											<a href='#' onclick="edit_elem({{$candidato->id}})">
+											<a href="{{ route('newcand',['id'=>$candidato->id]) }}" >
 												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 											</a>
 										@endif
@@ -146,7 +146,9 @@
 					  <label class="form-check-label" for="view_dele">Mostra anche Candidati eliminati</label>
 					</div>
 				</div>
-			</div>			
+			</div>	
+			<input type='hidden' id='dele_cand' name='dele_cand'>
+			<input type='hidden' id='restore_cand' name='restore_cand'>
 		</form>
       </div><!-- /.container-fluid -->
     </div>
@@ -177,6 +179,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listcand.js?ver=1.22"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listcand.js?ver=1.24"></script>
 
 @endsection

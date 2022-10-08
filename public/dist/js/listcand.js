@@ -33,3 +33,18 @@ $(document).ready( function () {
     });	
 	
 } );
+
+
+function dele_element(value) {
+	if(!confirm('Sicuri di eliminare l\'elemento?')) 
+		event.preventDefault() 
+	else 
+		$('#dele_cand').val(value)	
+}
+
+function restore_element(value) {
+	if(!confirm('Sicuri di ripristinare l\'elemento?')) 
+		event.preventDefault() 
+	else 
+		$('#restore_cand').val(value)	
+}

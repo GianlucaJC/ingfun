@@ -13,7 +13,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   
   <!-- Font Awesome Icons -->
-  <link rel="stylesheet" href="plugins/fontawesome-free/css/all.min.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/fontawesome-free/css/all.min.css">
   
 
    <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/1.12.1/css/jquery.dataTables.css">
@@ -22,8 +22,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 
   <!-- Theme style -->
-  <link rel="stylesheet" href="dist/css/styles.css">
-  <link rel="stylesheet" href="dist/css/adminlte.min.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/styles.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/adminlte.min.css">
 </head>
 
 
@@ -98,7 +98,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			  <a href="#" class="dropdown-item">
 				<!-- Message Start -->
 				<div class="media">
-				  <img src="dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+				  <img src="{{ URL::asset('/') }}dist/img/user8-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
 				  <div class="media-body">
 					<h3 class="dropdown-item-title">
 					  John Pierce
@@ -114,7 +114,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			  <a href="#" class="dropdown-item">
 				<!-- Message Start -->
 				<div class="media">
-				  <img src="dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
+				  <img src="{{ URL::asset('/') }}dist/img/user3-128x128.jpg" alt="User Avatar" class="img-size-50 img-circle mr-3">
 				  <div class="media-body">
 					<h3 class="dropdown-item-title">
 					  Nora Silvester

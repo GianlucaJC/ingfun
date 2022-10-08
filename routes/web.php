@@ -22,7 +22,7 @@ Route::get('dashboard', [ 'as' => 'dashboard', 'uses' => 'App\Http\Controllers\M
 
 
 Route::group(['only_log' => ['auth']], function () {
-	Route::get('newcand', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['permission:gestione_archivi']);
+	Route::get('newcand/{id?}', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['permission:gestione_archivi']);
 
 	Route::post('save_newcand', [ 'as' => 'save_newcand', 'uses' => 'App\Http\Controllers\MainController@save_newcand'])->middleware(['permission:gestione_archivi']);
 	

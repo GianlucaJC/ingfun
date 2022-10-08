@@ -9,7 +9,7 @@ use App\Models\User;
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ route('dashboard') }}" class="brand-link">
-      <img src="dist/img/if.png" alt="IngFUN Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
+      <img src="{{ URL::asset('/') }}dist/img/if.png" alt="IngFUN Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
       <span class="brand-text font-weight-light">IngFUN</span>
     </a>
 
@@ -19,9 +19,9 @@ use App\Models\User;
       <div class="user-panel mt-3 pb-3 mb-3 d-flex">
         <div class="image">
 			@if ($user->hasRole('admin'))
-				<img src="dist/img/AdminLTELogo.png" class="img-circle elevation-2" alt="User Image">
+				<img src="{{ URL::asset('/') }}dist/img/AdminLTELogo.png" class="img-circle elevation-2" alt="User Image">
 			@else
-				<img src="dist/img/avatar1.png" class="img-circle elevation-2" alt="User Image">
+				<img src="{{ URL::asset('/') }}dist/img/avatar1.png" class="img-circle elevation-2" alt="User Image">
 			@endif
         </div>
         <div class="info">

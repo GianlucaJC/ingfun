@@ -4,8 +4,8 @@
 
 @section('extra_style')  
   <!-- Select2 -->
-  <link rel="stylesheet" href="plugins/select2/css/select2.min.css">
-  <link rel="stylesheet" href="plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
  <!-- per upload -->
   <link href="{{ URL::asset('/') }}dist/css/upload/jquery.dm-uploader.min.css" rel="stylesheet">
   <!-- per upload -->  
@@ -44,19 +44,18 @@
         <div class="row">
          
 			<!-- Left Window !-->
-			
 			<div class="col-md-6">
 				<center><h4>DATI ANAGRAFICI</h4></center>
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="cognome" name='cognome' type="text" placeholder="Inserisci il tuo cognome" required maxlength=40 onkeyup="this.value = this.value.toUpperCase();"  value=""  />
+							<input class="form-control" id="cognome" name='cognome' type="text" placeholder="Inserisci il tuo cognome" required maxlength=40 onkeyup="this.value = this.value.toUpperCase();"  value="{{ $candidati[0]['cognome']}}"  />
 							<label for="cognome">Cognome*</label>
 						</div>
 					</div>
 					<div class="col-md-6">
 						<div class="form-floating mb-3 mb-md-0">
-							<input class="form-control" id="nome" name='nome' type="text" placeholder="Inserisci il tuo nome" maxlength=60 required onkeyup="this.value = this.value.toUpperCase();" value=""  />
+							<input class="form-control" id="nome" name='nome' type="text" placeholder="Inserisci il tuo nome" maxlength=60 required onkeyup="this.value = this.value.toUpperCase();" value="{{ $candidati[0]['nome']}}"  />
 							<label for="nome">Nome*</label>
 						</div>
 					</div>
@@ -64,8 +63,8 @@
 				<div class="row mb-3">
 					<div class="col-md-12">
 						<div class="form-floating">
-							<input class="form-control" id="indirizzo" name='indirizzo' type="text" placeholder="Via/Piazza" required maxlength=150 value=""  />
-							<label for="cognome">Indirizzo*</label>
+							<input class="form-control" id="indirizzo" name='indirizzo' type="text" placeholder="Via/Piazza" required maxlength=150 value="{{ $candidati[0]['indirizzo']}}"  />
+							<label for="indirizzo">Indirizzo*</label>
 						</div>
 					</div>
 				</div>
@@ -132,8 +131,9 @@
 									$prov=$comuni->provincia;		
 									$cap=$comuni->cap;
 									$comune=$comuni->comune;
-									echo "<option value='".$cap."|".$prov."' ";
-									//if ($regione==$k) echo " selected ";
+									$value=$cap."|".$prov;
+									echo "<option value='$value' ";
+									if ($candidati[0]['comune']==$value) echo " selected ";
 									echo ">".$comune."</option>";
 								}
 								?>
@@ -146,15 +146,15 @@
 
 					<div class="col-md-3">
 						<div class="form-floating">
-							<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P." required  maxlength=5 value=""  />
-							<label for="cognome">Cap*</label>
+							<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P." required  maxlength=5 value="{{ $candidati[0]['cap'] }}"  />
+							<label for="cap">Cap*</label>
 						</div>
 					</div>
 					
 					<div class="col-md-3">
 						<div class="form-floating">
-							<input class="form-control" id="provincia" name='provincia' type="text" placeholder="Provincia" required  maxlength=10 value=""  />
-							<label for="cognome">Provincia*</label>
+							<input class="form-control" id="provincia" name='provincia' type="text" placeholder="Provincia" required  maxlength=10 value="{{ $candidati[0]['provincia'] }}"  />
+							<label for="provincia">Provincia*</label>
 						</div>
 					</div>
 
@@ -164,7 +164,7 @@
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="codfisc" name='codfisc' type="text" placeholder="C.F." required  maxlength="16" value="" onkeyup="this.value = this.value.toUpperCase();" pattern=".{16,16}" />
+							<input class="form-control" id="codfisc" name='codfisc' type="text" placeholder="C.F." required  maxlength="16" value="{{ $candidati[0]['codfisc']}}" onkeyup="this.value = this.value.toUpperCase();" pattern=".{16,16}" />
 							<label for="codfisc">Codice Fiscale*</label>
 							<div class="invalid-tooltip">
 							  Codice fiscale formalmente non corretto
@@ -174,7 +174,7 @@
 
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="datanasc" name='datanasc' type="date" placeholder="Nato il" required value=""  />
+							<input class="form-control" id="datanasc" name='datanasc' type="date" placeholder="Nato il" required value="{{ $candidati[0]['datanasc']}}"  />
 							<label for="datanasc">Data di nascita*</label>
 						</div>
 					</div>
@@ -185,17 +185,19 @@
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-control" name="comunenasc" id="comunenasc" aria-label="Comune nascita" required  onchange="$('#pro_nasc').val(this.value)">
+							<select class="form-control" name="comunenasc" id="comunenasc" aria-label="Comune nascita" required  onchange="popola_pronasc(this.value)">
 								<option value=''>Select...</option>
 								<option value="">Altro</option>
 
 								<?php
 								
 								foreach ($all_comuni as $comuni) {
-									$prov=$comuni->provincia;		
+									$istat=$comuni->istat;
+									$prov=$comuni->provincia;
 									$comunenasc=$comuni->comune;
-									echo "<option value='".$prov."' ";
-									//if ($regione==$k) echo " selected ";
+									$value=$istat."|".$prov;
+									echo "<option value='$value' ";
+									if ($candidati[0]['comunenasc']==$value) echo " selected ";
 									echo ">".$comunenasc."</option>";
 								}
 								?>php 
@@ -207,7 +209,7 @@
 
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="pro_nasc" name='pro_nasc' type="text" placeholder="Provincia" required maxlength=10 value=""  />
+							<input class="form-control" id="pro_nasc" name='pro_nasc' type="text" placeholder="Provincia" required maxlength=10 value="{{ $candidati[0]['pro_nasc']}}"  />
 							<label for="pro_nasc">Provincia di Nascita*</label>
 						</div>
 					</div>
@@ -217,14 +219,14 @@
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="email" name='email' type="email" placeholder="Email" required maxlength=150 value="" onkeyup="this.value = this.value.toLowerCase();" />
+							<input class="form-control" id="email" name='email' type="email" placeholder="Email" required maxlength=150 value="{{ $candidati[0]['email']}}" onkeyup="this.value = this.value.toLowerCase();" />
 							<label for="email">Email Privata*</label>
 						</div>
 					</div>
 
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="telefono" name='telefono' type="text" placeholder="Telefono" required maxlength=20 value=""  />
+							<input class="form-control" id="telefono" name='telefono' type="text" placeholder="Telefono" required maxlength=20 value="{{ $candidati[0]['telefono']}}"  />
 							<label for="telefono">Telefono privato*</label>
 						</div>
 					</div>
@@ -233,14 +235,14 @@
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="pec" name='pec' type="email" placeholder="Pec" required maxlength=150 value="" onkeyup="this.value = this.value.toLowerCase();" />
-							<label for="email">Pec*</label>
+							<input class="form-control" id="pec" name='pec' type="email" placeholder="Pec" required maxlength=150 value="{{ $candidati[0]['pec']}}" onkeyup="this.value = this.value.toLowerCase();" />
+							<label for="pec">Pec*</label>
 						</div>
 					</div>
 
 					<div class="col-md-6">
 						<div class="form-floating">
-							<input class="form-control" id="iban" name='iban' type="text" placeholder="IBAN" maxlength=27 value=""  />
+							<input class="form-control" id="iban" name='iban' type="text" placeholder="IBAN" maxlength=27 value="{{ $candidati[0]['iban']}}"  />
 							<label for="telefono">IBAN</label>
 						</div>
 					</div>
@@ -493,7 +495,7 @@
 				<div class="row mb-3">
 					<div class="col-md-4">
 						<div class="form-floating">
-							<input class="form-control" id="netto_concordato" name='netto_concordato' type="text" value=""  />
+							<input class="form-control" id="netto_concordato" name='netto_concordato' type="text" value="" maxlength=30 />
 							<label for="netto_concordato">Netto concordato</label>
 						</div>
 					</div>
@@ -587,14 +589,14 @@
  
 @section('content_plugin')
 	<!-- jQuery -->
-	<script src="plugins/jquery/jquery.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/jquery/jquery.min.js"></script>
 	<!-- Bootstrap 4 -->
-	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
-	<script src="dist/js/adminlte.min.js"></script>
+	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.25"></script>
 	<!--select2 !-->
-	<script src="plugins/select2/js/select2.full.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
 	<!-- per upload -->
 	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
