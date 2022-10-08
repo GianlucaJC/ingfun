@@ -493,7 +493,7 @@
 				<div class="row mb-3">
 					<div class="col-md-4">
 						<div class="form-floating">
-							<input class="form-control" id="netto_concordato" name='netto_concordato' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value=""  />
+							<input class="form-control" id="netto_concordato" name='netto_concordato' type="text" value=""  />
 							<label for="netto_concordato">Netto concordato</label>
 						</div>
 					</div>
