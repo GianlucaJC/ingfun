@@ -51,6 +51,7 @@ function dele_curr(file_curr,id_cand) {
 		
 	})
 	.then(resp=>{
+		$("#fx_curr").val('')
 		$("#div_view_curr").empty(150);
 
 	})

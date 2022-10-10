@@ -295,7 +295,17 @@
 							
 							<select class="form-select" id="stato_occ" aria-label="Stato Occupazione" name='stato_occ' required>
 								<option value=''>Select...</option>
-								<option value='1'>Disoccupato</option>
+								<option value='1' 
+								<?php
+									if ($candidati[0]['stato_occ']=="1") echo "selected";
+								?>	
+								>Disoccupato</option>
+								<option value='2' 
+								<?php
+									if ($candidati[0]['stato_occ']=="2") echo "selected";
+								?>	
+								>Occupato</option>
+
 							</select>
 							<label for="stato_occ">Stato Occupazione*</label>
 							</div>
@@ -593,10 +603,13 @@
 			</div>
 			<!-- End Right Window !-->
 
-		<button type="submit" name='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
+		
+			<button type="submit" name='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
+		
 
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
-			<input type="hidden" name="fx_curr" id="fx_curr">
+			<input type="hidden" name="fx_curr" id="fx_curr" value="{{ $candidati[0]['file_curr']}}">
+			<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -615,7 +628,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.32"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.33"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

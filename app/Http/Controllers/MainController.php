@@ -44,6 +44,7 @@ class mainController extends Controller
 		$candidati[0]['pec']=null;
 		$candidati[0]['iban']=null;
 		$candidati[0]['file_curr']=null;
+		$candidati[0]['stato_occ']=null;
 
 		return $candidati;
 	}
@@ -63,7 +64,15 @@ class mainController extends Controller
 
 	public function save_newcand(Request $request) {		
 			$id_user=Auth::user()->id;
-			$candidati = new candidati;
+			
+			$id_cand=$request->input('id_cand');
+			if ($id_cand!=0)
+				$candidati = candidati::find($id_cand);
+			else
+				$candidati = new candidati;
+					
+
+			
 			//Dati Anagrafici
 			$nominativo=$request->input('cognome')." ".$request->input('nome');
 			$candidati->cognome = $request->input('cognome');
@@ -112,20 +121,19 @@ class mainController extends Controller
 			$candidati->status_candidatura = $request->input('status_candidatura');
 			$candidati->note = $request->input('note');
 			$candidati->file_curr = $request->input('fx_curr');
+			$candidati->stato_occ = $request->input('stato_occ');
 
-			
 			$candidati->save();		
+
 			
 		$name="";
-		$this->listcand();
-		/*
-		$candidati = candidati::orderBy('nominativo')->get();
-		return view('all_views/listcand')->with('candidati', $candidati);
-		*/
-
+		
+		return $this->listcand($request);
+		
 	}
 
 	public function listcand(Request $request) {
+		
 		$view_dele=0;
 		if ($request->has("view_dele")) $view_dele=$request->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;
@@ -146,6 +154,9 @@ class mainController extends Controller
 			return $candidati->where('dele', "=","0");
 		})
 		->orderBy('nominativo')->get();
+
+
+
 		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele);
 	}
 
