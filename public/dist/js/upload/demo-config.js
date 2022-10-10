@@ -14,10 +14,11 @@ function set_class_allegati(ref_tabulato,ref_aziende) {
    */
   	
  
-  
+  base_path = $("#url").val();
+
   
   $('#drag-and-drop-zone').dmUploader({ //
-    url: 'upload.php',
+    url: base_path+'/upload.php',
 	extraData: {
       
 	  "ref_tabulato":ref_tabulato,
@@ -71,6 +72,7 @@ function set_class_allegati(ref_tabulato,ref_aziende) {
 	  
 	  dx=JSON.stringify(data)
 	  console.log(dx)
+	  $("#fx_curr").val(data.filename)
 	  
       ui_add_log('Server Response for file #' + id + ': ' + JSON.stringify(data));
       ui_add_log('Upload del file #' + id + ' COMPLETATO', 'success');

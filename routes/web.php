@@ -39,10 +39,14 @@ Route::group(['only_log' => ['auth']], function () {
 
 
 //routing Ajax
+
+Route::post('dele_curr', 'App\Http\Controllers\AjaxControllerCand@dele_curr');
+
 Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
 Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
 Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');
 Route::post('refresh_tipoc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipoc');
+
 
 
 require __DIR__.'/auth.php';

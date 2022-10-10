@@ -2,8 +2,6 @@
 session_start();
 
 header('Content-type:application/json;charset=utf-8');
-$ref_tabulato=$_POST['ref_tabulato'];
-$ref_aziende=$_POST['ref_aziende'];
 
 try {
     if (
@@ -46,8 +44,7 @@ try {
     echo json_encode([
         'status' => 'ok',
         'path' => $filepath,
-		'filename' =>$filename,
-		'ref_aziende' =>$ref_aziende
+		'filename' =>$filename
 	]);
 
 } catch (RuntimeException $e) {

@@ -251,10 +251,30 @@
 				<div class="row mb-3">
 					<div class="col-md-12">
 					  <a href="javascript:void(0)" onclick="set_sezione()">
-						<span>Allega Curriculum Vitae (solo pdf,doc,jpg)</span>
+		
+						@if ($id_cand!="0") 
+							<span>Allega/Modifica Curriculum Vitae (solo pdf,doc,jpg)</span>
+						@else
+							<span>Allega Curriculum Vitae (solo pdf,doc,jpg)</span>
+						@endif	
 					  </a>	
-					<div class="mb-3" id='body_dialog' style='display:none'>
+						@if ($id_cand!="0" && strlen($candidati[0]['file_curr'])!=0) 
+							<div id='div_view_curr'>
+								<hr>
+								<a href="{{url('/')}}/allegati/curr/{{$candidati[0]['file_curr']}}" target='_blank'>
+									<button style='font-size:20px' type="button" class="btn btn-primary"><i class="far fa-file-alt"></i> Vedi Curriculum</button>
+								</a>
 
+								<a href="javascript:void(0)" onclick="dele_curr('{{$candidati[0]['file_curr']}}',{{$id_cand}})">
+									<button style='font-size:20px' type="button" class="btn btn-danger"><i class="fas fa-trash-alt"></i> Elimina Curriculum allegato</button>
+								</a>
+							</div>
+							
+							
+						@endif	
+					  
+					<div class="mb-3" id='body_dialog' style='display:none'>
+				
 					</div>					
 
 					</div>
@@ -575,7 +595,8 @@
 
 		<button type="submit" name='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
 
-			
+			<input type="hidden" value="{{url('/')}}" id="url" name="url">
+			<input type="hidden" name="fx_curr" id="fx_curr">
         </div>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -594,13 +615,13 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.25"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.32"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
 	<!-- per upload -->
 	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.23"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.25"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.29"></script>
 	<!-- fine upload -->		
 @endsection 

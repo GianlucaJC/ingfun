@@ -32,6 +32,33 @@ $(document).ready( function () {
 } );
 
 
+function dele_curr(file_curr,id_cand) {
+	if (!confirm("Sicuri di eliminare il Curriculum?")) return false;
+	base_path = $("#url").val();
+	let CSRF_TOKEN = $("#token_csrf").val();
+	fetch(base_path+'/dele_curr', {
+		method: 'post',
+		//cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached		
+		headers: {
+		  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+		},
+		body: '_token='+ CSRF_TOKEN+'&id_cand='+id_cand+'&file_curr='+file_curr
+	})
+	.then(response => {
+		if (response.ok) {			
+		   return response.text();
+		}
+		
+	})
+	.then(resp=>{
+		$("#div_view_curr").empty(150);
+
+	})
+	.catch(status, err => {
+		
+		return console.log(status, err);
+	})	
+}
 
 function refresh_tipoc() {
 	$.ajaxSetup({
@@ -187,13 +214,15 @@ $("#cap").val('');
 }
 
 function set_sezione() {
+base_path = $("#url").val();
+
 
 	if ($("#body_dialog").is(":visible")) {
 		$("#body_dialog").hide(150);
 		return false;
 	}
 	$(".allegati").empty();
-	fetch('class_allegati.php', {
+	fetch(base_path+'/class_allegati.php', {
 		method: 'post',
 		//cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached		
 		headers: {

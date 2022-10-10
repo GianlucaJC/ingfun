@@ -6,7 +6,9 @@ use Illuminate\Http\Request;
 use App\Models\italy_provincies;
 use App\Models\italy_cities;
 use App\Models\italy_cap;
+use App\Models\candidati;
 use App\Models\tipoc;
+
 
 class AjaxControllerCand extends Controller
 {
@@ -14,6 +16,37 @@ class AjaxControllerCand extends Controller
 		$tipoc = tipoc::where('dele','=',0)->orderBy('descrizione')->get();
         return json_encode($tipoc);
 	}
+	public function dele_curr(){
+		
+		$file_curr=$_POST['file_curr'];
+		$id_cand=$_POST['id_cand'];
+
+		try {
+			
+			candidati::where('id', $id_cand)->update(['file_curr' => null]);			
+			$path = base_path();
+			$fx_dele=$path."/public/allegati/curr/".$file_curr;
+			unlink($fx_dele);
+			
+			echo json_encode([
+				'status' => 'OK',
+				'message' => "File eliminato"
+			]);
+			
+
+			
+		} catch (RuntimeException $e) {
+			// Something went wrong, send the err message as JSON
+			http_response_code(400);
+
+			echo json_encode([
+				'status' => 'error',
+				'message' => $e->getMessage()
+			]);
+		}
+
+	}
+
 
 	public function lista_province(Request $request){
 

@@ -43,6 +43,7 @@ class mainController extends Controller
 		$candidati[0]['telefono']=null;
 		$candidati[0]['pec']=null;
 		$candidati[0]['iban']=null;
+		$candidati[0]['file_curr']=null;
 
 		return $candidati;
 	}
@@ -57,7 +58,7 @@ class mainController extends Controller
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id);
 	}
 
 	public function save_newcand(Request $request) {		
@@ -80,6 +81,7 @@ class mainController extends Controller
 			$candidati->telefono = $request->input('telefono');
 			$candidati->pec = $request->input('pec');
 			$candidati->iban = $request->input('iban');
+			
 			//Dati Specifici
 				
 			if ($request->has("patenti")) 
@@ -109,9 +111,11 @@ class mainController extends Controller
 			$candidati->taglia = $request->input('taglia');
 			$candidati->status_candidatura = $request->input('status_candidatura');
 			$candidati->note = $request->input('note');
+			$candidati->file_curr = $request->input('fx_curr');
 
 			
 			$candidati->save();		
+			
 		$name="";
 		$this->listcand();
 		/*
