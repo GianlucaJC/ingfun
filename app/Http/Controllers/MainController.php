@@ -11,6 +11,7 @@ use App\Models\candidati;
 use App\Models\regioni;
 use App\Models\italy_cities;
 use App\Models\tipoc;
+use App\Models\sicurezza;
 
 use DB;
 
@@ -31,6 +32,7 @@ class mainController extends Controller
 		$candidati=array();
 		$candidati[0]['cognome']=null;
 		$candidati[0]['nome']=null;
+		$candidati[0]['sesso']=null;
 		$candidati[0]['indirizzo']=null;
 		$candidati[0]['comune']=null;
 		$candidati[0]['cap']=null;
@@ -58,8 +60,9 @@ class mainController extends Controller
 
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
+		$sicurezza=sicurezza::orderBy('descrizione')->where('dele', "=","0")->get();
 		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza);
 	}
 
 	public function save_newcand(Request $request) {		
@@ -70,14 +73,20 @@ class mainController extends Controller
 				$candidati = candidati::find($id_cand);
 			else
 				$candidati = new candidati;
-					
+			
+			$attestati_arr=$request->input('attestato');
+			$attestati=null;
+			if (is_array($attestati_arr))
+				$attestati=implode(";",$attestati_arr);
 
+			
 			
 			//Dati Anagrafici
 			$nominativo=$request->input('cognome')." ".$request->input('nome');
 			$candidati->cognome = $request->input('cognome');
 			$candidati->nome = $request->input('nome');
 			$candidati->nominativo = $nominativo;
+			$candidati->sesso = $request->input('sesso');
 			$candidati->indirizzo = $request->input('indirizzo');
 			$candidati->cap = $request->input('cap');
 			$candidati->comune = $request->input('comune');
@@ -90,6 +99,8 @@ class mainController extends Controller
 			$candidati->telefono = $request->input('telefono');
 			$candidati->pec = $request->input('pec');
 			$candidati->iban = $request->input('iban');
+			
+			$candidati->attestati = $attestati;
 			
 			//Dati Specifici
 				
@@ -155,7 +166,7 @@ class mainController extends Controller
 		})
 		->orderBy('nominativo')->get();
 
-
+		
 
 		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele);
 	}
