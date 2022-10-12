@@ -46,7 +46,7 @@
 		
 
 		<div class="row mb-3">							
-			<div class="col-md-4">
+			<div class="col-md-3">
 			  <div class="form-floating mb-3 mb-md-0">
 				
 				<select class="form-select" id="titolo_studio" aria-label="Titolo di studio" name='titolo_studio' >
@@ -59,14 +59,14 @@
 				</div>
 			</div>
 
-			<div class="col-md-4">
+			<div class="col-md-6">
 			  <div class="form-floating mb-3 mb-md-0">
 				
 				<input class="form-control" id="istituto_conseguimento" name='istituto_conseguimento' type="text" placeholder="Istituto"  maxlength=150 value=""  />
 				<label for="istituto_conseguimento">Istituto di conseguimento</label>
 				</div>
 			</div>
-		<div class="col-md-4">
+		<div class="col-md-3">
 			<div class="form-floating">
 				<input class="form-control"  id="anno_mese" name='anno_mese' type="month" placeholder="YYYY-MM" maxlength=7/>
 				<label for="anno_mese">Anno e mese</label>

@@ -207,8 +207,8 @@
 	<div class="row mb-3">
 		<div class="col-md-6">
 			<div class="form-floating">
-				<input class="form-control" id="pec" name='pec' type="email" placeholder="Pec" required maxlength=150 value="{{ $candidati[0]['pec']}}" onkeyup="this.value = this.value.toLowerCase();" />
-				<label for="pec">Pec*</label>
+				<input class="form-control" id="pec" name='pec' type="email" placeholder="Pec"  maxlength=150 value="{{ $candidati[0]['pec']}}" onkeyup="this.value = this.value.toLowerCase();" />
+				<label for="pec">Pec</label>
 			</div>
 		</div>
 
@@ -269,7 +269,7 @@
 				</a>	
 			</span>			
 			<div class="form-check form-switch mt-1 ml-4" style='float:right'>
-			  <input class="form-check-input" type="checkbox" id="view_choice" name="view_choice" onchange="$('.voci_no').toggle(150)" checked>
+			  <input class="form-check-input" type="checkbox" id="view_choice" name="view_choice" onchange="$('.voci_no').toggle(150)" >
 			  <label class="form-check-label" for="view_choice">Mostra solo voci selezionate</label>
 			</div>			
 			<ul class="list-group" style='clear:right' >
@@ -277,7 +277,7 @@
 				@foreach($sicurezza as $attestati)
 				   @php($num++)
 				   <?php
-					$check="";$class="voci_no";$disp="display:none";
+					$check="";$class="voci_no";$disp="display:inline";
 					$arr_att=explode(";",$candidati[0]['attestati']);
 					if (is_array($arr_att)) {
 						if (in_array($attestati->id,$arr_att)) {

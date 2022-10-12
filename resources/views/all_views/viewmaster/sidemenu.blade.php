@@ -101,6 +101,13 @@ use App\Models\User;
 					  <p>Form Attestati sicurezza</p>
 					</a>
 				  </li>
+				  
+				  <li class="nav-item">
+					<a href="{{ route('societa_assunzione') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Società di assunzione</p>
+					</a>
+				  </li>
 
 				</ul>
 			  </li>		  
