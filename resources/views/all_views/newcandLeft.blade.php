@@ -255,26 +255,50 @@
 	@if ($id_cand!="0") 
 		<div id='div_attestati'>
 			<h3>Attestati Sicurezza</h3>
-			<a href="#" class="link-primary" onclick="$('.up').hide();">
-				Definisci nuovo
-			</a>
-			<ul class="list-group">
+			<!--
+				<a href="{{ route('frm_attestati') }}" target="_blank" class="link-primary" onclick="$('.up').hide();$('#div_up2').show()">
+					Definisci nuovo
+				</a>
+			!-->
+			
+			<span id='div_up2' class='up' style='display:none'>
+				<a href='#' class='ml-2' onclick=''>
+					<font color='green'>
+						<i class="fas fa-sync-alt"></i>
+					</font>	
+				</a>	
+			</span>			
+			<div class="form-check form-switch mt-1 ml-4" style='float:right'>
+			  <input class="form-check-input" type="checkbox" id="view_choice" name="view_choice" onchange="$('.voci_no').toggle(150)" checked>
+			  <label class="form-check-label" for="view_choice">Mostra solo voci selezionate</label>
+			</div>			
+			<ul class="list-group" style='clear:right' >
 				@php ($num=0)
 				@foreach($sicurezza as $attestati)
 				   @php($num++)
 				   <?php
-					$check="";
+					$check="";$class="voci_no";$disp="display:none";
 					$arr_att=explode(";",$candidati[0]['attestati']);
 					if (is_array($arr_att)) {
-						if (in_array($attestati->id,$arr_att)) $check=" checked "; 
+						if (in_array($attestati->id,$arr_att)) {
+							$check=" checked "; 
+							$class="";$disp="";
+						}	
 					}
 				   ?>
-				  <li class="list-group-item">
+				   
+				  <li class="list-group-item {{ $class }} " style="{{$disp}}">
 					<span class='ml-2'></span>
 					<input class="form-check-input me-1" type="checkbox" value="{{$attestati->id}}" id="attestato{{$num}}" name='attestato[]' 
 					 {{ $check }}>
 					<label class="form-check-label" for="attestato{{$num}}">
-						{{ $attestati->descrizione }}
+						@if ($attestati->dele!="0") 
+						 <font color='red'><del> 
+						@endif
+							{{ $attestati->descrizione }}
+						@if ($attestati->dele!="0") 
+						 </del></font>
+						@endif
 					</label>
 				  </li>
 				@endforeach		

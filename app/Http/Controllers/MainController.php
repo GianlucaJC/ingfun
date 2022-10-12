@@ -60,7 +60,13 @@ class mainController extends Controller
 
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
-		$sicurezza=sicurezza::orderBy('descrizione')->where('dele', "=","0")->get();
+		
+		$sicurezza=sicurezza::orderBy('descrizione')
+		->when($id=="0", function ($sicurezza) {
+			return $sicurezza->where('dele', "=","0");
+		})
+		->get();
+		
 		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
 		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza);
 	}

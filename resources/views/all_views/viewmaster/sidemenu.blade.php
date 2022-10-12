@@ -95,6 +95,12 @@ use App\Models\User;
 					  <p>Mansioni</p>
 					</a>
 				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('frm_attestati') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Form Attestati sicurezza</p>
+					</a>
+				  </li>
 
 				</ul>
 			  </li>		  
