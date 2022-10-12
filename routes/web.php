@@ -38,6 +38,9 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('societa_assunzione', [ 'as' => 'societa_assunzione', 'uses' => 'App\Http\Controllers\ControllerArchivi@societa_assunzione'])->middleware(['auth']);
 	Route::post('societa_assunzione', [ 'as' => 'societa_assunzione', 'uses' => 'App\Http\Controllers\ControllerArchivi@societa_assunzione'])->middleware(['auth']);
 
+	Route::get('costo', [ 'as' => 'costo', 'uses' => 'App\Http\Controllers\ControllerArchivi@costo'])->middleware(['auth']);
+	Route::post('costo', [ 'as' => 'costo', 'uses' => 'App\Http\Controllers\ControllerArchivi@costo'])->middleware(['auth']);
+
 
 });
 
@@ -53,6 +56,8 @@ Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_pro
 Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
 Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');
 Route::post('refresh_tipoc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipoc');
+Route::post('refresh_soc', 'App\Http\Controllers\AjaxControllerCand@refresh_soc');
+Route::post('refresh_costo', 'App\Http\Controllers\AjaxControllerCand@refresh_costo');
 
 
 

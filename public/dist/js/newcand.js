@@ -90,6 +90,63 @@ function refresh_tipoc() {
 	});		
 }
 
+function refresh_soc() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_soc",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up3").hide(150)
+			$("#soc_ass")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#soc_ass').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#soc_ass').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
+function refresh_costo() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_costo",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up4").hide(150)
+			$("#centro_costo")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#centro_costo').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#centro_costo').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
 
 
 function validaCodiceFiscale(cf){

@@ -8,13 +8,23 @@ use App\Models\italy_cities;
 use App\Models\italy_cap;
 use App\Models\candidati;
 use App\Models\tipoc;
+use App\Models\societa;
+use App\Models\centri_costo;
 
 
 class AjaxControllerCand extends Controller
 {
+	public function refresh_costo(){
+		$centri_costo = centri_costo::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($centri_costo);
+	}
 	public function refresh_tipoc(){
 		$tipoc = tipoc::where('dele','=',0)->orderBy('descrizione')->get();
         return json_encode($tipoc);
+	}
+	public function refresh_soc(){
+		$societa = societa::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($societa);
 	}
 	public function dele_curr(){
 		

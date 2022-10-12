@@ -108,7 +108,12 @@ use App\Models\User;
 					  <p>Società di assunzione</p>
 					</a>
 				  </li>
-
+				  <li class="nav-item">
+					<a href="{{ route('costo') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Centri di Costo</p>
+					</a>
+				  </li>
 				</ul>
 			  </li>		  
 			 @endif 

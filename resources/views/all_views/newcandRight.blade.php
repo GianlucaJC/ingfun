@@ -163,19 +163,33 @@
 		</div>		
 
 		<div class="row mb-3">							
-			<div class="col-md-6">
+			<div class="col-md-12">
 			  <div class="form-floating mb-3 mb-md-0">
 				
 				<select class="form-select" id="soc_ass" aria-label="Società assunzione" name='soc_ass' >
 					<option value=''>Select...</option>
+					@foreach($societa as $soc)
+							<option value='{{ $soc->id }}'
+							>{{ $soc->descrizione }}</option>
+
+					@endforeach							
 				</select>
 				<label for="soc_ass">Società di assunzione</label>
-				<a href="#" class="link-primary" target='_blank'>
+				<a href="{{ route('societa_assunzione') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up3').show()">
 					Definisci nuova
-				</a>	
+				</a>
+				<span id='div_up3' class='up' style='display:none'>
+					<a href='#' class='ml-2' onclick='refresh_soc()'>
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>
+				
 				</div>
 			</div>
 
+			<!--
 			<div class="col-md-6">
 			  <div class="form-floating mb-3 mb-md-0">
 				
@@ -188,6 +202,7 @@
 				</a>
 				</div>
 			</div>
+			!-->
 
 			
 		</div>		
@@ -226,11 +241,23 @@
 				
 				<select class="form-select" id="centro_costo" aria-label="Centro di Costo" name='centro_costo' >
 					<option value=''>Select...</option>
+					@foreach($centri_costo as $costo)
+							<option value='{{ $costo->id }}'
+							>{{ $costo->descrizione }}</option>
+
+					@endforeach						
 				</select>
 				<label for="centro_costo">Centro di Costo</label>
-				<a href="#" class="link-primary" target='_blank'>
-					Definisci nuova
-				</a>	
+				<a href="{{ route('costo') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up4').show()">
+					Definisci nuovo
+				</a>
+				<span id='div_up4' class='up' style='display:none'>
+					<a href='#' class='ml-2' onclick='refresh_costo()'>
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>				
 				</div>
 			</div>
 		</div>		

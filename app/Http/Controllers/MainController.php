@@ -12,6 +12,8 @@ use App\Models\regioni;
 use App\Models\italy_cities;
 use App\Models\tipoc;
 use App\Models\sicurezza;
+use App\Models\societa;
+use App\Models\centri_costo;
 
 use DB;
 
@@ -66,9 +68,20 @@ class mainController extends Controller
 			return $sicurezza->where('dele', "=","0");
 		})
 		->get();
+
+		$societa=societa::orderBy('descrizione')
+		->when($id=="0", function ($societa) {
+			return $societa->where('dele', "=","0");
+		})
+		->get();
+		$centri_costo=centri_costo::orderBy('descrizione')
+		->when($id=="0", function ($centri_costo) {
+			return $centri_costo->where('dele', "=","0");
+		})
+		->get();
 		
 		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza)->with("societa",$societa)->with("centri_costo",$centri_costo);
 	}
 
 	public function save_newcand(Request $request) {		
