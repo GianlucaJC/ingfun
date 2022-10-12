@@ -62,6 +62,7 @@ function dele_curr(file_curr,id_cand) {
 }
 
 function refresh_tipoc() {
+	base_path = $("#url").val();
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -70,7 +71,7 @@ function refresh_tipoc() {
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
-		url: "refresh_tipoc",
+		url: base_path+"/refresh_tipoc",
 		data: {_token: CSRF_TOKEN},
 		success: function (data) {
 			$("#div_up1").hide(150)
