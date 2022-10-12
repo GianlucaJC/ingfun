@@ -213,11 +213,22 @@
 				
 				<select class="form-select" id="area_impiego" aria-label="Area impiego" name='area_impiego' >
 					<option value=''>Select...</option>
+					@foreach($area_impiego as $area)
+							<option value='{{ $area->id }}'>{{ $area->descrizione }}</option>
+					@endforeach						
 				</select>
 				<label for="area_impiego">Area di impiego</label>
-				<a href="#" class="link-primary" target='_blank'>
+				<a href="{{ route('area_impiego') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up5').show()">
 					Definisci nuova
-				</a>	
+				</a>
+				<span id='div_up5' class='up' style='display:none'>
+					<a href='#' class='ml-2' onclick='refresh_area()'>
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>				
+				
 				</div>
 			</div>
 

@@ -114,6 +114,12 @@ use App\Models\User;
 					  <p>Centri di Costo</p>
 					</a>
 				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('area_impiego') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Aree di impiego</p>
+					</a>
+				  </li>
 				</ul>
 			  </li>		  
 			 @endif 

@@ -10,10 +10,16 @@ use App\Models\candidati;
 use App\Models\tipoc;
 use App\Models\societa;
 use App\Models\centri_costo;
+use App\Models\area_impiego;
 
 
 class AjaxControllerCand extends Controller
 {
+
+	public function refresh_area(){
+		$area_impiego = area_impiego::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($area_impiego);
+	}
 	public function refresh_costo(){
 		$centri_costo = centri_costo::where('dele','=',0)->orderBy('descrizione')->get();
         return json_encode($centri_costo);

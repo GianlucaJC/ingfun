@@ -41,6 +41,9 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('costo', [ 'as' => 'costo', 'uses' => 'App\Http\Controllers\ControllerArchivi@costo'])->middleware(['auth']);
 	Route::post('costo', [ 'as' => 'costo', 'uses' => 'App\Http\Controllers\ControllerArchivi@costo'])->middleware(['auth']);
 
+	Route::get('area_impiego', [ 'as' => 'area_impiego', 'uses' => 'App\Http\Controllers\ControllerArchivi@area_impiego'])->middleware(['auth']);
+	Route::post('area_impiego', [ 'as' => 'area_impiego', 'uses' => 'App\Http\Controllers\ControllerArchivi@area_impiego'])->middleware(['auth']);
+
 
 });
 
@@ -58,7 +61,7 @@ Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');
 Route::post('refresh_tipoc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipoc');
 Route::post('refresh_soc', 'App\Http\Controllers\AjaxControllerCand@refresh_soc');
 Route::post('refresh_costo', 'App\Http\Controllers\AjaxControllerCand@refresh_costo');
-
+Route::post('refresh_area', 'App\Http\Controllers\AjaxControllerCand@refresh_area');
 
 
 require __DIR__.'/auth.php';

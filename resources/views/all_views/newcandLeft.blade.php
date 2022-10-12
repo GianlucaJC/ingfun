@@ -30,7 +30,7 @@
 					echo ">M</option>";
 					?>
 				</select>
-				<label for="sesso">Sesso</label>
+				<label for="sesso">Sesso*</label>
 			</div>
 		</div>				
 		<div class="col-md-9">

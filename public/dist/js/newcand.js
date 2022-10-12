@@ -118,6 +118,34 @@ function refresh_soc() {
 		}
 	});		
 }
+function refresh_area() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_area",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up5").hide(150)
+			$("#area_impiego")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#area_impiego').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#area_impiego').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
 
 function refresh_costo() {
 	base_path = $("#url").val();
