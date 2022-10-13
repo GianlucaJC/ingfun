@@ -44,6 +44,12 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('area_impiego', [ 'as' => 'area_impiego', 'uses' => 'App\Http\Controllers\ControllerArchivi@area_impiego'])->middleware(['auth']);
 	Route::post('area_impiego', [ 'as' => 'area_impiego', 'uses' => 'App\Http\Controllers\ControllerArchivi@area_impiego'])->middleware(['auth']);
 
+	Route::get('mansione', [ 'as' => 'mansione', 'uses' => 'App\Http\Controllers\ControllerArchivi@mansione'])->middleware(['auth']);
+	Route::post('mansione', [ 'as' => 'mansione', 'uses' => 'App\Http\Controllers\ControllerArchivi@mansione'])->middleware(['auth']);
+
+	Route::get('ccnl', [ 'as' => 'ccnl', 'uses' => 'App\Http\Controllers\ControllerArchivi@ccnl'])->middleware(['auth']);
+	Route::post('ccnl', [ 'as' => 'ccnl', 'uses' => 'App\Http\Controllers\ControllerArchivi@ccnl'])->middleware(['auth']);
+
 
 });
 
@@ -62,6 +68,8 @@ Route::post('refresh_tipoc', 'App\Http\Controllers\AjaxControllerCand@refresh_ti
 Route::post('refresh_soc', 'App\Http\Controllers\AjaxControllerCand@refresh_soc');
 Route::post('refresh_costo', 'App\Http\Controllers\AjaxControllerCand@refresh_costo');
 Route::post('refresh_area', 'App\Http\Controllers\AjaxControllerCand@refresh_area');
+Route::post('refresh_mansione', 'App\Http\Controllers\AjaxControllerCand@refresh_mansione');
+Route::post('refresh_ccnl', 'App\Http\Controllers\AjaxControllerCand@refresh_ccnl');
 
 
 require __DIR__.'/auth.php';

@@ -11,11 +11,22 @@ use App\Models\tipoc;
 use App\Models\societa;
 use App\Models\centri_costo;
 use App\Models\area_impiego;
+use App\Models\mansione;
+use App\Models\ccnl;
+
 
 
 class AjaxControllerCand extends Controller
 {
 
+	public function refresh_ccnl(){
+		$ccnl = ccnl::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($ccnl);
+	}
+	public function refresh_mansione(){
+		$mansione = mansione::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($mansione);
+	}
 	public function refresh_area(){
 		$area_impiego = area_impiego::where('dele','=',0)->orderBy('descrizione')->get();
         return json_encode($area_impiego);

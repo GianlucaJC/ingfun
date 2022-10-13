@@ -15,6 +15,8 @@ use App\Models\sicurezza;
 use App\Models\societa;
 use App\Models\centri_costo;
 use App\Models\area_impiego;
+use App\Models\mansione;
+use App\Models\ccnl;
 
 use DB;
 
@@ -84,9 +86,21 @@ class mainController extends Controller
 		->when($id=="0", function ($area_impiego) {
 			return $area_impiego->where('dele', "=","0");
 		})
+		->get();
+
+		$mansione=mansione::orderBy('descrizione')
+		->when($id=="0", function ($mansione) {
+			return $mansione->where('dele', "=","0");
+		})
+		->get();		
+
+		$ccnl=ccnl::orderBy('descrizione')
+		->when($id=="0", function ($ccnl) {
+			return $ccnl->where('dele', "=","0");
+		})
 		->get();		
 		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl);
 	}
 
 	public function save_newcand(Request $request) {		

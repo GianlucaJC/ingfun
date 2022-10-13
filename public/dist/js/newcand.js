@@ -176,6 +176,63 @@ function refresh_costo() {
 	});		
 }
 
+function refresh_mansione() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_mansione",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up6").hide(150)
+			$("#mansione")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#mansione').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#mansione').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
+function refresh_ccnl() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_ccnl",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up7").hide(150)
+			$("#contratto")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#contratto').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#contratto').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
 
 function validaCodiceFiscale(cf){
           var validi, i, s, set1, set2, setpari, setdisp;

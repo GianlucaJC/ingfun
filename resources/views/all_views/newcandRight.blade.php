@@ -142,7 +142,7 @@
 				</a>
 				
 				<span id='div_up1' class='up' style='display:none'>
-					<a href='#' class='ml-2' onclick='refresh_tipoc()'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_tipoc()'>
 						<font color='green'>
 							<i class="fas fa-sync-alt"></i>
 						</font>	
@@ -179,7 +179,7 @@
 					Definisci nuova
 				</a>
 				<span id='div_up3' class='up' style='display:none'>
-					<a href='#' class='ml-2' onclick='refresh_soc()'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_soc()'>
 						<font color='green'>
 							<i class="fas fa-sync-alt"></i>
 						</font>	
@@ -222,7 +222,7 @@
 					Definisci nuova
 				</a>
 				<span id='div_up5' class='up' style='display:none'>
-					<a href='#' class='ml-2' onclick='refresh_area()'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_area()'>
 						<font color='green'>
 							<i class="fas fa-sync-alt"></i>
 						</font>	
@@ -237,11 +237,21 @@
 				
 				<select class="form-select" id="mansione" aria-label="Mansione" name='mansione' >
 					<option value=''>Select...</option>
+					@foreach($mansione as $mans)
+							<option value='{{ $mans->id }}'>{{ $mans->descrizione }}</option>
+					@endforeach						
 				</select>
 				<label for="mansione">Mansione</label>
-				<a href="#" target='_blank'>
+				<a href="{{ route('mansione') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up6').show()">
 					Definisci nuova
 				</a>
+				<span id='div_up6' class='up' style='display:none'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_mansione()'>
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>					
 				</div>
 			</div>
 		</div>		
@@ -263,7 +273,7 @@
 					Definisci nuovo
 				</a>
 				<span id='div_up4' class='up' style='display:none'>
-					<a href='#' class='ml-2' onclick='refresh_costo()'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_costo()'>
 						<font color='green'>
 							<i class="fas fa-sync-alt"></i>
 						</font>	
@@ -279,11 +289,24 @@
 				
 				<select class="form-select" id="contratto" aria-label="Contratto" name='contratto' >
 					<option value=''>Select...</option>
+					@foreach($ccnl as $cc)
+							<option value='{{ $cc->id }}'
+							>{{ $cc->descrizione }}</option>
+
+					@endforeach							
 				</select>
 				<label for="contratto">Contratto</label>
-				<a href="#" class="link-primary" target='_blank'>
+				
+				<a href="{{ route('ccnl') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up7').show()">
 					Definisci nuovo
-				</a>	
+				</a>
+				<span id='div_up7' class='up' style='display:none'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_ccnl()'>
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>	
 				</div>
 			</div>
 		</div>

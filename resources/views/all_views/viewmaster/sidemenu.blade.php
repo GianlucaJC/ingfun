@@ -90,7 +90,7 @@ use App\Models\User;
 					</a>
 				  </li>
 				  <li class="nav-item">
-					<a href="{{ route('listcand') }}" class="nav-link">
+					<a href="{{ route('mansione') }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
 					  <p>Mansioni</p>
 					</a>
@@ -118,6 +118,12 @@ use App\Models\User;
 					<a href="{{ route('area_impiego') }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
 					  <p>Aree di impiego</p>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('ccnl') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Contratti CCNL</p>
 					</a>
 				  </li>
 				</ul>
