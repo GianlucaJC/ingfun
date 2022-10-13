@@ -50,6 +50,9 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('ccnl', [ 'as' => 'ccnl', 'uses' => 'App\Http\Controllers\ControllerArchivi@ccnl'])->middleware(['auth']);
 	Route::post('ccnl', [ 'as' => 'ccnl', 'uses' => 'App\Http\Controllers\ControllerArchivi@ccnl'])->middleware(['auth']);
 
+	Route::get('tipologia_contr', [ 'as' => 'tipologia_contr', 'uses' => 'App\Http\Controllers\ControllerArchivi@tipologia_contr'])->middleware(['auth']);
+	Route::post('tipologia_contr', [ 'as' => 'tipologia_contr', 'uses' => 'App\Http\Controllers\ControllerArchivi@tipologia_contr'])->middleware(['auth']);
+
 
 });
 
@@ -70,6 +73,7 @@ Route::post('refresh_costo', 'App\Http\Controllers\AjaxControllerCand@refresh_co
 Route::post('refresh_area', 'App\Http\Controllers\AjaxControllerCand@refresh_area');
 Route::post('refresh_mansione', 'App\Http\Controllers\AjaxControllerCand@refresh_mansione');
 Route::post('refresh_ccnl', 'App\Http\Controllers\AjaxControllerCand@refresh_ccnl');
+Route::post('refresh_tipologia_contr', 'App\Http\Controllers\AjaxControllerCand@refresh_tipologia_contr');
 
 
 require __DIR__.'/auth.php';

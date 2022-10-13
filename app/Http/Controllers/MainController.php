@@ -17,6 +17,7 @@ use App\Models\centri_costo;
 use App\Models\area_impiego;
 use App\Models\mansione;
 use App\Models\ccnl;
+use App\Models\tipologia_contr;
 
 use DB;
 
@@ -98,9 +99,21 @@ class mainController extends Controller
 		->when($id=="0", function ($ccnl) {
 			return $ccnl->where('dele', "=","0");
 		})
-		->get();		
-		$tipoc=tipoc::orderBy('descrizione')->where('dele', "=","0")->get();
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl);
+		->get();				
+		
+		$tipoc=tipoc::orderBy('descrizione')
+		->when($id=="0", function ($tipoc) {
+			return $tipoc->where('dele', "=","0");
+		})
+		->get();
+
+		$tipologia_contr=tipologia_contr::orderBy('descrizione')
+		->when($id=="0", function ($tipologia_contr) {
+			return $tipologia_contr->where('dele', "=","0");
+		})
+		->get();
+		
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr);
 	}
 
 	public function save_newcand(Request $request) {		

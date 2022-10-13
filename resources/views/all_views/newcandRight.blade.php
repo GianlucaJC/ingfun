@@ -131,26 +131,25 @@
 			<div class="col-md-4">
 
 			  <div class="form-floating mb-3 mb-md-0">
-				<select class="form-select" id="tipo_contratto" aria-label="Tipologia contratto" name='tipo_contratto' >
+				<select class="form-select" id="tipologia_contr" aria-label="Tipologia contratto" name='tipologia_contr' >
 					<option value=''>Select...</option>
-					@foreach($tipoc as $tipo)
-							<option value='{{ $tipo->id }}'>{{ $tipo->descrizione }}</option>
-					@endforeach								
+					@foreach($tipologia_contr as $tipologia_c)
+							<option value='{{ $tipologia_c->id }}'
+							>{{ $tipologia_c->descrizione }}</option>
+
+					@endforeach							
 				</select>
-				<a href="{{ route('tipo_contratto') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up1').show()">
-					Definisci nuovo
+				<label for="tipologia_contr">Tipologia contratto</label>
+				<a href="{{ route('tipologia_contr') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up8').show()">
+					Definisci nuova
 				</a>
-				
-				<span id='div_up1' class='up' style='display:none'>
-					<a href='javascript:void(0)' class='ml-2' onclick='refresh_tipoc()'>
+				<span id='div_up8' class='up' style='display:none'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_tipologia_contr()'>
 						<font color='green'>
 							<i class="fas fa-sync-alt"></i>
 						</font>	
 					</a>	
-				</span>
-
-				
-				<label for="tipo_contratto">Tipologia contratto</label>
+				</span>				
 				</div>
 			</div>
 			
@@ -323,11 +322,23 @@
 				
 				<select class="form-select" id="tipo_contr" aria-label="Tipo contratto" name='tipo_contr' >
 					<option value=''>Select...</option>
+					@foreach($tipoc as $tipo)
+							<option value='{{ $tipo->id }}'>{{ $tipo->descrizione }}</option>
+					@endforeach		
 				</select>
 				<label for="contratto">Tipo Contratto</label>
-				<a href="#" class="link-primary" target='_blank'>
+				<a href="{{ route('tipo_contratto') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up1').show()">
 					Definisci nuovo
-				</a>	
+				</a>
+				
+				<span id='div_up1' class='up' style='display:none'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_tipoc()'>
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>
+				
 				</div>
 			</div>						
 		</div>					
@@ -381,7 +392,9 @@
 					
 					<select class="form-select" id="status_candidatura" aria-label="status_candidatura" name='status_candidatura' >
 						<option value=''>Select...</option>
-						<option value='1'>ASSUNZIONE</option>
+						<option value='1'>GESTIONE</option>
+						<option value='2'>RESPINTA</option>
+						<option value='3'>ASSUNZIONE</option>
 					</select>
 					<label for="status_candidatura">Status Candidatura</label>
 					</div>

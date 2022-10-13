@@ -75,15 +75,15 @@ function refresh_tipoc() {
 		data: {_token: CSRF_TOKEN},
 		success: function (data) {
 			$("#div_up1").hide(150)
-			$("#tipo_contratto")
+			$("#tipo_contr")
 			.find('option')
 			.remove()
 			.end();	
 			
-			$('#tipo_contratto').append("<option value=''>Select...</option>");
+			$('#tipo_contr').append("<option value=''>Select...</option>");
 			$.each(JSON.parse(data), function (i, item) {
 				
-				$('#tipo_contratto').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+				$('#tipo_contr').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
 						
 			});
 		}
@@ -204,7 +204,6 @@ function refresh_mansione() {
 		}
 	});		
 }
-
 function refresh_ccnl() {
 	base_path = $("#url").val();
 	$.ajaxSetup({
@@ -233,6 +232,36 @@ function refresh_ccnl() {
 		}
 	});		
 }
+
+function refresh_tipologia_contr() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_tipologia_contr",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up8").hide(150)
+			$("#tipologia_contr")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#tipologia_contr').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#tipologia_contr').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
 
 function validaCodiceFiscale(cf){
           var validi, i, s, set1, set2, setpari, setdisp;

@@ -13,12 +13,17 @@ use App\Models\centri_costo;
 use App\Models\area_impiego;
 use App\Models\mansione;
 use App\Models\ccnl;
+use App\Models\tipologia_contr;
 
 
 
 class AjaxControllerCand extends Controller
 {
 
+	public function refresh_tipologia_contr(){
+		$tipologia_contr = tipologia_contr::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($tipologia_contr);
+	}
 	public function refresh_ccnl(){
 		$ccnl = ccnl::where('dele','=',0)->orderBy('descrizione')->get();
         return json_encode($ccnl);

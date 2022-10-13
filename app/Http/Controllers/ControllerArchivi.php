@@ -9,10 +9,56 @@ use App\Models\centri_costo;
 use App\Models\area_impiego;
 use App\Models\mansione;
 use App\Models\ccnl;
+use App\Models\tipologia_contr;
 use DB;
 
 class ControllerArchivi extends Controller
 {
+	public function tipologia_contr(Request $request){
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		$view_dele=$request->input("view_dele");
+		$descr_contr=$request->input("descr_contr");
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+
+		//Creazione nuovo elemento
+		if (strlen($descr_contr)!=0 && $edit_elem==0) {
+			$descr_contr=strtoupper($descr_contr);
+			$arr=array();
+			$arr['dele']=0;
+			$arr['descrizione']=$descr_contr;
+			DB::table("tipologia_contr")->insert($arr);
+		}
+		
+		//Modifica elemento
+		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
+			$descr_contr=strtoupper($descr_contr);
+			tipologia_contr::where('id', $edit_elem)
+			  ->update(['descrizione' => $descr_contr]);
+		}
+		if (strlen($dele_contr)!=0) {
+			tipologia_contr::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			tipologia_contr::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		
+		$tipologia_contr=DB::table('tipologia_contr')
+		->when($view_dele=="0", function ($tipologia_contr) {
+			return $tipologia_contr->where('dele', "=","0");
+		})
+		->orderBy('descrizione')->get();
+
+		return view('all_views/gestione/tipologia_contr')->with('tipologia_contr', $tipologia_contr)->with("view_dele",$view_dele);
+		
+	}
 
 	public function ccnl(Request $request){
 		$edit_elem=0;

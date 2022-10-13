@@ -84,9 +84,16 @@ use App\Models\User;
 				</a>
 				<ul class="nav nav-treeview">
 				  <li class="nav-item">
-					<a href="{{ route('tipo_contratto') }}" class="nav-link active">
+					<a href="{{ route('tipologia_contr') }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
-					  <p>Tipologie di contratto</p>
+					  <p>Tipologie di Contratto</p>
+					</a>
+				  </li>
+				
+				  <li class="nav-item">
+					<a href="{{ route('tipo_contratto') }}" class="nav-link ">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Tipo Contratto</p>
 					</a>
 				  </li>
 				  <li class="nav-item">
