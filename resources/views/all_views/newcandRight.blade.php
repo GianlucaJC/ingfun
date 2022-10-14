@@ -29,15 +29,19 @@
 				
 				<select class="form-select" id="rdc" aria-label="Reddido Cittadinanza" name='rdc'>
 					<option value=''>Select...</option>
-					<option value='0'>No</option>
-					<option value='1'>Sì</option>
+					<option value='0'
+					<?php if ($candidati[0]['rdc']=="0") echo "selected";?>
+					>No</option>
+					<option value='1'
+					<?php if ($candidati[0]['rdc']=="1") echo "selected";?>
+					>Sì</option>
 				</select>
 				<label for="rdc">Reddito di cittadinanza</label>
 				</div>
 			</div>
 		<div class="col-md-4">
 			<div class="form-floating">
-				<input class="form-control" id="cat_pro" name='cat_pro' type="text" placeholder="categoria protetta" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"  maxlength=5 value=""  />
+				<input class="form-control" id="cat_pro" name='cat_pro' type="text" placeholder="categoria protetta" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"  maxlength=5 value="{{ $candidati[0]['cat_pro'] }}"  />
 				<label for="telefono">Categoria protetta (%)</label>
 			</div>
 		</div>
@@ -51,51 +55,155 @@
 				
 				<select class="form-select" id="titolo_studio" aria-label="Titolo di studio" name='titolo_studio' >
 					<option value=''>Select...</option>
-					<option value='1'>Licenza Media</option>
-					<option value='2'>Diploma Istituto Superiore</option>
-					<option value='3'>Laurea</option>
+					<option value='1' 
+					<?php if ($candidati[0]['titolo_studio']=="1") echo "selected";?>
+					>Licenza Media
+					</option>
+					<option value='2'
+					<?php if ($candidati[0]['titolo_studio']=="2") echo "selected";?>
+					>Diploma Istituto Superiore</option>
+					<option value='3'
+					<?php if ($candidati[0]['titolo_studio']=="3") echo "selected";?>
+					>Laurea</option>
 				</select>
 				<label for="titolo_studio">Titolo di studio</label>
 				</div>
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-5">
 			  <div class="form-floating mb-3 mb-md-0">
 				
-				<input class="form-control" id="istituto_conseguimento" name='istituto_conseguimento' type="text" placeholder="Istituto"  maxlength=150 value=""  />
+				<input class="form-control" id="istituto_conseguimento" name='istituto_conseguimento' type="text" placeholder="Istituto"  maxlength=150 value="{{$candidati[0]['istituto_conseguimento']}}"  />
 				<label for="istituto_conseguimento">Istituto di conseguimento</label>
 				</div>
 			</div>
-		<div class="col-md-3">
-			<div class="form-floating">
-				<input class="form-control"  id="anno_mese" name='anno_mese' type="month" placeholder="YYYY-MM" maxlength=7/>
-				<label for="anno_mese">Anno e mese</label>
+		<?php
+			$anno_mese=$candidati[0]['anno_mese'];
+			$arr=explode("-",$anno_mese);
+			$anno="";$mese="";
+			if (count($arr)>1) {
+				$anno=$arr[0];$mese=$arr[1];
+			}
+		?>
+
+			<div class="col-md-2">
+			  <div class="form-floating mb-3 mb-md-0">
+				
+				<select class="form-select" id="mese" aria-label="mese" name='mese' >
+					<option value=''>Select...</option>
+					<option value='01'
+					<?php if ($mese=="01") echo "selected";?>
+					>Gennaio</option>
+					<option value='02'
+					<?php if ($mese=="02") echo "selected";?>
+					>Febbraio</option>
+					<option value='03'
+					<?php if ($mese=="03") echo "selected";?>
+					>Marzo</option>
+					<option value='04'
+					<?php if ($mese=="04") echo "selected";?>
+					>Aprile</option>
+					<option value='05'
+					<?php if ($mese=="05") echo "selected";?>
+					>Maggio</option>
+					<option value='06'
+					<?php if ($mese=="06") echo "selected";?>
+					>Giugno</option>
+					<option value='07'
+					<?php if ($mese=="07") echo "selected";?>
+					>Luglio</option>
+					<option value='08'
+					<?php if ($mese=="08") echo "selected";?>
+					>Agosto</option>
+					<option value='09'
+					<?php if ($mese=="09") echo "selected";?>
+					>Settembre</option>
+					<option value='11'
+					<?php if ($mese=="10") echo "selected";?>
+					>Ottobre</option>
+					<option value='11'
+					<?php if ($mese=="11") echo "selected";?>
+					>Novembre</option>
+					<option value='12'
+					<?php if ($mese=="12") echo "selected";?>
+					>Dicembre</option>
+
+
+				</select>
+				<label for="titolo_studio">Mese</label>
+			  </div>
+			 </div> 
+			<div class="col-md-2">
+				<div class="form-floating">
+					<select class="form-select" id="anno" aria-label="anno" name='anno' >
+					<option value=''>Select...</option>
+					<?php
+						$inizio=date("Y");$fine=$inizio-60;
+						for ($sca=$inizio;$sca>=$fine;$sca--) {
+							echo "<option value='$sca'";
+							if ($anno==$sca) echo " selected ";
+							echo ">$sca</option>";
+						}
+					?>	
+					</select>
+					<label for="anno">Anno</label>
+
+				</div>
 			</div>
-		</div>
 			
 		</div>
 
 
 		<div class="row mb-3">							
 			<div class="col-md-4">
-			  
+			  <?php
+				$arr_patenti=explode(";",$candidati[0]['patenti']);
+			  ?>
 			  <div class="form-floating mb-3 mb-md-0">
 				
 				<select class="form-select select2" id="patenti" aria-label="Patenti" name='patenti[]' multiple="multiple" >
-					<option value='AM'>AM</option>
-					<option value='A1'>A1</option>
-					<option value='A2'>A2</option>
-					<option value='A'>A</option>
-					<option value='B'>B</option>
-					<option value='BE'>BE</option>
-					<option value='C1'>C1</option>
-					<option value='C1E'>C1E</option>
-					<option value='C'>C</option>
-					<option value='C3'>C3</option>
-					<option value='D1'>D1</option>
-					<option value='D1E'>D1E</option>
-					<option value='D'>D</option>
-					<option value='DE'>DE</option>
+					<option value='AM'
+					<?php if (in_array("AM",$arr_patenti)) echo " selected "; ?>
+					>AM</option>
+					<option value='A1'
+					<?php if (in_array("A1",$arr_patenti)) echo " selected "; ?>
+					>A1</option>
+					<option value='A2'
+					<?php if (in_array("A2",$arr_patenti)) echo " selected "; ?>
+					>A2</option>
+					<option value='A'
+					<?php if (in_array("A",$arr_patenti)) echo " selected "; ?>
+					>A</option>
+					<option value='B'
+					<?php if (in_array("B",$arr_patenti)) echo " selected "; ?>
+					>B</option>
+					<option value='BE'
+					<?php if (in_array("BE",$arr_patenti)) echo " selected "; ?>
+					>BE</option>
+					<option value='C1'
+					<?php if (in_array("C1",$arr_patenti)) echo " selected "; ?>
+					>C1</option>
+					<option value='C1E'
+					<?php if (in_array("C1E",$arr_patenti)) echo " selected "; ?>
+					>C1E</option>
+					<option value='C'
+					<?php if (in_array("C",$arr_patenti)) echo " selected "; ?>
+					>C</option>
+					<option value='C3'
+					<?php if (in_array("C3",$arr_patenti)) echo " selected "; ?>
+					>C3</option>
+					<option value='D1'
+					<?php if (in_array("D1",$arr_patenti)) echo " selected "; ?>
+					>D1</option>
+					<option value='D1E'
+					<?php if (in_array("D1E",$arr_patenti)) echo " selected "; ?>
+					>D1E</option>
+					<option value='D'
+					<?php if (in_array("D",$arr_patenti)) echo " selected "; ?>
+					>D</option>
+					<option value='DE'
+					<?php if (in_array("DE",$arr_patenti)) echo " selected "; ?>
+					>DE</option>
 
 				</select>
 				<b>Patenti</b>
@@ -106,8 +214,9 @@
 
 				  <div class="form-group">
 					
-					<input type="range" class="custom-range" id="capacita" name="capacita" value="0" oninput="$('#out').html(this.value)">
-					<label for="capacita">Livello Capacità</label> <span id='out'></span>
+					<input type="range" class="custom-range" id="capacita" name="capacita" value="{{$candidati[0]['capacita']}}" oninput="$('#out').html(this.value)">
+					<label for="capacita">Livello Capacità</label> 
+					<span id='out'>{{$candidati[0]['capacita']}}</span>
 					
 					
 				  </div>
@@ -120,8 +229,13 @@
 		<div class="row mb-3">							
 			<div class="col-md-4">
 				<div class="form-check ml-1">
-				  <input class="form-check-input" type="checkbox" value="" id="libero_p" name="libero_p">
-				  <label class="form-check-label" for="libero_p">
+				<?php
+					$lib=$candidati[0]['libero_p'];
+					$libp="";
+					if ($lib=="1") $libp=" checked ";
+				?>
+				  <input class="form-check-input" type="checkbox" value="1" id="libero_p" name="libero_p" {{$libp}}>
+				  <label class="form-check-label" for="libero_p" >
 					Libero professionista
 				  </label>
 				</div>
@@ -135,6 +249,11 @@
 					<option value=''>Select...</option>
 					@foreach($tipologia_contr as $tipologia_c)
 							<option value='{{ $tipologia_c->id }}'
+							<?php
+							
+							if ($tipologia_c->id==$candidati[0]['tipo_contratto'])  echo " selected "; 
+							
+							?>
 							>{{ $tipologia_c->descrizione }}</option>
 
 					@endforeach							
@@ -155,7 +274,7 @@
 			
 			<div class="col-md-4">
 				<div class="form-floating mb-3 mb-md-0">
-					<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control" name="ore_sett" id="ore_sett"/>		  
+					<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control" name="ore_sett" id="ore_sett" value="{{$candidati[0]['ore_sett']}}" />		  
 					<label for="ore_sett">Ore settimanali</label>
 				</div>		
 			</div>	
@@ -169,6 +288,11 @@
 					<option value=''>Select...</option>
 					@foreach($societa as $soc)
 							<option value='{{ $soc->id }}'
+							<?php
+							
+							if ($soc->id==$candidati[0]['soc_ass'])  echo " selected "; 
+							
+							?>							
 							>{{ $soc->descrizione }}</option>
 
 					@endforeach							
@@ -213,7 +337,13 @@
 				<select class="form-select" id="area_impiego" aria-label="Area impiego" name='area_impiego' >
 					<option value=''>Select...</option>
 					@foreach($area_impiego as $area)
-							<option value='{{ $area->id }}'>{{ $area->descrizione }}</option>
+							<option value='{{ $area->id }}'
+							<?php
+							
+							if ($area->id==$candidati[0]['area_impiego'])  echo " selected "; 
+							
+							?>							
+							>{{ $area->descrizione }}</option>
 					@endforeach						
 				</select>
 				<label for="area_impiego">Area di impiego</label>
@@ -237,7 +367,14 @@
 				<select class="form-select" id="mansione" aria-label="Mansione" name='mansione' >
 					<option value=''>Select...</option>
 					@foreach($mansione as $mans)
-							<option value='{{ $mans->id }}'>{{ $mans->descrizione }}</option>
+							<option value='{{ $mans->id }}'
+							<?php
+							
+							if ($mans->id==$candidati[0]['mansione'])  echo " selected "; 
+							
+							?>							
+
+							>{{ $mans->descrizione }}</option>
 					@endforeach						
 				</select>
 				<label for="mansione">Mansione</label>
@@ -263,6 +400,12 @@
 					<option value=''>Select...</option>
 					@foreach($centri_costo as $costo)
 							<option value='{{ $costo->id }}'
+							
+							<?php
+							if ($costo->id==$candidati[0]['centro_costo'])  echo " selected "; 
+							
+							?>							
+							
 							>{{ $costo->descrizione }}</option>
 
 					@endforeach						
@@ -290,6 +433,12 @@
 					<option value=''>Select...</option>
 					@foreach($ccnl as $cc)
 							<option value='{{ $cc->id }}'
+							<?php
+							if ($cc->id==$candidati[0]['contratto'])  echo " selected "; 
+							
+							?>							
+							
+							
 							>{{ $cc->descrizione }}</option>
 
 					@endforeach							
@@ -313,7 +462,7 @@
 		<div class="row mb-3">							
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" id="livello" name='livello' type="text" value="" maxlength=40 />
+					<input class="form-control" id="livello" name='livello' type="text" value="{{ $candidati[0]['livello']}}" maxlength=40 />
 					<label for="livello">Livello</label>
 				</div>
 			</div>
@@ -323,7 +472,13 @@
 				<select class="form-select" id="tipo_contr" aria-label="Tipo contratto" name='tipo_contr' >
 					<option value=''>Select...</option>
 					@foreach($tipoc as $tipo)
-							<option value='{{ $tipo->id }}'>{{ $tipo->descrizione }}</option>
+							<option value='{{ $tipo->id }}'
+							
+							<?php
+							if ($tipo->id==$candidati[0]['tipo_contr'])  echo " selected "; 
+							
+							?>										
+							>{{ $tipo->descrizione }}</option>
 					@endforeach		
 				</select>
 				<label for="contratto">Tipo Contratto</label>
@@ -346,14 +501,14 @@
 	<div class="row mb-3">
 		<div class="col-md-4">
 			<div class="form-floating">
-				<input class="form-control" id="netto_concordato" name='netto_concordato' type="text" value="" maxlength=30 />
+				<input class="form-control" id="netto_concordato" name='netto_concordato' type="text" value="{{ $candidati[0]['netto_concordato'] }}" maxlength=30 />
 				<label for="netto_concordato">Netto concordato</label>
 			</div>
 		</div>
 
 		<div class="col-md-4">
 			<div class="form-floating">
-				<input class="form-control" id="costo_azienda" name='costo_azienda' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value=""  />
+				<input class="form-control" id="costo_azienda" name='costo_azienda' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{ $candidati[0]['costo_azienda']}}"  />
 
 				<label for="costo_azienda">Costo azienda</label>
 			</div>
@@ -361,7 +516,7 @@
 
 		<div class="col-md-4">
 			<div class="form-floating">
-				<input class="form-control" id="zona_lavoro" name='zona_lavoro' type="text"  maxlength=100 value=""  />
+				<input class="form-control" id="zona_lavoro" name='zona_lavoro' type="text"  maxlength=100 value="{{ $candidati[0]['zona_lavoro']}}"  />
 				<label for="zona_lavoro">Zona di lavoro</label>
 			</div>
 		</div>
@@ -370,14 +525,14 @@
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" id="n_scarpe" name='n_scarpe' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value=""  />
+					<input class="form-control" id="n_scarpe" name='n_scarpe' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{ $candidati[0]['n_scarpe']}}"  />
 					<label for="n_scarpe">N° Scarpe</label>
 				</div>
 			</div>
 
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" id="taglia" name='taglia' type="text" value="" maxlength=20/>
+					<input class="form-control" id="taglia" name='taglia' type="text" value="{{$candidati[0]['taglia']}}" maxlength=20/>
 
 					<label for="taglia">Taglia</label>
 				</div>
@@ -392,9 +547,30 @@
 					
 					<select class="form-select" id="status_candidatura" aria-label="status_candidatura" name='status_candidatura' >
 						<option value=''>Select...</option>
-						<option value='1'>GESTIONE</option>
-						<option value='2'>RESPINTA</option>
-						<option value='3'>ASSUNZIONE</option>
+						<option value='1'
+							<?php
+							
+							if ($candidati[0]['status_candidatura']=="1")  echo " selected "; 
+							
+							?>							
+						
+						>GESTIONE</option>
+						<option value='2'
+							<?php
+							
+							if ($candidati[0]['status_candidatura']=="2")  echo " selected "; 
+							
+							?>							
+
+						>RESPINTA</option>
+						<option value='3'
+							<?php
+							
+							if ($candidati[0]['status_candidatura']=="3")  echo " selected "; 
+							
+							?>							
+						
+						>ASSUNZIONE</option>
 					</select>
 					<label for="status_candidatura">Status Candidatura</label>
 					</div>
@@ -406,7 +582,7 @@
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<div class="form-floating">
-					<textarea class="form-control" id="note" name="note" rows="4"></textarea>
+					<textarea class="form-control" id="note" name="note" rows="4">{{$candidati[0]['note']}}</textarea>
 					<label for="note">Note e considerazioni</label>
 				</div>
 			</div>

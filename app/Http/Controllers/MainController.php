@@ -53,6 +53,31 @@ class mainController extends Controller
 		$candidati[0]['iban']=null;
 		$candidati[0]['file_curr']=null;
 		$candidati[0]['stato_occ']=null;
+		$candidati[0]['rdc']=null;
+		$candidati[0]['cat_pro']=null;
+		$candidati[0]['titolo_studio']=null;
+		$candidati[0]['istituto_conseguimento']=null;
+		$candidati[0]['anno_mese']=null;
+		$candidati[0]['patenti']=null;
+		$candidati[0]['capacita']=null;
+		$candidati[0]['libero_p']=null;
+		$candidati[0]['tipo_contratto']=null;
+		$candidati[0]['ore_sett']=null;
+		$candidati[0]['soc_ass']=null;
+		//$candidati[0]['divisione']=null;
+		$candidati[0]['area_impiego']=null;			
+		$candidati[0]['mansione']=null;
+		$candidati[0]['centro_costo']=null;
+		$candidati[0]['contratto']=null;
+		$candidati[0]['livello']=null;
+		$candidati[0]['tipo_contr']=null;
+		$candidati[0]['netto_concordato']=null;
+		$candidati[0]['costo_azienda']=null;
+		$candidati[0]['zona_lavoro']=null;
+		$candidati[0]['n_scarpe']=null;
+		$candidati[0]['taglia']=null;
+		$candidati[0]['status_candidatura']=null;
+		$candidati[0]['note']=null;
 
 		return $candidati;
 	}
@@ -164,17 +189,26 @@ class mainController extends Controller
 			$candidati->cat_pro = $request->input('cat_pro');
 			$candidati->titolo_studio = $request->input('titolo_studio');
 			$candidati->istituto_conseguimento = $request->input('istituto_conseguimento');
-			$candidati->anno_mese = $request->input('anno_mese');
+			
+			
+			$anno=trim($request->input('anno'));
+			$mese=trim($request->input('mese'));
+			$candidati->anno_mese = $anno."-".$mese;
+			
 			$candidati->patenti = $patenti;
 			$candidati->capacita = $request->input('capacita');
 			$candidati->libero_p = $request->input('libero_p');
-			$candidati->tipo_contratto = $request->input('tipo_contratto');
+			$candidati->tipo_contratto = $request->input('tipologia_contr');
 			$candidati->ore_sett = $request->input('ore_sett');
 			$candidati->soc_ass = $request->input('soc_ass');
-			$candidati->divisione = $request->input('divisione');
+			//$candidati->divisione = $request->input('divisione');
 			$candidati->area_impiego = $request->input('area_impiego');
 			$candidati->mansione = $request->input('mansione');
 			$candidati->centro_costo = $request->input('centro_costo');
+			$candidati->contratto = $request->input('contratto');
+			$candidati->livello = $request->input('livello');
+			$candidati->tipo_contr = $request->input('tipo_contr');
+
 			$candidati->netto_concordato = $request->input('netto_concordato');
 			$candidati->costo_azienda = $request->input('costo_azienda');
 			$candidati->zona_lavoro = $request->input('zona_lavoro');
@@ -183,7 +217,8 @@ class mainController extends Controller
 			$candidati->status_candidatura = $request->input('status_candidatura');
 			$candidati->note = $request->input('note');
 			$candidati->file_curr = $request->input('fx_curr');
-			$candidati->stato_occ = $request->input('stato_occ');
+
+
 
 			$candidati->save();		
 
