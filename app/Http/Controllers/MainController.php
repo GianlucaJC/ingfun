@@ -252,9 +252,14 @@ class mainController extends Controller
 		})
 		->orderBy('nominativo')->get();
 
-		
+		$mansione=mansione::orderBy('descrizione')->get();
+		$mansioni=array();
+		foreach($mansione as $mans){
+			$id_m=$mans->id;$descrizione=$mans->descrizione;
+			$mansioni[$id_m]=$descrizione;
+		}
 
-		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele);
+		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele)->with("mansioni",$mansioni);
 	}
 
 }

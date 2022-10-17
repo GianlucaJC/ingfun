@@ -18,7 +18,6 @@
         box-sizing: border-box;
     }
 </style>
-
 @section('content_main')
 
   <!-- Content Wrapper. Contains page content -->
@@ -80,11 +79,27 @@
 											</del></font>
 										@endif											
 									</td>
-									<td>{{ $candidato->mansione }}</td>
+									<td>
+										<?php
+
+											/*
+											if (isset($mansioni[$candidato->mansione])) echo  
+											$mansioni[$candidato->mansione]['descrizione'];
+											*/
+											$indice=intval($candidato->mansione);
+											if (isset($mansioni[$indice])) echo $mansioni[$indice];
+											
+										?>
+										
+									</td>
 									<td>{{ $candidato->zona_lavoro }}</td>
 									<td>{{ $candidato->updated_at }}</td>
 									<td>Ufficio</td>
-									<td>-----</td>
+									<td>
+									@if ($candidato->status_candidatura=="1") GESTIONE @endif
+									@if ($candidato->status_candidatura=="2") RESPINTA @endif
+									@if ($candidato->status_candidatura=="3") ASSUNZIONE @endif
+									</td>
 
 									<td></td>	
 									<td>
