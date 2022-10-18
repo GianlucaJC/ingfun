@@ -52,8 +52,12 @@
 			@include('all_views.newcandLeft')
 			
 			@include('all_views.newcandRight')
-		
-			<button type="submit" name='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
+			@if ($id_cand!=0)
+				<button type="submit" onclick="" name='sub_assunzione' id='sub_assunzione' class="btn btn-primary btn-lg btn-block" value="1">INOLTRA CANDIDATURA</button>         
+			@endif
+
+
+			<button type="submit" name='sub_newcand' id='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
 		
 
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
@@ -77,7 +81,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.43"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.45"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

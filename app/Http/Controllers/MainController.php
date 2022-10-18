@@ -141,8 +141,9 @@ class mainController extends Controller
 		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr);
 	}
 
-	public function save_newcand(Request $request) {		
+	public function save_newcand(Request $request) {
 			$id_user=Auth::user()->id;
+			
 			
 			$id_cand=$request->input('id_cand');
 			if ($id_cand!=0)
@@ -159,6 +160,10 @@ class mainController extends Controller
 			
 			//Dati Anagrafici
 			$nominativo=$request->input('cognome')." ".$request->input('nome');
+			if ($id_cand==0) {
+				$candidati->tipo_init_anagr = "CAND";
+				$candidati->tipo_anagr = "CAND";
+			}
 			$candidati->cognome = $request->input('cognome');
 			$candidati->nome = $request->input('nome');
 			$candidati->nominativo = $nominativo;
@@ -214,9 +219,21 @@ class mainController extends Controller
 			$candidati->zona_lavoro = $request->input('zona_lavoro');
 			$candidati->n_scarpe = $request->input('n_scarpe');
 			$candidati->taglia = $request->input('taglia');
-			$candidati->status_candidatura = $request->input('status_candidatura');
+			
 			$candidati->note = $request->input('note');
 			$candidati->file_curr = $request->input('fx_curr');
+			$candidati->appartenenza = $request->input('appartenenza');
+			$candidati->subappalto = $request->input('subappalto');
+			$candidati->affiancamento = $request->input('affiancamento');
+			$candidati->data_inizio = $request->input('data_inizio');
+			
+			
+			
+			if ($request->has("sub_assunzione")) {
+				$sub_assunzione=$request->input('sub_assunzione');
+				$candidati->status_candidatura = 3;
+				$candidati->tipo_anagr = "ASS";
+			}
 
 
 
@@ -230,7 +247,6 @@ class mainController extends Controller
 	}
 
 	public function listcand(Request $request) {
-		
 		$view_dele=0;
 		if ($request->has("view_dele")) $view_dele=$request->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;

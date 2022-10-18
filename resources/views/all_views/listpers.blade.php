@@ -27,12 +27,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">LISTA CANDIDATURE</h1>
+            <h1 class="m-0">GESTIONE PERSONALE</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-              <li class="breadcrumb-item active">Lista Candidature</li>
+              <li class="breadcrumb-item active">Gestione Personale</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -43,24 +43,44 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-		<form method='post' action="{{ route('listcand') }}" id='frm_listc' name='frm_listc' autocomplete="off">
+		<form method='post' action="{{ route('listpers') }}" id='frm_listc' name='frm_listc' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
 			<div class="row">
 			  <div class="col-lg-12">
-					<table id='tbl_list_cand' class="display">
+					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
 								<th>ID</th>
-								<th>Nominativo</th>
-								<th>Mansione</th>
-								<th>Zona di lavoro</th>
-								<th>Ultimo Aggiornamento</th>
-								<th>Sorgente</th>
-								<th>Status</th>
-								<th>Operazioni</th>
-								<th>View</th>
-								<th>Delete</th>
-								
+								<th>Dipendente</th>
+								<th>Stato</th>
+								<th>Inizio</th>
+								<th>Fine</th>
+								<th>Contratto</th>
+								<th>Società</th>
+								<th>Area Impiego</th>
+								<th>Centro Costo</th>
+								<th>Ruolo</th>
+								<!--
+								<th>Appartenenza</th>
+								<th>Contratto</th>
+								<th>Livello</th>
+								<th>Cat.Legale</th>
+									
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+								<th></th>
+
+								!-->
 								
 							</tr>
 						</thead>
@@ -80,45 +100,23 @@
 										@endif											
 									</td>
 									<td>
-										<?php
+									@if ($candidato->status_candidatura=="1") IN GESTIONE @endif
+									@if ($candidato->status_candidatura=="2") RESPINTO @endif
+									@if ($candidato->status_candidatura=="3") ASSUNTO @endif
 
-											$indice=intval($candidato->mansione);
-											if (isset($mansioni[$indice])) echo $mansioni[$indice];
-											
-										?>
-										
 									</td>
-									<td>{{ $candidato->zona_lavoro }}</td>
-									<td>{{ $candidato->updated_at }}</td>
-									<td>Ufficio</td>
+									<td>{{ $candidato->data_inizio }}</td>
+									<td></td>
+									<td></td>
 									<td>
-									@if ($candidato->status_candidatura=="1") GESTIONE @endif
-									@if ($candidato->status_candidatura=="2") RESPINTA @endif
-									@if ($candidato->status_candidatura=="3") ASSUNZIONE @endif
 									</td>
 
 									<td></td>	
 									<td>
-										@if ($candidato->dele=="0") 
-											<a href="{{ route('newcand',['id'=>$candidato->id]) }}" >
-												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-											</a>
-										@endif
 									</td>
 									
 									
 									<td>
-										@if ($candidato->dele=="0") 
-										<a href='#' onclick="dele_element({{$candidato->id}})">
-											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>
-										</a>
-										@endif
-										@if ($candidato->dele=="1") 
-											<a href='#'onclick="restore_element({{$candidato->id}})" >
-												<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
-											</a>
-										@endif									
-
 									</td>
 									
 								</tr>
@@ -154,7 +152,7 @@
 				<div class="col-lg-12">
 					<div class="form-check form-switch mt-3 ml-3">
 					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_listc').submit()" {{ $check }}>
-					  <label class="form-check-label" for="view_dele">Mostra anche Candidati eliminati</label>
+					  <label class="form-check-label" for="view_dele">Mostra anche Anagrafiche eliminate</label>
 					</div>
 				</div>
 			</div>	
@@ -190,6 +188,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listcand.js?ver=1.24"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listpers.js?ver=2.00"></script>
 
 @endsection

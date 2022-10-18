@@ -29,6 +29,16 @@
 $(document).ready( function () {
 	$('body').addClass("sidebar-collapse");
 	$('.select2').select2()
+	$("#sub_assunzione").click(function(){
+		 $('#data_inizio').attr('required', true); 
+	 });
+
+	$("#sub_newcand").click(function(){
+		 $('#data_inizio').attr('required', false); 
+	});
+
+
+
 } );
 
 

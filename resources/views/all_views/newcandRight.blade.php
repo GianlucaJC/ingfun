@@ -280,6 +280,47 @@
 			</div>	
 		</div>		
 
+
+		@if ($id_cand!=0)
+			<div class="row mb-3">							
+				<div class="col-md-6">
+				  <div class="form-floating mb-3 mb-md-0">
+					
+					<select class="form-select" id="soc_ass" aria-label="Appartenenza" name='appartenenza' >
+						<option value=''>Select...</option>
+						<option value='1'
+						@if ($candidati[0]['appartenenza']=="1") 
+							selected 
+						@endif
+						>SOCIALE</option>
+						<option value='2'
+						@if ($candidati[0]['appartenenza']=="2") 
+							selected 
+						@endif
+						>SUB APPALTO</option>
+						
+					</select>
+					<label for="appartenenza">Appartenenza</label>
+					
+					</div>
+				</div>
+
+				
+				<div class="col-md-6">
+					<div class="form-floating mb-3 mb-md-0">
+						<input class="form-control" id="subappalto" name='subappalto' type="text"  maxlength=150 value="{{$candidati[0]['subappalto']}}"  />
+						
+						<label for="subappalto">Subappalto (Se previsto)</label>
+					</div>
+
+				</div>
+				
+
+				
+			</div>
+		@endif
+
+
 		<div class="row mb-3">							
 			<div class="col-md-12">
 			  <div class="form-floating mb-3 mb-md-0">
@@ -458,45 +499,46 @@
 				</div>
 			</div>
 		</div>
-		
-		<div class="row mb-3">							
-			<div class="col-md-6">
-				<div class="form-floating">
-					<input class="form-control" id="livello" name='livello' type="text" value="{{ $candidati[0]['livello']}}" maxlength=40 />
-					<label for="livello">Livello</label>
+		@if ($id_cand!=0)
+			<div class="row mb-3">							
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input class="form-control" id="livello" name='livello' type="text" value="{{ $candidati[0]['livello']}}" maxlength=40 />
+						<label for="livello">Livello</label>
+					</div>
 				</div>
-			</div>
-			<div class="col-md-6">
-			  <div class="form-floating mb-3 mb-md-0">
-				
-				<select class="form-select" id="tipo_contr" aria-label="Tipo contratto" name='tipo_contr' >
-					<option value=''>Select...</option>
-					@foreach($tipoc as $tipo)
-							<option value='{{ $tipo->id }}'
-							
-							<?php
-							if ($tipo->id==$candidati[0]['tipo_contr'])  echo " selected "; 
-							
-							?>										
-							>{{ $tipo->descrizione }}</option>
-					@endforeach		
-				</select>
-				<label for="contratto">Tipo Contratto</label>
-				<a href="{{ route('tipo_contratto') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up1').show()">
-					Definisci nuovo
-				</a>
-				
-				<span id='div_up1' class='up' style='display:none'>
-					<a href='javascript:void(0)' class='ml-2' onclick='refresh_tipoc()'>
-						<font color='green'>
-							<i class="fas fa-sync-alt"></i>
-						</font>	
-					</a>	
-				</span>
-				
-				</div>
-			</div>						
-		</div>					
+				<div class="col-md-6">
+				  <div class="form-floating mb-3 mb-md-0">
+					
+					<select class="form-select" id="tipo_contr" aria-label="Tipo contratto" name='tipo_contr' >
+						<option value=''>Select...</option>
+						@foreach($tipoc as $tipo)
+								<option value='{{ $tipo->id }}'
+								
+								<?php
+								if ($tipo->id==$candidati[0]['tipo_contr'])  echo " selected "; 
+								
+								?>										
+								>{{ $tipo->descrizione }}</option>
+						@endforeach		
+					</select>
+					<label for="contratto">Tipo Contratto</label>
+					<a href="{{ route('tipo_contratto') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up1').show()">
+						Definisci nuovo
+					</a>
+					
+					<span id='div_up1' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick='refresh_tipoc()'>
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>
+					
+					</div>
+				</div>						
+			</div>					
+		@endif
 
 	<div class="row mb-3">
 		<div class="col-md-4">
@@ -540,17 +582,41 @@
 
 
 		</div>
+
+		@if ($id_cand!=0)
+			<div class="row mb-3">
+				<div class="col-md-12">
+					<div class="form-floating mb-3 mb-md-0">
+						<input class="form-control" id="affiancamento" name='affiancamento' type="text"  maxlength=150 value="{{$candidati[0]['affiancamento']}}"  />
+						<label for="affiancamento">Affiancamento</label>
+					</div>
+
+				</div>		
+			</div>
+		@endif
 		
+		
+		<?php $w_col=12; ?>
 		<div class="row mb-3">
-			<div class="col-md-12">
+			@if ($id_cand!=0)
+				<?php $w_col=6; ?>
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input class="form-control" id="data_inizio" name='data_inizio' type="date"   value="{{ $candidati[0]['data_inizio']}}"  />
+						<label for="data_inizio">Data inizio*</label>
+					</div>
+				</div>
+			@endif
+			
+			<div class="col-md-{{$w_col}}">
 				  <div class="form-floating mb-3 mb-md-0">
 					
-					<select class="form-select" id="status_candidatura" aria-label="status_candidatura" name='status_candidatura' >
+					<select class="form-select" id="status_candidatura" aria-label="status_candidatura" name='status_candidatura' disabled>
 						<option value=''>Select...</option>
 						<option value='1'
 							<?php
 							
-							if ($candidati[0]['status_candidatura']=="1")  echo " selected "; 
+							if ($candidati[0]['status_candidatura']=="1" || $candidati[0]['status_candidatura']==null)  echo " selected "; 
 							
 							?>							
 						
