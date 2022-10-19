@@ -48,6 +48,40 @@ class AjaxControllerCand extends Controller
 		$societa = societa::where('dele','=',0)->orderBy('descrizione')->get();
         return json_encode($societa);
 	}
+	public function remove_doc(){
+		
+		$doc_id=$_POST['doc_id'];
+		$id_cand=$_POST['id_cand'];
+
+		try {
+			$path = base_path();
+			/*
+			candidati::where('id', $id_cand)->update(['file_curr' => null]);			
+			
+			$fx_dele=$path."/public/allegati/curr/".$file_curr;
+			unlink($fx_dele);
+			*/
+			$fx_dele=$path."/public/allegati/doc/$id_cand/".$doc_id;
+			@unlink($fx_dele);
+			echo json_encode([
+				'status' => 'OK',
+				'message' => "File eliminato"
+			]);
+			
+
+			
+		} catch (RuntimeException $e) {
+			// Something went wrong, send the err message as JSON
+			http_response_code(400);
+
+			echo json_encode([
+				'status' => 'KO',
+				'message' => $e->getMessage()
+			]);
+		}
+
+	}
+
 	public function dele_curr(){
 		
 		$file_curr=$_POST['file_curr'];

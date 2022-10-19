@@ -226,6 +226,7 @@ class mainController extends Controller
 			$candidati->subappalto = $request->input('subappalto');
 			$candidati->affiancamento = $request->input('affiancamento');
 			$candidati->data_inizio = $request->input('data_inizio');
+			$candidati->doc = $request->input('doc');
 			
 			
 			

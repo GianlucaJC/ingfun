@@ -19,7 +19,7 @@
 	
 		<div class="col-md-3">
 			<div class="form-floating mb-3 mb-md-0">
-				<select class="form-control" name="sesso" id="sesso" required>
+				<select class="form-select" name="sesso" id="sesso" required>
 				<option value=''>Select...</option>
 					<?php
 					echo "<option value='F' ";
@@ -220,16 +220,19 @@
 		</div>
 	</div>
 
-	<div class="row mb-3">
+	<div class="row mb-3" id='div_allega'>
 		<div class="col-md-12">
-		  <a href="javascript:void(0)" onclick="set_sezione()">
+		  
 
 			@if ($id_cand!="0") 
-				<span>Allega/Modifica Curriculum Vitae (solo pdf,doc,jpg)</span>
+				<a href="javascript:void(0)" onclick="set_sezione(1,{{$id_cand}})">
+					<span>Allega/Modifica Curriculum Vitae (solo pdf,doc,jpg)</span>
+				</a><hr>
 			@else
-				<span>Allega Curriculum Vitae (solo pdf,doc,jpg)</span>
+				<a href="javascript:void(0)" onclick="set_sezione(2,{{$id_cand}})">
+					<span>Allega Curriculum Vitae (solo pdf,doc,jpg)</span>
+				</a>
 			@endif	
-		  </a>	
 			@if ($id_cand!="0" && strlen($candidati[0]['file_curr'])!=0) 
 				<div id='div_view_curr'>
 					<hr>
@@ -249,11 +252,14 @@
 	
 		</div>					
 
+
 		</div>
 	</div>
 	
+	
+
 	@if ($id_cand!="0") 
-		<div id='div_attestati'>
+		<div id='div_attestati' class='mb-3'>
 			<h3>Attestati Sicurezza</h3>
 			<!--
 				<a href="{{ route('frm_attestati') }}" target="_blank" class="link-primary" onclick="$('.up').hide();$('#div_up2').show()">
@@ -304,7 +310,103 @@
 				@endforeach		
 			</ul>
 		</div>
-	@endif
+	@endif	
+
+
+	@if ($id_cand!="0") 
+		<center><h3>Area Documenti</h3></center>
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<div class="form-floating">
+					<button type="button" onclick="$('#div_doc').toggle(150)" name='add_doc' id='add_doc' class="btn btn-primary btn-lg btn-block">AGGIUNGI DOCUMENTO</button>
+				</div>
+			</div>
+		</div>
+		
+		
+		<div id='div_doc' style='display:none'>
+			<div class="row mb-3">
+				<div class="col-md-6">
+							
+					<div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" name="tipo_doc" id="tipo_doc">
+						<option value=''>Select...</option>
+							<option value="1"
+							>DOCUMENTO DI RICONOSCIMENTO</option>
+							<option value="2"
+							>MODELLO 25</option>
+							<option value="3"
+							>CONTRATTO</option>
+						</select>
+						<label for="tipo_doc">Tipo documento*</label>
+					</div>
+				</div>				
+
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input class="form-control" id="scadenza" name='scadenza' type="date" />
+						<label for="scadenza">Scadenza</label>
+					</div>
+					
+				</div>
+			</div>	
+			<div class="row mb-3">
+				<div class="col-md-12">
+					<a href="javascript:void(0)" onclick="set_sezione(2,{{$id_cand}})">
+						<button style='font-size:12px' type="button" class="btn btn-info"><i class="far fa-file-alt"></i> Allega documento</button>
+					</a>
+				</div>
+			</div>	
+		</div>
+		
+		<div class="row mb-3" style='overflow-y:scroll;max-height:350px'>
+			<div class="col-md-12">
+				<table class='table' id='tb_doc'>
+					<thead>
+						<tr>
+							<th>Tipo Documento</th>
+							<th>Scadenza</th>
+							<th>Azioni</th>
+						</tr>
+					</thead>
+					<tbody>
+						<?php
+							$doc=$candidati[0]['doc'];
+							$all_doc=explode(";",$doc);
+							
+							for ($sca=0;$sca<=count($all_doc)-1;$sca++) {
+								$doc_id=$all_doc[$sca];
+								echo "<tr>";
+									echo "<td>";
+									echo "</td>";
+									echo "<td>";
+									echo "</td>";
+									echo "<td>";
+									?>
+										<a href='{{url('/')}}/allegati/doc/{{$id_cand}}/{{$doc_id}}' target='_blank'>
+									<?php	
+											echo "<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
+										echo "</a> ";
+										
+										echo "<a href='javascript:void(0)' onclick=\"remove_doc('$doc_id',$id_cand)\">";
+											echo "<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
+										echo "</a>";
+										
+									echo "</td>";
+								echo "</tr>";
+							}
+						?>	
+					</tbody>
+							
+				</table>
+			</div>
+		</div>
+
+	@endif	
+
+	
+	
+
 
 	
 </div>

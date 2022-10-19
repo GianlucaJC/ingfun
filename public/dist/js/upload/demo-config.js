@@ -1,11 +1,13 @@
 csv_send=false
+var all_doc=new Array();
+var doc=""
 $(function(){
  //set_class_allegati(0)
  
 });
 
 
-function set_class_allegati(ref_tabulato,ref_aziende) {
+function set_class_allegati(from,id_cand) {
   /*
    * For the sake keeping the code clean and the examples simple this file
    * contains only the plugin configuration & callbacks.
@@ -15,14 +17,20 @@ function set_class_allegati(ref_tabulato,ref_aziende) {
   	
  
   base_path = $("#url").val();
-
+  tipo_doc="";scadenza=""
+  if (from=="2") {
+	  tipo_doc=$("#tipo_doc").val();
+	  scadenza=$("#scadenza").val()
+  }
   
   $('#drag-and-drop-zone').dmUploader({ //
     url: base_path+'/upload.php',
 	extraData: {
       
-	  "ref_tabulato":ref_tabulato,
-	  "ref_aziende":ref_aziende
+	  "from":from,
+	  "id_cand":id_cand,
+	  "tipo_doc":tipo_doc,
+	  "scadenza":scadenza
 	},
 	
 	extFilter: ["pdf","doc","docx","jpg","png"],
@@ -72,13 +80,54 @@ function set_class_allegati(ref_tabulato,ref_aziende) {
 	  
 	  dx=JSON.stringify(data)
 	  console.log(dx)
-	  $("#fx_curr").val(data.filename)
+	  if (from=="1") $("#fx_curr").val(data.filename)
 	  
       ui_add_log('Server Response for file #' + id + ': ' + JSON.stringify(data));
       ui_add_log('Upload del file #' + id + ' COMPLETATO', 'success');
       ui_multi_update_file_status(id, 'success', 'Upload Completato');
       ui_multi_update_file_progress(id, 100, 'success', false);
-	  html="";
+	  
+	  if (from=="2") {
+		  doc_id=data.filename
+		  all_doc.push(doc_id)
+		  doc = all_doc.join(";")
+		  $("#doc").val(doc)
+		  
+		  ref_row=doc_id.split(".")[0]
+		  //doc upload
+		  $("#body_dialog").hide(150);
+			$('html, body').animate({
+				scrollTop: $("#div_doc").offset().top-150
+			}, 1500);		  
+			//refresh table	doc
+			doc_descr="(Descrizione disponibile dopo il salvataggio)"
+			if (tipo_doc=="1") doc_descr="DOCUMENTO DI RICONOSCIMENTO";
+			if (tipo_doc=="2") doc_descr="MODELLO 25";
+			if (tipo_doc=="3") doc_descr="CONTRATTO";
+			if (tipo_doc=="4") doc_descr="CORSI DI FORMAZIONE";
+			if (tipo_doc=="5") doc_descr="CEDOLINO";
+			if (tipo_doc=="6") doc_descr="PATENTE";
+			if (tipo_doc=="7") doc_descr="BADGE";
+			if (tipo_doc=="8") doc_descr="LIBERATORIA";
+			html="<tr id='doc"+ref_row+"'>";
+				html+="<td>"+doc_descr+"</td>";
+				html+="<td>"+scadenza+"</td>";
+				
+				html+="<td>";
+					html+="<a href='#' onclick=''>";
+						html+="<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
+					html+="</a> ";
+					
+					html+="<a href='javascript:void(0)' onclick=\"remove_doc('"+doc_id+"',"+id_cand+")\">";
+						html+="<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
+					html+="</a>";
+				html+="</td>";
+			html+="</tr>";
+			$('#tb_doc tr:last').after(html);			
+			$("#tipo_doc").val('')
+			$("#scadenza").val('');
+	  } 
+	  
 
     },
     onUploadError: function(id, xhr, status, message){
@@ -96,19 +145,27 @@ function set_class_allegati(ref_tabulato,ref_aziende) {
 }
 
 
-function delete_foto(foto,fotoref) {
+
+function remove_doc(doc_id,id_cand) {
+	ref_row=doc_id.split(".")[0]
+	base_path = $("#url").val();
+	let CSRF_TOKEN = $("#token_csrf").val();
 	if (!confirm("Sicuri di cancellare l'allegato?")) return false;
 	html="<span role='status' aria-hidden='true' class='spinner-border spinner-border-sm'></span> Attendere...";
-	$("#foto_"+fotoref).html(html);
+	all_doc.splice(doc_id, 1); 	
+	  doc = all_doc.join(";")
+	  $("#doc").val(doc)	
+
+	$("#doc"+ref_row).html(html);
 	setTimeout(function(){
 	
-		fetch('ajax.php', {
+		fetch(base_path+'/remove_doc', {
 			method: 'post',
 			//cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached		
 			headers: {
 			  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
 			},
-			body: 'operazione=delete_foto&foto='+foto
+			body: '_token='+ CSRF_TOKEN+'&doc_id='+doc_id+'&id_cand='+id_cand
 		})
 		.then(response => {
 			if (response.ok) {
@@ -117,10 +174,10 @@ function delete_foto(foto,fotoref) {
 		})
 		.then(resp=>{
 			if (resp.status=="KO") {
-				alert("Problemi occorsi durante il salvataggio.\n\nDettagli:\n"+resp.error);
+				alert("Problemi occorsi durante il salvataggio.\n\nDettagli:\n"+resp.message);
 				return false;
 			}
-			$("#foto_"+fotoref).remove()
+			$("#doc"+ref_row).remove()
 		})
 		.catch(status, err => {
 			return console.log(status, err);

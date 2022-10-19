@@ -30,6 +30,13 @@ try {
 	$filename=uniqid().".".$extension;
 
 	$sub="allegati/curr";
+	$from=$_POST['from'];
+	$id_cand=$_POST['id_cand'];
+	if ($from=="2") {
+		$sub="allegati/doc/$id_cand";
+		@mkdir($sub);
+		
+	}	
 	$filepath = "$sub/".$filename;
     if (!move_uploaded_file(
         $_FILES['file']['tmp_name'],
@@ -44,7 +51,8 @@ try {
     echo json_encode([
         'status' => 'ok',
         'path' => $filepath,
-		'filename' =>$filename
+		'filename' =>$filename,
+		'from' =>$from
 	]);
 
 } catch (RuntimeException $e) {

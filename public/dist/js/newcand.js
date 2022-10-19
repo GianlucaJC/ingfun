@@ -396,14 +396,27 @@ $("#cap").val('');
 	});	
 }
 
-function set_sezione() {
+function set_sezione(from,id_cand) {
 base_path = $("#url").val();
+
 
 
 	if ($("#body_dialog").is(":visible")) {
 		$("#body_dialog").hide(150);
 		return false;
 	}
+	if (from=="2") {
+		tipo_doc=$("#tipo_doc").val();
+		scadenza=$("#scadenza").val();
+		if (tipo_doc.length==0) {
+			alert("Il Tipo documento è obbligatorio")
+			return false;
+		}
+		$('html, body').animate({
+			scrollTop: $("#div_doc").offset().top-370
+		}, 1500);		
+	}	
+	
 	$(".allegati").empty();
 	fetch(base_path+'/class_allegati.php', {
 		method: 'post',
@@ -411,7 +424,7 @@ base_path = $("#url").val();
 		headers: {
 		  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
 		},
-		body: 'operazione=refresh_tipo'
+		body: 'operazione=refresh_tipo&from='+from+'&id_cand='+id_cand
 	})
 	.then(response => {
 		if (response.ok) {
@@ -422,7 +435,7 @@ base_path = $("#url").val();
 	.then(resp=>{
 		$("#body_dialog").html(resp);
 		$("#body_dialog").show(150);
-		set_class_allegati("",""); //in demo-config.js
+		set_class_allegati(from,id_cand); //in demo-config.js
 	})
 	.catch(status, err => {
 		

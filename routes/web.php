@@ -67,6 +67,7 @@ Route::group(['only_log' => ['auth']], function () {
 //routing Ajax
 
 Route::post('dele_curr', 'App\Http\Controllers\AjaxControllerCand@dele_curr');
+Route::post('remove_doc', 'App\Http\Controllers\AjaxControllerCand@remove_doc');
 
 Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
 Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
