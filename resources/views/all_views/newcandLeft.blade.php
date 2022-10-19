@@ -260,7 +260,7 @@
 
 	@if ($id_cand!="0") 
 		<div id='div_attestati' class='mb-3'>
-			<h3>Attestati Sicurezza</h3>
+			<h3>Percorso Formativo</h3>
 			<!--
 				<a href="{{ route('frm_attestati') }}" target="_blank" class="link-primary" onclick="$('.up').hide();$('#div_up2').show()">
 					Definisci nuovo
@@ -280,7 +280,7 @@
 			</div>			
 			<ul class="list-group" style='clear:right' >
 				@php ($num=0)
-				@foreach($sicurezza as $attestati)
+				@foreach($formazione as $attestati)
 				   @php($num++)
 				   <?php
 					$check="";$class="voci_no";$disp="display:inline";

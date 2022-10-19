@@ -105,7 +105,7 @@ use App\Models\User;
 				  <li class="nav-item">
 					<a href="{{ route('frm_attestati') }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
-					  <p>Form Attestati sicurezza</p>
+					  <p>Corsi Formazione</p>
 					</a>
 				  </li>
 				  

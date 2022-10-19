@@ -11,7 +11,7 @@ use App\Models\candidati;
 use App\Models\regioni;
 use App\Models\italy_cities;
 use App\Models\tipoc;
-use App\Models\voci_corsi;
+use App\Models\voci_doc;
 use App\Models\societa;
 use App\Models\centri_costo;
 use App\Models\area_impiego;
@@ -92,12 +92,12 @@ class mainController extends Controller
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		
-		$sicurezza=voci_corsi::orderBy('descrizione')
-		->when($id=="0", function ($sicurezza) {			
-			return $sicurezza->where('dele', "=","0");
+		$formazione=voci_doc::orderBy('descrizione')
+		->when($id=="0", function ($formazione) {			
+			return $formazione->where('dele', "=","0");
 		})
-		//ho messo un riferimento statico al codice corso di sicurezza (1)
-		->where('id_corso','=',1)
+		//ho messo un riferimento statico al codice corso di formazione (4)
+		->where('id_corso','=',4)
 		->get();
 
 		$societa=societa::orderBy('descrizione')
@@ -140,7 +140,7 @@ class mainController extends Controller
 		})
 		->get();
 		
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('sicurezza', $sicurezza)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr);
 	}
 
 	public function save_newcand(Request $request) {
