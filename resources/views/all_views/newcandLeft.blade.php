@@ -229,7 +229,7 @@
 					<span>Allega/Modifica Curriculum Vitae (solo pdf,doc,jpg)</span>
 				</a><hr>
 			@else
-				<a href="javascript:void(0)" onclick="set_sezione(2,{{$id_cand}})">
+				<a href="javascript:void(0)" onclick="set_sezione(1,{{$id_cand}})">
 					<span>Allega Curriculum Vitae (solo pdf,doc,jpg)</span>
 				</a>
 			@endif	
