@@ -371,29 +371,31 @@
 					</thead>
 					<tbody>
 						<?php
-							$doc=$candidati[0]['doc'];
-							$all_doc=explode(";",$doc);
+							$doc="";
 							
-							for ($sca=0;$sca<=count($all_doc)-1;$sca++) {
-								$doc_id=$all_doc[$sca];
-								echo "<tr>";
-									echo "<td>";
-									echo "</td>";
-									echo "<td>";
-									echo "</td>";
-									echo "<td>";
-									?>
-										<a href='{{url('/')}}/allegati/doc/{{$id_cand}}/{{$doc_id}}' target='_blank'>
-									<?php	
-											echo "<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
-										echo "</a> ";
-										
-										echo "<a href='javascript:void(0)' onclick=\"remove_doc('$doc_id',$id_cand)\">";
-											echo "<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
-										echo "</a>";
-										
-									echo "</td>";
-								echo "</tr>";
+							$all_doc=explode(";",$doc);
+							if (strlen($doc)>0) {
+								for ($sca=0;$sca<=count($all_doc)-1;$sca++) {
+									$doc_id=$all_doc[$sca];
+									echo "<tr>";
+										echo "<td>";
+										echo "</td>";
+										echo "<td>";
+										echo "</td>";
+										echo "<td>";
+										?>
+											<a href='{{url('/')}}/allegati/doc/{{$id_cand}}/{{$doc_id}}' target='_blank'>
+										<?php	
+												echo "<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
+											echo "</a> ";
+											
+											echo "<a href='javascript:void(0)' onclick=\"remove_doc('$doc_id',$id_cand)\">";
+												echo "<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
+											echo "</a>";
+											
+										echo "</td>";
+									echo "</tr>";
+								}
 							}
 						?>	
 					</tbody>

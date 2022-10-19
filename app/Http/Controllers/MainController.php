@@ -11,7 +11,7 @@ use App\Models\candidati;
 use App\Models\regioni;
 use App\Models\italy_cities;
 use App\Models\tipoc;
-use App\Models\sicurezza;
+use App\Models\voci_corsi;
 use App\Models\societa;
 use App\Models\centri_costo;
 use App\Models\area_impiego;
@@ -92,10 +92,12 @@ class mainController extends Controller
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		
-		$sicurezza=sicurezza::orderBy('descrizione')
-		->when($id=="0", function ($sicurezza) {
+		$sicurezza=voci_corsi::orderBy('descrizione')
+		->when($id=="0", function ($sicurezza) {			
 			return $sicurezza->where('dele', "=","0");
 		})
+		//ho messo un riferimento statico al codice corso di sicurezza (1)
+		->where('id_corso','=',1)
 		->get();
 
 		$societa=societa::orderBy('descrizione')
@@ -226,7 +228,7 @@ class mainController extends Controller
 			$candidati->subappalto = $request->input('subappalto');
 			$candidati->affiancamento = $request->input('affiancamento');
 			$candidati->data_inizio = $request->input('data_inizio');
-			$candidati->doc = $request->input('doc');
+			//$candidati->doc = $request->input('doc');
 			
 			
 			

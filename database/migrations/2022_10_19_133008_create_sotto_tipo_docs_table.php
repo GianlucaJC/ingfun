@@ -13,10 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-		Schema::table('candidatis', function ($table) {
-			$table->text('doc')->nullable();
-		});
-
+        Schema::create('sotto_tipo_doc', function (Blueprint $table) {
+            $table->id();
+			$table->integer('id_tipo');
+			$table->integer('id_corso');
+			$table->integer('dele');
+            $table->timestamps();
+        });
     }
 
     /**
@@ -26,6 +29,6 @@ return new class extends Migration
      */
     public function down()
     {
-        //
+        Schema::dropIfExists('sotto_tipo_doc');
     }
 };

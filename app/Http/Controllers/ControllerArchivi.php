@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\tipoc;
-use App\Models\sicurezza;
+use App\Models\voci_corsi;
 use App\Models\societa;
 use App\Models\centri_costo;
 use App\Models\area_impiego;
@@ -297,38 +297,41 @@ class ControllerArchivi extends Controller
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 
-
+		//ho messo un riferimento statico al codice corso di sicurezza (1)
 		//Creazione nuovo elemento
 		if (strlen($descr_contr)!=0 && $edit_elem==0) {
 			$descr_contr=strtoupper($descr_contr);
 			$arr=array();
 			$arr['dele']=0;
+			$arr['id_corso']=1;
 			$arr['descrizione']=$descr_contr;
-			DB::table("sicurezza")->insert($arr);
+			DB::table("voci_corsi")->insert($arr);
 		}
 		
 		//Modifica elemento
 		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
 			$descr_contr=strtoupper($descr_contr);
-			sicurezza::where('id', $edit_elem)
+			voci_corsi::where('id', $edit_elem)
 			  ->update(['descrizione' => $descr_contr]);
 		}
 		if (strlen($dele_contr)!=0) {
-			sicurezza::where('id', $dele_contr)
+			voci_corsi::where('id', $dele_contr)
 			  ->update(['dele' => 1]);			
 		}
 		if (strlen($restore_contr)!=0) {
-			sicurezza::where('id', $restore_contr)
+			voci_corsi::where('id', $restore_contr)
 			  ->update(['dele' => 0]);			
 		}		
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		
 		
-		$sicurezza=DB::table('sicurezza')
+		$sicurezza=DB::table('voci_corsi')
 		->when($view_dele=="0", function ($sicurezza) {
+			//ho messo un riferimento statico al codice corso di sicurezza (1)
 			return $sicurezza->where('dele', "=","0");
 		})
+		->where('id_corso','=',1)
 		->orderBy('descrizione')->get();
 
 		return view('all_views/gestione/sicurezza')->with('sicurezza', $sicurezza)->with("view_dele",$view_dele);

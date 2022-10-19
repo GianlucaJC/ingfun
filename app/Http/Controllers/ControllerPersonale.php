@@ -11,7 +11,6 @@ use App\Models\candidati;
 use App\Models\regioni;
 use App\Models\italy_cities;
 use App\Models\tipoc;
-use App\Models\sicurezza;
 use App\Models\societa;
 use App\Models\centri_costo;
 use App\Models\area_impiego;
