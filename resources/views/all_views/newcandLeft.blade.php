@@ -318,7 +318,10 @@
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<div class="form-floating">
-					<button type="button" onclick="$('#div_doc').toggle(150)" name='add_doc' id='add_doc' class="btn btn-primary btn-lg btn-block">AGGIUNGI DOCUMENTO</button>
+				<!-- onclick="$('#div_doc').toggle(150)" !--> 
+					<a href="{{url('documenti')}}/{{$id_cand}}" target='_blank'>
+						<button type="button"  name='add_doc' id='add_doc' class="btn btn-primary btn-lg btn-block">AGGIUNGI DOCUMENTO</button>
+					</a>
 				</div>
 			</div>
 		</div>

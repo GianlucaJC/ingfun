@@ -30,13 +30,16 @@ try {
 	$filename=uniqid().".".$extension;
 
 	$sub="allegati/curr";
-	$from=$_POST['from'];
-	$id_cand=$_POST['id_cand'];
-	if ($from=="2") {
+	$from="0";$id_cand=0;
+	if (isset($_POST['from'])) $from=$_POST['from'];
+	if (isset($_POST['id_cand'])) $id_cand=$_POST['id_cand'];
+	
+	
+	if ($from=="doc") {
 		$sub="allegati/doc/$id_cand";
 		@mkdir($sub);
-		
 	}	
+	
 	$filepath = "$sub/".$filename;
     if (!move_uploaded_file(
         $_FILES['file']['tmp_name'],

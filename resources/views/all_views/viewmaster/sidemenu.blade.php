@@ -147,6 +147,13 @@ use App\Models\User;
 					  <p>SottoTipo di Documento</p>
 					</a>
 				  </li>
+
+				  <li class="nav-item">
+					<a href="{{ route('documenti') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Area Documenti</p>
+					</a>
+				  </li>
 				</ul>
 			  </li>		  
 			 @endif 

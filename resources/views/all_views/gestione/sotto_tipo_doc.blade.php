@@ -70,7 +70,7 @@
 						
 					
 					</select>
-					<label for="tipo_doc">Tipo Documento</label>
+					<label for="tipodoc">Tipo Documento</label>
 				</div>
 			</div>				
 		</div>

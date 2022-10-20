@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use App\Models\candidatis;
 use App\Models\tipoc;
 use App\Models\voci_doc;
 use App\Models\societa;
@@ -11,11 +12,52 @@ use App\Models\mansione;
 use App\Models\ccnl;
 use App\Models\tipologia_contr;
 use App\Models\tipo_doc;
+use App\Models\ref_doc;
 
 use DB;
 
 class ControllerArchivi extends Controller
 {
+
+	public function documenti($id_cand=""){
+		
+		$candidato=request()->input("candidato");
+		if (request()->has("id_cand")) $id_cand=request()->input("id_cand");
+		
+		$edit_elem=0;
+		if (request()->has("edit_elem")) $edit_elem=request()->input("edit_elem");
+		$view_dele=request()->input("view_dele");
+		$descr_contr=request()->input("descr_contr");
+		
+		$dele_contr=request()->input("dele_contr");
+		$restore_contr=request()->input("restore_contr");
+		$tipodoc=request()->input("tipodoc");
+		if (strlen($tipodoc)==0) $tipodoc=0;
+		$sottotipodoc=request()->input("sottotipodoc");
+		if (strlen($sottotipodoc)==0) $sottotipodoc=0;
+
+		$allow_new="disabled";
+		if ($tipodoc!=0 && $sottotipodoc!=0) $allow_new="";
+
+		$tipo_doc=DB::table('tipo_doc')
+		->where('dele', "=","0")
+		->orderBy('descrizione')->get();
+		
+		$voci_doc=DB::table('voci_doc')
+		->where('id_corso',"=",$tipodoc)
+		->orderBy('descrizione')->get();
+
+		$candidati=DB::table('candidatis')
+		->when(strlen($id_cand)!=0, function ($candidati,$id_cand) {
+			return $candidati->where('id', "=",$id_cand);
+		})		
+		->orderBy('nominativo')->get();
+		$allow_cand="";
+		if (strlen($id_cand)!=0) $allow_cand="disabled";
+		
+		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('allow_cand',$allow_cand)->with('candidato',$candidato);
+		
+	}
 
 	public function sotto_tipo_documento(Request $request){
 		$edit_elem=0;
