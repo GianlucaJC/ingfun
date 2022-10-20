@@ -133,6 +133,20 @@ use App\Models\User;
 					  <p>Contratti CCNL</p>
 					</a>
 				  </li>
+
+				  <li class="nav-item">
+					<a href="{{ route('tipo_documento') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Tipologie di Documento</p>
+					</a>
+				  </li>				  
+
+				  <li class="nav-item">
+					<a href="{{ route('sotto_tipo_documento') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>SottoTipo di Documento</p>
+					</a>
+				  </li>
 				</ul>
 			  </li>		  
 			 @endif 
