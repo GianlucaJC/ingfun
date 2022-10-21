@@ -66,6 +66,8 @@
 				@if (session('dele_doc'))
 					<div class="alert alert-success">
 						{{ session('dele_doc') }}
+						<?php session()->forget('dele_doc'); ?>
+						
 					</div>
 				@endif
 
