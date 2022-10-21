@@ -88,6 +88,6 @@
 	<!-- per upload -->
 	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.24"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.351"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.352"></script>
 	<!-- fine upload -->		
 @endsection 

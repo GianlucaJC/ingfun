@@ -103,8 +103,9 @@ function set_class_allegati(from,id_cand) {
 				html+="<td>"+sotto_tipo_descr+"</td>";
 				html+="<td>"+scadenza+"</td>";
 				
+				
 				html+="<td>";
-					html+="<a href='#' onclick=''>";
+					html+="<a href='"+base_path+"/allegati/doc/"+id_cand+"/"+doc_id+"' target='_blank' >";
 						html+="<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
 					html+="</a> ";
 					
