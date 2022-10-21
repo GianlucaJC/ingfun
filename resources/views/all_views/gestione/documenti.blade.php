@@ -201,6 +201,7 @@
 							<th>Tipo Documento</th>
 							<th>Sotto Documento</th>
 							<th>Scadenza</th>
+							<th>Creato il</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -217,6 +218,7 @@
 								<td>{{$document->tipodocumento}}</td>
 								<td>{{$document->sottodocumento}}</td>
 								<td>{{$document->scadenza}}</td>
+								<td>{{$document->created_at}}</td>
 								<td>
 									<a href="{{url('allegati')}}/doc/{{$document->id_cand}}/{{$document->nomefile}}" target='_blank'>
 										<button type="button" class="btn btn-info" alt='Edit'><i class="fa fa-file"></i></button>
@@ -236,6 +238,7 @@
 							<th>Tipo Documento</th>
 							<th>Sotto Documento</th>
 							<th>Scadenza</th>
+							<th>Creato il</th>
 							<th></th>
 						</tr>
 					</tfoot>					
