@@ -5,6 +5,7 @@ $(document).ready( function () {
 			$(this).html('<input type="text" placeholder="Search ' + title + '" />');
     });	
     var table=$('#tbl_list_documenti').DataTable({
+		"order": [[ 0, 'desc' ]],
 		dom: 'Bfrtip',
 		buttons: [
 			'excel', 'pdf'

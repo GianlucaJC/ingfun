@@ -72,8 +72,9 @@ class ControllerArchivi extends Controller
 		*/		
 		->orderBy('nominativo')->get();
 		
-	
+		
 		if (strlen($dele_contr)!=0) {
+			session(['dele_doc' => 'Elemento rimosso con successo!']);
 			ref_doc::where('id', $dele_contr)
 			  ->delete();			
 		}	

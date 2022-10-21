@@ -63,6 +63,11 @@
 						{{ session('status') }}
 					</div>
 				@endif
+				@if (session('dele_doc'))
+					<div class="alert alert-success">
+						{{ session('dele_doc') }}
+					</div>
+				@endif
 
 			<div class="row mb-3">
 				<div class="col-md-12">
@@ -202,7 +207,7 @@
 					<tbody>
 						<?php $flx=0;?>
 						@foreach($elenco_doc as $document)
-							@if (session('status') && $flx==0)	
+							@if (session('status') && $flx==0 && count($elenco_doc)>1)	
 								<?php $flx=1; ?>
 								<tr style='background-color:yellow'>
 							@else
@@ -230,7 +235,6 @@
 							<th>ID</th>
 							<th>Tipo Documento</th>
 							<th>Sotto Documento</th>
-							<th>Documento</th>
 							<th>Scadenza</th>
 							<th></th>
 						</tr>
@@ -284,6 +288,6 @@
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.53"></script>
+	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.54"></script>
 
 @endsection
