@@ -81,9 +81,10 @@ function set_class_allegati(id_cand="0") {
       ui_multi_update_file_progress(id, 100, 'success', false);
 	  
 	  
-	  doc_id=data.filename
+	  allegato=data.filename
+
 	  
-	  //$("#doc").val(doc)
+	  $("#allegato").val(allegato)
 
 	  $("#body_dialog").hide(150);
 	  $("#btn_save_doc").show(150)

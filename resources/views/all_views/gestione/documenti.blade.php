@@ -56,31 +56,41 @@
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			<input type='hidden' name='id_cand' name='id_cand' value='{{$id_cand}}'>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
+			
+			<input type='hidden' name='allegato' id='allegato'>
+				@if (session('status'))
+					<div class="alert alert-success">
+						{{ session('status') }}
+					</div>
+				@endif
 
 			<div class="row mb-3">
 				<div class="col-md-12">
 					<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" name="candidato" id="candidato" onchange="$('#frm_documenti').submit()" {{$allow_cand}}>
+						<select class="form-select" name="id_cand" id="id_cand" onchange="$('#frm_documenti').submit()" >
 							<option value=''>Select...</option>
 							@foreach($candidati as $cand)
 								<option value='{{ $cand->id }}' 	
 								<?php 
-									if ($cand->id==$id_cand || $cand->id==$candidato) 
+									if ($cand->id==$id_cand || $cand->id==session('id_cand')) 
 									echo " selected ";
 									
 								?>	
 								>{{ $cand->nominativo}}</option>	
 							@endforeach			
 						</select>
-						<label for="candidato">Lavoratore</label>					
+						<label for="id_cand">Lavoratore</label>					
 					</div>	
 				</div>
 			</div>	
-		<!--
-		<button type="button" onclick="$('#div_new_doc').toggle(150);" class="btn btn-primary btn-lg btn-block">Definizione Nuovo Documento</button>
-		!-->
 		
-		<div id='div_new_doc' style='display:block' class='mt-2'>
+		<button type="button" onclick="new_doc()" class="btn btn-primary btn-lg btn-block">Definizione Nuovo Documento</button>
+		
+		<?php
+			$disp="display:none";
+			if (isset($_POST['tipodoc']) && strlen($_POST['tipodoc'])!=0) $disp="display:block"; 
+		?>
+		<div id='div_new_doc' style='{{$disp}}' class='mt-2'>
 
 			<div class="row mb-3">
 			
@@ -149,11 +159,11 @@
 			
 			<div class="row">
 				<div class="col-lg-12">
-					<button type="button" class="btn btn-primary" {{$allow_new}} onclick="set_sezione({{$candidato}})">
+					<button type="button" class="btn btn-primary" {{$allow_new}} onclick="set_sezione({{$id_cand}})">
 						<i class="fa fa-plus-circle"></i> Allega Documento
 					</button>
 
-					<button type="button" class="btn btn-success" onclick="" style='display:none' id='btn_save_doc'>
+					<button type="submit" class="btn btn-success" name='save_doc' style='display:none' id='btn_save_doc'>
 						<i class="fa fa-save"></i> Salva documento
 					</button>
 					
@@ -162,6 +172,7 @@
 			</div>
 		</div>
 		
+		<!--
 		<div class="row">
 			<div class="col-lg-12">
 				<div class="form-check form-switch mt-3 ml-3">
@@ -170,6 +181,7 @@
 				</div>		
 			</div>
 		</div>
+		!-->
 		
 		
 		<hr>
@@ -183,18 +195,35 @@
 							<th>ID</th>
 							<th>Tipo Documento</th>
 							<th>Sotto Documento</th>
-							<th>Documento</th>
 							<th>Scadenza</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
 					<tbody>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
-							<td></td>
+						<?php $flx=0;?>
+						@foreach($elenco_doc as $document)
+							@if (session('status') && $flx==0)	
+								<?php $flx=1; ?>
+								<tr style='background-color:yellow'>
+							@else
+								<tr>
+							@endif
+								<td>{{$document->id}}</td>
+								<td>{{$document->tipodocumento}}</td>
+								<td>{{$document->sottodocumento}}</td>
+								<td>{{$document->scadenza}}</td>
+								<td>
+									<a href="{{url('allegati')}}/doc/{{$document->id_cand}}/{{$document->nomefile}}" target='_blank'>
+										<button type="button" class="btn btn-info" alt='Edit'><i class="fa fa-file"></i></button>
+									</a>
+									<a href='#' onclick="dele_element({{$document->id}})">
+										<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+									</a>
+
+								
+								</td>
+							</tr>	
+						@endforeach
 					</tbody>
 					<tfoot>
 						<tr>
@@ -252,9 +281,9 @@
 	<!-- per upload -->
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/jquery.dm-uploader.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-ui.js?ver=1.24"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.346"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.4"></script>
+	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.53"></script>
 
 @endsection

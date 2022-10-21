@@ -36,6 +36,15 @@ $(document).ready( function () {
 	
 } );
 
+function new_doc() {
+	id_cand=$("#id_cand").val()
+	if (id_cand.length==0) {
+		alert("Definire un Lavoratore!");
+		return false;
+	}
+	$('#div_new_doc').toggle(150);	
+}
+
 function set_sezione(id_cand) {
 base_path = $("#url").val();
 	

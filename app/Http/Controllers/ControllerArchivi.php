@@ -19,10 +19,26 @@ use DB;
 class ControllerArchivi extends Controller
 {
 
-	public function documenti($id_cand=""){
+	public function documenti(){
 		
-		$candidato=request()->input("candidato");
-		if (request()->has("id_cand")) $id_cand=request()->input("id_cand");
+		$id_cand=request()->input("id_cand");
+		if (strlen($id_cand)==0) $id_cand=0;
+		if (session('id_cand')) $id_cand=session('id_cand');
+
+		if (request()->has("save_doc")) {
+			$ref_doc = new ref_doc;
+			$ref_doc->dele=0;
+			$ref_doc->id_cand = $id_cand;
+			$ref_doc->id_tipo_doc = request()->input('tipodoc');
+			$ref_doc->id_sotto_tipo = request()->input('sottotipodoc');
+			if (strlen(request()->input('scadenza')!=0))
+				$ref_doc->scadenza = request()->input('scadenza');
+			$ref_doc->nomefile = request()->input('allegato');
+			$ref_doc->save();
+
+			return redirect("/documenti")->with('status', 'Documento aggiunto con successo!')->with('id_cand',$id_cand);
+			
+		}
 		
 		$edit_elem=0;
 		if (request()->has("edit_elem")) $edit_elem=request()->input("edit_elem");
@@ -42,20 +58,38 @@ class ControllerArchivi extends Controller
 		$tipo_doc=DB::table('tipo_doc')
 		->where('dele', "=","0")
 		->orderBy('descrizione')->get();
+
 		
 		$voci_doc=DB::table('voci_doc')
 		->where('id_corso',"=",$tipodoc)
 		->orderBy('descrizione')->get();
 
 		$candidati=DB::table('candidatis')
-		->when(strlen($id_cand)!=0, function ($candidati,$id_cand) {
+		/*
+		->when((strlen($id_cand)!=0), function ($candidati) use($id_cand) {
 			return $candidati->where('id', "=",$id_cand);
-		})		
+		})
+		*/		
 		->orderBy('nominativo')->get();
-		$allow_cand="";
-		if (strlen($id_cand)!=0) $allow_cand="disabled";
 		
-		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('allow_cand',$allow_cand)->with('candidato',$candidato);
+	
+		if (strlen($dele_contr)!=0) {
+			ref_doc::where('id', $dele_contr)
+			  ->delete();			
+		}	
+	
+		
+		$elenco_doc = DB::table('ref_doc as r')
+		->join('tipo_doc as d', 'r.id_tipo_doc', '=', 'd.id')
+		->join('voci_doc as v', 'r.id_sotto_tipo', '=', 'v.id')
+		->select('r.id','r.id_cand','r.scadenza', 'r.nomefile', 'r.created_at', 'r.updated_at','d.descrizione as tipodocumento', 'v.descrizione as sottodocumento')
+		->where('r.id_cand','=',$id_cand)
+		->orderByDesc('r.id')
+		->get();		
+		
+
+		
+		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('elenco_doc',$elenco_doc);
 		
 	}
 
