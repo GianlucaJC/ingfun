@@ -41,6 +41,33 @@ $(document).ready( function () {
 
 } );
 
+function popola_sotto_tipo(tipodoc) {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/sottotipo",
+		data: {_token: CSRF_TOKEN, tipodoc:tipodoc},
+		success: function (data) {
+			$("#sotto_tipo_doc")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#sotto_tipo_doc').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#sotto_tipo_doc').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
 
 function dele_curr(file_curr,id_cand) {
 	if (!confirm("Sicuri di eliminare il Curriculum?")) return false;
@@ -407,9 +434,14 @@ base_path = $("#url").val();
 	}
 	if (from=="2") {
 		tipo_doc=$("#tipo_doc").val();
+		sotto_tipo_doc=$("#sotto_tipo_doc").val();
 		scadenza=$("#scadenza").val();
 		if (tipo_doc.length==0) {
-			alert("Il Tipo documento è obbligatorio")
+			alert("Il Tipo Documento è obbligatorio")
+			return false;
+		}
+		if (sotto_tipo_doc.length==0) {
+			alert("Il Sotto Tipo Documento è obbligatorio")
 			return false;
 		}
 		$('html, body').animate({

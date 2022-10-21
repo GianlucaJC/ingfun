@@ -62,7 +62,6 @@
 
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<input type="hidden" name="fx_curr" id="fx_curr" value="{{ $candidati[0]['file_curr']}}">
-			<input type="hidden" id="doc" name="doc">
 			<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
         </div>
         <!-- /.row -->
@@ -82,13 +81,13 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.583"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.6"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
 	<!-- per upload -->
 	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.24"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.345"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.351"></script>
 	<!-- fine upload -->		
 @endsection 

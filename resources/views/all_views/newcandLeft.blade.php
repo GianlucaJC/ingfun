@@ -314,12 +314,18 @@
 
 
 	@if ($id_cand!="0") 
-		<center><h3>Area Documenti</h3></center>
+		<center>
+		<h3>Area Documenti</h3>
+			Ultimi 5 - 
+			<a href="{{url('documenti')}}" target='_blank'>
+				Clicca quì per l'Area Completa
+			</a>
+		</center>
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<div class="form-floating">
-				<!-- onclick="$('#div_doc').toggle(150)" !--> 
-					<a href="{{url('documenti')}}/{{$id_cand}}" target='_blank'>
+				
+					<a href="javascript:void(0)" onclick="$('#div_doc').toggle(150)">
 						<button type="button"  name='add_doc' id='add_doc' class="btn btn-primary btn-lg btn-block">AGGIUNGI DOCUMENTO</button>
 					</a>
 				</div>
@@ -329,23 +335,37 @@
 		
 		<div id='div_doc' style='display:none'>
 			<div class="row mb-3">
-				<div class="col-md-6">
+				<div class="col-md-5">
 							
 					<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" name="tipo_doc" id="tipo_doc">
+						<select class="form-select" name="tipo_doc" id="tipo_doc" onchange="popola_sotto_tipo(this.value)">
 						<option value=''>Select...</option>
-							<option value="1"
-							>DOCUMENTO DI RICONOSCIMENTO</option>
-							<option value="2"
-							>MODELLO 25</option>
-							<option value="3"
-							>CONTRATTO</option>
+							@foreach($tipo_doc as $document)
+								<option value='{{$document->id}}'>
+									{{$document->descrizione}}
+								</option>
+							@endforeach
 						</select>
 						<label for="tipo_doc">Tipo documento*</label>
 					</div>
-				</div>				
+				</div>		
 
-				<div class="col-md-6">
+				<div class="col-md-5">
+				  <div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" id="sotto_tipo_doc" aria-label="Sotto tipo documento" name='sotto_tipo_doc' >
+						<option value=''>Select...</option>
+					</select>
+					<label for="sotto_tipo_doc">Sotto tipo documento*</label>
+				  </div>
+				</div> 
+					
+
+
+
+
+				
+
+				<div class="col-md-2">
 					<div class="form-floating">
 						<input class="form-control" id="scadenza" name='scadenza' type="date" />
 						<label for="scadenza">Scadenza</label>
@@ -367,39 +387,55 @@
 				<table class='table' id='tb_doc'>
 					<thead>
 						<tr>
+							<th>ID</th>
 							<th>Tipo Documento</th>
+							<th>Sotto Tipo Documento</th>
 							<th>Scadenza</th>
 							<th>Azioni</th>
 						</tr>
 					</thead>
 					<tbody>
 						<?php
-							$doc="";
 							
-							$all_doc=explode(";",$doc);
-							if (strlen($doc)>0) {
-								for ($sca=0;$sca<=count($all_doc)-1;$sca++) {
-									$doc_id=$all_doc[$sca];
-									echo "<tr>";
-										echo "<td>";
-										echo "</td>";
-										echo "<td>";
-										echo "</td>";
-										echo "<td>";
-										?>
-											<a href='{{url('/')}}/allegati/doc/{{$id_cand}}/{{$doc_id}}' target='_blank'>
-										<?php	
-												echo "<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
-											echo "</a> ";
-											
-											echo "<a href='javascript:void(0)' onclick=\"remove_doc('$doc_id',$id_cand)\">";
-												echo "<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
-											echo "</a>";
-											
-										echo "</td>";
-									echo "</tr>";
-								}
+							$ii=0;
+							foreach($elenco_doc as $doc) {
+								$ii++;
+								$doc_id=$doc->nomefile;
+								$doc_info=explode(".",$doc_id);
+								$ref_row="doc$ii";
+								if (isset($doc_info[0])) $ref_row=$doc_info[0];
+								
+								echo "<tr id='doc$ref_row'>";
+
+									echo "<td>";
+										echo $doc->id;
+									echo "</td>";
+									echo "<td>";
+										echo $doc->tipodocumento;
+									echo "</td>";
+									echo "<td>";
+										echo $doc->sottodocumento;
+									echo "</td>";
+									echo "<td>";
+										echo $doc->scadenza;
+									echo "</td>";
+									echo "<td>";
+									?>
+
+									
+										<a href="{{url('allegati')}}/doc/{{$doc->id_cand}}/{{$doc->nomefile}}" target='_blank'>
+									<?php	
+											echo "<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
+										echo "</a> ";
+										
+										echo "<a href='javascript:void(0)' onclick=\"remove_doc('$doc_id',$id_cand)\">";
+											echo "<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
+										echo "</a>";
+										
+									echo "</td>";
+								echo "</tr>";
 							}
+							
 						?>	
 					</tbody>
 							

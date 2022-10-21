@@ -1,6 +1,5 @@
 csv_send=false
-var all_doc=new Array();
-var doc=""
+
 $(function(){
  //set_class_allegati(0)
  
@@ -89,10 +88,6 @@ function set_class_allegati(from,id_cand) {
 	  
 	  if (from=="2") {
 		  doc_id=data.filename
-		  all_doc.push(doc_id)
-		  doc = all_doc.join(";")
-		  $("#doc").val(doc)
-		  
 		  ref_row=doc_id.split(".")[0]
 		  //doc upload
 		  $("#body_dialog").hide(150);
@@ -100,17 +95,12 @@ function set_class_allegati(from,id_cand) {
 				scrollTop: $("#div_doc").offset().top-150
 			}, 1500);		  
 			//refresh table	doc
-			doc_descr="(Descrizione disponibile dopo il salvataggio)"
-			if (tipo_doc=="1") doc_descr="DOCUMENTO DI RICONOSCIMENTO";
-			if (tipo_doc=="2") doc_descr="MODELLO 25";
-			if (tipo_doc=="3") doc_descr="CONTRATTO";
-			if (tipo_doc=="4") doc_descr="CORSI DI FORMAZIONE";
-			if (tipo_doc=="5") doc_descr="CEDOLINO";
-			if (tipo_doc=="6") doc_descr="PATENTE";
-			if (tipo_doc=="7") doc_descr="BADGE";
-			if (tipo_doc=="8") doc_descr="LIBERATORIA";
-			html="<tr id='doc"+ref_row+"'>";
+			doc_descr=$("#tipo_doc option:selected").text();
+			sotto_tipo_descr=$("#sotto_tipo_doc option:selected").text();
+			html="<tr style='background-color:yellow' id='doc"+ref_row+"'>";
+				html+="<td>--</td>";
 				html+="<td>"+doc_descr+"</td>";
+				html+="<td>"+sotto_tipo_descr+"</td>";
 				html+="<td>"+scadenza+"</td>";
 				
 				html+="<td>";
@@ -123,9 +113,8 @@ function set_class_allegati(from,id_cand) {
 					html+="</a>";
 				html+="</td>";
 			html+="</tr>";
-			$('#tb_doc tr:last').after(html);			
-			$("#tipo_doc").val('')
-			$("#scadenza").val('');
+			$('#tb_doc tr:first').after(html);			
+			update_doc(doc_id,id_cand)
 	  } 
 	  
 
@@ -145,6 +134,49 @@ function set_class_allegati(from,id_cand) {
 }
 
 
+function update_doc(filename,id_cand) {
+	tipo_doc=$("#tipo_doc").val()
+	sotto_tipo_doc=$("#sotto_tipo_doc").val()
+	scadenza=$("#scadenza").val()
+
+	base_path = $("#url").val();
+	let CSRF_TOKEN = $("#token_csrf").val();
+	
+	html="<span role='status' aria-hidden='true' class='spinner-border spinner-border-sm'></span> Attendere...";
+
+
+	//$("#doc"+ref_row).html(html);
+	setTimeout(function(){
+	
+		fetch(base_path+'/update_doc', {
+			method: 'post',
+			//cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached		
+			headers: {
+			  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+			},
+			body: '_token='+ CSRF_TOKEN+'&filename='+filename+'&tipo_doc='+tipo_doc+'&sotto_tipo_doc='+sotto_tipo_doc+'&scadenza='+scadenza+'&id_cand='+id_cand
+		})
+		.then(response => {
+			if (response.ok) {
+			   return response.json();
+			}
+		})
+		.then(resp=>{
+			if (resp.status=="KO") {
+				alert("Problemi occorsi durante il salvataggio.\n\nDettagli:\n"+resp.message);
+				return false;
+			}
+			//$("#doc"+ref_row).remove()
+		})
+		.catch(status, err => {
+			return console.log(status, err);
+		})	
+	
+	
+	},1000);
+	
+	
+}
 
 function remove_doc(doc_id,id_cand) {
 	ref_row=doc_id.split(".")[0]
@@ -152,9 +184,6 @@ function remove_doc(doc_id,id_cand) {
 	let CSRF_TOKEN = $("#token_csrf").val();
 	if (!confirm("Sicuri di cancellare l'allegato?")) return false;
 	html="<span role='status' aria-hidden='true' class='spinner-border spinner-border-sm'></span> Attendere...";
-	all_doc.splice(doc_id, 1); 	
-	  doc = all_doc.join(";")
-	  $("#doc").val(doc)	
 
 	$("#doc"+ref_row).html(html);
 	setTimeout(function(){

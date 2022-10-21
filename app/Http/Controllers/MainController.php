@@ -18,6 +18,8 @@ use App\Models\area_impiego;
 use App\Models\mansione;
 use App\Models\ccnl;
 use App\Models\tipologia_contr;
+use App\Models\tipo_doc;
+use App\Models\ref_doc;
 
 use DB;
 
@@ -92,6 +94,9 @@ class mainController extends Controller
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		
+		
+		$tipo_doc=tipo_doc::orderBy('descrizione')->get();
+		
 		$formazione=voci_doc::orderBy('descrizione')
 		->when($id=="0", function ($formazione) {			
 			return $formazione->where('dele', "=","0");
@@ -134,13 +139,22 @@ class mainController extends Controller
 		})
 		->get();
 
+		$elenco_doc = DB::table('ref_doc as r')
+		->join('tipo_doc as d', 'r.id_tipo_doc', '=', 'd.id')
+		->join('voci_doc as v', 'r.id_sotto_tipo', '=', 'v.id')
+		->select('r.id','r.id_cand','r.scadenza', 'r.nomefile', 'r.created_at', 'r.updated_at','d.descrizione as tipodocumento', 'v.descrizione as sottodocumento')
+		->where('r.id_cand','=',$id)
+		->orderByDesc('r.id')
+		->take(5)
+		->get();
+
 		$tipologia_contr=tipologia_contr::orderBy('descrizione')
 		->when($id=="0", function ($tipologia_contr) {
 			return $tipologia_contr->where('dele', "=","0");
 		})
 		->get();
 		
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc);
 	}
 
 	public function save_newcand(Request $request) {

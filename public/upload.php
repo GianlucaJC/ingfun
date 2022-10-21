@@ -34,8 +34,10 @@ try {
 	if (isset($_POST['from'])) $from=$_POST['from'];
 	if (isset($_POST['id_cand'])) $id_cand=$_POST['id_cand'];
 	
-	
-	if ($from=="doc") {
+	//Upload documenti:
+	//$from=="2" -> da scheda candidato
+	//$from=="doc" -> da archivi->Area documenti
+	if ($from=="2" || $from=="doc") {
 		$sub="allegati/doc/$id_cand";
 		@mkdir($sub);
 	}	

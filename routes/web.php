@@ -78,7 +78,9 @@ Route::group(['only_log' => ['auth']], function () {
 
 Route::post('dele_curr', 'App\Http\Controllers\AjaxControllerCand@dele_curr');
 Route::post('remove_doc', 'App\Http\Controllers\AjaxControllerCand@remove_doc');
+Route::post('update_doc', 'App\Http\Controllers\AjaxControllerCand@update_doc');
 
+Route::post('sottotipo', 'App\Http\Controllers\AjaxControllerCand@sottotipo');
 Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
 Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
 Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');

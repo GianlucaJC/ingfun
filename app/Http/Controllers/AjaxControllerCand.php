@@ -14,11 +14,39 @@ use App\Models\area_impiego;
 use App\Models\mansione;
 use App\Models\ccnl;
 use App\Models\tipologia_contr;
+use App\Models\voci_doc;
+use App\Models\ref_doc;
 
 
 
 class AjaxControllerCand extends Controller
 {
+	
+	public function update_doc() {
+		$filename=$_POST['filename'];
+		$tipo_doc=$_POST['tipo_doc'];
+		$sotto_tipo_doc=$_POST['sotto_tipo_doc'];
+		$scadenza=$_POST['scadenza'];
+		$id_cand=$_POST['id_cand'];
+		$ref_doc= new ref_doc;
+		$ref_doc->id_cand=$id_cand;
+		$ref_doc->id_tipo_doc=$tipo_doc;
+		$ref_doc->id_sotto_tipo=$sotto_tipo_doc;
+		if (strlen($scadenza)!=0) $ref_doc->scadenza=$scadenza;
+		$ref_doc->nomefile=$filename;
+		$ref_doc->save();
+		$status['status']="OK";
+		$status['message']="Dati inseriti con successo!";
+		return json_encode($status);
+	}
+	
+	public function sottotipo(){
+		$tipodoc=$_POST['tipodoc'];
+		$elenco = voci_doc::where('dele','=',0)
+		->where('id_corso',"=",$tipodoc)
+		->orderBy('descrizione')->get();
+        return json_encode($elenco);
+	}
 
 	public function refresh_tipologia_contr(){
 		$tipologia_contr = tipologia_contr::where('dele','=',0)->orderBy('descrizione')->get();
@@ -52,7 +80,9 @@ class AjaxControllerCand extends Controller
 		
 		$doc_id=$_POST['doc_id'];
 		$id_cand=$_POST['id_cand'];
+		ref_doc::where('nomefile',"=",$doc_id)->delete();
 
+		
 		try {
 			$path = base_path();
 			/*
