@@ -279,24 +279,42 @@
 			  <label class="form-check-label" for="view_choice">Mostra solo voci selezionate</label>
 			</div>			
 			<ul class="list-group" style='clear:right' >
+			<?php
+				$arr_att=array();
+				foreach($elenco_doc as $doc) {
+					$id_tipo_doc=$doc->id_tipo_doc;
+					$id_sotto_tipo=$doc->id_sotto_tipo;
+					//Indice statico che identifica corsi formativi
+					if ($id_tipo_doc==4) {
+						$arr_att[]=$id_sotto_tipo;
+						
+					}
+					
+				}
+			?>
 				@php ($num=0)
 				@foreach($formazione as $attestati)
 				   @php($num++)
 				   <?php
 					$check="";$class="voci_no";$disp="display:inline";
-					$arr_att=explode(";",$candidati[0]['attestati']);
+					/*
+						I check spuntati nel percorso formativo non devono essere manuali
+						ma dedotti dall'area documenti
+					*/
+					//$arr_att=explode(";",$candidati[0]['attestati']);
 					if (is_array($arr_att)) {
 						if (in_array($attestati->id,$arr_att)) {
 							$check=" checked "; 
 							$class="";$disp="";
 						}	
 					}
+
 				   ?>
 				   
 				  <li class="list-group-item {{ $class }} " style="{{$disp}}">
 					<span class='ml-2'></span>
 					<input class="form-check-input me-1" type="checkbox" value="{{$attestati->id}}" id="attestato{{$num}}" name='attestato[]' 
-					 {{ $check }}>
+					 {{ $check }} disabled>
 					<label class="form-check-label" for="attestato{{$num}}">
 						@if ($attestati->dele!="0") 
 						 <font color='red'><del> 
@@ -348,6 +366,16 @@
 						</select>
 						<label for="tipo_doc">Tipo documento*</label>
 					</div>
+					<a href="{{ route('tipo_documento') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_upl1').show()">
+						Definisci nuovo
+					</a>
+					<span id='div_upl1' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick='refresh_tipo_doc()'>
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>					
 				</div>		
 
 				<div class="col-md-5">
@@ -355,8 +383,18 @@
 					<select class="form-select" id="sotto_tipo_doc" aria-label="Sotto tipo documento" name='sotto_tipo_doc' >
 						<option value=''>Select...</option>
 					</select>
-					<label for="sotto_tipo_doc">Sotto tipo documento*</label>
+					<label for="sotto_tipo_doc">Sotto tipo documento</label>
 				  </div>
+					<a href="{{ route('sotto_tipo_documento') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_upl2').show()">
+						Definisci nuovo
+					</a>
+					<span id='div_upl2' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick="refresh_sotto_tipo_doc($('#tipo_doc').val())">
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>				  
 				</div> 
 					
 
@@ -375,10 +413,12 @@
 			</div>	
 			<div class="row mb-3">
 				<div class="col-md-12">
+					<!-- l'upload viene fatto dal plugin  dist/js/upload/demo-config.js !-->
 					<a href="javascript:void(0)" onclick="set_sezione(2,{{$id_cand}})">
-						<button style='font-size:12px' type="button" class="btn btn-info"><i class="far fa-file-alt"></i> Allega documento</button>
+						<button style='font-size:12px' type="button" class="btn btn-info"><i class="far fa-file-alt"></i> Allega documento</button>						
 					</a>
 				</div>
+				<small>N.B. I check del Percorso Formativo saranno aggiornati dopo il salvataggio della scheda (ammesso che siano inseriti/rimossi documenti relativi)</small>
 			</div>	
 		</div>
 		
@@ -389,7 +429,7 @@
 						<tr>
 							<th>ID</th>
 							<th>Tipo Documento</th>
-							<th>Sotto Tipo Documento</th>
+							<th style='max-width:150px'>Sotto Tipo Documento</th>
 							<th>Scadenza</th>
 							<th>Azioni</th>
 						</tr>
@@ -413,7 +453,7 @@
 									echo "<td>";
 										echo $doc->tipodocumento;
 									echo "</td>";
-									echo "<td>";
+									echo "<td style='max-width:150px'>";
 										echo $doc->sottodocumento;
 									echo "</td>";
 									echo "<td>";
@@ -425,11 +465,11 @@
 									
 										<a href="{{url('allegati')}}/doc/{{$doc->id_cand}}/{{$doc->nomefile}}" target='_blank'>
 									<?php	
-											echo "<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
+											echo "<button type='button' class='btn btn-info btn-sm' ><i class='far fa-file'></i></button>";
 										echo "</a> ";
 										
 										echo "<a href='javascript:void(0)' onclick=\"remove_doc('$doc_id',$id_cand)\">";
-											echo "<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
+											echo "<button type='button' class='btn btn-danger btn-sm' alt='Remove'><i class='fas fa-trash'></i></button>";
 										echo "</a>";
 										
 									echo "</td>";

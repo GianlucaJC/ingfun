@@ -81,13 +81,13 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.6"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.64"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
 	<!-- per upload -->
 	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.24"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.352"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.356"></script>
 	<!-- fine upload -->		
 @endsection 

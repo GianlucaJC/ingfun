@@ -14,6 +14,7 @@ use App\Models\area_impiego;
 use App\Models\mansione;
 use App\Models\ccnl;
 use App\Models\tipologia_contr;
+use App\Models\tipo_doc;
 use App\Models\voci_doc;
 use App\Models\ref_doc;
 
@@ -48,6 +49,18 @@ class AjaxControllerCand extends Controller
         return json_encode($elenco);
 	}
 
+	public function refresh_sotto_tipo_doc(){
+		$tipo_doc=$_POST['tipo_doc'];
+		$sotto_tipo_doc = voci_doc::where('dele','=',0)
+		->where('id_corso',"=",$tipo_doc)
+		->orderBy('descrizione')->get();
+        return json_encode($sotto_tipo_doc);
+	}
+
+	public function refresh_tipo_doc(){
+		$tipo_doc = tipo_doc::where('dele','=',0)->orderBy('descrizione')->get();
+        return json_encode($tipo_doc);
+	}
 	public function refresh_tipologia_contr(){
 		$tipologia_contr = tipologia_contr::where('dele','=',0)->orderBy('descrizione')->get();
         return json_encode($tipologia_contr);

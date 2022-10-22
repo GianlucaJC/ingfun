@@ -241,6 +241,63 @@ function refresh_mansione() {
 		}
 	});		
 }
+function refresh_sotto_tipo_doc(tipo_doc) {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_sotto_tipo_doc",
+		data: {_token: CSRF_TOKEN,tipo_doc:tipo_doc},
+		success: function (data) {
+			$("#div_upl2").hide(150)
+			$("#sotto_tipo_doc")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#sotto_tipo_doc').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#sotto_tipo_doc').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
+function refresh_tipo_doc() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_tipo_doc",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_upl1").hide(150)
+			$("#tipo_doc")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#tipo_doc').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#tipo_doc').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
 function refresh_ccnl() {
 	base_path = $("#url").val();
 	$.ajaxSetup({
@@ -440,10 +497,7 @@ base_path = $("#url").val();
 			alert("Il Tipo Documento è obbligatorio")
 			return false;
 		}
-		if (sotto_tipo_doc.length==0) {
-			alert("Il Sotto Tipo Documento è obbligatorio")
-			return false;
-		}
+
 		$('html, body').animate({
 			scrollTop: $("#div_doc").offset().top-370
 		}, 1500);		

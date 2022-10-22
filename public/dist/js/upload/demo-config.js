@@ -27,9 +27,7 @@ function set_class_allegati(from,id_cand) {
 	extraData: {
       
 	  "from":from,
-	  "id_cand":id_cand,
-	  "tipo_doc":tipo_doc,
-	  "scadenza":scadenza
+	  "id_cand":id_cand
 	},
 	
 	extFilter: ["pdf","doc","docx","jpg","png"],
@@ -97,20 +95,21 @@ function set_class_allegati(from,id_cand) {
 			//refresh table	doc
 			doc_descr=$("#tipo_doc option:selected").text();
 			sotto_tipo_descr=$("#sotto_tipo_doc option:selected").text();
+			if (sotto_tipo_descr=="Select...") sotto_tipo_descr="--";
 			html="<tr style='background-color:yellow' id='doc"+ref_row+"'>";
 				html+="<td>--</td>";
 				html+="<td>"+doc_descr+"</td>";
-				html+="<td>"+sotto_tipo_descr+"</td>";
+				html+="<td style='max-width:150px'>"+sotto_tipo_descr+"</td>";
 				html+="<td>"+scadenza+"</td>";
 				
 				
 				html+="<td>";
 					html+="<a href='"+base_path+"/allegati/doc/"+id_cand+"/"+doc_id+"' target='_blank' >";
-						html+="<button type='button' class='btn btn-info'><i class='far fa-file'></i></button>";
+						html+="<button type='button' class='btn btn-info btn-sm'><i class='far fa-file'></i></button>";
 					html+="</a> ";
 					
 					html+="<a href='javascript:void(0)' onclick=\"remove_doc('"+doc_id+"',"+id_cand+")\">";
-						html+="<button type='button' class='btn btn-danger' alt='Remove'><i class='fas fa-trash'></i></button>";
+						html+="<button type='button' class='btn btn-danger btn-sm' alt='Remove'><i class='fas fa-trash'></i></button>";
 					html+="</a>";
 				html+="</td>";
 			html+="</tr>";

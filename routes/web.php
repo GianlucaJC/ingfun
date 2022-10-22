@@ -91,6 +91,8 @@ Route::post('refresh_area', 'App\Http\Controllers\AjaxControllerCand@refresh_are
 Route::post('refresh_mansione', 'App\Http\Controllers\AjaxControllerCand@refresh_mansione');
 Route::post('refresh_ccnl', 'App\Http\Controllers\AjaxControllerCand@refresh_ccnl');
 Route::post('refresh_tipologia_contr', 'App\Http\Controllers\AjaxControllerCand@refresh_tipologia_contr');
+Route::post('refresh_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipo_doc');
+Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
 
 
 require __DIR__.'/auth.php';

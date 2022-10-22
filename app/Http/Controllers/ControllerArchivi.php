@@ -82,7 +82,7 @@ class ControllerArchivi extends Controller
 		
 		$elenco_doc = DB::table('ref_doc as r')
 		->join('tipo_doc as d', 'r.id_tipo_doc', '=', 'd.id')
-		->join('voci_doc as v', 'r.id_sotto_tipo', '=', 'v.id')
+		->leftJoin('voci_doc as v', 'r.id_sotto_tipo', '=', 'v.id')
 		->select('r.id','r.id_cand','r.scadenza', 'r.nomefile', 'r.created_at', 'r.updated_at','d.descrizione as tipodocumento', 'v.descrizione as sottodocumento')
 		->where('r.id_cand','=',$id_cand)
 		->orderByDesc('r.id')
