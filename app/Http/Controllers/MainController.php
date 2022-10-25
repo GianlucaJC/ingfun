@@ -1,7 +1,7 @@
 <?php
 //test
 namespace App\Http\Controllers;
-
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
@@ -20,6 +20,7 @@ use App\Models\ccnl;
 use App\Models\tipologia_contr;
 use App\Models\tipo_doc;
 use App\Models\ref_doc;
+use App\Models\story_all;
 
 use DB;
 
@@ -31,9 +32,38 @@ use Spatie\Permission\Models\Permission;
 
 class mainController extends Controller
 {
+	
+	public function check_scadenze_contratti() {
+		$today=date("Y-m-d");
+		$scadenze=candidati::select('nominativo','data_fine')
+		->where("data_fine","<=", $today)
+		->where(function ($scadenze) {
+			$scadenze->where("notif_contr_web","=", null)
+			->orWhere("notif_contr_web","<>", 1);
+		})
+		->get();
+		
+		$up=candidati::select('nominativo','data_fine')
+		->where("data_fine","<=", $today)
+		->where(function ($up) {
+			$up->where("notif_contr_web","=", null)
+			->orWhere("notif_contr_web","<>", 1);
+		})
+		->update(['notif_contr_web' => 0]);
+		
+		return $scadenze;
+	}
+	
 	public function dashboard() {
 		$name="";
-		return view('all_views/dashboard')->with('name', $name);
+		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche
+		//valutare se spostare su un processo esterno all'applicativo
+		$scadenze=$this->check_scadenze_contratti();
+		$descr_num="Contratti";		
+		
+		if (count($scadenze)==1) $descr_num="Contratto";
+
+		return view('all_views/dashboard')->with('name', $name)->with('scadenze',$scadenze)->with('descr_num',$descr_num);
 	}
 
 	public function init_newcand() {
@@ -80,6 +110,8 @@ class mainController extends Controller
 		$candidati[0]['taglia']=null;
 		$candidati[0]['status_candidatura']=null;
 		$candidati[0]['note']=null;
+		$candidati[0]['data_inizio']=null;
+		$candidati[0]['data_fine']=null;
 
 		return $candidati;
 	}
@@ -158,6 +190,7 @@ class mainController extends Controller
 	}
 
 	public function save_newcand(Request $request) {
+			
 			$id_user=Auth::user()->id;
 			
 			
@@ -166,11 +199,6 @@ class mainController extends Controller
 				$candidati = candidati::find($id_cand);
 			else
 				$candidati = new candidati;
-			
-			$attestati_arr=$request->input('attestato');
-			$attestati=null;
-			if (is_array($attestati_arr))
-				$attestati=implode(";",$attestati_arr);
 
 			
 			
@@ -197,7 +225,7 @@ class mainController extends Controller
 			$candidati->pec = $request->input('pec');
 			$candidati->iban = $request->input('iban');
 			
-			$candidati->attestati = $attestati;
+
 			
 			//Dati Specifici
 				
@@ -242,8 +270,8 @@ class mainController extends Controller
 			$candidati->subappalto = $request->input('subappalto');
 			$candidati->affiancamento = $request->input('affiancamento');
 			$candidati->data_inizio = $request->input('data_inizio');
+			$candidati->data_fine = $request->input('data_fine');
 			//$candidati->doc = $request->input('doc');
-			
 			
 			
 			if ($request->has("sub_assunzione")) {
@@ -252,14 +280,34 @@ class mainController extends Controller
 				$candidati->tipo_anagr = "ASS";
 			}
 
-
-
 			$candidati->save();		
-
+			if ($id_cand==0) $id_cand=$candidati->id;
 			
-		$name="";
+			$this->storicizza($request,$id_cand);
 		
 		return $this->listcand($request);
+		
+	}
+	
+	
+	public function storicizza($request,$id_cand) {
+	
+		//storicizzazione manuale campo x campo
+		//società-->tramite aggancio
+		$story_all=new story_all;
+		
+		$ref=$request->input('soc_ass');
+		$info=societa::select('descrizione')
+		->where('id','=',$ref)->get();
+		if (isset($info[0]->descrizione)){
+			$value=$info[0]->descrizione;
+			$story_all->id_cand=$id_cand;
+			$story_all->id_campo="soc_ass";
+			$story_all->value=$value;
+			$story_all->save();
+		}	
+		
+		
 		
 	}
 

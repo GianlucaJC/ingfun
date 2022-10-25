@@ -76,6 +76,8 @@ Route::group(['only_log' => ['auth']], function () {
 
 //routing Ajax
 
+Route::post('azzera_notif', 'App\Http\Controllers\AjaxControllerCand@azzera_notif');
+
 Route::post('dele_curr', 'App\Http\Controllers\AjaxControllerCand@dele_curr');
 Route::post('remove_doc', 'App\Http\Controllers\AjaxControllerCand@remove_doc');
 Route::post('update_doc', 'App\Http\Controllers\AjaxControllerCand@update_doc');
@@ -93,6 +95,8 @@ Route::post('refresh_ccnl', 'App\Http\Controllers\AjaxControllerCand@refresh_ccn
 Route::post('refresh_tipologia_contr', 'App\Http\Controllers\AjaxControllerCand@refresh_tipologia_contr');
 Route::post('refresh_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipo_doc');
 Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
+
+Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
 
 
 require __DIR__.'/auth.php';

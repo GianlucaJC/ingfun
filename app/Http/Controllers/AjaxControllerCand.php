@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Storage;
 
 use Illuminate\Http\Request;
 use App\Models\italy_provincies;
@@ -17,11 +18,32 @@ use App\Models\tipologia_contr;
 use App\Models\tipo_doc;
 use App\Models\voci_doc;
 use App\Models\ref_doc;
-
+use App\Models\story_all;
+use DB;
 
 
 class AjaxControllerCand extends Controller
 {
+
+	public function storia_campo() {
+		$id_cand=$_POST['id_cand'];
+		$id_campo=$_POST['id_campo'];
+		
+		$story=story_all::select('value','created_at')
+		->where("id_campo","=", $id_campo)
+		->where("id_cand","=", $id_cand)
+		->groupBy("value",DB::raw('Date(created_at)'))
+		->get();
+		return json_encode($story);
+	}
+
+	public function azzera_notif() {
+		$up=candidati::where("notif_contr_web","<>", null)
+		->update(['notif_contr_web' => 1]);
+		$status['status']="OK";
+		$status['message']="Notifica eliminata con successo!";
+		return json_encode($status);
+	}
 	
 	public function update_doc() {
 		$filename=$_POST['filename'];

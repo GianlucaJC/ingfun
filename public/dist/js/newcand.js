@@ -528,3 +528,48 @@ base_path = $("#url").val();
 		return console.log(status, err);
 	})
 }
+
+
+function storia(id_campo,id_cand) {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	$("#title_modal").html("Informazioni storiche sul campo")
+	$('#modal_story').modal('toggle')
+	$("#body_modal").html("Caricamento informazioni in corso...")			
+	
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/storia_campo",
+		data: {id_campo: id_campo, id_cand:id_cand, _token: CSRF_TOKEN},
+		success: function (data) {
+			html="";
+			html+="<div class='container py-5'>";
+				html+="<div class='row'>";
+				 html+="<div class='col-md-12'>";
+				  html+="<div id='content'>";
+					html+="<ul class='timeline-1 text-black'>";
+
+					$.each(JSON.parse(data), function (i, item) {
+						console.log(item.value,item.created_at)
+			
+						html+="<li class='event' data-date='"+item.created_at+"'>";
+							html+="<h4 class='mb-3'></h4>";
+							html+="<p>"+item.value+"</p>";
+						html+="</li>";
+					});
+							  
+					html+="</ul>";
+				  html+="</div>";
+				html+="</div>";
+			  html+="</div>";
+			html+="</div>";
+
+			$("#body_modal").html(html)			
+		}
+	});
+}

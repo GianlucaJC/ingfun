@@ -260,7 +260,7 @@
 
 	@if ($id_cand!="0") 
 		<div id='div_attestati' class='mb-3'>
-			<h3>Percorso Formativo</h3>
+			<h3>Certificati Formativi</h3>
 			<!--
 				<a href="{{ route('frm_attestati') }}" target="_blank" class="link-primary" onclick="$('.up').hide();$('#div_up2').show()">
 					Definisci nuovo
@@ -465,11 +465,11 @@
 									
 										<a href="{{url('allegati')}}/doc/{{$doc->id_cand}}/{{$doc->nomefile}}" target='_blank'>
 									<?php	
-											echo "<button type='button' class='btn btn-info btn-sm' ><i class='far fa-file'></i></button>";
+											echo "<button type='button' class='btn btn-info btn-sm' ><i class='far fa-file' title='vedi allegato'></i></button>";
 										echo "</a> ";
 										
 										echo "<a href='javascript:void(0)' onclick=\"remove_doc('$doc_id',$id_cand)\">";
-											echo "<button type='button' class='btn btn-danger btn-sm' alt='Remove'><i class='fas fa-trash'></i></button>";
+											echo "<button type='button' class='btn btn-danger btn-sm' alt='Remove'><i class='fas fa-trash' title='rimuovi allegato'></i></button>";
 										echo "</a>";
 										
 									echo "</td>";

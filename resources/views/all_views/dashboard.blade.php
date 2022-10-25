@@ -7,8 +7,34 @@ use App\Models\User;
 
 @section('title', 'IngFUN')
 
-@section('content_main')
+@section('notifiche') 
 
+	@if (count($scadenze)>0)
+      <li class="nav-item dropdown notif" onclick="azzera_notif()">
+        <a class="nav-link" data-toggle="dropdown" href="#">
+          <i class="far fa-bell"></i>
+          <span class="badge badge-warning navbar-badge">{{count($scadenze)}}</span>
+        </a>
+        <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+          <span class="dropdown-header">Avvisi di scadenza</span>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item">
+            <i class="fas fa-file-signature"></i> {{count($scadenze)}} {{$descr_num}} in scadenza
+            <span class="float-right text-muted text-sm"></span>
+          </a>
+          <div class="dropdown-divider"></div>
+
+          <div class="dropdown-divider"></div>
+          <div class="dropdown-divider"></div>
+          <a href="#" class="dropdown-item dropdown-footer">Vai al dettaglio</a>
+        </div>
+      </li>
+	@endif  
+@endsection
+
+@section('content_main')
+  <input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+  <input type="hidden" value="{{url('/')}}" id="url" name="url">
   <!-- Content Wrapper. Contains page content -->
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -175,4 +201,7 @@ use App\Models\User;
 	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
+	
+	<script src="{{ URL::asset('/') }}dist/js/dash.js?ver=1.05"></script>
+	
 @endsection

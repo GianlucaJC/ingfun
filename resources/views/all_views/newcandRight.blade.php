@@ -286,7 +286,7 @@
 				<div class="col-md-6">
 				  <div class="form-floating mb-3 mb-md-0">
 					
-					<select class="form-select" id="soc_ass" aria-label="Appartenenza" name='appartenenza' >
+					<select class="form-select" id="appartenenza" aria-label="Appartenenza" name='appartenenza' >
 						<option value=''>Select...</option>
 						<option value='1'
 						@if ($candidati[0]['appartenenza']=="1") 
@@ -345,10 +345,15 @@
 				<span id='div_up3' class='up' style='display:none'>
 					<a href='javascript:void(0)' class='ml-2' onclick='refresh_soc()'>
 						<font color='green'>
-							<i class="fas fa-sync-alt"></i>
+							<i class="fas fa-sync-alt" title='refresh'></i>
 						</font>	
 					</a>	
 				</span>
+				
+				
+				<a href='javascript:void(0)' class='link-danger' onclick="storia('soc_ass',{{$id_cand}})">
+				<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+				</a>
 				
 				</div>
 			</div>
@@ -600,12 +605,18 @@
 		<div class="row mb-3">
 			@if ($id_cand!=0)
 				<?php $w_col=6; ?>
-				<div class="col-md-6">
+				<div class="col-md-3">
 					<div class="form-floating">
 						<input class="form-control" id="data_inizio" name='data_inizio' type="date"   value="{{ $candidati[0]['data_inizio']}}"  />
-						<label for="data_inizio">Data inizio*</label>
+						<label for="data_inizio">Data inizio</label>
 					</div>
 				</div>
+				<div class="col-md-3">
+					<div class="form-floating">
+						<input class="form-control" id="data_fine" name='data_fine' type="date"   value="{{ $candidati[0]['data_fine']}}"  />
+						<label for="data_fine">Data fine</label>
+					</div>
+				</div>				
 			@endif
 			
 			<div class="col-md-{{$w_col}}">

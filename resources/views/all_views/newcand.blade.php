@@ -12,6 +12,89 @@
   <link href="{{ URL::asset('/') }}dist/css/upload/styles.css?ver=1.1" rel="stylesheet">  
 @endsection
 
+<!-- style for timeline --- utile per storicizzazione su finestra modal!-->
+<style>
+	.timeline-1 {
+	  border-left: 3px solid #b565a7;
+	  border-bottom-right-radius: 4px;
+	  border-top-right-radius: 4px;
+	  background: rgba(177, 99, 163, 0.09);
+	  margin: 0 auto;
+	  position: relative;
+	  padding: 50px;
+	  list-style: none;
+	  text-align: left;
+	  max-width: 40%;
+	}
+
+	@media (max-width: 767px) {
+	  .timeline-1 {
+		max-width: 98%;
+		padding: 25px;
+	  }
+	}
+
+	.timeline-1 .event {
+	  border-bottom: 1px dashed #000;
+	  padding-bottom: 25px;
+	  margin-bottom: 25px;
+	  position: relative;
+	}
+
+	@media (max-width: 767px) {
+	  .timeline-1 .event {
+		padding-top: 30px;
+	  }
+	}
+
+	.timeline-1 .event:last-of-type {
+	  padding-bottom: 0;
+	  margin-bottom: 0;
+	  border: none;
+	}
+
+	.timeline-1 .event:before,
+	.timeline-1 .event:after {
+	  position: absolute;
+	  display: block;
+	  top: 0;
+	}
+
+	.timeline-1 .event:before {
+	  left: -207px;
+	  content: attr(data-date);
+	  text-align: right;
+	  font-weight: 100;
+	  font-size: 0.9em;
+	  min-width: 120px;
+	}
+
+	@media (max-width: 767px) {
+	  .timeline-1 .event:before {
+		left: 0px;
+		text-align: left;
+	  }
+	}
+
+	.timeline-1 .event:after {
+	  -webkit-box-shadow: 0 0 0 3px #b565a7;
+	  box-shadow: 0 0 0 3px #b565a7;
+	  left: -55.8px;
+	  background: #fff;
+	  border-radius: 50%;
+	  height: 9px;
+	  width: 9px;
+	  content: "";
+	  top: 5px;
+	}
+
+	@media (max-width: 767px) {
+	  .timeline-1 .event:after {
+		left: -31.8px;
+	  }
+	}
+</style> 
+<!-- fine style timeline !-->
 
 @section('content_main')
 <form method='post' action="{{ route('save_newcand') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" novalidate>
@@ -53,8 +136,12 @@
 			
 			@include('all_views.newcandRight')
 			@if ($id_cand!=0 && $candidati[0]['status_candidatura']!="3")
-				<button type="submit" onclick="" name='sub_assunzione' id='sub_assunzione' class="btn btn-primary btn-lg btn-block" value="1">INOLTRA CANDIDATURA</button>         
+				<button type="submit" onclick="" name='sub_assunzione' id='sub_assunzione' class="btn btn-primary btn-lg btn-block mb-3" value="1">INOLTRA CANDIDATURA</button><hr>       
 			@endif
+
+			<a href="{{url('/listcand')}}" class="btn btn-info btn-lg active mb-2">
+				TORNA ALLA LISTA CANDIDATURE SENZA SALVARE      
+			</a>
 
 
 			<button type="submit" name='sub_newcand' id='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
@@ -72,6 +159,32 @@
   <!-- /.content-wrapper -->
 </form>  
   
+  
+
+<!-- Modal -->
+<div class="modal fade" id="modal_story" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="title_modal">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id='body_modal'>
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div> 
+  
+  
+
+  
  @endsection
  
 @section('content_plugin')
@@ -81,7 +194,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.64"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.68"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
