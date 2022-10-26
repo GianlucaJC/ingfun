@@ -499,7 +499,7 @@ base_path = $("#url").val();
 		}
 
 		$('html, body').animate({
-			scrollTop: $("#div_doc").offset().top-370
+			scrollTop: $("#div_allega").offset().top
 		}, 1500);		
 	}	
 	
@@ -551,8 +551,8 @@ function storia(id_campo,id_cand) {
 			html+="<table class='display' id='tbl_story'>";
 				html+="<thead>";
 					html+="<tr>";
-						html+="<th>Descrizione</th>";
 						html+="<th>Creato il</th>";
+						html+="<th>Descrizione</th>";
 					html+="</tr>";
 				html+="</thead>";	
 				html+="<tbody>";
@@ -560,10 +560,10 @@ function storia(id_campo,id_cand) {
 						
 						html+="<tr>";
 							html+="<td>";
-								html+=item.value
+								html+=item.created_at
 							html+="</td>";
 							html+="<td>";
-								html+=item.created_at
+								html+=item.value
 							html+="</td>";
 						html+="</tr>";
 					});

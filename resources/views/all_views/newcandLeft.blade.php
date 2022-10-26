@@ -335,7 +335,7 @@
 		<center>
 		<h3>Area Documenti</h3>
 			Ultimi 5 - 
-			<a href="{{url('documenti')}}" target='_blank'>
+			<a href="{{url('documenti')}}/{{$id_cand}}" target='_blank'>
 				Clicca quì per l'Area Completa
 			</a>
 		</center>

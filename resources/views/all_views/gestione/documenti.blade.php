@@ -56,7 +56,7 @@
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			<input type='hidden' name='id_cand' name='id_cand' value='{{$id_cand}}'>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
-			
+			<input type="hidden" id='id_ref' name='id_ref' value="{{$id_ref}}">
 			<input type='hidden' name='allegato' id='allegato'>
 				@if (session('status'))
 					<div class="alert alert-success">
@@ -71,10 +71,11 @@
 					</div>
 				@endif
 
+			
 			<div class="row mb-3">
 				<div class="col-md-12">
 					<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" name="id_cand" id="id_cand" onchange="$('#frm_documenti').submit()" >
+						<select class="form-select" name="id_cand" id="id_cand" onchange="$('#id_ref').val(this.value);$('#frm_documenti').submit()" >
 							<option value=''>Select...</option>
 							@foreach($candidati as $cand)
 								<option value='{{ $cand->id }}' 	

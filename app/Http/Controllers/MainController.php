@@ -294,25 +294,78 @@ class mainController extends Controller
 	
 		//storicizzazione manuale campo x campo
 		//società-->tramite aggancio
-		$story_all=new story_all;
+		
 
 		
-		$ref=$request->input('soc_ass');
-		$info=societa::select('descrizione')
-		->where('id','=',$ref)->get();
-		if (isset($info[0]->descrizione)){
-			$value=$info[0]->descrizione;
+		//inserimento dati tramite aggangio
+		for ($sca=1;$sca<=4;$sca++) {
+			$story_all=new story_all;
+			if ($sca==1) $voce="soc_ass";
+			if ($sca==2) $voce="tipologia_contr";
+			if ($sca==3) $voce="tipo_contr";
+			if ($sca==4) $voce="contratto";
+			$ref=$request->input($voce);
+
+			if ($sca==1) {
+				$info=societa::select('descrizione')->where('id','=',$ref)->get();
+			}
+			if ($sca==2) {
+				$info=tipologia_contr::select('descrizione')->where('id','=',$ref)->get();
+			}
+			if ($sca==3) {
+				$info=tipoc::select('descrizione')->where('id','=',$ref)->get();
+			}
+			if ($sca==4) {
+				$info=ccnl::select('descrizione')->where('id','=',$ref)->get();
+			}
+			$value="<null>";
+			if (isset($info[0]->descrizione)){
+				$value=$info[0]->descrizione;
+				if ($value==null) $value="<null>";
+			}	
+			$last_insert=$story_all::where('id_cand','=',$id_cand)
+			->where('id_campo','=',$voce)
+			->orderByDesc('id')->take(1)->get();
+			$insert=false;
+			if (isset($last_insert[0]->value)) {
+				if ($last_insert[0]->value!=$value) $insert=true;
+			} else $insert=true;
+			if ($insert==true) {					
+				$story_all->id_cand=$id_cand;
+				$story_all->id_campo=$voce;
+				$story_all->value=$value;
+				$story_all->save();
+			}
 			
-			$story_all::where('id_cand','=',$id_cand)
-			->where('value','=',$value)
-			->delete();
-			
-			$story_all->id_cand=$id_cand;
-			$story_all->id_campo="soc_ass";
-			$story_all->value=$value;
-			$story_all->save();
-		}	
+		}
 		
+		//inserimento dati diretti
+		$voce="";
+		for ($sca=1;$sca<=5;$sca++) {
+			if ($sca==1) $voce="data_inizio";
+			if ($sca==2) $voce="data_fine";
+			if ($sca==3) $voce="ore_sett";
+			if ($sca==4) $voce="livello";
+			if ($sca==5) $voce="zona_lavoro";
+			$story_all=new story_all;
+			$value=$request->input($voce);
+			if ($value==null) $value="<null>";
+
+			$last_insert=$story_all::where('id_cand','=',$id_cand)
+			->where('id_campo','=',$voce)
+			->orderByDesc('id')->take(1)->get();
+			$insert=false;
+			if (isset($last_insert[0]->value)) {
+				if ($last_insert[0]->value!=$value) $insert=true;
+			} else $insert=true;
+			if ($insert==true) {
+				$story_all->id_cand=$id_cand;
+				$story_all->id_campo=$voce;
+				$story_all->value=$value;
+				$story_all->save();
+			}
+		}
+
 		
 		
 	}

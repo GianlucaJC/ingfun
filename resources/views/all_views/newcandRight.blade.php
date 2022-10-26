@@ -268,7 +268,10 @@
 							<i class="fas fa-sync-alt"></i>
 						</font>	
 					</a>	
-				</span>				
+				</span>	
+				<a href='javascript:void(0)' class='link-danger' onclick="storia('tipologia_contr',{{$id_cand}})">
+				<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+				</a>				
 				</div>
 			</div>
 			
@@ -277,6 +280,10 @@
 					<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control" name="ore_sett" id="ore_sett" value="{{$candidati[0]['ore_sett']}}" />		  
 					<label for="ore_sett">Ore settimanali</label>
 				</div>		
+				<a href='javascript:void(0)' class='link-danger' onclick="storia('ore_sett',{{$id_cand}})">
+				<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+				</a>
+				
 			</div>	
 		</div>		
 
@@ -501,6 +508,9 @@
 						</font>	
 					</a>	
 				</span>	
+				<a href='javascript:void(0)' class='link-danger' onclick="storia('contratto',{{$id_cand}})">
+				<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+				</a>				
 				</div>
 			</div>
 		</div>
@@ -510,6 +520,10 @@
 					<div class="form-floating">
 						<input class="form-control" id="livello" name='livello' type="text" value="{{ $candidati[0]['livello']}}" maxlength=40 />
 						<label for="livello">Livello</label>
+						
+						<a href='javascript:void(0)' class='link-danger' onclick="storia('livello',{{$id_cand}})">
+						<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+						</a>				
 					</div>
 				</div>
 				<div class="col-md-6">
@@ -539,6 +553,9 @@
 							</font>	
 						</a>	
 					</span>
+						<a href='javascript:void(0)' class='link-danger' onclick="storia('tipo_contr',{{$id_cand}})">
+						<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+						</a>						
 					
 					</div>
 				</div>						
@@ -565,6 +582,9 @@
 			<div class="form-floating">
 				<input class="form-control" id="zona_lavoro" name='zona_lavoro' type="text"  maxlength=100 value="{{ $candidati[0]['zona_lavoro']}}"  />
 				<label for="zona_lavoro">Zona di lavoro</label>
+				<a href='javascript:void(0)' class='link-danger' onclick="storia('zona_lavoro',{{$id_cand}})">
+				<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+				</a>				
 			</div>
 		</div>
 	</div>	
@@ -610,12 +630,20 @@
 						<input class="form-control" id="data_inizio" name='data_inizio' type="date"   value="{{ $candidati[0]['data_inizio']}}"  />
 						<label for="data_inizio">Data inizio</label>
 					</div>
+				<a href='javascript:void(0)' class='link-danger' onclick="storia('data_inizio',{{$id_cand}})">
+				<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+				</a>
+
 				</div>
+				
 				<div class="col-md-3">
 					<div class="form-floating">
 						<input class="form-control" id="data_fine" name='data_fine' type="date"   value="{{ $candidati[0]['data_fine']}}"  />
 						<label for="data_fine">Data fine</label>
 					</div>
+				<a href='javascript:void(0)' class='link-danger' onclick="storia('data_fine',{{$id_cand}})">
+				<i class="fa fa-history ml-2" title='storicizzazione' ></i>
+				</a>
 				</div>				
 			@endif
 			

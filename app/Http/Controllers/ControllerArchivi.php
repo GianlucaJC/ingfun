@@ -19,10 +19,13 @@ use DB;
 class ControllerArchivi extends Controller
 {
 
-	public function documenti(){
-		
-		$id_cand=request()->input("id_cand");
-		if (strlen($id_cand)==0) $id_cand=0;
+	public function documenti($id_ref=0){
+		if (request()->has("id_ref")) $id_ref=request()->input("id_ref");
+		if ($id_ref!=0) $id_cand=$id_ref;
+		else {
+			$id_cand=request()->input("id_cand");
+			if (strlen($id_cand)==0) $id_cand=0;
+		}
 		if (session('id_cand')) $id_cand=session('id_cand');
 
 		if (request()->has("save_doc")) {
@@ -88,9 +91,10 @@ class ControllerArchivi extends Controller
 		->orderByDesc('r.id')
 		->get();		
 		
+		
 
 		
-		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('elenco_doc',$elenco_doc);
+		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('elenco_doc',$elenco_doc)->with("id_ref",$id_ref);
 		
 	}
 
