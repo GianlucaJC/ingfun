@@ -295,12 +295,18 @@ class mainController extends Controller
 		//storicizzazione manuale campo x campo
 		//società-->tramite aggancio
 		$story_all=new story_all;
+
 		
 		$ref=$request->input('soc_ass');
 		$info=societa::select('descrizione')
 		->where('id','=',$ref)->get();
 		if (isset($info[0]->descrizione)){
 			$value=$info[0]->descrizione;
+			
+			$story_all::where('id_cand','=',$id_cand)
+			->where('value','=',$value)
+			->delete();
+			
 			$story_all->id_cand=$id_cand;
 			$story_all->id_campo="soc_ass";
 			$story_all->value=$value;

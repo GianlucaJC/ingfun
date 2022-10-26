@@ -32,8 +32,10 @@ class AjaxControllerCand extends Controller
 		$story=story_all::select('value','created_at')
 		->where("id_campo","=", $id_campo)
 		->where("id_cand","=", $id_cand)
-		->groupBy("value",DB::raw('Date(created_at)'))
+		->groupBy("value")
+		->orderByDesc("created_at")
 		->get();
+		//->groupBy("value",DB::raw('Date(created_at)'))
 		return json_encode($story);
 	}
 

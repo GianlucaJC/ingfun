@@ -2,6 +2,9 @@
 
 @section('title', 'IngFUN')
 
+
+
+
 @section('extra_style')  
   <!-- Select2 -->
   <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2/css/select2.min.css">
@@ -10,91 +13,10 @@
   <link href="{{ URL::asset('/') }}dist/css/upload/jquery.dm-uploader.min.css" rel="stylesheet">
   <!-- per upload -->  
   <link href="{{ URL::asset('/') }}dist/css/upload/styles.css?ver=1.1" rel="stylesheet">  
+  <link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
+
 @endsection
 
-<!-- style for timeline --- utile per storicizzazione su finestra modal!-->
-<style>
-	.timeline-1 {
-	  border-left: 3px solid #b565a7;
-	  border-bottom-right-radius: 4px;
-	  border-top-right-radius: 4px;
-	  background: rgba(177, 99, 163, 0.09);
-	  margin: 0 auto;
-	  position: relative;
-	  padding: 50px;
-	  list-style: none;
-	  text-align: left;
-	  max-width: 40%;
-	}
-
-	@media (max-width: 767px) {
-	  .timeline-1 {
-		max-width: 98%;
-		padding: 25px;
-	  }
-	}
-
-	.timeline-1 .event {
-	  border-bottom: 1px dashed #000;
-	  padding-bottom: 25px;
-	  margin-bottom: 25px;
-	  position: relative;
-	}
-
-	@media (max-width: 767px) {
-	  .timeline-1 .event {
-		padding-top: 30px;
-	  }
-	}
-
-	.timeline-1 .event:last-of-type {
-	  padding-bottom: 0;
-	  margin-bottom: 0;
-	  border: none;
-	}
-
-	.timeline-1 .event:before,
-	.timeline-1 .event:after {
-	  position: absolute;
-	  display: block;
-	  top: 0;
-	}
-
-	.timeline-1 .event:before {
-	  left: -207px;
-	  content: attr(data-date);
-	  text-align: right;
-	  font-weight: 100;
-	  font-size: 0.9em;
-	  min-width: 120px;
-	}
-
-	@media (max-width: 767px) {
-	  .timeline-1 .event:before {
-		left: 0px;
-		text-align: left;
-	  }
-	}
-
-	.timeline-1 .event:after {
-	  -webkit-box-shadow: 0 0 0 3px #b565a7;
-	  box-shadow: 0 0 0 3px #b565a7;
-	  left: -55.8px;
-	  background: #fff;
-	  border-radius: 50%;
-	  height: 9px;
-	  width: 9px;
-	  content: "";
-	  top: 5px;
-	}
-
-	@media (max-width: 767px) {
-	  .timeline-1 .event:after {
-		left: -31.8px;
-	  }
-	}
-</style> 
-<!-- fine style timeline !-->
 
 @section('content_main')
 <form method='post' action="{{ route('save_newcand') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" novalidate>
@@ -156,10 +78,6 @@
     </div>
     <!-- /.content -->
   </div>
-  <!-- /.content-wrapper -->
-</form>  
-  
-  
 
 <!-- Modal -->
 <div class="modal fade" id="modal_story" tabindex="-1" role="dialog" aria-labelledby="exampleModalCenterTitle" aria-hidden="true">
@@ -181,6 +99,11 @@
     </div>
   </div>
 </div> 
+  <!-- /.content-wrapper -->
+</form>  
+  
+  
+
   
   
 
@@ -194,7 +117,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.68"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.69"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
@@ -203,4 +126,19 @@
 	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.24"></script>
 	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.356"></script>
 	<!-- fine upload -->		
+	
+
+	<!-- inclusione standard
+		per personalizzare le dipendenze DataTables in funzione delle opzioni da aggiungere: https://datatables.net/download/
+	!-->
+	
+	<!-- dipendenze DataTables !-->
+		<link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.css"/>
+		 
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+		<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.js"></script>
+	<!-- fine DataTables !-->
+
+	
 @endsection 
