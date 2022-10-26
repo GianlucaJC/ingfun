@@ -9,7 +9,7 @@ use App\Models\User;
 
 @section('notifiche') 
 
-	@if (count($scadenze)>0)
+	@if (1==2)
       <li class="nav-item dropdown notif" onclick="azzera_notif()">
         <a class="nav-link" data-toggle="dropdown" href="#">
           <i class="far fa-bell"></i>
@@ -36,10 +36,23 @@ use App\Models\User;
   <input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
   <input type="hidden" value="{{url('/')}}" id="url" name="url">
   <!-- Content Wrapper. Contains page content -->
+
+
+  
   <div class="content-wrapper">
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
+		@if (count($scadenze)>0)
+			<div class="alert alert-warning" role="alert">
+				<b>Attenzione!</b> <br>
+				{{count($scadenze)}} {{$descr_num}} in scadenza
+				<hr>
+				
+				<button type="button" class="btn btn-info" onclick="azzera_notif()" data-dismiss="alert">Clicca quì chiudere l'avviso e non mostrarlo al prossimo avvio</button>
+			</div>
+		@endif	
+	
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0">Divisione FUNEBRE | Servizi in primo piano</h1>

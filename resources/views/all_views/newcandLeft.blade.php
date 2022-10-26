@@ -418,7 +418,7 @@
 						<button style='font-size:12px' type="button" class="btn btn-info"><i class="far fa-file-alt"></i> Allega documento</button>						
 					</a>
 				</div>
-				<small>N.B. I check del Percorso Formativo saranno aggiornati dopo il salvataggio della scheda (ammesso che siano inseriti/rimossi documenti relativi)</small>
+				<small>N.B. I check dei Certificati Formativi saranno aggiornati dopo il salvataggio della scheda (ammesso che siano inseriti/rimossi documenti relativi)</small>
 			</div>	
 		</div>
 		

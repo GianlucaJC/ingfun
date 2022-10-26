@@ -553,10 +553,18 @@ function storia(id_campo,id_cand) {
 					html+="<tr>";
 						html+="<th>Creato il</th>";
 						html+="<th>Descrizione</th>";
+						html+="<th>Nominativo</th>";
+						html+="<th>Data inizio</th>";
+						html+="<th>Data fine</th>";
+
+
 					html+="</tr>";
 				html+="</thead>";	
 				html+="<tbody>";
-					$.each(JSON.parse(data), function (i, item) {
+					json=JSON.parse(data);
+					candidato=json["candidato"][0]
+					story=json["story"]
+					$.each(story, function (i, item) {
 						
 						html+="<tr>";
 							html+="<td>";
@@ -565,6 +573,18 @@ function storia(id_campo,id_cand) {
 							html+="<td>";
 								html+=item.value
 							html+="</td>";
+							html+="<td>";
+								html+=candidato.nominativo
+							html+="</td>";
+							html+="<td>";
+								html+=candidato.data_inizio
+							html+="</td>";
+							html+="<td>";
+								html+=candidato.data_fine
+							html+="</td>";
+
+							
+
 						html+="</tr>";
 					});
 				html+="</tbody>";
@@ -578,10 +598,11 @@ function storia(id_campo,id_cand) {
 }
 
 function init_table() {
+	
     $('#tbl_story').DataTable({
 		dom: 'Bfrtip',
 		buttons: [
-			'excel', 'pdf'
+			'excel', 'pdf',
 		],		
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',

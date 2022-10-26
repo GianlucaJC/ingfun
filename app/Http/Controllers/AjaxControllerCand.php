@@ -34,8 +34,15 @@ class AjaxControllerCand extends Controller
 		->where("id_cand","=", $id_cand)
 		->orderByDesc("created_at")
 		->get();
-		//->groupBy("value",DB::raw('Date(created_at)'))
-		return json_encode($story);
+		
+		$candidato = DB::table('candidatis as c')
+		->select('c.nominativo','c.data_inizio','c.data_fine')
+		->where("id","=", $id_cand)
+		->get();		
+	
+		$risp['story']=$story;
+		$risp['candidato']=$candidato;
+		return json_encode($risp);
 	}
 
 	public function azzera_notif() {

@@ -363,6 +363,14 @@ class mainController extends Controller
 				$story_all->id_campo=$voce;
 				$story_all->value=$value;
 				$story_all->save();
+				
+				//se si sta modificando la data di fine contratto
+				//rendo nullo il campo notif_contr_web per eventuali notifiche
+				//in home page e predisposizione nuovo invio mail
+				if ($voce=="data_fine") {
+					candidati::where('id','=',$id_cand)
+					->update(['notif_contr_web' => null,'notif_contr_mail' => 0]);
+				}	
 			}
 		}
 
@@ -379,7 +387,7 @@ class mainController extends Controller
 
 		if (strlen($dele_cand)!=0) {
 			candidati::where('id', $dele_cand)
-			  ->update(['dele' => 1]);			
+			  ->update(['dele' => 1]);
 		}		
 		if (strlen($restore_cand)!=0) {
 			candidati::where('id', $restore_cand)
