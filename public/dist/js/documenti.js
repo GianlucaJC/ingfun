@@ -46,6 +46,30 @@ function new_doc() {
 	$('#div_new_doc').toggle(150);	
 }
 
+
+function send_mail(id_cand,nome_file) {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/send_mail",
+		data: {_token: CSRF_TOKEN, id_cand:id_cand, nome_file:nome_file},
+		success: function (data) {
+			console.log(data);
+			/*
+			$.each(JSON.parse(data), function (i, item) {
+						
+			});
+			*/
+		}
+	});
+}
+
 function set_sezione(id_cand) {
 base_path = $("#url").val();
 	

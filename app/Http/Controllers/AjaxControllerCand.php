@@ -25,6 +25,16 @@ use DB;
 class AjaxControllerCand extends Controller
 {
 
+	public function send_mail() {
+		$id_cand=$_POST['id_cand'];
+		$nome_file=$_POST['nome_file'];
+		$status['id_cand']=$id_cand;
+		$status['nome_file']=$nome_file;
+		$status['status']="OK";
+		$status['message']="Mail inviata con successo!";
+		return json_encode($status);
+	}
+
 	public function storia_campo() {
 		$id_cand=$_POST['id_cand'];
 		$id_campo=$_POST['id_campo'];

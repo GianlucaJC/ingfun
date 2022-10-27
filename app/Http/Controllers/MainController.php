@@ -59,9 +59,9 @@ class mainController extends Controller
 		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche
 		//valutare se spostare su un processo esterno all'applicativo
 		$scadenze=$this->check_scadenze_contratti();
-		$descr_num="Contratti";		
+		$descr_num="nuovi Contratti";		
 		
-		if (count($scadenze)==1) $descr_num="Contratto";
+		if (count($scadenze)==1) $descr_num="nuovo Contratto";
 
 		return view('all_views/dashboard')->with('name', $name)->with('scadenze',$scadenze)->with('descr_num',$descr_num);
 	}

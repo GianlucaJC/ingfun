@@ -224,11 +224,16 @@
 								<td>{{$document->created_at}}</td>
 								<td>
 									<a href="{{url('allegati')}}/doc/{{$document->id_cand}}/{{$document->nomefile}}" target='_blank'>
-										<button type="button" class="btn btn-info" alt='Edit'><i class="fa fa-file"></i></button>
+										<button type="button" class="btn btn-info" alt='Edit' title="Vedi documento"><i class="fa fa-file"></i></button>
 									</a>
 									<a href='#' onclick="dele_element({{$document->id}})">
-										<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+										<button type="submit" name='dele_ele' class="btn btn-danger" title="Elimina documento"><i class="fas fa-trash"></i></button>	
 									</a>
+
+									<a href='#' onclick="send_mail({{$document->id_cand}},'{{$document->nomefile}}')">
+										<button type="button" name='dele_ele' class="btn btn-warning" title='Invia mail'><i class="fa fa-share"></i></button>	
+									</a>
+
 
 								
 								</td>
@@ -294,6 +299,6 @@
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.54"></script>
+	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.55"></script>
 
 @endsection

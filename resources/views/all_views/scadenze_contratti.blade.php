@@ -27,12 +27,12 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">GESTIONE PERSONALE</h1>
+            <h1 class="m-0">SCADENZE CONTRATTUALI</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-              <li class="breadcrumb-item active">Gestione Personale</li>
+              <li class="breadcrumb-item active">Scadenze Contratti</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -85,35 +85,25 @@
 							</tr>
 						</thead>
 						<tbody>
-							@foreach($candidati as $candidato)
+							@foreach($scadenze as $scadenza)
 								<tr>
 									<td>
-										@if ($candidato->dele=="0") 
-											<a href="{{ route('newcand',['id'=>$candidato->id]) }}" >
-												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-											</a>
-										@endif
-									</td>									
-									
+										<a href="{{ route('newcand',['id'=>$scadenza->id]) }}" >
+											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+										</a>
+									</td>
+
 									<td>
-										@if ($candidato->dele=="1") 
-											<font color='red'><del> 
-										@endif
-										
-										{{ $candidato->nominativo }}
-										
-										@if ($candidato->dele=="1") 
-											</del></font>
-										@endif											
+										{{ $scadenza->nominativo }}
 									</td>
 									<td>
-									@if ($candidato->status_candidatura=="1") IN GESTIONE @endif
-									@if ($candidato->status_candidatura=="2") RESPINTO @endif
-									@if ($candidato->status_candidatura=="3") ASSUNTO @endif
+									@if ($scadenza->status_candidatura=="1") IN GESTIONE @endif
+									@if ($scadenza->status_candidatura=="2") RESPINTO @endif
+									@if ($scadenza->status_candidatura=="3") ASSUNTO @endif
 
 									</td>
-									<td>{{ $candidato->data_inizio }}</td>
-									<td>{{ $candidato->data_fine }}</td>
+									<td>{{ $scadenza->data_inizio }}</td>
+									<td>{{ $scadenza->data_fine }}</td>
 									<td></td>
 									<td>
 									</td>
@@ -151,20 +141,6 @@
 			</div>
 			<!-- /.row -->
 
-			<?php
-				$check="";
-				if ($view_dele=="1") $check="checked";
-			?>
-			<div class="row">
-				<div class="col-lg-12">
-					<div class="form-check form-switch mt-3 ml-3">
-					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_listc').submit()" {{ $check }}>
-					  <label class="form-check-label" for="view_dele">Mostra anche Anagrafiche eliminate</label>
-					</div>
-				</div>
-			</div>	
-			<input type='hidden' id='dele_cand' name='dele_cand'>
-			<input type='hidden' id='restore_cand' name='restore_cand'>
 		</form>
       </div><!-- /.container-fluid -->
     </div>

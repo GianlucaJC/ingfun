@@ -122,9 +122,9 @@ use App\Models\User;
 
 			<div class="row">
 				<div class="col-md-6">
-					<a href="#">
+					<a href="{{ route('scadenze_contratti') }}">
 						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary disabled" type="button">
+						  <button class="btn btn-primary" type="button">
 						  <i class="fas fa-file-signature" style='font-size:36px'></i><br>
 							GESTIONE SCADENZA CONTRATTI
 						  </button>

@@ -32,6 +32,10 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('listpers', [ 'as' => 'listpers', 'uses' => 'App\Http\Controllers\ControllerPersonale@listpers'])->middleware(['permission:gestione_archivi']);
 	Route::post('listpers', [ 'as' => 'listpers', 'uses' => 'App\Http\Controllers\ControllerPersonale@listpers'])->middleware(['permission:gestione_archivi']);
 
+	Route::get('scadenze_contratti', [ 'as' => 'scadenze_contratti', 'uses' => 'App\Http\Controllers\ControllerPersonale@scadenze_contratti'])->middleware(['permission:gestione_archivi']);
+	Route::post('scadenze_contratti', [ 'as' => 'scadenze_contratti', 'uses' => 'App\Http\Controllers\ControllerPersonale@scadenze_contratti'])->middleware(['permission:gestione_archivi']);
+
+
 
 	Route::get('tipo_contratto', [ 'as' => 'tipo_contratto', 'uses' => 'App\Http\Controllers\ControllerArchivi@tipo_contratto'])->middleware(['permission:gestione_archivi']);
 	Route::post('tipo_contratto', [ 'as' => 'tipo_contratto', 'uses' => 'App\Http\Controllers\ControllerArchivi@tipo_contratto'])->middleware(['permission:gestione_archivi']);
@@ -75,28 +79,29 @@ Route::group(['only_log' => ['auth']], function () {
 
 
 //routing Ajax
+Route::group(['only_log' => ['auth']], function () {
+	Route::post('azzera_notif', 'App\Http\Controllers\AjaxControllerCand@azzera_notif');
 
-Route::post('azzera_notif', 'App\Http\Controllers\AjaxControllerCand@azzera_notif');
+	Route::post('dele_curr', 'App\Http\Controllers\AjaxControllerCand@dele_curr');
+	Route::post('remove_doc', 'App\Http\Controllers\AjaxControllerCand@remove_doc');
+	Route::post('update_doc', 'App\Http\Controllers\AjaxControllerCand@update_doc');
 
-Route::post('dele_curr', 'App\Http\Controllers\AjaxControllerCand@dele_curr');
-Route::post('remove_doc', 'App\Http\Controllers\AjaxControllerCand@remove_doc');
-Route::post('update_doc', 'App\Http\Controllers\AjaxControllerCand@update_doc');
+	Route::post('sottotipo', 'App\Http\Controllers\AjaxControllerCand@sottotipo');
+	Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
+	Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
+	Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');
+	Route::post('refresh_tipoc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipoc');
+	Route::post('refresh_soc', 'App\Http\Controllers\AjaxControllerCand@refresh_soc');
+	Route::post('refresh_costo', 'App\Http\Controllers\AjaxControllerCand@refresh_costo');
+	Route::post('refresh_area', 'App\Http\Controllers\AjaxControllerCand@refresh_area');
+	Route::post('refresh_mansione', 'App\Http\Controllers\AjaxControllerCand@refresh_mansione');
+	Route::post('refresh_ccnl', 'App\Http\Controllers\AjaxControllerCand@refresh_ccnl');
+	Route::post('refresh_tipologia_contr', 'App\Http\Controllers\AjaxControllerCand@refresh_tipologia_contr');
+	Route::post('refresh_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipo_doc');
+	Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
 
-Route::post('sottotipo', 'App\Http\Controllers\AjaxControllerCand@sottotipo');
-Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
-Route::post('lista_comuni', 'App\Http\Controllers\AjaxControllerCand@lista_comuni');
-Route::post('lista_cap', 'App\Http\Controllers\AjaxControllerCand@lista_cap');
-Route::post('refresh_tipoc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipoc');
-Route::post('refresh_soc', 'App\Http\Controllers\AjaxControllerCand@refresh_soc');
-Route::post('refresh_costo', 'App\Http\Controllers\AjaxControllerCand@refresh_costo');
-Route::post('refresh_area', 'App\Http\Controllers\AjaxControllerCand@refresh_area');
-Route::post('refresh_mansione', 'App\Http\Controllers\AjaxControllerCand@refresh_mansione');
-Route::post('refresh_ccnl', 'App\Http\Controllers\AjaxControllerCand@refresh_ccnl');
-Route::post('refresh_tipologia_contr', 'App\Http\Controllers\AjaxControllerCand@refresh_tipologia_contr');
-Route::post('refresh_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipo_doc');
-Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
+	Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
 
-Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
-
-
+	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');
+});
 require __DIR__.'/auth.php';

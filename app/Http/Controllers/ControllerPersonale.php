@@ -29,6 +29,16 @@ use Spatie\Permission\Models\Permission;
 class ControllerPersonale extends Controller
 {
 
+	public function scadenze_contratti(Request $request) {
+
+		$today=date("Y-m-d");
+		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine')
+		->where("dele","=",0)
+		->where("data_fine","<=", $today)		
+		->get();
+
+		return view('all_views/scadenze_contratti')->with('scadenze', $scadenze);
+	}
 
 	public function listpers(Request $request) {
 		
