@@ -96,7 +96,8 @@ class mainController extends Controller
 		$candidati[0]['tipo_contratto']=null;
 		$candidati[0]['ore_sett']=null;
 		$candidati[0]['soc_ass']=null;
-		//$candidati[0]['divisione']=null;
+		$candidati[0]['appartenenza']=null;
+		$candidati[0]['subappalto']=null;
 		$candidati[0]['area_impiego']=null;			
 		$candidati[0]['mansione']=null;
 		$candidati[0]['centro_costo']=null;
@@ -116,7 +117,7 @@ class mainController extends Controller
 		return $candidati;
 	}
 
-	public function newcand($id=0) {
+	public function newcand($id=0,$from=0) {
 		$candidati=array();
 		
 		//in caso di nuovo form l'array candidati è vuoto...per cui lo inizializzo 
@@ -186,14 +187,14 @@ class mainController extends Controller
 		})
 		->get();
 		
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc);
+		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc);
 	}
 
 	public function save_newcand(Request $request) {
 			
 			$id_user=Auth::user()->id;
 			
-			
+
 			$id_cand=$request->input('id_cand');
 			if ($id_cand!=0)
 				$candidati = candidati::find($id_cand);
@@ -273,7 +274,12 @@ class mainController extends Controller
 			$candidati->data_fine = $request->input('data_fine');
 			//$candidati->doc = $request->input('doc');
 			
-			
+			$status_candidatura=$request->input('status_candidatura');
+			$candidati->status_candidatura = $status_candidatura;
+			if ($status_candidatura=="1") $candidati->tipo_anagr = "CAND";
+			if ($status_candidatura=="2") $candidati->tipo_anagr = "RESP";
+			if ($status_candidatura=="3") $candidati->tipo_anagr = "ASS";
+				
 			if ($request->has("sub_assunzione")) {
 				$sub_assunzione=$request->input('sub_assunzione');
 				$candidati->status_candidatura = 3;
@@ -285,7 +291,20 @@ class mainController extends Controller
 			
 			$this->storicizza($request,$id_cand);
 		
-		return $this->listcand($request);
+		
+		if ($request->has("sub_newcand_onlysave")) 
+			return redirect()->route("newcand",$id_cand);
+		else {
+			if ($request->input('from')=="0")
+				return $this->listcand($request);
+			elseif ($request->input('from')=="1")
+				return \Redirect::route('listpers');
+			elseif ($request->input('from')=="2")
+				return \Redirect::route('scadenze_contratti');
+			else
+				return $this->listcand($request);				
+			
+		}
 		
 	}
 	

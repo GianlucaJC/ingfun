@@ -88,7 +88,7 @@
 							@foreach($scadenze as $scadenza)
 								<tr>
 									<td>
-										<a href="{{ route('newcand',['id'=>$scadenza->id]) }}" >
+										<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>2]) }}" >
 											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 										</a>
 									</td>
@@ -97,10 +97,10 @@
 										{{ $scadenza->nominativo }}
 									</td>
 									<td>
-									@if ($scadenza->status_candidatura=="1") IN GESTIONE @endif
-									@if ($scadenza->status_candidatura=="2") RESPINTO @endif
-									@if ($scadenza->status_candidatura=="3") ASSUNTO @endif
-
+									@if ($scadenza->status_candidatura=="1") GESTIONE @endif
+									@if ($scadenza->status_candidatura=="2") RESPINTA @endif
+									@if ($scadenza->status_candidatura=="3") ASSUNZIONE 
+									@endif
 									</td>
 									<td>{{ $scadenza->data_inizio }}</td>
 									<td>{{ $scadenza->data_fine }}</td>

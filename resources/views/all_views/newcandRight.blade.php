@@ -259,7 +259,11 @@
 					@endforeach							
 				</select>
 				<label for="tipologia_contr">Tipologia contratto</label>
-				<a href="{{ route('tipologia_contr') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up8').show()">
+				<a href="{{ route('tipologia_contr') }}" class="link-primary" target='_blank' onclick="window.open(this.href, 
+                         'newwindow', 
+                         'width=1024,height=600,left=200'); 
+						 $('.up').hide();$('#div_up8').show();
+						 return false;">
 					Definisci nuova
 				</a>
 				<span id='div_up8' class='up' style='display:none'>
@@ -288,7 +292,7 @@
 		</div>		
 
 
-		@if ($id_cand!=0)
+		
 			<div class="row mb-3">							
 				<div class="col-md-6">
 				  <div class="form-floating mb-3 mb-md-0">
@@ -325,7 +329,7 @@
 
 				
 			</div>
-		@endif
+		
 
 
 		<div class="row mb-3">							
@@ -649,8 +653,13 @@
 			
 			<div class="col-md-{{$w_col}}">
 				  <div class="form-floating mb-3 mb-md-0">
-					
-					<select class="form-select" id="status_candidatura" aria-label="status_candidatura" name='status_candidatura' disabled>
+					@php ($dis="")
+					@if ($candidati[0]['status_candidatura']=="3")
+						@php ($dis="disabled")
+					@endif
+
+
+					<select class="form-select" id="status_candidatura" aria-label="status_candidatura" name='status_candidatura' {{$dis}} >
 						<option value=''>Select...</option>
 						<option value='1'
 							<?php
@@ -668,14 +677,14 @@
 							?>							
 
 						>RESPINTA</option>
-						<option value='3'
-							<?php
+						@if ($candidati[0]['status_candidatura']=="3")
+							<option value='3'
+								<?php
+								if ($candidati[0]['status_candidatura']=="3")  echo " selected "; 
+								?>							
 							
-							if ($candidati[0]['status_candidatura']=="3")  echo " selected "; 
-							
-							?>							
-						
-						>ASSUNZIONE</option>
+							>ASSUNZIONE</option>
+						@endif
 					</select>
 					<label for="status_candidatura">Status Candidatura</label>
 					</div>

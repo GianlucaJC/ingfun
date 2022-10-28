@@ -91,16 +91,17 @@
 									<td>{{ $candidato->zona_lavoro }}</td>
 									<td>{{ $candidato->updated_at }}</td>
 									<td>Ufficio</td>
-									<td>
+									<td> 
 									@if ($candidato->status_candidatura=="1") GESTIONE @endif
 									@if ($candidato->status_candidatura=="2") RESPINTA @endif
-									@if ($candidato->status_candidatura=="3") ASSUNZIONE @endif
+									@if ($candidato->status_candidatura=="3") ASSUNZIONE 
+									@endif
 									</td>
 
 									<td></td>	
 									<td>
 										@if ($candidato->dele=="0") 
-											<a href="{{ route('newcand',['id'=>$candidato->id]) }}" >
+											<a href="{{ route('newcand',['id'=>$candidato->id,'from'=>0]) }}" >
 												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 											</a>
 										@endif

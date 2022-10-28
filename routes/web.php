@@ -22,7 +22,9 @@ Route::get('dashboard', [ 'as' => 'dashboard', 'uses' => 'App\Http\Controllers\M
 
 
 Route::group(['only_log' => ['auth']], function () {
-	Route::get('newcand/{id?}', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['permission:gestione_archivi']);
+	Route::get('newcand/{id?}/{from?}', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['permission:gestione_archivi']);
+
+
 
 	Route::post('save_newcand', [ 'as' => 'save_newcand', 'uses' => 'App\Http\Controllers\MainController@save_newcand'])->middleware(['permission:gestione_archivi']);
 	
@@ -104,4 +106,14 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');
 });
+
+Route::get('send-mail', function () {
+    $details = [
+        'title' => 'Mail from ItSolutionStuff.com',
+        'body' => 'This is for testing email using smtp'
+    ];
+    \Mail::to('morescogianluca@gmail.com')->send(new \App\Mail\notifdoc($details));
+    dd("Email is Sent.");
+});
+
 require __DIR__.'/auth.php';

@@ -56,7 +56,7 @@ class ControllerArchivi extends Controller
 		if (strlen($sottotipodoc)==0) $sottotipodoc=0;
 
 		$allow_new="disabled";
-		if ($tipodoc!=0 && $sottotipodoc!=0) $allow_new="";
+		if ($tipodoc!=0) $allow_new="";
 
 		$tipo_doc=DB::table('tipo_doc')
 		->where('dele', "=","0")

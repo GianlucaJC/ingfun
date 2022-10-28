@@ -27,23 +27,23 @@
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
-        <div class="row mb-2">
-          <div class="col-sm-6">
-            <h1 class="m-0">
-				@if ($id_cand==0)
-					NUOVA Candidatura
-				@else
-					MODIFICA Candidatura
-				@endif
+        <div class="row">
+          <div class="col-sm-12">  
+			<h1 class="m-0">
+				<center>
+					<font color='red'>
+						@if ($from=="0") 
+							SCHEDA CANDIDATO
+						@else
+							SCHEDA DIPENDENTE
+						@endif
+					</font>
+				</center>
+				
 			</h1>
-          </div><!-- /.col -->
-          <div class="col-sm-6">
-            <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-              <li class="breadcrumb-item active">Candidatura</li>
-            </ol>
-          </div><!-- /.col -->
-        </div><!-- /.row -->
+			</div>	
+		</div>	
+
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content-header -->
@@ -53,22 +53,31 @@
       <div class="container-fluid">
 	  
         <div class="row">
-         
+		 
 			@include('all_views.newcandLeft')
 			
 			@include('all_views.newcandRight')
 			@if ($id_cand!=0 && $candidati[0]['status_candidatura']!="3")
-				<button type="submit" onclick="" name='sub_assunzione' id='sub_assunzione' class="btn btn-primary btn-lg btn-block mb-3" value="1">INOLTRA CANDIDATURA</button><hr>       
+				<button type="submit" onclick="if (!confirm('Sicuri di inoltrare la candidatura?')) event.preventDefault()" name='sub_assunzione' id='sub_assunzione' class="btn btn-primary btn-lg btn-block mb-3" value="1">INOLTRA CANDIDATURA</button><hr>       
 			@endif
 
-			<a href="{{url('/listcand')}}" class="btn btn-info btn-lg active mb-2">
-				TORNA ALLA LISTA CANDIDATURE SENZA SALVARE      
-			</a>
 
+			<button type="submit" name='sub_newcand_onlysave' id='sub_newcand_onlysave' class="btn btn-info btn-lg btn-block">SALVA</button>  
 
-			<button type="submit" name='sub_newcand' id='sub_newcand' class="btn btn-success btn-lg btn-block">SALVA DATI E TORNA ALLA LISTA CANDIDATURE</button>         
+			@php ($desc_btn="")
+			@if ($from=="0") 
+				@php ($desc_btn="SALVA DATI E TORNA ALLA LISTA CANDIDATURE") 
+			@elseif ($from=="1") 
+				@php ($desc_btn="SALVA DATI E TORNA ALLA GESTIONE PERSONALE") 
+			@elseif ($from=="2") 
+				@php ($desc_btn="SALVA DATI E TORNA ALLE SCADENZE CONTRATTUALI") 
+			@else
+				@php ($desc_btn="SALVA DATI E TORNA ALLA LISTA CANDIDATURE") 
+			@endif
+
+			<button type="submit" name='sub_newcand' id='sub_newcand' class="btn btn-success btn-lg btn-block">{{$desc_btn}}</button>         
 		
-
+			<input type='hidden' name='from' value="{{$from}}">
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<input type="hidden" name="fx_curr" id="fx_curr" value="{{ $candidati[0]['file_curr']}}">
 			<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
@@ -117,7 +126,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.74"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.75"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

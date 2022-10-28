@@ -89,7 +89,7 @@
 								<tr>
 									<td>
 										@if ($candidato->dele=="0") 
-											<a href="{{ route('newcand',['id'=>$candidato->id]) }}" >
+											<a href="{{ route('newcand',['id'=>$candidato->id,'from'=>1]) }}" >
 												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 											</a>
 										@endif
@@ -107,9 +107,10 @@
 										@endif											
 									</td>
 									<td>
-									@if ($candidato->status_candidatura=="1") IN GESTIONE @endif
-									@if ($candidato->status_candidatura=="2") RESPINTO @endif
-									@if ($candidato->status_candidatura=="3") ASSUNTO @endif
+									@if ($candidato->status_candidatura=="1") GESTIONE @endif
+									@if ($candidato->status_candidatura=="2") RESPINTA @endif
+									@if ($candidato->status_candidatura=="3") ASSUNZIONE 
+									@endif
 
 									</td>
 									<td>{{ $candidato->data_inizio }}</td>

@@ -335,7 +335,13 @@
 		<center>
 		<h3>Area Documenti</h3>
 			Ultimi 5 - 
-			<a href="{{url('documenti')}}/{{$id_cand}}" target='_blank'>
+			<a href="{{url('documenti')}}/{{$id_cand}}" target='_blank'
+			onclick="window.open(this.href, 
+                         'newwindow', 
+                         'width=1024,height=600'); 
+              return false;"
+			>  
+
 				Clicca quì per l'Area Completa
 			</a>
 		</center>
