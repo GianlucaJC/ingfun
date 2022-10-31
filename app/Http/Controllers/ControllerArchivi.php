@@ -13,12 +13,63 @@ use App\Models\ccnl;
 use App\Models\tipologia_contr;
 use App\Models\tipo_doc;
 use App\Models\ref_doc;
+use App\Models\contatti;
 
 use DB;
 
 class ControllerArchivi extends Controller
 {
 
+	public function contatti(Request $request){
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		$view_dele=$request->input("view_dele");
+		$descr_contr=$request->input("descr_contr");
+		$email=$request->input("email");
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+
+		//Creazione nuovo elemento
+		if (strlen($descr_contr)!=0 && $edit_elem==0) {
+			$descr_contr=strtoupper($descr_contr);
+			$email=strtolower($email);
+			$arr=array();
+			$arr['dele']=0;
+			$arr['descrizione']=$descr_contr;
+			$arr['mail']=$email;
+			DB::table("contatti")->insert($arr);
+		}
+		
+		//Modifica elemento
+		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
+			$descr_contr=strtoupper($descr_contr);
+			$email=strtolower($email);
+			contatti::where('id', $edit_elem)
+			  ->update(['descrizione' => $descr_contr, 'mail' => $email]);
+		}
+		if (strlen($dele_contr)!=0) {
+			contatti::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			contatti::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		
+		$contatti=DB::table('contatti')
+		->when($view_dele=="0", function ($contatti) {
+			return $contatti->where('dele', "=","0");
+		})
+		->orderBy('descrizione')->get();
+
+		return view('all_views/gestione/contatti')->with('contatti', $contatti)->with("view_dele",$view_dele);
+		
+	}	
+	
 	public function documenti($id_ref=0){
 		if (request()->has("id_ref")) $id_ref=request()->input("id_ref");
 		if ($id_ref!=0) $id_cand=$id_ref;

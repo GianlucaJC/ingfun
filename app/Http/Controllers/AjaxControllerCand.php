@@ -19,6 +19,7 @@ use App\Models\tipo_doc;
 use App\Models\voci_doc;
 use App\Models\ref_doc;
 use App\Models\story_all;
+use Mail;
 use DB;
 
 
@@ -26,12 +27,36 @@ class AjaxControllerCand extends Controller
 {
 
 	public function send_mail() {
+		$titolo=$_POST['titolo'];
 		$id_cand=$_POST['id_cand'];
 		$nome_file=$_POST['nome_file'];
-		$status['id_cand']=$id_cand;
-		$status['nome_file']=$nome_file;
-		$status['status']="OK";
-		$status['message']="Mail inviata con successo!";
+
+		try {
+
+			$data["email"] = "morescogianluca@gmail.com";
+			$data["title"] = $titolo;
+			$data["body"] = "This is Demo";
+			$files = [
+				public_path("allegati/doc/$id_cand/$nome_file"),
+			];
+			Mail::send('emails.notifdoc', $data, function($message)use($data, $files) {
+				$message->to($data["email"], $data["email"])
+				->subject($data["title"]);
+
+				foreach ($files as $file){
+					$message->attach($file);
+				}
+			});
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo!";
+
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+		}		
+			
+			
+		
 		return json_encode($status);
 	}
 

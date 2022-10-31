@@ -74,6 +74,9 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('documenti/{id_ref?}', [ 'as' => 'documenti', 'uses' => 'App\Http\Controllers\ControllerArchivi@documenti'])->middleware(['permission:gestione_archivi']);
 	Route::post('documenti', [ 'as' => 'documenti', 'uses' => 'App\Http\Controllers\ControllerArchivi@documenti'])->middleware(['permission:gestione_archivi']);
 
+	Route::get('contatti', [ 'as' => 'contatti', 'uses' => 'App\Http\Controllers\ControllerArchivi@contatti'])->middleware(['permission:gestione_archivi']);
+	Route::post('contatti', [ 'as' => 'contatti', 'uses' => 'App\Http\Controllers\ControllerArchivi@contatti'])->middleware(['permission:gestione_archivi']);
+
 });
 
 
@@ -107,13 +110,5 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');
 });
 
-Route::get('send-mail', function () {
-    $details = [
-        'title' => 'Mail from ItSolutionStuff.com',
-        'body' => 'This is for testing email using smtp'
-    ];
-    \Mail::to('morescogianluca@gmail.com')->send(new \App\Mail\notifdoc($details));
-    dd("Email is Sent.");
-});
 
 require __DIR__.'/auth.php';

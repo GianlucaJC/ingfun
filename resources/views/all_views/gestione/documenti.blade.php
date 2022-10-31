@@ -299,6 +299,6 @@
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.55"></script>
+	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.57"></script>
 
 @endsection

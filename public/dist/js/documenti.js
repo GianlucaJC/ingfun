@@ -48,6 +48,7 @@ function new_doc() {
 
 
 function send_mail(id_cand,nome_file) {
+	titolo="oggetto di prova";
 	base_path = $("#url").val();
 	$.ajaxSetup({
 		headers: {
@@ -58,9 +59,11 @@ function send_mail(id_cand,nome_file) {
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/send_mail",
-		data: {_token: CSRF_TOKEN, id_cand:id_cand, nome_file:nome_file},
+		data: {_token: CSRF_TOKEN, id_cand:id_cand, nome_file:nome_file, titolo:titolo},
 		success: function (data) {
 			console.log(data);
+			item=JSON.parse(data)
+			console.log(item.status)
 			/*
 			$.each(JSON.parse(data), function (i, item) {
 						

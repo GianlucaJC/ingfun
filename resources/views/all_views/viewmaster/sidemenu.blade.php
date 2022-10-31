@@ -154,6 +154,12 @@ use App\Models\User;
 					  <p>Area Documenti</p>
 					</a>
 				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('contatti') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Contatti interni</p>
+					</a>
+				  </li>
 				</ul>
 			  </li>		  
 			 @endif 
