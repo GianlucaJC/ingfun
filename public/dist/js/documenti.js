@@ -46,9 +46,124 @@ function new_doc() {
 	$('#div_new_doc').toggle(150);	
 }
 
+function prepara_mail(id_cand,nome_file) {
+	$("#title_modal").html("Scelta dei contatti ai quali inoltrare il documento")
+	$('#modal_win').modal('toggle')
+	$("#body_modal").html("Caricamento informazioni in corso...")
 
-function send_mail(id_cand,nome_file) {
-	titolo="oggetto di prova";
+	
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/load_contatti",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			item=JSON.parse(data)
+			html="";
+			html+="<input type='hidden' id='cand_ref' value='"+id_cand+"'>";
+			html+="<input type='hidden' id='file_ref' value='"+nome_file+"'>";
+			html+="<div style='max-height:500px;overflow-y:scroll'  >";
+				html+="<ul class='list-group'>";
+
+					$.each(JSON.parse(data), function (i, item) {
+						
+						html+="<li class='list-group-item'>";
+							html+="<input class='form-check-input me-1 mailsend' type='checkbox' value='' id='mailsend"+item.id+"' data-send='"+item.mail+"'>";
+							html+="<label class='form-check-label stretched-link' for='mailsend"+item.id+"' title='"+item.mail+"'>"+item.descrizione+"</label>";
+							html+="<span style='display:none' id='sendm"+item.id+"' class='ml-3'><font color='red'>Invio in corso...</font></span>"
+						html+="</li>";
+						
+					});
+				html+="</ul>";
+			html+="</div>";
+
+			html+="<div class='row mt-2'>";
+				html+="<div class='col-sm-12'>";
+					html+="<div class='form-floating'>";					
+						html+="<input type='text' class='form-control' placeholder='Email' aria-label='Email' name='altre' id='altre'>";
+					html+="<label for='altre'>Eventuali altre email separate da;</label>";
+					html+="</div>";
+					html+="<span style='display:none' id='sendam' class='ml-3'><font color='red'>Invio in corso...</font></span>"
+				html+="</div>";
+			html+="</div>";
+
+
+			html+="<hr><div class='row mt-2'>";
+				html+="<div class='col-sm-12'>";
+					html+="<div class='form-floating'>";					
+						html+="<input type='text' class='form-control'  aria-label='oggetto' name='oggetto' id='oggetto'>";
+					html+="<label for='altre'>Oggetto</label>";
+					html+="</div>";
+				html+="</div>";
+			html+="</div>";
+
+			html+="<div class='row mt-2'>";
+				html+="<div class='col-sm-12'>";
+					html+="<div class='form-floating'>";					
+					html+="<textarea class='form-control' id='body_msg' name='body_msg' rows='6' style='height:100px'></textarea>";
+					html+="<label for='body_msg'>Corpo del messaggio</label>";
+					html+="</div>";
+				html+="</div>";
+			html+="</div>";
+			
+			$("#body_modal").html(html)
+
+		}
+	});
+	
+	
+	return false;
+}
+
+function send_email() {
+	oggetto=$("#oggetto").val();
+	body_msg=$("#body_msg").val();
+	if (oggetto.length==0) {
+		alert("Definire l'oggetto!");
+		return false;
+	}
+	if (body_msg.length==0) {
+		alert("Definire il corpo del messaggio!");
+		return false;
+	}
+
+	altre=$("#altre").val();
+	if (altre.length!=0) {
+		arr_altri=altre.split(";")
+		id_ref="altre";
+		$("#sendam").show(50);
+		for (sca=0;sca<=arr_altri.length-1;sca++) {						
+			mail=arr_altri[sca]
+			send_real(id_ref,mail)
+		}
+		
+	}
+	$( ".mailsend" ).each(function() {
+			value=$( this ).prop( "checked" );
+		    id_ref_origin=(this.id)
+			id_ref=id_ref_origin.substr(8);
+			mail=$("#"+id_ref_origin).data("send")
+			if (value==true) {
+				$("#sendm"+id_ref).show(50);
+				send_real(id_ref,mail)
+				console.log(id_ref,mail,value)
+			}
+	});		
+	
+}
+function send_real(id_ref,email) {
+	id_cand=$("#cand_ref").val();
+	nome_file=$("#file_ref").val();
+	oggetto=$("#oggetto").val();
+	body_msg=$("#body_msg").val();
+	
+	
 	base_path = $("#url").val();
 	$.ajaxSetup({
 		headers: {
@@ -59,19 +174,26 @@ function send_mail(id_cand,nome_file) {
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/send_mail",
-		data: {_token: CSRF_TOKEN, id_cand:id_cand, nome_file:nome_file, titolo:titolo},
+		data: {_token: CSRF_TOKEN, id_cand:id_cand, nome_file:nome_file, titolo:oggetto, email:email, body_msg:body_msg},
 		success: function (data) {
 			console.log(data);
+			html="<font color='green'><i class='fa fa-thumbs-up'></i></font>";
+			if (id_ref=="altre") {
+				$("#sendam").html(html)
+				$("#sendam").hide(10);
+				$("#sendam").show(40);
+			}
+			else {
+				$("#sendm"+id_ref).html(html)
+				$("#sendm"+id_ref).show(50);
+			}	
 			item=JSON.parse(data)
 			console.log(item.status)
-			/*
-			$.each(JSON.parse(data), function (i, item) {
-						
-			});
-			*/
 		}
-	});
+	});	
+
 }
+
 
 function set_sezione(id_cand) {
 base_path = $("#url").val();

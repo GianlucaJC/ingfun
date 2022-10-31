@@ -230,7 +230,7 @@
 										<button type="submit" name='dele_ele' class="btn btn-danger" title="Elimina documento"><i class="fas fa-trash"></i></button>	
 									</a>
 
-									<a href='#' onclick="send_mail({{$document->id_cand}},'{{$document->nomefile}}')">
+									<a href='#' onclick="prepara_mail({{$document->id_cand}},'{{$document->nomefile}}')">
 										<button type="button" name='dele_ele' class="btn btn-warning" title='Invia mail'><i class="fa fa-share"></i></button>	
 									</a>
 
@@ -266,6 +266,31 @@
     </div>
     <!-- /.content -->
   </div>
+
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modal_win" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="title_modal">Modal title</h5>
+
+
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id='body_modal'>
+        ...
+      </div>
+      <div class="modal-footer">
+		<button type="button" class="btn btn-primary" onclick="send_email()">Invia a selezionati</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div>   
+  
   <!-- /.content-wrapper -->
   
  @endsection
@@ -299,6 +324,6 @@
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.57"></script>
+	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.80"></script>
 
 @endsection

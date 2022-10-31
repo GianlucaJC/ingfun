@@ -106,6 +106,8 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
 
 	Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
+	Route::post('load_contatti', 'App\Http\Controllers\AjaxControllerCand@load_contatti');
+
 
 	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');
 });

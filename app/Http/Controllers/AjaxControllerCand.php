@@ -19,6 +19,7 @@ use App\Models\tipo_doc;
 use App\Models\voci_doc;
 use App\Models\ref_doc;
 use App\Models\story_all;
+use App\Models\contatti;
 use Mail;
 use DB;
 
@@ -26,16 +27,20 @@ use DB;
 class AjaxControllerCand extends Controller
 {
 
-	public function send_mail() {
-		$titolo=$_POST['titolo'];
-		$id_cand=$_POST['id_cand'];
-		$nome_file=$_POST['nome_file'];
+	public function send_mail(Request $request){
+
+		$titolo = $request->input('titolo');
+		$id_cand = $request->input('id_cand');
+		$body_msg = $request->input('body_msg');
+		$nome_file = $request->input('nome_file');
+		$email = $request->input('email');
+
 
 		try {
 
-			$data["email"] = "morescogianluca@gmail.com";
+			$data["email"] = $email;
 			$data["title"] = $titolo;
-			$data["body"] = "This is Demo";
+			$data["body"] = $body_msg;
 			$files = [
 				public_path("allegati/doc/$id_cand/$nome_file"),
 			];
@@ -104,6 +109,13 @@ class AjaxControllerCand extends Controller
 		$status['status']="OK";
 		$status['message']="Dati inseriti con successo!";
 		return json_encode($status);
+	}
+	
+	public function load_contatti(){
+		
+		$contatti = contatti::where('dele','=',0)
+		->orderBy('descrizione')->get();
+        return json_encode($contatti);
 	}
 	
 	public function sottotipo(){
