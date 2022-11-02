@@ -27,12 +27,25 @@ use DB;
 class AjaxControllerCand extends Controller
 {
 
+	public function assunzione(Request $request) {
+		$id_cand=$request->input('id_cand');
+		$candidati = candidati::find($id_cand);		
+		$candidati->status_candidatura = 3;
+		$candidati->tipo_anagr = "ASS";
+		$candidati->save();
+		$status['status']="OK";
+		$status['message']="Assunzione ok";
+		return json_encode($status);		
+	}
+	
 	public function send_mail(Request $request){
 
 		$titolo = $request->input('titolo');
 		$id_cand = $request->input('id_cand');
 		$body_msg = $request->input('body_msg');
-		$nome_file = $request->input('nome_file');
+		
+		$nome_file="";
+		if ($request->has('nome_file')) $nome_file = $request->input('nome_file');
 		$email = $request->input('email');
 
 
@@ -41,15 +54,19 @@ class AjaxControllerCand extends Controller
 			$data["email"] = $email;
 			$data["title"] = $titolo;
 			$data["body"] = $body_msg;
-			$files = [
-				public_path("allegati/doc/$id_cand/$nome_file"),
-			];
+			$files=array();
+			if (strlen($nome_file)!=0) {
+				$files = [
+					public_path("allegati/doc/$id_cand/$nome_file"),
+				];
+			}
 			Mail::send('emails.notifdoc', $data, function($message)use($data, $files) {
 				$message->to($data["email"], $data["email"])
 				->subject($data["title"]);
-
-				foreach ($files as $file){
-					$message->attach($file);
+				if (count($files)!=0) {
+					foreach ($files as $file){
+						$message->attach($file);
+					}
 				}
 			});
 			$status['status']="OK";

@@ -58,7 +58,7 @@
 			
 			@include('all_views.newcandRight')
 			@if ($id_cand!=0 && $candidati[0]['status_candidatura']!="3")
-				<button type="submit" onclick="if (!confirm('Sicuri di inoltrare la candidatura?')) event.preventDefault()" name='sub_assunzione' id='sub_assunzione' class="btn btn-primary btn-lg btn-block mb-3" value="1">INOLTRA CANDIDATURA</button><hr>       
+				<button type="button" onclick="prepara_mail()" class="btn btn-primary btn-lg btn-block mb-3" value="1" id='btn_inoltra'>INOLTRA CANDIDATURA</button><hr>
 			@endif
 
 
@@ -102,12 +102,15 @@
         ...
       </div>
       <div class="modal-footer">
+		<div id='altri_btn'></div>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
         
       </div>
     </div>
   </div>
 </div> 
+
+
   <!-- /.content-wrapper -->
 </form>  
   
@@ -126,7 +129,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.75"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.79"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

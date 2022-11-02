@@ -68,7 +68,7 @@ function prepara_mail(id_cand,nome_file) {
 			html="";
 			html+="<input type='hidden' id='cand_ref' value='"+id_cand+"'>";
 			html+="<input type='hidden' id='file_ref' value='"+nome_file+"'>";
-			html+="<div style='max-height:500px;overflow-y:scroll'  >";
+			html+="<div style='max-height:300px;overflow-y:scroll'  >";
 				html+="<ul class='list-group'>";
 
 					$.each(JSON.parse(data), function (i, item) {

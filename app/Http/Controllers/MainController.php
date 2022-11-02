@@ -279,12 +279,6 @@ class mainController extends Controller
 			if ($status_candidatura=="1") $candidati->tipo_anagr = "CAND";
 			if ($status_candidatura=="2") $candidati->tipo_anagr = "RESP";
 			if ($status_candidatura=="3") $candidati->tipo_anagr = "ASS";
-				
-			if ($request->has("sub_assunzione")) {
-				$sub_assunzione=$request->input('sub_assunzione');
-				$candidati->status_candidatura = 3;
-				$candidati->tipo_anagr = "ASS";
-			}
 
 			$candidati->save();		
 			if ($id_cand==0) $id_cand=$candidati->id;
