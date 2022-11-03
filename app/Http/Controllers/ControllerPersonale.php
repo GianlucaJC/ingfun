@@ -61,7 +61,7 @@ class ControllerPersonale extends Controller
 		->when($view_dele=="0", function ($candidati) {
 			return $candidati->where('dele', "=","0");
 		})
-		->where("tipo_anagr","ASS")
+		->where("status_candidatura",">=","3")
 		->orderBy('nominativo')->get();
 
 		$mansione=mansione::orderBy('descrizione')->get();

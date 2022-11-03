@@ -51,15 +51,35 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-	  
+
+
         <div class="row">
 		 
 			@include('all_views.newcandLeft')
 			
 			@include('all_views.newcandRight')
-			@if ($id_cand!=0 && $candidati[0]['status_candidatura']!="3")
-				<button type="button" onclick="prepara_mail()" class="btn btn-primary btn-lg btn-block mb-3" value="1" id='btn_inoltra'>INOLTRA CANDIDATURA</button><hr>
+        </div>
+		
+
+		<div class='row'>
+			<div class="col-md-6">
+				@if ($id_cand!=0 && $candidati[0]['status_candidatura']=="3")
+					<button type="button" onclick="prepara_mail(4)" class="btn btn-warning btn-lg btn-block mb-3" id='btn_dim'>DIMISSIONI</button><hr>
+				@endif	  
+			</div>	
+			<div class="col-md-6">
+				@if ($id_cand!=0 && $candidati[0]['status_candidatura']=="3")
+					<button type="button" onclick="prepara_mail(5)" class="btn btn-danger btn-lg btn-block mb-3" id='btn_lic'>LICENZIAMENTO</button><hr>
+				@endif	  
+			</div>	
+		</div>		
+		
+        <div class="row">
+		
+			@if ($id_cand!=0 && $candidati[0]['status_candidatura']=="1")
+				<button type="button" onclick="prepara_mail(3)" class="btn btn-primary btn-lg btn-block mb-3" id='btn_inoltra'>INOLTRA CANDIDATURA</button><hr>
 			@endif
+
 
 
 			<button type="submit" name='sub_newcand_onlysave' id='sub_newcand_onlysave' class="btn btn-info btn-lg btn-block">SALVA</button>  
@@ -81,7 +101,10 @@
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<input type="hidden" name="fx_curr" id="fx_curr" value="{{ $candidati[0]['file_curr']}}">
 			<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
-        </div>
+		</div>
+		
+			
+		
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
@@ -129,8 +152,8 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.80"></script>
-	<script src="{{ URL::asset('/') }}dist/js/assunzione.js?ver=1.01"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.86"></script>
+	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.07"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

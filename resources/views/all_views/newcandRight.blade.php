@@ -654,7 +654,7 @@
 			<div class="col-md-{{$w_col}}">
 				  <div class="form-floating mb-3 mb-md-0">
 					@php ($dis="")
-					@if ($candidati[0]['status_candidatura']=="3")
+					@if ($candidati[0]['status_candidatura']>=3)
 						@php ($dis="disabled")
 					@endif
 
@@ -677,13 +677,34 @@
 							?>							
 
 						>RESPINTA</option>
-						@if ($candidati[0]['status_candidatura']=="3")
+						@if ($candidati[0]['status_candidatura']>=3)
 							<option value='3'
 								<?php
 								if ($candidati[0]['status_candidatura']=="3")  echo " selected "; 
 								?>							
 							
 							>ASSUNZIONE</option>
+
+							<option value='4'
+								<?php
+								if ($candidati[0]['status_candidatura']=="4")  echo " selected "; 
+								?>							
+							
+							>DIMISSIONI</option>
+
+							<option value='5'
+								<?php
+								if ($candidati[0]['status_candidatura']=="5")  echo " selected "; 
+								?>							
+							
+							>LICENZIAMENTO</option>							
+
+							<option value='6'
+								<?php
+								if ($candidati[0]['status_candidatura']=="6")  echo " selected "; 
+								?>							
+							
+							>SCADENZA NATURALE</option>	
 						@endif
 					</select>
 					<label for="status_candidatura">Status Candidatura</label>

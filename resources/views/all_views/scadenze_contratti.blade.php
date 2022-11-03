@@ -99,7 +99,9 @@
 									<td>
 									@if ($scadenza->status_candidatura=="1") GESTIONE @endif
 									@if ($scadenza->status_candidatura=="2") RESPINTA @endif
-									@if ($scadenza->status_candidatura=="3") ASSUNZIONE 
+									@if ($scadenza->status_candidatura=="3") ASSUNZIONE @endif
+									@if ($scadenza->status_candidatura=="4") DIMISSIONI @endif
+									@if ($scadenza->status_candidatura=="5") LICENZIAMENTO 
 									@endif
 									</td>
 									<td>{{ $scadenza->data_inizio }}</td>

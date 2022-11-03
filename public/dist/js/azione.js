@@ -1,4 +1,4 @@
-function assunzione() {
+function azione(tipo) {
 	sel=false;
 	arr_send = {};
 	$( ".mailsend" ).each(function() {
@@ -16,6 +16,8 @@ function assunzione() {
 	
 
 	id_cand=$("#id_cand").val();
+	data_inizio=$("#data_inizio").val();
+	data_fine=$("#data_fine").val();
 	base_path = $("#url").val();
 	$.ajaxSetup({
 		headers: {
@@ -25,20 +27,30 @@ function assunzione() {
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
-		url: base_path+"/assunzione",
-		data: {_token: CSRF_TOKEN, id_cand:id_cand},
+		url: base_path+"/azione",
+		data: {_token: CSRF_TOKEN, id_cand:id_cand,data_inizio:data_inizio,data_fine:data_fine,tipo:tipo},
 		success: function (data) {
 			console.log(data);
 			item=JSON.parse(data)
-			//elimino tasto di inoltra candidatura perchè ora è assunto
+			//elimino i tasti di azione
+			
 			$("#btn_inoltra").hide(150);
+			$("#btn_dim").hide(150);
+			$("#btn_lic").hide(150);
 			//tendina assunzione impostata su assunzione
+			$("#status_candidatura" ).prop( "disabled", true );
 			$("#status_candidatura")
 			.find('option')
 			.remove()
 			.end();	
-			$('#status_candidatura').append('<option value="3">ASSUNZIONE</option>');
-			$("#status_candidatura" ).prop( "disabled", true );
+			
+			if (tipo=="3")
+				$('#status_candidatura').append('<option value="3">ASSUNZIONE</option>');
+			if (tipo=="4")
+				$('#status_candidatura').append('<option value="4">DIMISSIONI</option>');
+			if (tipo=="5")
+				$('#status_candidatura').append('<option value="5">LICENZIAMENTO</option>');
+			
 			
 			send_email();
 			
@@ -47,19 +59,28 @@ function assunzione() {
 
 }
 
-function prepara_mail() {
-
-	if ($("#data_inizio").val().length==0) {
-		 alert("Valorizzare la data assunzione");
-		 return false;
+function prepara_mail(tipo) {
+	if (tipo=="3") {
+		if ($("#data_inizio").val().length==0) {
+			 alert("Valorizzare la data assunzione");
+			 return false;
+		}
 	}
+	if (tipo=="4" || tipo=="5") {
+		if ($("#data_fine").val().length==0) {
+			 alert("Valorizzare la data fine");
+			 return false;
+		}
+	}
+
 	candidato=$("#cognome").val()
 	candidato+=" "+$("#nome").val()
 
 	data_inizio=$("#data_inizio").val()
+	data_fine=$("#data_fine").val()
 	mansione=$("#mansione option:selected" ).text();
 	mans_val=$("#mansione" ).val();
-	data_ass="--"
+	data_ass="--";data_f="--";
 	email_lav=$("#email").val()
 	telefono=$("#telefono").val()
 	affiancamento=$("#affiancamento").val()
@@ -67,19 +88,37 @@ function prepara_mail() {
 	
 	if (data_inizio.length>=10)
 		data_ass=data_inizio.substr(8,2)+"-"+data_inizio.substr(5,2)+"-"+data_inizio.substr(0,4)
+	if (data_fine.length>=10)
+		data_f=data_fine.substr(8,2)+"-"+data_fine.substr(5,2)+"-"+data_fine.substr(0,4)	
 	
+	oggetto="";
+	if (tipo=="3")
+		oggetto="Inizio attività lavorativa nuova risorsa"
+	if (tipo=="4")
+		oggetto="Dimissioni attività lavorativa risorsa"
+	if (tipo=="5")
+		oggetto="Licenziamento attività lavorativa risorsa"
+
 	
-	oggetto="Inizio attività lavorativa nuova risorsa"
-	
-	body_msg="Ti informiamo che il giorno "+data_ass;
-	body_msg+=" una nuova risorsa inizierà la propria attività: "+candidato 
-	body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
-	if (mans_val.length!=0) body_msg+=" con mansione di: "+mansione+"."; 
-	else body_msg+=".";
-	
-	
-	if (affiancamento.length!=0) body_msg+=" E' previsto affiancamento con "+affiancamento+".";
-	if (zona_lavoro.length!=0) body_msg+=" La risora lavora nella zona di "+zona_lavoro+""
+	if (tipo=="3") {
+		body_msg="Ti informiamo che il giorno "+data_ass;
+		body_msg+=" una nuova risorsa inizierà la propria attività: "+candidato 
+		body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
+		if (mans_val.length!=0) body_msg+=" con mansione di: "+mansione+"."; 
+		else body_msg+=".";
+		if (affiancamento.length!=0) body_msg+=" E' previsto affiancamento con "+affiancamento+".";
+		if (zona_lavoro.length!=0) body_msg+=" La risora lavora nella zona di "+zona_lavoro+""
+	}	
+	if (tipo=="4") {
+		body_msg="Ti informiamo che il giorno "+data_f;
+		body_msg+=" la risorsa "+candidato+" ha presentato le dimissioni";
+		body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
+	}	
+	if (tipo=="5") {
+		body_msg="Ti informiamo che il giorno "+data_f;
+		body_msg+=" la risorsa "+candidato+" è stata licenziata";
+		body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
+	}	
 	
 	
 	$("#title_modal").html("Scelta dei contatti ai quali inoltrare la notifica")
@@ -147,7 +186,11 @@ function prepara_mail() {
 			
 			$("#body_modal").html(html)
 			
-			html="<button type='button' class='btn btn-primary' id='btn_ass' onclick='assunzione()'>Inoltra candidatura ed invia notifica</button>"
+			testo="";
+			if (tipo=="3") testo="Inoltra candidatura ed invia notifica";
+			if (tipo=="4") testo="Inoltra dimissioni ed invia notifica";
+			if (tipo=="5") testo="Inoltra licenziamento ed invia notifica";
+			html="<button type='button' class='btn btn-primary' id='btn_ass' onclick='azione("+tipo+")'>"+testo+"</button>"
 			$("#altri_btn").html(html)
 			
 		}

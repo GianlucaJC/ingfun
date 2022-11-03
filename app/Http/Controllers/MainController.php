@@ -32,6 +32,11 @@ use Spatie\Permission\Models\Permission;
 
 class mainController extends Controller
 {
+public function __construct()
+	{
+		$this->middleware('auth')->except(['index']);
+	}	
+
 	
 	public function check_scadenze_contratti() {
 		$today=date("Y-m-d");
@@ -275,10 +280,12 @@ class mainController extends Controller
 			//$candidati->doc = $request->input('doc');
 			
 			$status_candidatura=$request->input('status_candidatura');
-			$candidati->status_candidatura = $status_candidatura;
-			if ($status_candidatura=="1") $candidati->tipo_anagr = "CAND";
-			if ($status_candidatura=="2") $candidati->tipo_anagr = "RESP";
-			if ($status_candidatura=="3") $candidati->tipo_anagr = "ASS";
+			if ($status_candidatura!=null) {
+				$candidati->status_candidatura = $status_candidatura;
+				if ($status_candidatura=="1") $candidati->tipo_anagr = "CAND";
+				if ($status_candidatura=="2") $candidati->tipo_anagr = "RESP";
+				if ($status_candidatura=="3") $candidati->tipo_anagr = "ASS";
+			}
 
 			$candidati->save();		
 			if ($id_cand==0) $id_cand=$candidati->id;

@@ -82,7 +82,6 @@ Route::group(['only_log' => ['auth']], function () {
 
 
 
-
 //routing Ajax
 Route::group(['only_log' => ['auth']], function () {
 	Route::post('azzera_notif', 'App\Http\Controllers\AjaxControllerCand@azzera_notif');
@@ -107,7 +106,7 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
 	Route::post('load_contatti', 'App\Http\Controllers\AjaxControllerCand@load_contatti');
-	Route::post('assunzione', 'App\Http\Controllers\AjaxControllerCand@assunzione');
+	Route::post('azione', 'App\Http\Controllers\AjaxControllerCand@azione');
 
 
 	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');

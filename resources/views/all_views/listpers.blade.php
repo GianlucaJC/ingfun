@@ -109,9 +109,10 @@
 									<td>
 									@if ($candidato->status_candidatura=="1") GESTIONE @endif
 									@if ($candidato->status_candidatura=="2") RESPINTA @endif
-									@if ($candidato->status_candidatura=="3") ASSUNZIONE 
+									@if ($candidato->status_candidatura=="3") ASSUNZIONE @endif
+									@if ($candidato->status_candidatura=="4") DIMISSIONI @endif
+									@if ($candidato->status_candidatura=="5") LICENZIAMENTO 
 									@endif
-
 									</td>
 									<td>{{ $candidato->data_inizio }}</td>
 									<td>{{ $candidato->data_fine }}</td>
