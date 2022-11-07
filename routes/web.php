@@ -22,6 +22,9 @@ Route::get('dashboard', [ 'as' => 'dashboard', 'uses' => 'App\Http\Controllers\M
 
 
 Route::group(['only_log' => ['auth']], function () {
+	Route::get('archivi', [ 'as' => 'archivi', 'uses' => 'App\Http\Controllers\MainController@archivi'])->middleware(['auth']);
+
+
 	Route::get('newcand/{id?}/{from?}', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['permission:gestione_archivi']);
 
 

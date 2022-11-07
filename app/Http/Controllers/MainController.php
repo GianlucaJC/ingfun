@@ -58,6 +58,11 @@ public function __construct()
 		
 		return $scadenze;
 	}
+
+
+	public function archivi() {
+		return view('all_views/archivi');
+	}
 	
 	public function dashboard() {
 		$name="";

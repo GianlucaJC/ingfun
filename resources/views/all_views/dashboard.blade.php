@@ -187,9 +187,9 @@ use App\Models\User;
 				</div>
 			</a>
 
-			<a href="#">
+			<a href="{{ route('archivi') }}">
 				<div class="d-grid gap-2 mt-2">
-				  <button class="btn btn-primary disabled" type="button">
+				  <button class="btn btn-primary" type="button">
 				  
 				  <i class="fas fa-cogs" style='font-size:36px'></i><br>
 					ARCHIVI
