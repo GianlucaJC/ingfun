@@ -80,6 +80,10 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('contatti', [ 'as' => 'contatti', 'uses' => 'App\Http\Controllers\ControllerArchivi@contatti'])->middleware(['permission:gestione_archivi']);
 	Route::post('contatti', [ 'as' => 'contatti', 'uses' => 'App\Http\Controllers\ControllerArchivi@contatti'])->middleware(['permission:gestione_archivi']);
 
+	 Route::get('export-users', [ 'as' => 'export-users', 'uses' => 'App\Http\Controllers\MainController@exportUsers'])->middleware(['permission:gestione_archivi']);
+
+
+
 });
 
 

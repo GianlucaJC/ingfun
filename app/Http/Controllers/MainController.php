@@ -22,6 +22,9 @@ use App\Models\tipo_doc;
 use App\Models\ref_doc;
 use App\Models\story_all;
 
+use Maatwebsite\Excel\Facades\Excel;
+use App\Exports\ExportUser;
+
 use DB;
 
 
@@ -37,6 +40,9 @@ public function __construct()
 		$this->middleware('auth')->except(['index']);
 	}	
 
+    public function exportUsers(Request $request){
+        return Excel::download(new ExportUser, 'users.xlsx');
+    }
 	
 	public function check_scadenze_contratti() {
 		$today=date("Y-m-d");

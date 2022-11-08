@@ -154,8 +154,13 @@
 			<!-- /.row -->
 
 			<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link active">
-				<button type="button" class="btn btn-primary btn-lg btn-block">Nuova Anagrafica</button>
+				<button type="button" class="btn btn-primary btn-lg btn-block">Inserisci Nuova Anagrafica</button>
 			<a/>
+			
+			<a href="{{ route('export-users') }}" class="nav-link active">
+				<button type="button" class="btn btn-primary btn-lg btn-block">Esporta Tutti i dati</button>
+			<a/>
+
 			<?php
 				$check="";
 				if ($view_dele=="1") $check="checked";
