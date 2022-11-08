@@ -71,6 +71,34 @@ use App\Models\User;
 				</ul>
 			  </li>
 
+			 <li class="nav-item menu">
+				<a href="#" class="nav-link">
+				  <i class="nav-icon fas fa-users"></i>
+				  <p>Gestione Personale
+					<i class="right fas fa-angle-left"></i>
+				  </p>
+				</a>
+				<ul class="nav nav-treeview">
+				  <li class="nav-item">
+					<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link active">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Nuova Anagrafica</p>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('listpers') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Elenco</p>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('scadenze_contratti') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Scadenze contratti</p>
+					</a>
+				  </li>
+				</ul>
+			  </li>
 
 			
 			

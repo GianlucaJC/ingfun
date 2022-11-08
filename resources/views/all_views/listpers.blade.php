@@ -153,6 +153,9 @@
 			</div>
 			<!-- /.row -->
 
+			<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link active">
+				<button type="button" class="btn btn-primary btn-lg btn-block">Nuova Anagrafica</button>
+			<a/>
 			<?php
 				$check="";
 				if ($view_dele=="1") $check="checked";

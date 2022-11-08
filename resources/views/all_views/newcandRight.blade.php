@@ -625,13 +625,17 @@
 		@endif
 		
 		
+		@php ($req="")
+		@if (($id_cand=="0" && $from=="1")) 
+			@php  ($req="required")
+		@endif
 		<?php $w_col=12; ?>
 		<div class="row mb-3">
-			@if ($id_cand!=0)
+			@if ($id_cand!=0 || ($id_cand=="0" && $from=="1"))
 				<?php $w_col=6; ?>
 				<div class="col-md-3">
 					<div class="form-floating">
-						<input class="form-control" id="data_inizio" name='data_inizio' type="date"   value="{{ $candidati[0]['data_inizio']}}"  />
+						<input class="form-control" id="data_inizio" name='data_inizio' type="date"   value="{{ $candidati[0]['data_inizio']}}"  {{$req}} />
 						<label for="data_inizio">Data inizio</label>
 					</div>
 				<a href='javascript:void(0)' class='link-danger' onclick="storia('data_inizio',{{$id_cand}})">
@@ -651,6 +655,7 @@
 				</div>				
 			@endif
 			
+			@if (!($id_cand=="0" && $from=="1")) 
 			<div class="col-md-{{$w_col}}">
 				  <div class="form-floating mb-3 mb-md-0">
 					@php ($dis="")
@@ -711,6 +716,20 @@
 					</div>
 
 			</div>
+			@else
+				<div class="col-md-{{$w_col}}">
+					  <div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" id="status_c" aria-label="status_c"  disabled >
+							<option value='3'>ASSUNZIONE</option>
+						</select>
+						<label for="status_c">Status Candidatura</label>
+						
+						
+						<input type='hidden' id='status_candidatura' name='status_candidatura' value='3'>
+					</div>
+				</div>				
+			@endif
+			
 
 		</div>	
 
