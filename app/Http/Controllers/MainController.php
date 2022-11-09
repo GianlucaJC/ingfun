@@ -41,6 +41,7 @@ public function __construct()
 	}	
 
     public function exportUsers(Request $request){
+		//la classe è in app/exports/
         return Excel::download(new ExportUser, 'users.xlsx');
     }
 	
