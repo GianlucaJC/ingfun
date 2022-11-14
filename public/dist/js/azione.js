@@ -32,17 +32,19 @@ function azione(tipo) {
 			console.log(data);
 			item=JSON.parse(data)
 			//elimino i tasti di azione
-			
-			$("#btn_inoltra").hide(150);
-			$("#btn_dim").hide(150);
-			$("#btn_lic").hide(150);
-			$("#btn_scad").hide(150);
-			//tendina assunzione impostata su assunzione
-			$("#status_candidatura" ).prop( "disabled", true );
-			$("#status_candidatura")
-			.find('option')
-			.remove()
-			.end();	
+
+			if (tipo!="2") {
+				$("#btn_inoltra").hide(150);
+				$("#btn_dim").hide(150);
+				$("#btn_lic").hide(150);
+				$("#btn_scad").hide(150);
+				//tendina assunzione impostata su assunzione
+				$("#status_candidatura" ).prop( "disabled", true );
+				$("#status_candidatura")
+				.find('option')
+				.remove()
+				.end();	
+			}
 			
 			if (tipo=="3")
 				$('#status_candidatura').append('<option value="3">ASSUNZIONE</option>');
@@ -61,15 +63,17 @@ function azione(tipo) {
 }
 
 function prepara_mail(tipo) {
-	if (tipo=="3") {
+	if (tipo=="2" || tipo=="3") {
+		btn="btn_comunica"
+		if (tipo=="2") btn="btn_inoltra"
 		if ($("#soc_ass").val().length==0) {
- 			$( "#btn_inoltra" ).prop( "disabled", true );			
-			$( "#btn_inoltra" ).text("Valorizzare la società di assunzione e salvare")
+ 			$( "#"+btn ).prop( "disabled", true );			
+			$( "#"+btn ).text("Valorizzare la società di assunzione e salvare")
 			 return false;
 		}
 		if ($("#data_inizio").val().length==0) {
- 			$( "#btn_inoltra" ).prop( "disabled", true );			
-			$( "#btn_inoltra" ).text("Valorizzare la data assunzione e salvare")
+ 			$( "#"+btn ).prop( "disabled", true );			
+			$( "#"+btn ).text("Valorizzare la data assunzione e salvare")
 			 return false;
 		}
 	}
@@ -113,7 +117,7 @@ function prepara_mail(tipo) {
 		data_f=data_fine.substr(8,2)+"-"+data_fine.substr(5,2)+"-"+data_fine.substr(0,4)	
 	
 	oggetto="";
-	if (tipo=="3")
+	if (tipo=="2" || tipo=="3")
 		oggetto="Inizio attività lavorativa nuova risorsa"
 	if (tipo=="4")
 		oggetto="Dimissioni attività lavorativa risorsa"
@@ -122,7 +126,7 @@ function prepara_mail(tipo) {
 	if (tipo=="6")
 		oggetto="Scadenza naturale attività lavorativa risorsa"
 	
-	if (tipo=="3") {
+	if (tipo=="2" || tipo=="3") {
 		body_msg="Ti informiamo che il giorno "+data_ass;
 		body_msg+=" sarà inserita presso l'azienda "+soc_ass+" una nuova risorsa "+candidato 
 		body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
@@ -210,6 +214,7 @@ function prepara_mail(tipo) {
 			$("#body_modal").html(html)
 			
 			testo="";
+			if (tipo=="2") testo="Invia notifica di assunzione";
 			if (tipo=="3") testo="Inoltra candidatura ed invia notifica";
 			if (tipo=="4") testo="Inoltra dimissioni ed invia notifica";
 			if (tipo=="5") testo="Inoltra licenziamento ed invia notifica";
@@ -337,5 +342,5 @@ function send_real(id_ref,email,num_elem,num) {
 }
 
 function alertFunc() {
-	alert("Inoltro candidatura e notifica mail effettuati!");
+	alert("Operazione effettuata!");
 }					

@@ -14,7 +14,7 @@
         public function collection() 
         { 
 		
-            $cands= candidati::select('id','nome','cognome','soc_ass','mansione','area_impiego','centro_costo','netto_concordato','costo_azienda','codfisc','datanasc','comunenasc','pro_nasc','indirizzo','comune','cap')
+            $cands= candidati::select('id','tipo_anagr','nome','cognome','sesso', 'soc_ass','mansione','area_impiego','centro_costo','netto_concordato','costo_azienda','codfisc','datanasc','comunenasc','pro_nasc','indirizzo','comune','cap')
 			->where('dele','=',0)
 			->get(); 
 			$arr_soc=$this->arr(1);
@@ -24,6 +24,7 @@
 			$arr_loc=$this->arr(5);
 			$arr_cap=$this->arr(6);
 			$doc_cand=$this->doc_cand();
+			$ido_sanitaria=$this->ido_sanitaria();
 
 
 			$corsi_sic = DB::table('voci_doc as v')
@@ -48,8 +49,12 @@
 			$corsi = new Collection;
 
 			$voci=array();
+			array_push($voci,"STATUS");
 			array_push($voci,"NOME");
 			array_push($voci,"COGNOME");
+			array_push($voci,"SESSO");
+			array_push($voci,"IDEONEITA' SANITARIA");
+			array_push($voci,"SCADENZA");
 			array_push($voci,"SOCIETÀ");
 			array_push($voci,"MANSIONE");
 			array_push($voci,"AREA DI IMPIEGO");
@@ -82,8 +87,10 @@
 		
 			foreach ($cands as $cand) {
 				$id_cand=$cand->id;
+				$tipo_anagr=$cand->tipo_anagr;
 				$nome=$cand->nome;
 				$cognome=$cand->cognome;
+				$sesso=$cand->sesso;
 				$soc_ass=$cand->soc_ass;
 				$mans=$cand->mansione;
 				$area=$cand->area_impiego;
@@ -121,8 +128,21 @@
 				if (isset($arr_loc[$istat_res])) $comune_res=$arr_loc[$istat_res];
 
 				$voci=array();
+				array_push($voci,$tipo_anagr);
 				array_push($voci,$nome);
 				array_push($voci,$cognome);
+				array_push($voci,$sesso);
+				
+				if (isset($ido_sanitaria[$id_cand])) {
+					array_push($voci,"1");
+					array_push($voci,$ido_sanitaria[$id_cand]);
+				} else {
+					array_push($voci,"0");
+					array_push($voci,"");
+				}					
+				array_push($voci,$societa);
+				array_push($voci,$societa);
+				
 				array_push($voci,$societa);
 				array_push($voci,$mansione);
 				array_push($voci,$area_impiego);
@@ -222,6 +242,27 @@
 			
 		}
 		
+		public function ido_sanitaria() {
+			//tutte le idoneità sanitarie (id 9) dei candidati
+			$ref_doc = DB::table('ref_doc as r')
+			->join('tipo_doc as d', 'r.id_tipo_doc', '=', 'd.id')
+			->select('r.id','r.id_cand','r.scadenza')
+			->where('r.id_tipo_doc',"=",9)
+			->orderBy('r.id')
+			->get();		
+			
+			
+			
+			$resp=array();
+			$old="?";$indice=0;
+			foreach ($ref_doc as $rec) {
+				$id_cand=$rec->id_cand;
+				$scadenza=$rec->scadenza;
+				$resp[$id_cand]=$scadenza;
+			}
+			return $resp;
+			
+		}		
 
 
 
