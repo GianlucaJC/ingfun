@@ -102,7 +102,7 @@
 
 			<div class="row mb-3">
 			
-				<div class="col-md-5">
+				<div class="col-md-4">
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select" name="tipodoc" id="tipodoc" onchange="$('#frm_documenti').submit()">
 							<option value=''>Select...</option>
@@ -121,7 +121,7 @@
 						<label for="tipodoc">Tipo Documento</label>
 					</div>
 				</div>
-				<div class="col-md-5">
+				<div class="col-md-4">
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select" name="sottotipodoc" id="sottotipodoc" onchange="$('#frm_documenti').submit()">
 							<option value=''>Select...</option>
@@ -141,9 +141,12 @@
 					</div>
 				</div>	
 
+
+
+
 				<div class="col-md-2">
 					<div class="form-floating">
-						<input class="form-control" id="scadenza" name='scadenza' type="date" />
+						<input class="form-control" id="scadenza" name='scadenza' type="date" value="{{$scadenza}}"/>
 						<label for="scadenza">Scadenza</label>
 					</div>
 					
@@ -220,18 +223,18 @@
 								<td>{{$document->id}}</td>
 								<td>{{$document->tipodocumento}}</td>
 								<td>{{$document->sottodocumento}}</td>
+				
 								<td>{{$document->scadenza}}</td>
 								<td>{{$document->created_at}}</td>
 								<td>
 									<a href="{{url('allegati')}}/doc/{{$document->id_cand}}/{{$document->nomefile}}" target='_blank'>
 										<button type="button" class="btn btn-info" alt='Edit' title="Vedi documento"><i class="fa fa-file"></i></button>
 									</a>
-									<a href='#' onclick="dele_element({{$document->id}})">
-										<button type="submit" name='dele_ele' class="btn btn-danger" title="Elimina documento"><i class="fas fa-trash"></i></button>	
-									</a>
+									
+									<button type="button" name='dele_ele' onclick="dele_element({{$document->id}})" class="btn btn-danger" title="Elimina documento"><i class="fas fa-trash"></i></button>	
 
 									<a href='#' onclick="prepara_mail({{$document->id_cand}},'{{$document->nomefile}}')">
-										<button type="button" name='dele_ele' class="btn btn-warning" title='Invia mail'><i class="fa fa-share"></i></button>	
+										<button type="button" name='btn_send_mail' class="btn btn-warning" title='Invia mail'><i class="fa fa-share"></i></button>	
 									</a>
 
 
@@ -257,8 +260,6 @@
           </div>
 
         </div>
-			
-
 					
 		</form>
         <!-- /.row -->
@@ -324,6 +325,6 @@
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.80"></script>
+	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.86"></script>
 
 @endsection

@@ -85,6 +85,7 @@ class ControllerArchivi extends Controller
 			$ref_doc->id_cand = $id_cand;
 			$ref_doc->id_tipo_doc = request()->input('tipodoc');
 			$ref_doc->id_sotto_tipo = request()->input('sottotipodoc');
+			$ref_doc->id_sotto_tipo = request()->input('sottotipodoc');
 			if (strlen(request()->input('scadenza')!=0))
 				$ref_doc->scadenza = request()->input('scadenza');
 			$ref_doc->nomefile = request()->input('allegato');
@@ -105,7 +106,8 @@ class ControllerArchivi extends Controller
 		if (strlen($tipodoc)==0) $tipodoc=0;
 		$sottotipodoc=request()->input("sottotipodoc");
 		if (strlen($sottotipodoc)==0) $sottotipodoc=0;
-
+		
+		$scadenza=request()->input("scadenza");
 		$allow_new="disabled";
 		if ($tipodoc!=0) $allow_new="";
 
@@ -145,7 +147,7 @@ class ControllerArchivi extends Controller
 		
 
 		
-		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('elenco_doc',$elenco_doc)->with("id_ref",$id_ref);
+		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('scadenza',$scadenza)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('elenco_doc',$elenco_doc)->with("id_ref",$id_ref);
 		
 	}
 
@@ -154,6 +156,7 @@ class ControllerArchivi extends Controller
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$view_dele=$request->input("view_dele");
 		$descr_contr=$request->input("descr_contr");
+		$alias=$request->input("alias");
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		$tipodoc=$request->input("tipodoc");
@@ -176,7 +179,7 @@ class ControllerArchivi extends Controller
 		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
 			$descr_contr=strtoupper($descr_contr);
 			voci_doc::where('id', $edit_elem)
-			  ->update(['descrizione' => $descr_contr]);
+			  ->update(['descrizione' => $descr_contr,'alias'=> $alias]);
 		}
 		if (strlen($dele_contr)!=0) {
 			voci_doc::where('id', $dele_contr)
@@ -210,6 +213,7 @@ class ControllerArchivi extends Controller
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$view_dele=$request->input("view_dele");
 		$descr_contr=$request->input("descr_contr");
+		$alias=$request->input("alias");
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 
@@ -225,9 +229,9 @@ class ControllerArchivi extends Controller
 		
 		//Modifica elemento
 		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
-			$descr_contr=strtoupper($descr_contr);
+			$descr_contr=strtoupper($descr_contr);			
 			tipo_doc::where('id', $edit_elem)
-			  ->update(['descrizione' => $descr_contr]);
+			  ->update(['descrizione' => $descr_contr,'alias'=> $alias]);
 		}
 		if (strlen($dele_contr)!=0) {
 			tipo_doc::where('id', $dele_contr)

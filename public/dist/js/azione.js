@@ -16,8 +16,7 @@ function azione(tipo) {
 	
 
 	id_cand=$("#id_cand").val();
-	data_inizio=$("#data_inizio").val();
-	data_fine=$("#data_fine").val();
+
 	base_path = $("#url").val();
 	$.ajaxSetup({
 		headers: {
@@ -28,7 +27,7 @@ function azione(tipo) {
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/azione",
-		data: {_token: CSRF_TOKEN, id_cand:id_cand,data_inizio:data_inizio,data_fine:data_fine,tipo:tipo},
+		data: {_token: CSRF_TOKEN, id_cand:id_cand,tipo:tipo},
 		success: function (data) {
 			console.log(data);
 			item=JSON.parse(data)
@@ -37,6 +36,7 @@ function azione(tipo) {
 			$("#btn_inoltra").hide(150);
 			$("#btn_dim").hide(150);
 			$("#btn_lic").hide(150);
+			$("#btn_scad").hide(150);
 			//tendina assunzione impostata su assunzione
 			$("#status_candidatura" ).prop( "disabled", true );
 			$("#status_candidatura")
@@ -50,7 +50,8 @@ function azione(tipo) {
 				$('#status_candidatura').append('<option value="4">DIMISSIONI</option>');
 			if (tipo=="5")
 				$('#status_candidatura').append('<option value="5">LICENZIAMENTO</option>');
-			
+			if (tipo=="6")
+				$('#status_candidatura').append('<option value="5">SCADENZA NATURALE</option>');			
 			
 			send_email();
 			
@@ -61,14 +62,32 @@ function azione(tipo) {
 
 function prepara_mail(tipo) {
 	if (tipo=="3") {
+		if ($("#soc_ass").val().length==0) {
+ 			$( "#btn_inoltra" ).prop( "disabled", true );			
+			$( "#btn_inoltra" ).text("Valorizzare la società di assunzione e salvare")
+			 return false;
+		}
 		if ($("#data_inizio").val().length==0) {
-			 alert("Valorizzare la data assunzione");
+ 			$( "#btn_inoltra" ).prop( "disabled", true );			
+			$( "#btn_inoltra" ).text("Valorizzare la data assunzione e salvare")
 			 return false;
 		}
 	}
-	if (tipo=="4" || tipo=="5") {
+	if (tipo=="4" || tipo=="5" || tipo=="6") {
 		if ($("#data_fine").val().length==0) {
-			 alert("Valorizzare la data fine");
+			if (tipo=="4") {
+				$( "#btn_dim" ).prop( "disabled", true );			
+				$( "#btn_dim" ).text("Valorizzare la data fine e salvare")
+			}
+			if (tipo=="5") {
+				$( "#btn_lic" ).prop( "disabled", true );			
+				$( "#btn_lic" ).text("Valorizzare la data fine e salvare")
+			}
+			if (tipo=="6") {
+				$( "#btn_scad" ).prop( "disabled", true );			
+				$( "#btn_scad" ).text("Valorizzare la data fine e salvare")
+			}
+
 			 return false;
 		}
 	}
@@ -80,6 +99,8 @@ function prepara_mail(tipo) {
 	data_fine=$("#data_fine").val()
 	mansione=$("#mansione option:selected" ).text();
 	mans_val=$("#mansione" ).val();
+	soc_ass=$("#soc_ass option:selected" ).text();
+	
 	data_ass="--";data_f="--";
 	email_lav=$("#email").val()
 	telefono=$("#telefono").val()
@@ -98,11 +119,12 @@ function prepara_mail(tipo) {
 		oggetto="Dimissioni attività lavorativa risorsa"
 	if (tipo=="5")
 		oggetto="Licenziamento attività lavorativa risorsa"
-
+	if (tipo=="6")
+		oggetto="Scadenza naturale attività lavorativa risorsa"
 	
 	if (tipo=="3") {
 		body_msg="Ti informiamo che il giorno "+data_ass;
-		body_msg+=" una nuova risorsa inizierà la propria attività: "+candidato 
+		body_msg+=" sarà inserita presso l'azienda "+soc_ass+" una nuova risorsa "+candidato 
 		body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
 		if (mans_val.length!=0) body_msg+=" con mansione di: "+mansione+"."; 
 		else body_msg+=".";
@@ -112,14 +134,15 @@ function prepara_mail(tipo) {
 	if (tipo=="4") {
 		body_msg="Ti informiamo che il giorno "+data_f;
 		body_msg+=" la risorsa "+candidato+" ha presentato le dimissioni";
-		body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
 	}	
 	if (tipo=="5") {
 		body_msg="Ti informiamo che il giorno "+data_f;
 		body_msg+=" la risorsa "+candidato+" è stata licenziata";
-		body_msg+=" (Mail:"+email_lav+" Tel: "+telefono+") "
 	}	
-	
+	if (tipo=="6") {
+		body_msg="Ti informiamo che dal giorno "+data_f;
+		body_msg+=" la risorsa "+candidato+" non sarà più in organico";		
+	}		
 	
 	$("#title_modal").html("Scelta dei contatti ai quali inoltrare la notifica")
 	$('#modal_story').modal('toggle')
@@ -190,6 +213,7 @@ function prepara_mail(tipo) {
 			if (tipo=="3") testo="Inoltra candidatura ed invia notifica";
 			if (tipo=="4") testo="Inoltra dimissioni ed invia notifica";
 			if (tipo=="5") testo="Inoltra licenziamento ed invia notifica";
+			if (tipo=="6") testo="Inoltra scadenza naturale ed invia notifica";
 			html="<button type='button' class='btn btn-primary' id='btn_ass' onclick='azione("+tipo+")'>"+testo+"</button>"
 			$("#altri_btn").html(html)
 			

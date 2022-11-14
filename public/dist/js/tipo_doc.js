@@ -37,9 +37,11 @@ $(document).ready( function () {
 } );
 
 
-function edit_elem(id_elem) {
+function edit_elem(id_elem) {	
 	descrizione=$("#id_descr"+id_elem).data("descr")
+	alias=$("#id_alias"+id_elem).data("alias")
 	$("#descr_contr").val(descrizione)
+	$("#alias").val(alias)
 	$("#edit_elem").val(id_elem)
 	$('#div_definition').show(150)
 }

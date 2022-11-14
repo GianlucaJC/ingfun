@@ -113,6 +113,8 @@
 									@if ($candidato->status_candidatura=="4") DIMISSIONI @endif
 									@if ($candidato->status_candidatura=="5") LICENZIAMENTO 
 									@endif
+									@if ($candidato->status_candidatura=="6") CONTRATTO SCADUTO
+									@endif
 									</td>
 									<td>{{ $candidato->data_inizio }}</td>
 									<td>{{ $candidato->data_fine }}</td>

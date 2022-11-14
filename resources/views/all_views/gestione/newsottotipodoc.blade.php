@@ -10,7 +10,7 @@
 				<font color='red'>Definizione Sotto Tipologia Documento</font>
 			</h4>
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">
 							<span class="input-group-text" id="basic-addon1">Descrizione</span>
@@ -18,7 +18,16 @@
 						  <input type="text" class="form-control" placeholder="Descrizione Sotto Tipologia Documento" aria-label="Descrizione" name="descr_contr" id="descr_contr" required>
 						</div>			
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-4">
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<span class="input-group-text" id="basic-addon2">Alias</span>
+						  </div>
+						  <input type="text" class="form-control" placeholder="Alias per esportazione" aria-label="Alias" name="alias" id="alias" maxlength="30">
+						</div>			
+					</div>
+					
+					<div class="col-md-4">
 						<button type="submit" class="btn btn-success" >Crea/Modifica Sotto Tipologia Documento</button>
 						<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
 						Chiudi

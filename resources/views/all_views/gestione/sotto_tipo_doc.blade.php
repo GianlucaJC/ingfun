@@ -84,6 +84,7 @@
 						<tr>
 							<th>ID</th>
 							<th>Descrizione</th>
+							<th>Alias</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -102,6 +103,12 @@
 									 </del></font>
 								 @endif	
 								</td>	
+								<td>									
+									
+									<span id='id_alias{{$tipologia->id}}' data-alias='{{ $tipologia->alias}}'>
+										{{ $tipologia->alias }}
+									</span>										
+								</td>								
 								<td>
 									@if ($tipologia->dele=="0") 
 										<a href='#' onclick="edit_elem({{$tipologia->id}})">
@@ -127,6 +134,7 @@
 						<tr>
 							<th>ID</th>
 							<th>Descrizione</th>
+							<th>Alias</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -189,6 +197,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/sotto_tipo_doc.js?ver=1.2"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sotto_tipo_doc.js?ver=1.3"></script>
 
 @endsection

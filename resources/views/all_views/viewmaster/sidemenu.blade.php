@@ -56,7 +56,7 @@ use App\Models\User;
 				</a>
 				<ul class="nav nav-treeview">
 				  <li class="nav-item">
-					<a href="{{ route('newcand') }}" class="nav-link active">
+					<a href="{{ route('newcand') }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
 					  <p>Nuova candidatura</p>
 					</a>
@@ -80,7 +80,7 @@ use App\Models\User;
 				</a>
 				<ul class="nav nav-treeview">
 				  <li class="nav-item">
-					<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link active">
+					<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
 					  <p>Nuova Anagrafica</p>
 					</a>

@@ -62,14 +62,19 @@
 		
 
 		<div class='row'>
-			<div class="col-md-6">
+			<div class="col-md-4">
 				@if ($id_cand!=0 && $candidati[0]['status_candidatura']=="3")
 					<button type="button" onclick="prepara_mail(4)" class="btn btn-warning btn-lg btn-block mb-3" id='btn_dim'>DIMISSIONI</button><hr>
 				@endif	  
 			</div>	
-			<div class="col-md-6">
+			<div class="col-md-4">
 				@if ($id_cand!=0 && $candidati[0]['status_candidatura']=="3")
 					<button type="button" onclick="prepara_mail(5)" class="btn btn-danger btn-lg btn-block mb-3" id='btn_lic'>LICENZIAMENTO</button><hr>
+				@endif	  
+			</div>	
+			<div class="col-md-4">
+				@if ($id_cand!=0 && $candidati[0]['status_candidatura']=="3")
+					<button type="button" onclick="prepara_mail(6)" class="btn btn-secondary btn-lg btn-block mb-3" id='btn_scad'>SCADENZA NATURALE</button><hr>
 				@endif	  
 			</div>	
 		</div>		
@@ -152,8 +157,8 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.86"></script>
-	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.07"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.88"></script>
+	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.11"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

@@ -30,27 +30,25 @@ class AjaxControllerCand extends Controller
 	public function azione(Request $request) {
 		$id_cand=$request->input('id_cand');
 		$tipo=$request->input('tipo');
-		$data_inizio=$request->input('data_inizio');
-		$data_fine=$request->input('data_fine');
 		
 		$candidati = candidati::find($id_cand);
 		
 		if ($tipo=="3") {
-			$candidati->data_inizio = $data_inizio;
 			$candidati->tipo_anagr = "ASS";
 			$candidati->status_candidatura = 3;
 		}	
 		if ($tipo=="4") {
-			$candidati->data_fine = $data_fine;
 			$candidati->tipo_anagr = "DIM";
 			$candidati->status_candidatura = 4;
 		}	
 		if ($tipo=="5") {
-			$candidati->data_fine = $data_fine;
 			$candidati->tipo_anagr = "LIC";
 			$candidati->status_candidatura = 5;
 		}	
-				
+		if ($tipo=="6") {
+			$candidati->tipo_anagr = "SCAD";
+			$candidati->status_candidatura = 6;
+		}					
 		
 		$candidati->save();
 		$status['status']="OK";

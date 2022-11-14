@@ -195,7 +195,11 @@ function send_real(id_ref,email) {
 }
 
 
+
+
 function set_sezione(id_cand) {
+
+
 base_path = $("#url").val();
 	
 	$(".allegati").empty();
@@ -237,6 +241,7 @@ function dele_element(value) {
 		event.preventDefault() 
 	else 
 		$('#dele_contr').val(value)	
+		$('#frm_documenti').submit()
 }
 
 function restore_element(value) {

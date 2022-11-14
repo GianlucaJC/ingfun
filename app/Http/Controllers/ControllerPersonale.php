@@ -28,6 +28,10 @@ use Spatie\Permission\Models\Permission;
 
 class ControllerPersonale extends Controller
 {
+	public function __construct()
+	{
+		$this->middleware('auth')->except(['index']);
+	}	
 
 	public function scadenze_contratti(Request $request) {
 
@@ -35,6 +39,7 @@ class ControllerPersonale extends Controller
 		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine')
 		->where("dele","=",0)
 		->where("data_fine","<=", $today)		
+		->where("status_candidatura","=",3)
 		->get();
 
 		return view('all_views/scadenze_contratti')->with('scadenze', $scadenze);
