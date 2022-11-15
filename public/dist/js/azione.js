@@ -133,7 +133,7 @@ function prepara_mail(tipo) {
 		if (mans_val.length!=0) body_msg+=" con mansione di: "+mansione+"."; 
 		else body_msg+=".";
 		if (affiancamento.length!=0) body_msg+=" E' previsto affiancamento con "+affiancamento+".";
-		if (zona_lavoro.length!=0) body_msg+=" La risora lavora nella zona di "+zona_lavoro+""
+		if (zona_lavoro.length!=0) body_msg+=" La risorsa lavora nella zona di "+zona_lavoro+""
 	}	
 	if (tipo=="4") {
 		body_msg="Ti informiamo che il giorno "+data_f;
