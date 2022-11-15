@@ -563,7 +563,61 @@
 					
 					</div>
 				</div>						
-			</div>					
+			</div>	
+			<div class="row mb-3">							
+				<div class="col-md-4">
+				  <div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" id="categoria_legale" aria-label="Categoria legale" name='categoria_legale' >
+							<option value=''>Select...</option>						
+									<option value='0'
+									<?php
+									if ($candidati[0]['categoria_legale']=="0")  echo " selected "; 
+									?>
+									>Operaio</option>
+
+									<option value='1'
+									<?php
+									if ($candidati[0]['categoria_legale']=="1")  echo " selected "; 
+									?>
+									>Impiegato</option>
+							
+						</select>
+						<label for="categoria_legale">Categoria Legale</label>
+
+					</div>
+				</div>
+
+				<div class="col-md-4">
+				  <div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" id="qualificato" aria-label="qualificato" name='qualificato' >
+							<option value=''>Select...</option>						
+									<option value='1'
+									<?php
+									if ($candidati[0]['qualificato']=="1")  echo " selected "; 
+									?>
+									>SI</option>
+
+									<option value='0'
+									<?php
+									if ($candidati[0]['qualificato']=="0")  echo " selected "; 
+									?>
+									>NO</option>
+							
+						</select>
+						<label for="qualificato">Qualificato</label>
+
+					</div>
+				</div>
+				
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="codice_qualifica" name='codice_qualifica' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{ $candidati[0]['codice_qualifica']}}"  maxlength=15 />
+
+						<label for="codice_qualifica">Codice Qualifica</label>
+					</div>
+				</div>				
+			</div>	
+				
 		@endif
 
 	<div class="row mb-3">

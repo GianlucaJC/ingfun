@@ -130,6 +130,9 @@ public function __construct()
 		$candidati[0]['note']=null;
 		$candidati[0]['data_inizio']=null;
 		$candidati[0]['data_fine']=null;
+		$candidati[0]['categoria_legale']=null;
+		$candidati[0]['qualificato']=null;
+		$candidati[0]['codice_qualifica']=null;
 
 		return $candidati;
 	}
@@ -274,6 +277,10 @@ public function __construct()
 			$candidati->centro_costo = $request->input('centro_costo');
 			$candidati->contratto = $request->input('contratto');
 			$candidati->livello = $request->input('livello');
+			$candidati->categoria_legale = $request->input('categoria_legale');
+			$candidati->qualificato = $request->input('qualificato');
+			$candidati->codice_qualifica = $request->input('codice_qualifica');
+			
 			$candidati->tipo_contr = $request->input('tipo_contr');
 
 			$candidati->netto_concordato = $request->input('netto_concordato');
