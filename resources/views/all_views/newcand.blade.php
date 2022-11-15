@@ -164,7 +164,7 @@
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.88"></script>
-	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.14"></script>
+	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.18"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

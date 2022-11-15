@@ -34,6 +34,7 @@ function azione(tipo) {
 			//elimino i tasti di azione
 
 			if (tipo!="2") {
+				$("#btn_comunica").hide(150);
 				$("#btn_inoltra").hide(150);
 				$("#btn_dim").hide(150);
 				$("#btn_lic").hide(150);
@@ -65,7 +66,7 @@ function azione(tipo) {
 function prepara_mail(tipo) {
 	if (tipo=="2" || tipo=="3") {
 		btn="btn_comunica"
-		if (tipo=="2") btn="btn_inoltra"
+		if (tipo=="3") btn="btn_inoltra"
 		if ($("#soc_ass").val().length==0) {
  			$( "#"+btn ).prop( "disabled", true );			
 			$( "#"+btn ).text("Valorizzare la società di assunzione e salvare")
