@@ -686,7 +686,7 @@
 		<?php $w_col=12; ?>
 		<div class="row mb-3">
 			@if ($id_cand!=0 || ($id_cand=="0" && $from=="1"))
-				<?php $w_col=6; ?>
+				<?php $w_col=3; ?>
 				<div class="col-md-3">
 					<div class="form-floating">
 						<input class="form-control" id="data_inizio" name='data_inizio' type="date"   value="{{ $candidati[0]['data_inizio']}}"  {{$req}} />
@@ -709,8 +709,20 @@
 				</div>				
 			@endif
 			
+
+			@if ($w_col=="3") 
+				<div class="col-md-3">
+					<div class="form-floating">
+						<input class="form-control" id="proroghe" name='proroghe' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{ $candidati[0]['proroghe']}}"  />
+
+						<label for="proroghe">N° Proroghe</label>
+					</div>
+				</div>							
+			@endif			
+			
 			@if (!($id_cand=="0" && $from=="1")) 
-			<div class="col-md-{{$w_col}}">
+
+				<div class="col-md-{{$w_col}}">
 				  <div class="form-floating mb-3 mb-md-0">
 					@php ($dis="")
 					@if ($candidati[0]['status_candidatura']>=3)

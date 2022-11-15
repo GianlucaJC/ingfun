@@ -133,6 +133,8 @@ public function __construct()
 		$candidati[0]['categoria_legale']=null;
 		$candidati[0]['qualificato']=null;
 		$candidati[0]['codice_qualifica']=null;
+		$candidati[0]['proroghe']=null;
+		
 
 		return $candidati;
 	}
@@ -297,6 +299,7 @@ public function __construct()
 			$candidati->data_inizio = $request->input('data_inizio');
 			$candidati->data_fine = $request->input('data_fine');
 			//$candidati->doc = $request->input('doc');
+			$candidati->proroghe = $request->input('proroghe');
 			
 			$status_candidatura=$request->input('status_candidatura');
 			if ($status_candidatura!=null) {
