@@ -226,7 +226,7 @@
 					<tbody>
 						<?php $flx=0;?>
 						@foreach($elenco_doc as $document)
-							@if (session('status') && $flx==0 && count($elenco_doc)>1)	
+							@if (session('status') && session('esito')=='OK' && $flx==0 && count($elenco_doc)>1)	
 								<?php $flx=1; ?>
 								<tr style='background-color:yellow'>
 							@else
