@@ -37,13 +37,30 @@ $(document).ready( function () {
 	
 } );
 
+function edit_doc(id_doc) {
+	$("#tipodoc").val('')
+	$("#sottotipodoc").find('option').remove().end();
+	$("#scadenza").val('')
+	$("#span_btn_allega").css('visibility', 'hidden')
+	$("#btn_save_doc").show();
+	
+	$('#div_new_doc').show(150);
+	$("#id_edit").val(id_doc)
+}
+
 function new_doc() {
 	id_cand=$("#id_cand").val()
 	if (id_cand.length==0) {
 		alert("Definire un Lavoratore!");
 		return false;
 	}
-	$('#div_new_doc').toggle(150);	
+	$("#tipodoc").val('')
+	$("#sottotipodoc").find('option').remove().end();
+	$("#scadenza").val('')
+	$("#btn_save_doc" ).prop( "disabled", true );
+	$("#id_edit").val('')
+	$("#span_btn_allega").css('visibility', 'visible')
+	$('#div_new_doc').show(150);	
 }
 
 function prepara_mail(id_cand,nome_file) {

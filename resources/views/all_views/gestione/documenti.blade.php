@@ -58,8 +58,12 @@
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<input type="hidden" id='id_ref' name='id_ref' value="{{$id_ref}}">
 			<input type='hidden' name='allegato' id='allegato'>
-				@if (session('status'))
-					<div class="alert alert-success">
+				@if (session('status')) 
+					@if (session('esito')=="OK")
+						<div class="alert alert-success">
+					@else
+						<div class="alert alert-danger">
+					@endif	
 						{{ session('status') }}
 					</div>
 				@endif
@@ -170,13 +174,21 @@
 			
 			<div class="row">
 				<div class="col-lg-12">
-					<button type="button" class="btn btn-primary" {{$allow_new}} onclick="set_sezione({{$id_cand}})">
-						<i class="fa fa-plus-circle"></i> Allega Documento
-					</button>
-
-					<button type="submit" class="btn btn-success" name='save_doc' style='display:none' id='btn_save_doc'>
+					<button type="submit" class="btn btn-success" name='save_doc'  id='btn_save_doc'>
 						<i class="fa fa-save"></i> Salva documento
 					</button>
+
+						<?php
+							$st="";
+							if (strlen($id_edit)!=0) $st="visibility:hidden";
+						?>
+						<div id='span_btn_allega' style='display:inline;{{$st}}'>
+							<button type="button" id='btn_allega' class="btn btn-primary" {{$allow_new}} onclick="set_sezione({{$id_cand}})">
+								<i class="fa fa-plus-circle"></i> Allega Documento
+							</button>
+						</div>
+					
+
 					
 
 				</div>
@@ -227,8 +239,12 @@
 								<td>{{$document->scadenza}}</td>
 								<td>{{$document->created_at}}</td>
 								<td>
+									<a href="#" onclick="edit_doc('{{$document->id}}')">
+										<button type="button" class="btn btn-primary" alt='Edit' title="Modifica documento"><i class="fa fa-edit"></i></button>
+									</a>
+									
 									<a href="{{url('allegati')}}/doc/{{$document->id_cand}}/{{$document->nomefile}}" target='_blank'>
-										<button type="button" class="btn btn-info" alt='Edit' title="Vedi documento"><i class="fa fa-file"></i></button>
+										<button type="button" class="btn btn-info" alt='View doc' title="Vedi documento"><i class="fa fa-file"></i></button>
 									</a>
 									
 									<button type="button" name='dele_ele' onclick="dele_element({{$document->id}})" class="btn btn-danger" title="Elimina documento"><i class="fas fa-trash"></i></button>	
@@ -254,6 +270,7 @@
 						</tr>
 					</tfoot>					
 				</table>
+				<input type='hidden' name='id_edit' id='id_edit' value='{{$id_edit}}'>
 				<input type='hidden' id='dele_contr' name='dele_contr'>
 				<input type='hidden' id='restore_contr' name='restore_contr'>
 			
@@ -325,6 +342,6 @@
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.86"></script>
+	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.95"></script>
 
 @endsection

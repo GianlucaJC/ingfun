@@ -518,7 +518,7 @@
 				</div>
 			</div>
 		</div>
-		@if ($id_cand!=0)
+		@if ($id_cand!=0 || $from!="0" )
 			<div class="row mb-3">							
 				<div class="col-md-6">
 					<div class="form-floating">
@@ -666,7 +666,7 @@
 
 		</div>
 
-		@if ($id_cand!=0)
+		@if ($id_cand!=0 || $from!="0")
 			<div class="row mb-3">
 				<div class="col-md-12">
 					<div class="form-floating mb-3 mb-md-0">

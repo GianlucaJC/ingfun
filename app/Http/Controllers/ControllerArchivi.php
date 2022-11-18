@@ -71,6 +71,7 @@ class ControllerArchivi extends Controller
 	}	
 	
 	public function documenti($id_ref=0){
+		$id_edit=request()->input("id_edit");
 		if (request()->has("id_ref")) $id_ref=request()->input("id_ref");
 		if ($id_ref!=0) $id_cand=$id_ref;
 		else {
@@ -80,18 +81,31 @@ class ControllerArchivi extends Controller
 		if (session('id_cand')) $id_cand=session('id_cand');
 
 		if (request()->has("save_doc")) {
-			$ref_doc = new ref_doc;
+			$message="";
+			if (strlen($id_edit)==0 && strlen(request()->input('allegato'))==0) {				
+				$message="Manca l'allegato - Necessario rieseguire tutta la procedura";
+				return redirect("/documenti")->with('esito',"KO")->with('status', $message)->with('id_cand',$id_cand);
+			}
+			if (strlen($id_edit)!=0) {
+				$ref_doc = ref_doc::find($id_edit);
+				$message="Documento modificato con successo!";
+			}
+			else {
+				$ref_doc = new ref_doc;
+				$message="Documento aggiunto con successo!";
+			}
+			
 			$ref_doc->dele=0;
 			$ref_doc->id_cand = $id_cand;
 			$ref_doc->id_tipo_doc = request()->input('tipodoc');
 			$ref_doc->id_sotto_tipo = request()->input('sottotipodoc');
 			$ref_doc->id_sotto_tipo = request()->input('sottotipodoc');
-			if (strlen(request()->input('scadenza')!=0))
-				$ref_doc->scadenza = request()->input('scadenza');
-			$ref_doc->nomefile = request()->input('allegato');
+			$ref_doc->scadenza = request()->input('scadenza');
+			if (strlen(request()->input('allegato'))!=0)
+				$ref_doc->nomefile = request()->input('allegato');
 			$ref_doc->save();
 
-			return redirect("/documenti")->with('status', 'Documento aggiunto con successo!')->with('id_cand',$id_cand);
+			return redirect("/documenti")->with('esito',"OK")->with('status', $message)->with('id_cand',$id_cand);
 			
 		}
 		
@@ -147,7 +161,7 @@ class ControllerArchivi extends Controller
 		
 
 		
-		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('scadenza',$scadenza)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('elenco_doc',$elenco_doc)->with("id_ref",$id_ref);
+		return view('all_views/gestione/documenti')->with('tipo_doc',$tipo_doc)->with('voci_doc', $voci_doc)->with("view_dele",$view_dele)->with('tipodoc',$tipodoc)->with('sottotipodoc',$sottotipodoc)->with('scadenza',$scadenza)->with('allow_new',$allow_new)->with('candidati',$candidati)->with('id_cand',$id_cand)->with('elenco_doc',$elenco_doc)->with("id_ref",$id_ref)->with("id_edit",$id_edit);
 		
 	}
 

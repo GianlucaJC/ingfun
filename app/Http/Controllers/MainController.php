@@ -128,6 +128,7 @@ public function __construct()
 		$candidati[0]['zona_lavoro']=null;
 		$candidati[0]['n_scarpe']=null;
 		$candidati[0]['taglia']=null;
+		$candidati[0]['affiancamento']=null;
 		$candidati[0]['status_candidatura']=null;
 		$candidati[0]['note']=null;
 		$candidati[0]['data_inizio']=null;
@@ -320,7 +321,7 @@ public function __construct()
 		
 		
 		if ($request->has("sub_newcand_onlysave")) 
-			return redirect()->route("newcand",$id_cand);
+			return redirect()->route("newcand",['id'=>$id_cand,'from'=>$request->input('from')]);
 		else {
 			if ($request->input('from')=="0")
 				return $this->listcand($request);
