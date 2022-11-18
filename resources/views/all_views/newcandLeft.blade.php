@@ -85,6 +85,7 @@
 	<?php } ?>			
 	
 	<div class="row mb-3">
+	
 		<div class="col-md-6">
 			<div class="form-floating mb-3 mb-md-0">
 			<!--
@@ -95,7 +96,9 @@
 			
 				<select class="form-control" name="comune" id="comune" aria-label="Comune" required  onchange='popola_cap_pro(this.value)'>
 					<option value=''>Select...</option>
-					<option value="">Altro</option>
+					<option value="--|--"
+					<?php if ($candidati[0]['comune']=="--|--") echo " selected ";?>
+					>Altro</option>
 
 					<?php
 					
@@ -155,11 +158,32 @@
 
 
 	<div class="row mb-3">
-		<div class="col-md-6">
+		<div class="col-md-4">
 			<div class="form-floating mb-3 mb-md-0">
-				<select class="form-control" name="comunenasc" id="comunenasc" aria-label="Comune nascita" required  onchange="popola_pronasc(this.value)">
+				<select class="form-select" id="nazione" aria-label="Nazione" name='nazione' onchange='check_nazione(this.value)' placeholder="Nazione" required>
 					<option value=''>Select...</option>
-					<option value="">Altro</option>
+					<?php
+
+						foreach ($stati as $stat) {
+							$id_stato=$stat->id_stati;
+							$nome_stato=$stat->nome_stati;
+							echo "<option value='".$id_stato."' ";
+							if ($candidati[0]['id_stato']==$id_stato) echo " selected ";
+							echo ">".$nome_stato."</option>";
+						}
+					?>
+				</select>
+				<label for="nazione">Nazione nascita*</label>
+			</div>
+		</div>	
+	
+		<div class="col-md-4">
+			<div class="form-floating mb-3 mb-md-0">
+				<select class="form-control infonasc" name="comunenasc" id="comunenasc" aria-label="Comune nascita" required  onchange="popola_pronasc(this.value)">
+					<option value=''>Select...</option>
+					<option value="--|--"
+					<?php if ($candidati[0]['comunenasc']=="--|--") echo " selected ";?>
+					>Altro</option>
 
 					<?php
 					
@@ -179,9 +203,9 @@
 			</div>
 		</div>
 
-		<div class="col-md-6">
+		<div class="col-md-4">
 			<div class="form-floating">
-				<input class="form-control" id="pro_nasc" name='pro_nasc' type="text" placeholder="Provincia" required maxlength=10 value="{{ $candidati[0]['pro_nasc']}}"  />
+				<input class="form-control infonasc" id="pro_nasc" name='pro_nasc' type="text" placeholder="Provincia" required maxlength=10 value="{{ $candidati[0]['pro_nasc']}}"  />
 				<label for="pro_nasc">Provincia di Nascita*</label>
 			</div>
 		</div>

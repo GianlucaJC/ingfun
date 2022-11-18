@@ -37,8 +37,13 @@ try {
 	//Upload documenti:
 	//$from=="2" -> da scheda candidato
 	//$from=="doc" -> da archivi->Area documenti
+	//$from=="cedolini" ->dalla dashboard->upload cedolini
 	if ($from=="2" || $from=="doc") {
 		$sub="allegati/doc/$id_cand";
+		@mkdir($sub);
+	}	
+	if ($from=="cedolini") {
+		$sub="allegati/cedolini";
 		@mkdir($sub);
 	}	
 	

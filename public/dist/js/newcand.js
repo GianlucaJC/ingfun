@@ -39,6 +39,22 @@ $(document).ready( function () {
 
 } );
 
+function check_nazione(value) {
+	//118 ID Italia
+	if (value!="118")  {
+		//$('.infonasc').attr('readonly', true);
+		$("#comunenasc").val("--|--")		
+		$("#pro_nasc").val("--")
+
+	}
+	else {
+		$("#comunenasc").val("")
+		$("#pro_nasc").val("")
+	    // $('.infonasc').attr('readonly', false);
+	}	
+	
+}
+
 function popola_sotto_tipo(tipodoc) {
 	base_path = $("#url").val();
 	$.ajaxSetup({

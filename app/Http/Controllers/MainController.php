@@ -20,6 +20,7 @@ use App\Models\ccnl;
 use App\Models\tipologia_contr;
 use App\Models\tipo_doc;
 use App\Models\ref_doc;
+use App\Models\stati;
 use App\Models\story_all;
 
 use Maatwebsite\Excel\Facades\Excel;
@@ -94,6 +95,7 @@ public function __construct()
 		$candidati[0]['provincia']=null;
 		$candidati[0]['codfisc']=null;
 		$candidati[0]['datanasc']=null;
+		$candidati[0]['id_stato']=null;
 		$candidati[0]['comunenasc']=null;
 		$candidati[0]['pro_nasc']=null;
 		$candidati[0]['email']=null;
@@ -146,6 +148,7 @@ public function __construct()
 		$candidati=$this->init_newcand();
 		if ($id!=0) $candidati=candidati::where('id', "=", $id)->get();
 
+		$stati = stati::orderBy('nome_stati')->get();
 		$regioni = regioni::orderBy('regione')->get();
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		
@@ -209,7 +212,7 @@ public function __construct()
 		})
 		->get();
 		
-		return view('all_views/newcand')->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc);
+		return view('all_views/newcand')->with('stati', $stati)->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc);
 	}
 
 	public function save_newcand(Request $request) {
@@ -241,6 +244,7 @@ public function __construct()
 			$candidati->provincia = $request->input('provincia');
 			$candidati->codfisc = $request->input('codfisc');
 			$candidati->datanasc = $request->input('datanasc');
+			$candidati->id_stato = $request->input('nazione');
 			$candidati->comunenasc = $request->input('comunenasc');
 			$candidati->pro_nasc = $request->input('pro_nasc');
 			$candidati->email = $request->input('email');

@@ -21,11 +21,64 @@ use App\Models\ref_doc;
 use App\Models\story_all;
 use App\Models\contatti;
 use Mail;
+use setasign\Fpdi\Fpdi;
+use Spatie\PdfToText\Pdf;
 use DB;
 
 
 class AjaxControllerCand extends Controller
-{
+	{
+		public function split_pdf(Request $request) {
+			$page=$request->input('page');
+			$pagecount=$request->input('pagecount');
+			$allegato=$request->input('allegato');
+			
+			$path = "pdftotext.exe";
+			
+			$filename="allegati/cedolini/$allegato";
+			$pdf = new FPDI();
+			$new_pdf = new FPDI();
+			for ($i = $page; $i <= $page; $i++) {
+				$new_pdf->AddPage();
+				$new_pdf->setSourceFile($filename);
+				$new_pdf->useTemplate($new_pdf->importPage($i));
+				$new_filename =str_replace('.pdf', '', $filename).'_'.$i.".pdf";
+				$new_pdf->Output($new_filename, "F");
+				
+				
+				//$testo= Pdf::getText($new_filename, '/');
+				exec("pdftotext.exe ".$new_filename." pdf_read.txt");
+				$testo = file_get_contents("pdf_read.txt");	
+			}
+			
+			
+			try {
+				$new_filename =str_replace('.pdf', '', $filename).'_'.$i.".pdf";
+				$new_pdf->Output($new_filename, "F");
+				$status['status']="OK";
+				$status['message']="";
+			} catch (Exception $e) {
+				$status['status']="KO";
+				$status['message']=$e->getMessage();
+			}
+
+			return json_encode($status);	
+		
+			
+		}
+		
+		
+		public function count_pdf(Request $request) {
+		$allegato=$request->input('allegato');
+		
+		$pdf = new FPDI();
+		$filename="allegati/cedolini/$allegato";
+		$pagecount = $pdf->setSourceFile($filename); // How many pages?		
+		$status['status']="OK";
+		$status['pagecount']=$pagecount;
+		return json_encode($status);		
+	}
+
 
 	public function azione(Request $request) {
 		$id_cand=$request->input('id_cand');

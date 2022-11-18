@@ -169,9 +169,10 @@ use App\Models\User;
 				</div>	
 			</div>		
 
+			<!-- <a href="{{ route('cedolini_up') }}"> !-->
 			<a href="#">
 				<div class="d-grid gap-2 mt-2">
-				  <button class="btn btn-primary disabled" type="button">
+				  <button class="btn btn-primary" disabled type="button">
 				  <i class="fas fa-upload" style='font-size:36px'></i><br>
 					UPLOAD CEDOLINI
 				  </button>

@@ -611,7 +611,7 @@
 				
 				<div class="col-md-4">
 					<div class="form-floating">
-						<input class="form-control" id="codice_qualifica" name='codice_qualifica' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{ $candidati[0]['codice_qualifica']}}"  maxlength=15 />
+						<input class="form-control" id="codice_qualifica" name='codice_qualifica' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{ $candidati[0]['codice_qualifica']}}"  maxlength=50 />
 
 						<label for="codice_qualifica">Codice Qualifica</label>
 					</div>

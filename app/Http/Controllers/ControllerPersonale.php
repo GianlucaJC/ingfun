@@ -18,7 +18,9 @@ use App\Models\mansione;
 use App\Models\ccnl;
 use App\Models\tipologia_contr;
 
+
 use DB;
+
 
 
 
@@ -33,6 +35,12 @@ class ControllerPersonale extends Controller
 		$this->middleware('auth')->except(['index']);
 	}	
 
+	public function cedolini_up(Request $request) {
+		return view('all_views/cedolini_up');
+	}
+	
+
+	
 	public function scadenze_contratti(Request $request) {
 
 		$today=date("Y-m-d");
