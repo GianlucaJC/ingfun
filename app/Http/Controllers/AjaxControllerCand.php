@@ -28,86 +28,163 @@ use DB;
 
 class AjaxControllerCand extends Controller
 	{
-		public function split_pdf(Request $request) {
-			$page=$request->input('page');
+		public function check_url(Request $request) {
+			$url=$request->input('url');
+			if (file_exists($url)==true) 
+				echo "OK";
+			else
+				echo "KO";
+			//return json_encode($status);			
+		}
+		
+		public function analisi_pdf(Request $request) {
 			$pagecount=$request->input('pagecount');
-			$allegato=$request->input('allegato');
 			
+			$periodo=$request->input('periodo');
+			$allcf=candidati::select('codfisc','nominativo')			
+			->orderBy('codfisc')
+			->groupBy('codfisc')
+			->get();
 			$path = "pdftotext.exe";
+			$filename="allegati/cedolini/$periodo/busta.pdf";
 			
-			$filename="allegati/cedolini/$allegato";
-			$pdf = new FPDI();
-			$new_pdf = new FPDI();
-			for ($i = $page; $i <= $page; $i++) {
-				$new_pdf->AddPage();
-				$new_pdf->setSourceFile($filename);
-				$new_pdf->useTemplate($new_pdf->importPage($i));
-				$new_filename =str_replace('.pdf', '', $filename).'_'.$i.".pdf";
-				$new_pdf->Output($new_filename, "F");
-				
-				
-				//$testo= Pdf::getText($new_filename, '/');
-				exec("pdftotext.exe ".$new_filename." pdf_read.txt");
-				$testo = file_get_contents("pdf_read.txt");	
-			}
-			
+			//$testo= Pdf::getText($new_filename, '/');
+			exec("pdftotext.exe ".$filename." pdf_read.txt");
+			$testo = file_get_contents("pdf_read.txt");	
+
+
+			$pattern='/(?:[A-Z][AEIOU][AEIOUX]|[AEIOU]X{2}|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]/';
+			preg_match_all($pattern, $testo, $matches);
 			
 			try {
-				$new_filename =str_replace('.pdf', '', $filename).'_'.$i.".pdf";
-				$new_pdf->Output($new_filename, "F");
 				$status['status']="OK";
-				$status['message']="";
+				$status['message']=$matches;
+				$status['allcf']=$allcf;
 			} catch (Exception $e) {
 				$status['status']="KO";
 				$status['message']=$e->getMessage();
+				$status['allcf']=$allcf;
 			}
 
 			return json_encode($status);	
 		
 			
 		}
+
+		public function split_pdf(Request $request) {
+			$page=$request->input('page');
+			$pagecount=$request->input('pagecount');
+			
+			$periodo=$request->input('periodo');
+			
+			$path = "pdftotext.exe";
+			
+			$filename="allegati/cedolini/$periodo/busta.pdf";
+			
+			$new_pdf = new FPDI();
+			
+			$new_pdf->AddPage();
+			$new_pdf->setSourceFile($filename);
+			$new_pdf->useTemplate($new_pdf->importPage($page));
+			
+			$temp_file ="allegati/cedolini/$periodo/temp.pdf";
+			$new_pdf->Output($temp_file, "F");
+			
+			
+			exec("pdftotext.exe ".$temp_file." pdf_read.txt");
+			
+			$testo = file_get_contents("pdf_read.txt");			
+			$pattern='/(?:[A-Z][AEIOU][AEIOUX]|[AEIOU]X{2}|[B-DF-HJ-NP-TV-Z]{2}[A-Z]){2}(?:[\dLMNP-V]{2}(?:[A-EHLMPR-T](?:[04LQ][1-9MNP-V]|[15MR][\dLMNP-V]|[26NS][0-8LMNP-U])|[DHPS][37PT][0L]|[ACELMRT][37PT][01LM]|[AC-EHLMPR-T][26NS][9V])|(?:[02468LNQSU][048LQU]|[13579MPRTV][26NS])B[26NS][9V])(?:[A-MZ][1-9MNP-V][\dLMNP-V]{2}|[A-M][0L](?:[1-9MNP-V][\dLMNP-V]|[0L][1-9MNP-V]))[A-Z]/';
+			
+			preg_match_all($pattern, $testo, $matches);
+			if (count($matches[0])>0) $cf_ref=$matches[0][0];
+
+			if (strlen($cf_ref)!=0) {
+				
+				$new_pdf = new FPDI();
+				$new_filename ="allegati/cedolini/$periodo/".$cf_ref.".pdf";
+
+				if (file_exists($new_filename)==true) {
+	
+					$pageCount=$new_pdf->setSourceFile($new_filename);
+					for($i=1;$i<=$pageCount;$i++) {
+						$new_pdf->AddPage();
+						$pageCount=$new_pdf->setSourceFile($new_filename);
+						$tplId = $new_pdf->importPage($i);
+						$new_pdf->useTemplate($tplId);
+					}
+					$new_pdf->AddPage();
+					$new_pdf->setSourceFile($temp_file);
+					$tplId = $new_pdf->importPage(1);
+					$new_pdf->useTemplate($tplId);
+					$new_pdf->Output($new_filename, "F");
+					
+				} else	{		
+					rename($temp_file,$new_filename);
+				}
+				
+				
+				
+				
+				
+				@unlink("allegati/cedolini/$periodo/temp.pdf");
+
+				$status['status']="OK";
+				$status['cf_ref']=$cf_ref;
+			}	
+			else {
+				$status['status']="KO";
+				$status['cf_ref']=$cf_ref;
+				
+			}
+
+			return json_encode($status);
+		
+			
+		}
 		
 		
 		public function count_pdf(Request $request) {
-		$allegato=$request->input('allegato');
-		
-		$pdf = new FPDI();
-		$filename="allegati/cedolini/$allegato";
-		$pagecount = $pdf->setSourceFile($filename); // How many pages?		
-		$status['status']="OK";
-		$status['pagecount']=$pagecount;
-		return json_encode($status);		
-	}
+			
+			$periodo=$request->input('periodo');
+			
+			$pdf = new FPDI();
+			$filename="allegati/cedolini/$periodo/busta.pdf";
+			$pagecount = $pdf->setSourceFile($filename); // How many pages?		
+			$status['status']="OK";
+			$status['pagecount']=$pagecount;
+			return json_encode($status);		
+		}
 
 
-	public function azione(Request $request) {
-		$id_cand=$request->input('id_cand');
-		$tipo=$request->input('tipo');
-		
-		$candidati = candidati::find($id_cand);
-		
-		if ($tipo=="3") {
-			$candidati->tipo_anagr = "ASS";
-			$candidati->status_candidatura = 3;
-		}	
-		if ($tipo=="4") {
-			$candidati->tipo_anagr = "DIM";
-			$candidati->status_candidatura = 4;
-		}	
-		if ($tipo=="5") {
-			$candidati->tipo_anagr = "LIC";
-			$candidati->status_candidatura = 5;
-		}	
-		if ($tipo=="6") {
-			$candidati->tipo_anagr = "SCAD";
-			$candidati->status_candidatura = 6;
-		}					
-		
-		$candidati->save();
-		$status['status']="OK";
-		$status['message']="azione ok";
-		return json_encode($status);		
-	}
+		public function azione(Request $request) {
+			$id_cand=$request->input('id_cand');
+			$tipo=$request->input('tipo');
+			
+			$candidati = candidati::find($id_cand);
+			
+			if ($tipo=="3") {
+				$candidati->tipo_anagr = "ASS";
+				$candidati->status_candidatura = 3;
+			}	
+			if ($tipo=="4") {
+				$candidati->tipo_anagr = "DIM";
+				$candidati->status_candidatura = 4;
+			}	
+			if ($tipo=="5") {
+				$candidati->tipo_anagr = "LIC";
+				$candidati->status_candidatura = 5;
+			}	
+			if ($tipo=="6") {
+				$candidati->tipo_anagr = "SCAD";
+				$candidati->status_candidatura = 6;
+			}					
+			
+			$candidati->save();
+			$status['status']="OK";
+			$status['message']="azione ok";
+			return json_encode($status);		
+		}
 	
 	public function send_mail(Request $request){
 

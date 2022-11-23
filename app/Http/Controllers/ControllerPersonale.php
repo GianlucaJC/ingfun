@@ -36,7 +36,17 @@ class ControllerPersonale extends Controller
 	}	
 
 	public function cedolini_up(Request $request) {
-		return view('all_views/cedolini_up');
+		$mese_busta=$request->input("mese_busta");
+		$anno_busta=$request->input("anno_busta");
+		$dele_pdf=$request->input("dele_pdf");
+		if ($dele_pdf=="1") {
+			$periodo=$mese_busta.$anno_busta;
+			$dir = "allegati/cedolini/$periodo/";
+			array_map('unlink', glob("$dir/*.pdf"));
+		}
+		
+		
+		return view('all_views/cedolini_up')->with('mese_busta',$mese_busta)->with('anno_busta',$anno_busta)->with("dele_pdf",$dele_pdf);
 	}
 	
 

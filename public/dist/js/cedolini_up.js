@@ -1,5 +1,6 @@
+break_s=false
+
 $(document).ready( function () {
-	set_allegati()
 } );
 
 
@@ -9,9 +10,17 @@ var all_doc=new Array();
 var doc=""
 $(function(){
  //set_class_allegati(0)
- 
+	mese_busta=$("#mese_busta").val()
+	if (mese_busta.length!=0) set_allegati();
 });
 
+
+function canc_pdf() {
+	if (!confirm("Sicuri di eliminare i file presenti nel periodo prescelto?"))
+		return false;
+	$('#dele_pdf').val(1);
+	$('#frm_cedoliniup').submit();
+}
 
 function set_allegati() {
   /*
@@ -24,11 +33,14 @@ function set_allegati() {
  
   base_path = $("#url").val();
   from="cedolini";
+  mese_busta=$("#mese_busta").val()
+  anno_busta=$("#anno_busta").val()
+  periodo=mese_busta+anno_busta
   
   $('#drag-and-drop-zone').dmUploader({ //
     url: base_path+'/upload.php',
 	extraData: {
-      "from":from,
+      "from":from,"periodo":periodo
 	},
 	
 	extFilter: ["pdf"],
@@ -77,7 +89,7 @@ function set_allegati() {
 	  fx=data.path
 	  
 	  dx=JSON.stringify(data)
-	  console.log(dx)
+	  
 	  
 	  
       ui_add_log('Server Response for file #' + id + ': ' + JSON.stringify(data));
@@ -86,10 +98,13 @@ function set_allegati() {
       ui_multi_update_file_progress(id, 100, 'success', false);
 	  
 	  
-	  allegato=data.filename
-	  $("#allegato").val(allegato);
+	  
+	  
+	  
 	  page_count();
-
+	  $("#div_analisi").empty();
+	  $("#div_progr").empty();
+	  $("#btn_split").show(150)
     },
     onUploadError: function(id, xhr, status, message){
       ui_multi_update_file_status(id, 'danger', message);
@@ -104,6 +119,19 @@ function set_allegati() {
     }
   });	
 }
+function set_step() {
+	mese_busta=$("#mese_busta").val()
+	anno_busta=$("#anno_busta").val()
+	$("#div_allegati").hide()
+	$( "#btn_step" ).prop( "disabled", true );
+	$("#div_azioni").hide();
+	$("#div_alert_exist").hide();
+	if (mese_busta.length!=0 && anno_busta.length!=0) {
+		$( "#btn_step" ).prop( "disabled", false );
+		
+	}	
+
+}
 
 function page_count() {
 	base_path = $("#url").val();
@@ -112,39 +140,232 @@ function page_count() {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
-	allegato=$("#allegato").val()
+	mese_busta=$("#mese_busta").val()
+	anno_busta=$("#anno_busta").val()
+	periodo=mese_busta+anno_busta	
+
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
+		async:false,
 		url: base_path+"/count_pdf",
-		data: {_token: CSRF_TOKEN, allegato:allegato},
+		data: {_token: CSRF_TOKEN, periodo:periodo},
 		success: function (data) {
 			item=JSON.parse(data)
 			$("#pagecount").val(item.pagecount)
-			$( "#btn_split" ).prop( "disabled", false );
-			
+			$("#btn_analisi" ).prop( "disabled", false );			
 		}
 	})
 }
 
-function split_pdf(page) {
+function split_pdf(page,from) {
+	if ($("#pagecount").val().length==0) page_count();
+	
+	if (break_s==true) {
+		$("#btn_split").text("Procedi con la suddivisione") 
+		$("#btn_split" ).prop( "disabled", false );
+		$("#div_progr").hide(150)
+		break_s=false;
+		return false
+	}	
+
+	if (from==0) {
+		if ($("#btn_split").text()=="Procedi con la suddivisione") 
+			$("#btn_split").text('Operazione in corso. Cliccare per interrompere')
+		else {
+			$("#btn_split").text("Attendere. Interruzione in corso...")
+			$("#btn_split" ).prop( "disabled", true );
+			break_s=true
+			return false;
+		}	
+	}
+	
+	mese_busta=$("#mese_busta").val()
+	anno_busta=$("#anno_busta").val()
+	periodo=mese_busta+anno_busta	
+	
+	pagecount=$("#pagecount").val()
+	perc=100
+	if (page=="1") $("#div_progr").show(150)
+	if (pagecount!=0)
+		perc=parseInt((100/pagecount)*page)
+
+	html="<div class='progress-bar progress-bar-striped' role='progressbar' style='width: "+perc+"%' aria-valuenow='"+perc+"' aria-valuemin='0' aria-valuemax='100'></div>";
+	$("#div_progr").html(html)
+	$('html, body').animate({
+		scrollTop: $("#div_progr").offset().top
+	}, 1500);		
+
+
 	base_path = $("#url").val();
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
-	allegato=$("#allegato").val()
-	pagecount=$("#pagecount").val()
 	let CSRF_TOKEN = $("#token_csrf").val();
+	
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/split_pdf",
-		data: {_token: CSRF_TOKEN, allegato:allegato, pagecount:pagecount,page:page},
+		data: {_token: CSRF_TOKEN, pagecount:pagecount,page:page,periodo:periodo},
 		success: function (data) {
 			item=JSON.parse(data)
+
+			page++;
+			if (page<=pagecount) split_pdf(page,1)
+			else {
+				$("#btn_split").text("Procedi con la suddivisione") 
+				$("#btn_split" ).prop( "disabled", false );
+				$("#div_progr").hide(150)
+				analisi_pdf();
+			}	
 			
 			
 		}
 	})	
+}
+
+
+function analisi_pdf() {
+	
+	$("#div_analisi").empty();
+	mese_busta=$("#mese_busta").val()
+	anno_busta=$("#anno_busta").val()
+	periodo=mese_busta+anno_busta	
+	
+	pagecount=$("#pagecount").val()
+	$('#div_wait').show(150);
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/analisi_pdf",
+		data: {_token: CSRF_TOKEN,  pagecount:pagecount,periodo:periodo},
+		success: function (data) {
+			item=JSON.parse(data)
+			if (item.message[0].length==0) {
+				$('#div_wait').hide(150);
+				alert("Nessun codice fiscale individuato nel file!");
+				return false
+			}
+			allcf=item.allcf
+			
+			html="";
+			html+="<table id='tbl_analisi' class='display'>";
+				html+="<thead>";
+					html+="<tr>";
+						html+="<th>#</th>";
+						html+="<th>Codice Fiscale</th>";
+						html+="<th>Nominativo associato</th>";
+					html+="</tr>";
+				html+="</thead>";
+				html+="<tbody>";
+					cf_old="?"
+					for (sca=0;sca<=item.message[0].length-1;sca++) {
+						cf=item.message[0][sca]
+						url="allegati/cedolini/"+periodo+"/"+cf+".pdf";
+						c_url=false
+						
+						if(check_url(url)=="OK") c_url=true
+						if (cf_old!=cf) {
+							cf_old=cf
+							html+="<tr>";
+								html+="<td style='text-align:center'>"+(sca+1)+"</td>";
+								html+="<td style='text-align:center'>"
+								if (c_url==true) {
+									html+="<a href='"+url+"' target='_blank'>";
+										html+="<button type='button' class='btn btn-info' alt='Edit'><i class='far fa-file-pdf'></i> "+cf+"</button>";
+									html+="</a>";	
+								} else html+=cf
+								html+="</td>";
+								html+="<td>";
+									resp=in_array(cf,allcf);
+									if (resp.length!=0) html+=resp
+									else html+="<font color='red'><i>In sospeso</i></font>";
+								html+="</td>";
+							html+="</tr>";
+						}
+					}
+				html+="</tbody>";
+				html+="<tfoot>";
+					html+="<tr>";
+					html+="<th>#</th>";
+					html+="<th>Codfisc</th>";
+					html+="<th>Nominativo</th>";
+					html+="</tr>";
+				html+="</tfoot>";
+			html+="</table><hr>";
+			$("#div_analisi").html(html);
+			render_tb();
+
+			
+			$('#div_wait').hide(150);
+			$( "#btn_split" ).prop( "disabled", false );
+		}
+	})	
+}
+
+
+function render_tb() {
+    $('#tbl_analisi tfoot th').each(function () {
+        var title = $(this).text();
+		if (title.length!=0)
+			$(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    });		
+    $('#tbl_analisi').DataTable({
+		dom: 'Bfrtip',
+		buttons: [
+			'excel', 'pdf'
+		],		
+        initComplete: function () {
+            // Apply the search
+            this.api()
+                .columns()
+                .every(function () {
+                    var that = this;
+ 
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+        },		
+        language: {
+            lengthMenu: 'Visualizza _MENU_ records per pagina',
+            zeroRecords: 'Nessun codice fiscale trovato',
+            info: 'Pagina _PAGE_ di _PAGES_',
+            infoEmpty: 'Non sono presenti codici fiscali',
+            infoFiltered: '(Filtrati da _MAX_ codici fiscali totali)',
+        },
+    });		
+}
+
+function in_array(needle, haystack){
+  var found = 0;
+  for (var i=0, len=haystack.length;i<len;i++) {
+	value=haystack[i].codfisc
+    if (value.toUpperCase().trim() == needle.toUpperCase().trim()) return haystack[i].nominativo;
+      found++;
+  }
+  return "";
+}
+
+function check_url(url) {
+	let CSRF_TOKEN = $("#token_csrf").val();
+	
+	resp=$.ajax({
+		type: 'POST',
+		async: false,
+		url: base_path+"/check_url",
+		data: {_token: CSRF_TOKEN, url:url},		
+	}).responseText;
+	
+	return resp;
 }

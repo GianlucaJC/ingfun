@@ -42,6 +42,7 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('scadenze_contratti', [ 'as' => 'scadenze_contratti', 'uses' => 'App\Http\Controllers\ControllerPersonale@scadenze_contratti'])->middleware(['permission:gestione_archivi']);
 
 	Route::get('cedolini_up', [ 'as' => 'cedolini_up', 'uses' => 'App\Http\Controllers\ControllerPersonale@cedolini_up'])->middleware(['permission:gestione_archivi']);
+	Route::post('cedolini_up', [ 'as' => 'cedolini_up', 'uses' => 'App\Http\Controllers\ControllerPersonale@cedolini_up'])->middleware(['permission:gestione_archivi']);
 
 
 
@@ -118,10 +119,13 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
 	Route::post('load_contatti', 'App\Http\Controllers\AjaxControllerCand@load_contatti');
 	Route::post('azione', 'App\Http\Controllers\AjaxControllerCand@azione');
-
+	
+	
+	Route::post('check_url', 'App\Http\Controllers\AjaxControllerCand@check_url');
 
 	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');
 	Route::post('count_pdf', 'App\Http\Controllers\AjaxControllerCand@count_pdf');
+	Route::post('analisi_pdf', 'App\Http\Controllers\AjaxControllerCand@analisi_pdf');
 	Route::post('split_pdf', 'App\Http\Controllers\AjaxControllerCand@split_pdf');
 });
 

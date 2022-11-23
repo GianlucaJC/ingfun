@@ -43,7 +43,9 @@ try {
 		@mkdir($sub);
 	}	
 	if ($from=="cedolini") {
-		$sub="allegati/cedolini";
+		$periodo=$_POST['periodo'];
+		$sub="allegati/cedolini/$periodo";
+		$filename="busta.pdf";
 		@mkdir($sub);
 	}	
 	

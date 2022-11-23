@@ -130,7 +130,7 @@
 
 
 				</select>
-				<label for="titolo_studio">Mese</label>
+				<label for="mese">Mese</label>
 			  </div>
 			 </div> 
 			<div class="col-md-2">
@@ -611,7 +611,7 @@
 				
 				<div class="col-md-4">
 					<div class="form-floating">
-						<input class="form-control" id="codice_qualifica" name='codice_qualifica' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{ $candidati[0]['codice_qualifica']}}"  maxlength=50 />
+						<input class="form-control" id="codice_qualifica" name='codice_qualifica' type="text" value="{{ $candidati[0]['codice_qualifica']}}"  maxlength=50 />
 
 						<label for="codice_qualifica">Codice Qualifica</label>
 					</div>

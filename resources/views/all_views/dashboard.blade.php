@@ -147,6 +147,7 @@ use App\Models\User;
 
 
 			<div class="row">
+				<!--
 				<div class="col-md-6">
 					<a href="#">
 						<div class="d-grid gap-2 mt-2">
@@ -157,7 +158,8 @@ use App\Models\User;
 						</div>
 					</a>
 				</div>
-				<div class="col-md-6">
+				!-->
+				<div class="col-md-12">
 					<a href="#">
 						<div class="d-grid gap-2 mt-2">
 						  <button class="btn btn-primary disabled" type="button">
@@ -169,12 +171,13 @@ use App\Models\User;
 				</div>	
 			</div>		
 
-			<!-- <a href="{{ route('cedolini_up') }}"> !-->
-			<a href="#">
+			<!--<a href="#"> !-->
+			<a href="{{ route('cedolini_up') }}">
+			
 				<div class="d-grid gap-2 mt-2">
-				  <button class="btn btn-primary" disabled type="button">
+				  <button class="btn btn-primary" type="button">
 				  <i class="fas fa-upload" style='font-size:36px'></i><br>
-					UPLOAD CEDOLINI
+					UPLOAD CEDOLINI/DOCUMENTI SOSPESI
 				  </button>
 				</div>
 			</a>
