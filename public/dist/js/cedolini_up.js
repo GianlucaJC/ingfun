@@ -218,6 +218,7 @@ function split_pdf(page,from) {
 				$("#btn_split").text("Procedi con la suddivisione") 
 				$("#btn_split" ).prop( "disabled", false );
 				$("#div_progr").hide(150)
+				$("#distr").show(150)
 				analisi_pdf();
 			}	
 			

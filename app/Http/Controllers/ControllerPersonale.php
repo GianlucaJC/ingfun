@@ -38,15 +38,34 @@ class ControllerPersonale extends Controller
 	public function cedolini_up(Request $request) {
 		$mese_busta=$request->input("mese_busta");
 		$anno_busta=$request->input("anno_busta");
+		$periodo=$mese_busta.$anno_busta;
 		$dele_pdf=$request->input("dele_pdf");
+		$distr=$request->input("distr");
+		if ($distr=="distr") {
+			$dir="allegati/cedolini/$periodo";
+			$sub="allegati/cedoliniview/$periodo";
+			@mkdir($sub);
+			$elenco = scandir($dir);
+			for ($sca=0;$sca<count($elenco);$sca++) {
+				$fx_src=$elenco[$sca];
+				$fx=str_replace(".pdf","",$fx_src);
+				if (strlen($fx)==16) {
+					$fx_dest=md5($fx).".pdf";
+					copy($dir."/".$fx_src,$sub."/".$fx_dest);
+				}
+			}
+			$f1 = fopen($dir."/distr.ddd", "w") or die("Unable to open file!");
+			$txt = "Done!";
+			fwrite($f1, $txt);
+		}
 		if ($dele_pdf=="1") {
-			$periodo=$mese_busta.$anno_busta;
 			$dir = "allegati/cedolini/$periodo/";
 			array_map('unlink', glob("$dir/*.pdf"));
+			array_map('unlink', glob("$dir/*.ddd"));
 		}
 		
 		
-		return view('all_views/cedolini_up')->with('mese_busta',$mese_busta)->with('anno_busta',$anno_busta)->with("dele_pdf",$dele_pdf);
+		return view('all_views/cedolini_up')->with('mese_busta',$mese_busta)->with('anno_busta',$anno_busta)->with("dele_pdf",$dele_pdf)->with('distr',$distr);
 	}
 	
 

@@ -3,6 +3,7 @@
 /public/hot
 /public/allegati
 /public/storage
+/public/pdf_read.txt
 /storage/*.key
 /vendor
 .env

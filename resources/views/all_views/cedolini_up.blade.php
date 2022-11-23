@@ -55,6 +55,17 @@ use App\Models\User;
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
 			<input type='hidden' name='dele_pdf' id='dele_pdf'>
 		@if ($user->hasRole('admin'))			
+			<?php 
+				$periodo=$mese_busta.$anno_busta;
+				$dir = "allegati/cedolini/$periodo/";
+				$distr_run=false;
+				if (file_exists("allegati/cedolini/$periodo/distr.ddd")==true)
+					$distr_run=true;
+				$numfile = count(glob($dir . "*.pdf"));				
+				
+			
+			?>	
+			
 			<div class="row mb-3">
 				<div class="col-md-4">
 				  <div class="form-floating mb-3 mb-md-0">
@@ -138,20 +149,24 @@ use App\Models\User;
 				$vis="display:none";$dis="disabled";
 				if (isset($_POST['btn_step'])) $vis="display:block";
 				$vis_allegati=$vis;
-				$periodo=$mese_busta.$anno_busta;
+				
 				if (file_exists("allegati/cedolini/$periodo/busta.pdf")==true)  {
 					$dis="";$vis_allegati="display:none";
 					echo "<div class='alert alert-warning' role='alert' id='div_alert_exist'>";
-					   echo "Esiste già un File accorpato inviato in precedenza per questo periodo. Se vuoi inviarne uno diverso e cancellare l'attuale <a class='alert-link' href='#' onclick='canc_pdf()'> clicca quì</a>  <hr>
-					   <a href='allegati/cedolini/$periodo/busta.pdf' class='alert-link' target='_blank'>Clicca quì per visionare il file</a>";
+					   echo "Esiste già un File accorpato inviato in precedenza per questo periodo. Se vuoi inviarne uno diverso e cancellare l'attuale <a class='alert-link' href='#' onclick='canc_pdf()'> clicca quì</a>  <hr>";
+					   echo "<a href='allegati/cedolini/$periodo/busta.pdf' class='alert-link' target='_blank'>Clicca quì per visionare il file</a><hr>";
+					   if ($distr_run==true) echo "<i>I cedolini sono stati distributi per competenza e per periodo nella sezione per i dipendenti</i>";
+
 					echo "</div>";
 
 					
 				}
-				$dir = "allegati/cedolini/$periodo/";
-				$num = count(glob($dir . "*.pdf"));
+
 				$vis_up="display:none";$vis_procedi="display:block";
-				if ($num>1) {$vis_up="display:block";$vis_procedi="display:none";}
+				
+				if ($numfile>1 && $distr_run==false) {
+					$vis_up="display:block";$vis_procedi="display:none";
+				}
 
 
 			?>		
@@ -185,7 +200,7 @@ use App\Models\User;
 				<button type="button" class="btn btn-success  btn-lg btn-block" {{$dis}} style='{{$vis_procedi}}' id='btn_split' onclick='split_pdf(1,0)'>Procedi con la suddivisione</button>
 
 						
-				<button type="button" class="btn btn-success  btn-lg btn-block" style='{{$vis_up}}' id='btn_up_dip' onclick='' disabled>Aggiorna Sezione Cedolini per dipendenti</button>
+				<button type="submit" name='distr' id='distr' class="btn btn-success  btn-lg btn-block" style='{{$vis_up}}' onclick="if (!confirm('Sicuri di aggiornare la sezione per i dipendenti?')) event.preventDefault()" value='distr' >Aggiorna Sezione Cedolini per dipendenti</button>
 						
 				
 
@@ -232,7 +247,7 @@ use App\Models\User;
 	<!-- fine DataTables !-->
 
 	
-	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.548"></script>
+	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.549"></script>
 	
 
 	<!-- fine upload -->		
