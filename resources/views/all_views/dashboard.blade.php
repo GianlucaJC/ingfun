@@ -160,9 +160,9 @@ use App\Models\User;
 				</div>
 				!-->
 				<div class="col-md-12">
-					<a href="#">
+					<a href="{{ route('cedolini_view') }}">
 						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary disabled" type="button">
+						  <button class="btn btn-primary" type="button">
 						  <i class="fas fa-clipboard-check" style='font-size:36px'></i><br>
 							CEDOLINI
 						  </button>

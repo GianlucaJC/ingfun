@@ -181,34 +181,38 @@ use App\Models\User;
 					
 				</div>
 			</div>
-			<div id='div_azioni' style='{{$vis}}'>
-				
-				<div class="text-center mb-3" id='div_wait' style='display:none'>
-				  <div class="spinner-border" role="status">
-					<span class="sr-only">Loading...</span>
-				  </div>
-				  <div class="ml-3">
-					Attendere. Il processo potrebbe richiedere anche qualche minuto...
-				  </div>
-				</div>	
-				<div id='div_analisi' class='mt-2 mb-2'></div>
 			
+				<div id='div_azioni' style='{{$vis}}'>
+					
+					<div class="text-center mb-3" id='div_wait' style='display:none'>
+					  <div class="spinner-border" role="status">
+						<span class="sr-only">Loading...</span>
+					  </div>
+					  <div class="ml-3">
+						Attendere. Il processo potrebbe richiedere anche qualche minuto...
+					  </div>
+					</div>	
+					<div id='div_analisi' class='mt-2 mb-2'></div>
 				
-				<button type="button" class="btn btn-primary  btn-lg btn-block" {{$dis}} id='btn_analisi' onclick='analisi_pdf()'>Analisi PDF (Estrapolazione dei CF)</button>
+					
+					<button type="button" class="btn btn-primary  btn-lg btn-block" {{$dis}} id='btn_analisi' onclick='analisi_pdf()'>Analisi PDF (Estrapolazione dei CF)</button>
 
 
-				<button type="button" class="btn btn-success  btn-lg btn-block" {{$dis}} style='{{$vis_procedi}}' id='btn_split' onclick='split_pdf(1,0)'>Procedi con la suddivisione</button>
+					@if ($distr_run==false)
+						<button type="button" class="btn btn-success  btn-lg btn-block" {{$dis}} style='{{$vis_procedi}}' id='btn_split' onclick='split_pdf(1,0)'>Procedi con la suddivisione</button>
 
-						
-				<button type="submit" name='distr' id='distr' class="btn btn-success  btn-lg btn-block" style='{{$vis_up}}' onclick="if (!confirm('Sicuri di aggiornare la sezione per i dipendenti?')) event.preventDefault()" value='distr' >Aggiorna Sezione Cedolini per dipendenti</button>
-						
-				
+								
+						<button type="submit" name='distr' id='distr' class="btn btn-success  btn-lg btn-block" style='{{$vis_up}}' onclick="if (!confirm('Sicuri di aggiornare la sezione per i dipendenti?')) event.preventDefault()" value='distr' >Aggiorna Sezione Cedolini per dipendenti</button>
+					@endif
+							
+					
 
 
 
-				<div class="progress mt-2" id='div_progr' style='display:none'>
-				</div>		
-			</div>
+					<div class="progress mt-2" id='div_progr' style='display:none'>
+					</div>		
+				</div>
+			
 		
 		@endif	
 		<i class="fa fa-file-pdf-o" style="font-size:36px"></i>

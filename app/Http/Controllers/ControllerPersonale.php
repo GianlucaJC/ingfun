@@ -35,6 +35,107 @@ class ControllerPersonale extends Controller
 		$this->middleware('auth')->except(['index']);
 	}	
 
+	public function cedolini_view() {
+		$periodo=request()->input("periodo");
+		$k=$periodo;
+		$m=substr($k,4,2);$m1="";
+		$a=substr($k,0,4);
+		if ($m=="01") $m1="GEN";
+		if ($m=="02") $m1="FEB";
+		if ($m=="03") $m1="MAR";
+		if ($m=="04") $m1="APR";
+		if ($m=="05") $m1="MAG";
+		if ($m=="06") $m1="GIU";
+		if ($m=="07") $m1="LUG";
+		if ($m=="08") $m1="AGO";
+		if ($m=="09") $m1="SET";
+		if ($m=="10") $m1="OTT";
+		if ($m=="11") $m1="NOV";
+		if ($m=="12") $m1="DIC";
+		$periodo_sel=$m1.$a;
+
+		$id_cand=request()->input("id_cand");
+		$dir="allegati/cedoliniview";
+		$results = scandir($dir);
+		$periodi_raw=array();
+		foreach ($results as $result) {
+			if ($result === '.' or $result === '..') continue;
+			if (is_dir($dir . '/' . $result)) {
+				if (strlen($result)>6) {
+					$m=substr($result,0,3);$m=strtolower($m);
+					$m1="";
+					if ($m=="gen") $m1="01";
+					if ($m=="feb") $m1="02";
+					if ($m=="mar") $m1="03";
+					if ($m=="apr") $m1="04";
+					if ($m=="mag") $m1="05";
+					if ($m=="giu") $m1="06";
+					if ($m=="lug") $m1="07";
+					if ($m=="ago") $m1="08";
+					if ($m=="set") $m1="09";
+					if ($m=="ott") $m1="10";
+					if ($m=="nov") $m1="11";
+					if ($m=="dic") $m1="12";
+					$a=substr($result,3,4);
+					$am=$a.$m1;
+					$periodi_raw[]=$am;
+				}
+			}
+		}
+		rsort($periodi_raw);
+		$periodi=array();
+		for ($sca=0;$sca<count($periodi_raw);$sca++) {
+			$k=$periodi_raw[$sca];
+			$m=substr($k,4,2);$m1="";
+			$a=substr($k,0,4);
+			if ($m=="01") $m1="GEN";
+			if ($m=="02") $m1="FEB";
+			if ($m=="03") $m1="MAR";
+			if ($m=="04") $m1="APR";
+			if ($m=="05") $m1="MAG";
+			if ($m=="06") $m1="GIU";
+			if ($m=="07") $m1="LUG";
+			if ($m=="08") $m1="AGO";
+			if ($m=="09") $m1="SET";
+			if ($m=="10") $m1="OTT";
+			if ($m=="11") $m1="NOV";
+			if ($m=="12") $m1="DIC";
+			$periodi[$k]=$m1.$a;
+		}
+		$cand_cf=array();
+		$candidati=DB::table('candidatis')		
+		->orderBy('codfisc')->get();
+		$indice=0;$cf_old="?";
+		foreach ($candidati as $cand) {
+			$cf=$cand->codfisc;
+			if ($cf_old==$cf) $indice++;
+			else {$cf_old=$cf;$indice=0;}
+			if (strlen($cf)!=0) 
+				$cand_cf[$cf][$indice]=$cand->nominativo;
+		}
+
+		$sub="allegati/cedolini/$periodo_sel";
+		$elenco = scandir($sub);
+		$tb_risp=array();
+		for ($sca=0;$sca<count($elenco);$sca++) {
+			$fx_src=$elenco[$sca];
+			$fx=str_replace(".pdf","",$fx_src);
+			if (strlen($id_cand)!=0) {
+				$ref=explode("-",$id_cand);
+				$cf_ref=$ref[1];
+				$includi=false;
+				if ($fx==$cf_ref) $includi=true;
+			} else $includi=true;
+			if (strlen($fx)==16 && $includi==true) {
+				$fx_dest=md5($fx).".pdf";
+				if (file_exists($sub."/".$fx_src)) $tb_risp[$fx]=$fx_dest;
+			}
+		}
+		$dir_ref=str_replace("cedolini","cedoliniview",$sub);
+		return view('all_views/cedolini_view')->with('candidati', $candidati)->with('periodi',$periodi)->with('periodo',$periodo)->with('id_cand',$id_cand)->with('tb_risp',$tb_risp)->with('cand_cf',$cand_cf)->with('periodo_sel',$periodo_sel)->with('dir_ref',$dir_ref);
+	}
+
+
 	public function cedolini_up(Request $request) {
 		$mese_busta=$request->input("mese_busta");
 		$anno_busta=$request->input("anno_busta");
