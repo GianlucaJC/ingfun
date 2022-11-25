@@ -119,28 +119,30 @@
 					<tbody>
 						@foreach ($tb_risp as $k=>$v)
 							@php ($k_c=md5($k).".pdf")
-							<tr>
-								<td>
-									<a href='{{$dir_ref}}/{{$k_c}}' target='_blank'>
-										{{$k}}
-									</a>
-								</td>
-								<td>
-									@if (count($cand_cf[$k])==1)
-										{{$cand_cf[$k][0]}}
-									@else
-										<?php
-											echo "Multianagrafica associata al CF<hr>";
-											$anagr="";
-											for ($sca=0;$sca<count($cand_cf[$k]);$sca++) {
-												if (strlen($anagr)!=0) $anagr.=", ";
-												$anagr.=$cand_cf[$k][$sca];
-											}
-											echo $anagr;
-										?>
-									@endif
-								</td>
-							</tr>
+							@if (isset($cand_cf[$k]))
+								<tr>
+									<td>
+										<a href='{{$dir_ref}}/{{$k_c}}' target='_blank'>
+											{{$k}}
+										</a>
+									</td>
+									<td>
+										@if (count($cand_cf[$k])==1)
+											{{$cand_cf[$k][0]}}
+										@else
+											<?php
+												echo "Multianagrafica associata al CF<hr>";
+												$anagr="";
+												for ($sca=0;$sca<count($cand_cf[$k]);$sca++) {
+													if (strlen($anagr)!=0) $anagr.=", ";
+													$anagr.=$cand_cf[$k][$sca];
+												}
+												echo $anagr;
+											?>
+										@endif
+									</td>
+								</tr>
+							@endif	
 						@endforeach	
 					</tbody>
 					<tfoot>
