@@ -144,7 +144,9 @@ use App\Models\User;
 					</a>
 				</div>	
 			</div>
+		@endif
 
+		@if ($user->hasRole('admin') || $user->hasRole('user'))
 
 			<div class="row">
 				<!--
@@ -169,7 +171,9 @@ use App\Models\User;
 						</div>
 					</a>
 				</div>	
-			</div>		
+			</div>	
+		@endif
+		@if ($user->hasRole('admin'))
 
 			<!--<a href="#"> !-->
 			<a href="{{ route('cedolini_up') }}">

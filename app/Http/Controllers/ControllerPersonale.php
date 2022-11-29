@@ -36,6 +36,16 @@ class ControllerPersonale extends Controller
 	}	
 
 	public function cedolini_view() {
+
+		$id = Auth::user()->id;
+		$user = User::find($id);
+		$ref_lav=array();$ref_lav[0]['id_ref']=0;$ref_lav[0]['codfisc']="";
+		if ($user->hasRole('user')) {
+			$ref_lav=candidati::select('id as id_ref','codfisc')
+			->where("id_user","=",$id)
+			->get();
+		}
+		
 		$periodo=request()->input("periodo");
 		$k=$periodo;
 		$m=substr($k,4,2);$m1="";
@@ -132,7 +142,7 @@ class ControllerPersonale extends Controller
 			}
 		}
 		$dir_ref=str_replace("cedolini","cedoliniview",$sub);
-		return view('all_views/cedolini_view')->with('candidati', $candidati)->with('periodi',$periodi)->with('periodo',$periodo)->with('id_cand',$id_cand)->with('tb_risp',$tb_risp)->with('cand_cf',$cand_cf)->with('periodo_sel',$periodo_sel)->with('dir_ref',$dir_ref);
+		return view('all_views/cedolini_view')->with('candidati', $candidati)->with('periodi',$periodi)->with('periodo',$periodo)->with('id_cand',$id_cand)->with('tb_risp',$tb_risp)->with('cand_cf',$cand_cf)->with('periodo_sel',$periodo_sel)->with('dir_ref',$dir_ref)->with('ref_lav',$ref_lav);
 	}
 
 

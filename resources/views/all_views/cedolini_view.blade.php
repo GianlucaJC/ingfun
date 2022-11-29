@@ -1,3 +1,9 @@
+<?php 
+use App\Models\User; 
+$id = Auth::user()->id;
+$user = User::find($id);
+
+?>
 @extends('all_views.viewmaster.index')
 
 @section('title', 'IngFUN')
@@ -88,18 +94,25 @@
 
 				<div class="col-md-6">
 					<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" name="id_cand" id="id_cand" onchange="$('#frm_documenti').submit()" >
-							<option value=''>Tutti</option>
-							@foreach($candidati as $cand)
-								<option value='{{ $cand->id }}-{{ $cand->codfisc }}'
-								<?php  
-									$ref=$cand->id."-".$cand->codfisc;
-								?>								
-									@if ($ref==$id_cand) selected @endif
-								>{{ $cand->nominativo}}</option>	
-							@endforeach			
-						</select>
-						<label for="id_cand">Lavoratore</label>					
+						@php ($dis="disabled")
+						@if ($user->hasRole('admin')) 
+							<select class="form-select" name="id_cand" id="id_cand" onchange="$('#frm_documenti').submit()">
+								<option value=''>Tutti</option>
+								@foreach($candidati as $cand)
+									<option value='{{ $cand->id }}-{{ $cand->codfisc }}'
+									<?php  
+										$ref=$cand->id."-".$cand->codfisc;
+									?>								
+										@if ($ref==$id_cand) selected @endif
+									>{{ $cand->nominativo}}</option>	
+								@endforeach			
+							</select>
+							<label for="id_cand">Lavoratore</label>
+						@else
+
+  							<input type='hidden' name='id_cand' id='id_cand' value='{{$ref_lav[0]->id_ref}}-{{ $ref_lav[0]->codfisc }}'>
+						@endif	
+						
 					</div>	
 				</div>
 			</div>	
