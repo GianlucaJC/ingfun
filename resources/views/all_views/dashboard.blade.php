@@ -145,10 +145,7 @@ use App\Models\User;
 				</div>	
 			</div>
 		@endif
-<?php
 
-	echo "<hr>";echo "admin: ".$user->hasRole('admin')." user: ".$user->hasRole('user');
-?>
 		@if ($user->hasRole('admin') || $user->hasRole('user'))
 
 			<div class="row">
