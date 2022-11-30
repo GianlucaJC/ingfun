@@ -10,6 +10,7 @@ use Illuminate\Support\Facades\Hash;
 use App\Models\candidati;
 use App\Models\regioni;
 use App\Models\italy_cities;
+use App\Models\italy_cap;
 use App\Models\tipoc;
 use App\Models\societa;
 use App\Models\centri_costo;
@@ -180,17 +181,71 @@ class ControllerPersonale extends Controller
 	}
 	
 
+	public function popola_array_info() {
+		$info_soc=array();
+		$info_area=array();
+		$centri_costo=array();
+		$ccnl=array();
+		$tipoc=array();
+		$comuni=array();
+		$cap=array();
+		for ($sca=1;$sca<=7;$sca++) {
+			if ($sca==1) $info=societa::select('descrizione','id')->get();
+			if ($sca==2) $info=area_impiego::select('descrizione','id')->get();
+			if ($sca==3) $info=centri_costo::select('descrizione','id')->get();
+			if ($sca==4) $info=ccnl::select('descrizione','id')->get();
+			if ($sca==5) $info=ccnl::select('descrizione','id')->get();
+			if ($sca==6) $info= italy_cities::select("istat as id","comune as descrizione")->get();
+			if ($sca==7) $info= italy_cap::select("cap as id","istat as descrizione")->get();
+
+			for ($sc=0;$sc<count($info);$sc++) {			
+				if ($sca==1) $info_soc[$info[$sc]->id]=$info[$sc]->descrizione;
+				if ($sca==2) $info_area[$info[$sc]->id]=$info[$sc]->descrizione;
+				if ($sca==3) $centri_costo[$info[$sc]->id]=$info[$sc]->descrizione;
+				if ($sca==4) $ccnl[$info[$sc]->id]=$info[$sc]->descrizione;
+				if ($sca==5) $tipoc[$info[$sc]->id]=$info[$sc]->descrizione;
+				if ($sca==6) $comuni[$info[$sc]->id]=$info[$sc]->descrizione;
+				$id_cap=$info[$sc]->id;
+				$z="";
+				for ($l=strlen($id_cap);$l<5;$l++) {
+					$z.="0";
+				}
+				$id_cap="$z$id_cap";
+				if ($sca==7) $cap[$id_cap]=$info[$sc]->descrizione;
+			}
+		}
+
+		$arr['info_soc']=$info_soc;
+		$arr['info_area']=$info_area;
+		$arr['centri_costo']=$centri_costo;
+		$arr['ccnl']=$ccnl;
+		$arr['tipoc']=$tipoc;
+		$arr['comuni']=$comuni;
+		$arr['cap']=$cap;
+
+		return $arr;
+	}
 	
 	public function scadenze_contratti(Request $request) {
+		$arr=$this->popola_array_info();
+		$info_soc=$arr['info_soc'];
+		$info_area=$arr['info_area'];
+		$centri_costo=$arr['centri_costo'];
+		$ccnl=$arr['ccnl'];
+		$tipoc=$arr['tipoc'];
+		$arr_loc=$arr['comuni'];
+		$arr_cap=$arr['cap'];
 
+		
+		//->where("data_fine","<=", $today)
 		$today=date("Y-m-d");
-		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine')
+		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
 		->where("dele","=",0)
-		->where("data_fine","<=", $today)		
 		->where("status_candidatura","=",3)
+		->orderBy('data_fine')
 		->get();
 
-		return view('all_views/scadenze_contratti')->with('scadenze', $scadenze);
+		return view('all_views/scadenze_contratti')->with('scadenze', $scadenze)->with('info_soc',$info_soc)->with('info_area',$info_area)->with('centri_costo',$centri_costo)->with('ccnl',$ccnl)->with('tipoc',$tipoc)->with('arr_loc',$arr_loc)->with('arr_cap',$arr_cap);
 	}
 
 	public function listpers(Request $request) {

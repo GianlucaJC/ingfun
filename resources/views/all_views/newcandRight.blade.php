@@ -65,6 +65,13 @@
 					<option value='3'
 					<?php if ($candidati[0]['titolo_studio']=="3") echo "selected";?>
 					>Laurea</option>
+					<option value='4'
+					<?php if ($candidati[0]['titolo_studio']=="4") echo "selected";?>
+					>Laurea Triennale</option>
+					<option value='5'
+					<?php if ($candidati[0]['titolo_studio']=="5") echo "selected";?>
+					>Laurea Magistrale</option>
+
 				</select>
 				<label for="titolo_studio">Titolo di studio</label>
 				</div>
