@@ -242,6 +242,7 @@ class ControllerPersonale extends Controller
 		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
 		->where("dele","=",0)
 		->where("status_candidatura","=",3)
+		->whereNotNull('data_fine')
 		->orderBy('data_fine')
 		->get();
 
