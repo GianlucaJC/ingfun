@@ -21,7 +21,7 @@
 @section('content_main')
 
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" style='background-color:white'>
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -47,6 +47,7 @@
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
 			<div class="row">
 			  <div class="col-lg-12">
+					<h5>TOTALE {{$count}} ASSUNTI - {{$all_ris}} RISULTATI</h5>
 					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
@@ -55,79 +56,216 @@
 								<th>Stato</th>
 								<th>Inizio</th>
 								<th>Fine</th>
-								<th>Contratto</th>
+								
 								<th>Società</th>
 								<th>Area Impiego</th>
 								<th>Centro Costo</th>
-								<th>Ruolo</th>
-								<!--
 								<th>Appartenenza</th>
 								<th>Contratto</th>
 								<th>Livello</th>
-								<th>Cat.Legale</th>
-									
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
-								<th></th>
+								<th>Tipo Contratto</th>
+								<th>Categoria Legale</th>
+								<th>Ore Settimanali</th>
+								<th>Codice Qualifica</th>
+								<th>Qualificato</th>
+								<th>Titolo studio</th>
+								<th>C.F.</th>
+								<th>Data Nascita</th>
+								<th>Comune Nascita</th>
+								<th>Prov. Nascita</th>
+								<th>Ind. Residenza</th>
+								<th>Comune Residenza</th>
+								<th>CAP Residenza</th>
+								<th>View</th>
 
-								!-->
 								
 							</tr>
 						</thead>
 						<tbody>
-							@foreach($candidati as $candidato)
+				
+							@foreach($scadenze as $scadenza)
 								<tr>
 									<td>
-										@if ($candidato->dele=="0") 
-											<a href="{{ route('newcand',['id'=>$candidato->id,'from'=>1]) }}" >
-												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-											</a>
-										@endif
-									</td>									
-									
-									<td>
-										@if ($candidato->dele=="1") 
-											<font color='red'><del> 
-										@endif
-										
-										{{ $candidato->nominativo }}
-										
-										@if ($candidato->dele=="1") 
-											</del></font>
-										@endif											
-									</td>
-									<td>
-									@if ($candidato->status_candidatura=="1") GESTIONE @endif
-									@if ($candidato->status_candidatura=="2") RESPINTA @endif
-									@if ($candidato->status_candidatura=="3") ASSUNZIONE @endif
-									@if ($candidato->status_candidatura=="4") DIMISSIONI @endif
-									@if ($candidato->status_candidatura=="5") LICENZIAMENTO 
-									@endif
-									@if ($candidato->status_candidatura=="6") CONTRATTO SCADUTO
-									@endif
-									</td>
-									<td>{{ $candidato->data_inizio }}</td>
-									<td>{{ $candidato->data_fine }}</td>
-									<td></td>
-									<td>
+										<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1]) }}" >
+											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+										</a>
 									</td>
 
-									<td></td>	
 									<td>
+										{{ $scadenza->nominativo }}
+									</td>
+									<td>
+									@if ($scadenza->status_candidatura=="1") GESTIONE @endif
+									@if ($scadenza->status_candidatura=="2") RESPINTA @endif
+									@if ($scadenza->status_candidatura=="3") ASSUNZIONE @endif
+									@if ($scadenza->status_candidatura=="4") DIMISSIONI @endif
+									@if ($scadenza->status_candidatura=="5") LICENZIAMENTO 
+									@endif
+									@if ($scadenza->status_candidatura=="5") CONTRATTO SCADUTO
+									@endif
+									
+									</td>
+									<td>
+									<?php 
+										$dx=$scadenza->data_inizio;
+										$date="";
+										if ($dx!=null) {
+											$date=date_create($dx);
+											$date=date_format($date,"d/m/Y");
+										}	
+										
+									?>
+									
+									{{ $date }}</td>
+									<td>
+									<?php 
+										$dx=$scadenza->data_fine;
+										$date="";
+										if ($dx!=null) {
+											$date=date_create($dx);
+											$date=date_format($date,"d/m/Y");
+										}	
+									?>
+									{{ $date }}</td>
+
+									<td>
+										@if (isset($info_soc[$scadenza->soc_ass])) 
+											{{  $info_soc[$scadenza->soc_ass] }}
+										@endif
+									
+									</td>
+
+									<td>
+										@if(isset($info_area[$scadenza->area_impiego]))
+										{{  $info_area[$scadenza->area_impiego] }}
+										@endif									
+									</td>	
+									<td>
+										@if(isset($centri_costo[$scadenza->centro_costo]))
+										{{  $centri_costo[$scadenza->centro_costo] }}
+										@endif
 									</td>
 									
+									<td>
+										@if($scadenza->appartenenza=="1")
+											SOCIALE
+										@endif									
+										@if($scadenza->appartenenza=="2")
+											SUB-APPALTO
+										@endif									
+
+									</td>
 									
 									<td>
+										@if(isset($ccnl[$scadenza->contratto]))
+										{{  $ccnl[$scadenza->contratto] }}
+										@endif									
+									</td>
+
+									<td>
+										{{  $scadenza->livello }}
+									</td>									
+									<td>
+										@if(isset($tipoc[$scadenza->tipo_contr]))
+										{{  $tipoc[$scadenza->tipo_contr] }}
+										@endif									
+									</td>
+									<td>
+										@if($scadenza->categoria_legale=="0")
+											OPERAIO
+										@endif									
+										@if($scadenza->categoria_legale=="1")
+											IMPIEGATO
+										@endif									
+
+									</td>		
+									<td>
+										{{  $scadenza->ore_sett }}
+									</td>									
+									<td>
+										{{  $scadenza->codice_qualifica }}
+									</td>									
+									<td>
+										@if($scadenza->qualificato=="0")
+											NO
+										@endif									
+										@if($scadenza->qualificato=="1")
+											SI
+										@endif									
+
+									</td>		
+
+									<td>
+										@if($scadenza->titolo_studio=="1")
+											Licenza Media
+										@endif									
+										@if($scadenza->titolo_studio=="2")
+											Diploma Istituto Superiore
+										@endif									
+										@if($scadenza->titolo_studio=="3")
+											Laurea
+										@endif									
+										@if($scadenza->titolo_studio=="4")
+											Laurea Triennale
+										@endif									
+										@if($scadenza->titolo_studio=="5")
+											Laurea Magistrale
+										@endif									
+
+									</td>		
+									<td>
+										{{  $scadenza->codfisc }}
+									</td>									
+									<td>
+									<?php 
+										$dx=$scadenza->datanasc;
+										$date="";
+										if ($dx!=null) {
+											$date=date_create($dx);
+											$date=date_format($date,"d/m/Y");
+										}	
+									?>
+									{{ $date }}</td>
+
+									<td>
+										<?php
+										$comunenasc=$scadenza->comunenasc;
+										$ar=explode("|",$comunenasc);
+										$istat_nasc="";$comune_nasc="";
+										if (isset($ar[0])) $istat_nasc=$ar[0];
+										
+										if (isset($arr_loc[$istat_nasc])) $comune_nasc=$arr_loc[$istat_nasc];									
+										
+
+										?>
+										{{ $comune_nasc }}									
+									</td>
+									<td>
+										{{  $scadenza->pro_nasc }}
+									</td>
+									<td>
+										{{  $scadenza->indirizzo }}
+									</td>
+									<td>
+										<?php
+										$cap=$scadenza->cap;
+										$istat_res="";$comune_res="";
+										if (isset($arr_cap[$cap])) $istat_res=$arr_cap[$cap];
+										
+										if (isset($arr_loc[$istat_res])) $comune_res=$arr_loc[$istat_res];									
+										?>
+										{{ $comune_res }}
+									</td>
+									<td>
+										{{  $scadenza->cap }}
+									</td>
+
+
+									<td>
+										<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1]) }}" >
+											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+										</a>
+									
 									</td>
 									
 								</tr>
@@ -137,13 +275,28 @@
 							<tr>
 								<th></th>
 								<th>Nominativo</th>
-								<th>Mansione</th>
-								<th>Zona di lavoro</th>
-								<th>Ultimo Aggiornamento</th>
-								<th>Sorgente</th>
-								<th>Status</th>						
-								<th></th>
-								<th></th>
+								<th>Stato</th>
+								<th>Inizio</th>
+								<th>Fine</th>
+								<th>Società</th>
+								<th>Area Impiego</th>						
+								<th>Centro Costo</th>
+								<th>Appartenenza</th>
+								<th>Contratto</th>
+								<th>Livello</th>
+								<th>Tipo Contratto</th>
+								<th>Categoria Legale</th>
+								<th>Ore Settimanali</th>
+								<th>Codice Qualifica</th>
+								<th>Qualificato</th>
+								<th>Titolo studio</th>
+								<th>C.F.</th>
+								<th>Data Nascita</th>
+								<th>Comune Nascita</th>
+								<th>Prov. Nascita</th>
+								<th>Ind. Residenza</th>
+								<th>Comune Residenza</th>
+								<th>CAP Residenza</th>
 								<th></th>
 							</tr>
 						</tfoot>					
