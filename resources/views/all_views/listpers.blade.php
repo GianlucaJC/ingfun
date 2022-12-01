@@ -12,11 +12,14 @@
 
 
 <style>
-	tfoot input {
+<!-- crea problemi con il footer di fine pagina !-->
+<!-- 
+	foot input {
         width: 100%;
         padding: 3px;
         box-sizing: border-box;
     }
+!-->	
 </style>
 @section('content_main')
 
@@ -48,6 +51,9 @@
 			<div class="row">
 			  <div class="col-lg-12">
 					<h5>TOTALE {{$count}} ASSUNTI - {{$all_ris}} RISULTATI</h5>
+					
+					
+					
 					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
@@ -301,6 +307,7 @@
 							</tr>
 						</tfoot>					
 					</table>
+					
 			  </div>
 			  
 			  
@@ -310,11 +317,11 @@
 
 			<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link active">
 				<button type="button" class="btn btn-primary btn-lg btn-block">Inserisci Nuova Anagrafica</button>
-			<a/>
+			</a>
 			
 			<a href="{{ route('export-users') }}" class="nav-link active">
 				<button type="button" class="btn btn-primary btn-lg btn-block">Esporta Tutti i dati</button>
-			<a/>
+			</a>
 
 			<?php
 				$check="";

@@ -12,11 +12,14 @@
 
 
 <style>
-	tfoot input {
+<!-- crea problemi con il footer di fine pagina !-->
+<!-- 
+	foot input {
         width: 100%;
         padding: 3px;
         box-sizing: border-box;
     }
+!-->	
 </style>
 @section('content_main')
 
@@ -50,24 +53,39 @@
 					<table id='tbl_list_cand' class="display">
 						<thead>
 							<tr>
-								<th>ID</th>
+								<th style='max-width:50px'>ID</th>
+								<th>Operazioni</th>
 								<th>Nominativo</th>
 								<th>Mansione</th>
 								<th>Zona di lavoro</th>
 								<th>Ultimo Aggiornamento</th>
 								<th>Sorgente</th>
 								<th>Status</th>
-								<th>Operazioni</th>
-								<th>View</th>
-								<th>Delete</th>
-								
-								
 							</tr>
 						</thead>
 						<tbody>
 							@foreach($candidati as $candidato)
 								<tr>
-									<td>{{ $candidato->id }}</td>
+									<td style='max-width:50px'>{{ $candidato->id }}</td>
+									<td>
+										@if ($candidato->dele=="0") 
+											<a href="{{ route('newcand',['id'=>$candidato->id,'from'=>0]) }}" >
+												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+											</a>
+										@endif
+
+										@if ($candidato->dele=="0") 
+										<a href='#' onclick="dele_element({{$candidato->id}})">
+											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>
+										</a>
+										@endif
+										@if ($candidato->dele=="1") 
+											<a href='#'onclick="restore_element({{$candidato->id}})" >
+												<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+											</a>
+										@endif									
+
+									</td>									
 									<td>
 										@if ($candidato->dele=="1") 
 											<font color='red'><del> 
@@ -103,45 +121,20 @@
 									
 									</td>
 
-									<td></td>	
-									<td>
-										@if ($candidato->dele=="0") 
-											<a href="{{ route('newcand',['id'=>$candidato->id,'from'=>0]) }}" >
-												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-											</a>
-										@endif
-									</td>
-									
-									
-									<td>
-										@if ($candidato->dele=="0") 
-										<a href='#' onclick="dele_element({{$candidato->id}})">
-											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>
-										</a>
-										@endif
-										@if ($candidato->dele=="1") 
-											<a href='#'onclick="restore_element({{$candidato->id}})" >
-												<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
-											</a>
-										@endif									
-
-									</td>
 									
 								</tr>
 							@endforeach
 						</tbody>
 						<tfoot>
 							<tr>
-								<th>ID</th>
+								<th></th>
+								<th></th>
 								<th>Nominativo</th>
 								<th>Mansione</th>
 								<th>Zona di lavoro</th>
 								<th>Ultimo Aggiornamento</th>
 								<th>Sorgente</th>
-								<th>Status</th>						
-								<th></th>
-								<th></th>
-								<th></th>
+								<th>Status</th>		
 							</tr>
 						</tfoot>					
 					</table>

@@ -10,13 +10,15 @@
 @endsection
 
 
-
 <style>
-	tfoot input {
+<!-- crea problemi con il footer di fine pagina !-->
+<!-- 
+	foot input {
         width: 100%;
         padding: 3px;
         box-sizing: border-box;
     }
+!-->	
 </style>
 @section('content_main')
 
