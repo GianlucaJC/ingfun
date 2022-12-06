@@ -502,6 +502,7 @@ class ControllerArchivi extends Controller
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$view_dele=$request->input("view_dele");
 		$descr_contr=$request->input("descr_contr");
+		$mail_scadenze=$request->input("mail_scadenze");
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 
@@ -509,17 +510,20 @@ class ControllerArchivi extends Controller
 		//Creazione nuovo elemento
 		if (strlen($descr_contr)!=0 && $edit_elem==0) {
 			$descr_contr=strtoupper($descr_contr);
+			$mail_scadenze=strtolower($mail_scadenze);
 			$arr=array();
 			$arr['dele']=0;
 			$arr['descrizione']=$descr_contr;
+			$arr['mail_scadenze']=$mail_scadenze;
 			DB::table("societa")->insert($arr);
 		}
 		
 		//Modifica elemento
 		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
 			$descr_contr=strtoupper($descr_contr);
+			$mail_scadenze=strtolower($mail_scadenze);
 			societa::where('id', $edit_elem)
-			  ->update(['descrizione' => $descr_contr]);
+			  ->update(['descrizione' => $descr_contr,'mail_scadenze' => $mail_scadenze]);
 		}
 		if (strlen($dele_contr)!=0) {
 			societa::where('id', $dele_contr)

@@ -58,6 +58,7 @@
 						<tr>
 							<th>ID</th>
 							<th>Ragione Sociale</th>
+							<th>Mail scadenze contratti</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -69,13 +70,16 @@
 								 @if ($soc->dele=="1") 
 									<font color='red'><del> 
 								 @endif
-									<span id='id_descr{{$soc->id}}' data-descr='{{ $soc->descrizione }}'>
+									<span id='id_descr{{$soc->id}}' data-descr='{{ $soc->descrizione }}' data-mail='{{ $soc->mail_scadenze }}'>
 										{{ $soc->descrizione }}
 									</span>	
 								 @if ($soc->dele=="1") 
 									 </del></font>
 								 @endif	
 								</td>	
+								<td>
+									{{ $soc->mail_scadenze }}
+								</td>
 								<td>
 									@if ($soc->dele=="0") 
 										<a href='#' onclick="edit_elem({{$soc->id}})">
@@ -101,6 +105,7 @@
 						<tr>
 							<th>ID</th>
 							<th>Descrizione</th>
+							<th>Mail</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -161,6 +166,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/societa.js?ver=1.1"></script>
+	<script src="{{ URL::asset('/') }}dist/js/societa.js?ver=1.2"></script>
 
 @endsection

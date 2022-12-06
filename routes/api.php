@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::get('servizio_scadenze', [ 'as' => 'servizio_scadenze', 'uses' => 'App\Http\Controllers\ControllerPersonale@servizio_scadenze']);

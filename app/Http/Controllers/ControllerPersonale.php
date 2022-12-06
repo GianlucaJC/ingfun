@@ -18,7 +18,7 @@ use App\Models\area_impiego;
 use App\Models\mansione;
 use App\Models\ccnl;
 use App\Models\tipologia_contr;
-
+use Mail;
 
 use DB;
 
@@ -33,7 +33,7 @@ class ControllerPersonale extends Controller
 {
 	public function __construct()
 	{
-		$this->middleware('auth')->except(['index']);
+		$this->middleware('auth')->except(['index','servizio_scadenze']);
 	}	
 
 	public function cedolini_view() {
@@ -297,6 +297,90 @@ class ControllerPersonale extends Controller
 		return view('all_views/listpers')->with('scadenze', $scadenze)->with('info_soc',$info_soc)->with('info_area',$info_area)->with('centri_costo',$centri_costo)->with('ccnl',$ccnl)->with('tipoc',$tipoc)->with('arr_loc',$arr_loc)->with('arr_cap',$arr_cap)->with('view_dele',$view_dele)->with('count',$count)->with('all_ris',$all_ris);
 
 
+	}
+	
+	function servizio_scadenze(Request $request) {
+		$today=date("Y-m-d");
+		$date = strtotime($today);
+		$first_date=date('Y-m-01', $date);
+		$first_date_i=date('01-m-Y', $date);
+		$last_date = date("Y-m-t", $date);
+		$last_date_i = date("t-m-Y", $date);
+
+		$count=DB::table('candidatis as c')
+		->join('societa as s', 'c.soc_ass', '=', 's.id')
+		->where("c.dele","=",0)
+		->where("c.status_candidatura","=",3)
+		->where('c.data_fine','>=',$first_date)
+		->where('c.data_fine','<=',$last_date)
+		->where('s.mail_scadenze','like','%@%')
+		->count();
+		$status=array();
+		$status['status']="OK";
+		$status['message']="Non ci sono contratti in scadenza o non risultano definite mail_scadenze nelle societa'!";
+
+		if ($count>0) {
+			$scadenze=DB::table('candidatis as c')
+			->join('societa as s', 'c.soc_ass', '=', 's.id')
+			->select('c.soc_ass','c.nominativo','c.data_inizio', 'c.data_fine','s.descrizione','s.mail_scadenze')
+			->where("c.dele","=",0)
+			->where("c.status_candidatura","=",3)
+			->where('c.data_fine','>=',$first_date)
+			->where('c.data_fine','<=',$last_date)
+			->where('s.mail_scadenze','like','%@%')
+			->orderBy('c.soc_ass')
+			->get();
+
+
+			
+			$resp=array();
+			$old_soc="?";$indice=0;
+			foreach ($scadenze as $scadenza) {
+				$soc_ass=$scadenza->soc_ass;
+				if ($old_soc!=$soc_ass) $indice=0;
+				else $indice++;
+				$old_soc=$soc_ass;
+				$mail_scadenze=$scadenza->mail_scadenze;
+				$resp[$mail_scadenze][$indice]['nominativo']=$scadenza->nominativo;
+				$resp[$mail_scadenze][$indice]['data_inizio']=$scadenza->data_inizio;
+				$resp[$mail_scadenze][$indice]['data_fine']=$scadenza->data_fine;
+			}
+			
+
+			
+			$titolo = "Reminder Scadenze contrattuali";
+			$body_msg="Elenco dei nominativi con contratto in scadenza nel periodo $first_date_i - $last_date_i";
+
+			try {
+				$destinatari=array();
+				foreach($resp as $email=>$v) {
+					$scadenza=$resp[$email];
+					$data["email"] = $email;
+					$destinatari[]=$email;
+					$data["title"] = $titolo;
+					$data["body"] = $body_msg;
+					$data["scadenza"] = $scadenza;
+
+					Mail::send('emails.scadenze', $data, function($message)use($data) {
+						$message->to($data["email"], $data["email"])
+						->subject($data["title"]);
+
+					});
+
+				}
+				$status['status']="OK";
+				$status['message']="Mail inviata con successo";
+				$status['destinatari']=$destinatari;
+				
+				
+			} catch (Throwable $e) {
+				$status['status']="KO";
+				$status['message']="Errore occorso durante l'invio! $e";
+			}		
+		}
+			
+		
+		return json_encode($status);
 	}
 
 }

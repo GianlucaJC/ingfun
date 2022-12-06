@@ -9,15 +9,23 @@
 				<font color='red'>Definizione Società</font>
 			</h4>
 				<div class="row">
-					<div class="col-md-6">
+					<div class="col-md-4">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">
-							<span class="input-group-text" id="basic-addon1">Descrizione</span>
+							<span class="input-group-text" id="basic-addon1">Ragione sociale</span>
 						  </div>
-						  <input type="text" class="form-control" placeholder="Descrizione Società" aria-label="Descrizione" name="descr_contr" id="descr_contr" required>
+						  <input type="text" class="form-control" placeholder="Definizione società" aria-label="Descrizione" name="descr_contr" id="descr_contr" required>
 						</div>			
 					</div>
-					<div class="col-md-6">
+					<div class="col-md-4">
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<span class="input-group-text" id="basic-addon1">Mail Scadenze</span>
+						  </div>
+						  <input type="text" class="form-control" placeholder="E-Mail scadenze contratti" aria-label="Descrizione" name="mail_scadenze" id="mail_scadenze">
+						</div>			
+					</div>
+					<div class="col-md-4">
 						<button type="submit" class="btn btn-success" >Crea/Modifica Società</button>
 						<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
 						Chiudi
