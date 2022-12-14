@@ -251,7 +251,7 @@ use App\Models\User;
 	<!-- fine DataTables !-->
 
 	
-	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.549"></script>
+	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.550"></script>
 	
 
 	<!-- fine upload -->		

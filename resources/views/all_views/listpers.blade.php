@@ -315,14 +315,18 @@
 			</div>
 			<!-- /.row -->
 
-			<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link active">
-				<button type="button" class="btn btn-primary btn-lg btn-block">Inserisci Nuova Anagrafica</button>
-			</a>
-			
-			<a href="{{ route('export-users') }}" class="nav-link active">
-				<button type="button" class="btn btn-primary btn-lg btn-block">Esporta Tutti i dati</button>
-			</a>
+			<div class="row">
+				<div class="col-lg-12">
+					<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link active">
+						<button type="button" class="btn btn-primary btn-lg btn-block">Inserisci Nuova Anagrafica</button>
+					</a>
+					
+					<a href="{{ route('export-users') }}" class="nav-link active">
+						<button type="button" class="btn btn-primary btn-lg btn-block">Esporta Tutti i dati</button>
+					</a>
 
+				</div>
+			</div>
 			<?php
 				$check="";
 				if ($view_dele=="1") $check="checked";
@@ -367,6 +371,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listpers.js?ver=2.00"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listpers.js?ver=2.01"></script>
 
 @endsection

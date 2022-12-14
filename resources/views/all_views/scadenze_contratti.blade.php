@@ -340,6 +340,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listpers.js?ver=2.00"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listpers.js?ver=2.01"></script>
 
 @endsection

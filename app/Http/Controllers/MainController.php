@@ -204,7 +204,7 @@ public function __construct()
 		->select('r.id','r.id_cand','r.scadenza', 'r.nomefile', 'r.created_at', 'r.updated_at','d.id as id_tipo_doc', 'd.descrizione as tipodocumento', 'v.id as id_sotto_tipo', 'v.descrizione as sottodocumento')
 		->where('r.id_cand','=',$id)
 		->orderByDesc('r.id')
-		->take(5)
+		//->take(5)
 		->get();
 
 		$tipologia_contr=tipologia_contr::orderBy('descrizione')
