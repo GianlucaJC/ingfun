@@ -189,6 +189,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listcand.js?ver=1.24"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listcand.js?ver=1.25"></script>
 
 @endsection

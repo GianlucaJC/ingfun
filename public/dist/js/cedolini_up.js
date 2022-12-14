@@ -320,7 +320,11 @@ function render_tb() {
 			$(this).html('<input type="text" placeholder="Search ' + title + '" />');
     });		
     $('#tbl_analisi').DataTable({
-		dom: 'Bfrtip',
+		pageLength: 10,
+		lengthMenu: [10, 15, 20, 50, 100, 200, 500],
+
+		pagingType: 'full_numbers',	
+		//dom: 'Bfrtip',
 		buttons: [
 			'excel', 'pdf'
 		],		

@@ -358,7 +358,7 @@
 	@if ($id_cand!="0") 
 		<center>
 		<h3>Area Documenti</h3>
-			Ultimi 5 - 
+			
 			<a href="{{url('documenti')}}/{{$id_cand}}" target='_blank'
 			onclick="window.open(this.href, 
                          'newwindow', 
@@ -366,7 +366,7 @@
               return false;"
 			>  
 
-				Clicca quì per l'Area Completa
+				Consultazione Area globale 
 			</a>
 		</center>
 		<div class="row mb-3">
