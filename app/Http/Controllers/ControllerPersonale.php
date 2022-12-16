@@ -68,7 +68,7 @@ class ControllerPersonale extends Controller
 		$id_cand=request()->input("id_cand");
 		$dir="allegati/cedoliniview/$tipo_cedolino/";
 		$results = @scandir($dir);
-		print_r($results);
+		
 		if (!is_array($results)) $results=array();
 		
 		$periodi_raw=array();
