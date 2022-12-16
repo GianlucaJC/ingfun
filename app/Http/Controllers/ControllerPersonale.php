@@ -46,7 +46,7 @@ class ControllerPersonale extends Controller
 			->where("id_user","=",$id)
 			->get();
 		}
-		
+		$tipo_cedolino=request()->input("tipo_cedolino");
 		$periodo=request()->input("periodo");
 		$k=$periodo;
 		$m=substr($k,4,2);$m1="";
@@ -66,8 +66,11 @@ class ControllerPersonale extends Controller
 		$periodo_sel=$m1.$a;
 
 		$id_cand=request()->input("id_cand");
-		$dir="allegati/cedoliniview";
-		$results = scandir($dir);
+		$dir="allegati/cedoliniview/$tipo_cedolino/";
+		$results = @scandir($dir);
+		print_r($results);
+		if (!is_array($results)) $results=array();
+		
 		$periodi_raw=array();
 		foreach ($results as $result) {
 			if ($result === '.' or $result === '..') continue;
@@ -125,8 +128,9 @@ class ControllerPersonale extends Controller
 				$cand_cf[$cf][$indice]=$cand->nominativo;
 		}
 
-		$sub="allegati/cedolini/$periodo_sel";
-		$elenco = scandir($sub);
+		$sub="allegati/cedolini/$tipo_cedolino/$periodo_sel";
+		$elenco = @scandir($sub);
+		if (!is_array($elenco)) $elenco=array();
 		$tb_risp=array();
 		for ($sca=0;$sca<count($elenco);$sca++) {
 			$fx_src=$elenco[$sca];
@@ -143,19 +147,22 @@ class ControllerPersonale extends Controller
 			}
 		}
 		$dir_ref=str_replace("cedolini","cedoliniview",$sub);
-		return view('all_views/cedolini_view')->with('candidati', $candidati)->with('periodi',$periodi)->with('periodo',$periodo)->with('id_cand',$id_cand)->with('tb_risp',$tb_risp)->with('cand_cf',$cand_cf)->with('periodo_sel',$periodo_sel)->with('dir_ref',$dir_ref)->with('ref_lav',$ref_lav);
+		return view('all_views/cedolini_view')->with('candidati', $candidati)->with('periodi',$periodi)->with('tipo_cedolino',$tipo_cedolino)->with('periodo',$periodo)->with('id_cand',$id_cand)->with('tb_risp',$tb_risp)->with('cand_cf',$cand_cf)->with('periodo_sel',$periodo_sel)->with('dir_ref',$dir_ref)->with('ref_lav',$ref_lav);
 	}
 
 
 	public function cedolini_up(Request $request) {
 		$mese_busta=$request->input("mese_busta");
+		$tipo_cedolino=$request->input("tipo_cedolino");
 		$anno_busta=$request->input("anno_busta");
 		$periodo=$mese_busta.$anno_busta;
 		$dele_pdf=$request->input("dele_pdf");
 		$distr=$request->input("distr");
 		if ($distr=="distr") {
-			$dir="allegati/cedolini/$periodo";
-			$sub="allegati/cedoliniview/$periodo";
+			$dir="allegati/cedolini/$tipo_cedolino/$periodo";
+			$sub="allegati/cedoliniview/$tipo_cedolino";
+			@mkdir($sub);
+			$sub="allegati/cedoliniview/$tipo_cedolino/$periodo";
 			@mkdir($sub);
 			$elenco = scandir($dir);
 			for ($sca=0;$sca<count($elenco);$sca++) {
@@ -171,13 +178,13 @@ class ControllerPersonale extends Controller
 			fwrite($f1, $txt);
 		}
 		if ($dele_pdf=="1") {
-			$dir = "allegati/cedolini/$periodo/";
+			$dir = "allegati/cedolini/$tipo_cedolino/$periodo/";
 			array_map('unlink', glob("$dir/*.pdf"));
 			array_map('unlink', glob("$dir/*.ddd"));
 		}
 		
 		
-		return view('all_views/cedolini_up')->with('mese_busta',$mese_busta)->with('anno_busta',$anno_busta)->with("dele_pdf",$dele_pdf)->with('distr',$distr);
+		return view('all_views/cedolini_up')->with('tipo_cedolino',$tipo_cedolino)->with('mese_busta',$mese_busta)->with('anno_busta',$anno_busta)->with("dele_pdf",$dele_pdf)->with('distr',$distr);
 	}
 	
 

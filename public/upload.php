@@ -43,10 +43,14 @@ try {
 		@mkdir($sub);
 	}	
 	if ($from=="cedolini") {
+		$tipo_cedolino=$_POST['tipo_cedolino'];
 		$periodo=$_POST['periodo'];
-		$sub="allegati/cedolini/$periodo";
-		$filename="busta.pdf";
+		$sub="allegati/cedolini/$tipo_cedolino";
 		@mkdir($sub);
+		$sub="allegati/cedolini/$tipo_cedolino/$periodo";
+		@mkdir($sub);
+		$filename="busta.pdf";
+
 	}	
 	
 	$filepath = "$sub/".$filename;

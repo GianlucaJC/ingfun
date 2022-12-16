@@ -57,9 +57,9 @@ use App\Models\User;
 		@if ($user->hasRole('admin'))			
 			<?php 
 				$periodo=$mese_busta.$anno_busta;
-				$dir = "allegati/cedolini/$periodo/";
+				$dir = "allegati/cedolini/$tipo_cedolino/$periodo/";
 				$distr_run=false;
-				if (file_exists("allegati/cedolini/$periodo/distr.ddd")==true)
+				if (file_exists("allegati/cedolini/$tipo_cedolino/$periodo/distr.ddd")==true)
 					$distr_run=true;
 				$numfile = count(glob($dir . "*.pdf"));				
 				
@@ -67,7 +67,29 @@ use App\Models\User;
 			?>	
 			
 			<div class="row mb-3">
-				<div class="col-md-4">
+				<div class="col-md-3">
+				  <div class="form-floating mb-3 mb-md-0">
+					
+					<select class="form-select" id="tipo_cedolino" aria-label="tipo cedolino" name='tipo_cedolino' onchange='set_step()' >
+						<option value=''>Select...</option>
+						<option value='PR'
+						<?php if ($tipo_cedolino=="PR") echo " selected ";?>
+						>Provvisorio</option>
+						<option value='DE'
+						<?php if ($tipo_cedolino=="DE") echo " selected ";?>
+						>Definitivo</option>
+						<option value='TR'
+						<?php if ($tipo_cedolino=="TR") echo " selected ";?>
+						>13^</option>
+						<option value='QU'
+						<?php if ($tipo_cedolino=="QU") echo " selected ";?>
+						>14^</option>
+
+					</select>
+					<label for="tipo_cedolino">Tipo Cedolino</label>
+				  </div>
+				 </div>
+				<div class="col-md-3">
 				  <div class="form-floating mb-3 mb-md-0">
 					
 					<select class="form-select" id="mese_busta" aria-label="mese busta" name='mese_busta' onchange='set_step()' >
@@ -114,7 +136,7 @@ use App\Models\User;
 					<label for="mese_busta">Mese di riferimento</label>
 				  </div>
 				 </div> 
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="form-floating">
 						<select class="form-select" id="anno_busta" aria-label="anno busta" name='anno_busta' onchange='set_step()'>
 						<option value=''>Select...</option>
@@ -138,7 +160,7 @@ use App\Models\User;
 					if ($dele_pdf=="1") $dis_step="";
 				?>	
 
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<button type="submit" id='btn_step' name='btn_step' class="btn btn-primary btn-lg btn-block" {{$dis_step}}>Step Successivo</button>
 				</div>				
 		
@@ -150,11 +172,11 @@ use App\Models\User;
 				if (isset($_POST['btn_step'])) $vis="display:block";
 				$vis_allegati=$vis;
 				
-				if (file_exists("allegati/cedolini/$periodo/busta.pdf")==true)  {
+				if (file_exists("allegati/cedolini/$tipo_cedolino/$periodo/busta.pdf")==true)  {
 					$dis="";$vis_allegati="display:none";
 					echo "<div class='alert alert-warning' role='alert' id='div_alert_exist'>";
 					   echo "Esiste già un File accorpato inviato in precedenza per questo periodo. Se vuoi inviarne uno diverso e cancellare l'attuale <a class='alert-link' href='#' onclick='canc_pdf()'> clicca quì</a>  <hr>";
-					   echo "<a href='allegati/cedolini/$periodo/busta.pdf' class='alert-link' target='_blank'>Clicca quì per visionare il file</a><hr>";
+					   echo "<a href='allegati/cedolini/$tipo_cedolino/$periodo/busta.pdf' class='alert-link' target='_blank'>Clicca quì per visionare il file</a><hr>";
 					   if ($distr_run==true) echo "<i>I cedolini sono stati distributi per competenza e per periodo nella sezione per i dipendenti</i>";
 
 					echo "</div>";
@@ -251,7 +273,7 @@ use App\Models\User;
 	<!-- fine DataTables !-->
 
 	
-	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.550"></script>
+	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.552"></script>
 	
 
 	<!-- fine upload -->		
