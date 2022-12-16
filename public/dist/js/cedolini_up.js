@@ -36,11 +36,12 @@ function set_allegati() {
   mese_busta=$("#mese_busta").val()
   anno_busta=$("#anno_busta").val()
   periodo=mese_busta+anno_busta
+  tipo_cedolino=$("#tipo_cedolino").val();
   
   $('#drag-and-drop-zone').dmUploader({ //
     url: base_path+'/upload.php',
 	extraData: {
-      "from":from,"periodo":periodo
+      "from":from,"tipo_cedolino":tipo_cedolino,"periodo":periodo
 	},
 	
 	extFilter: ["pdf"],
@@ -120,13 +121,14 @@ function set_allegati() {
   });	
 }
 function set_step() {
+	tipo_cedolino=$("#tipo_cedolino").val()
 	mese_busta=$("#mese_busta").val()
 	anno_busta=$("#anno_busta").val()
 	$("#div_allegati").hide()
 	$( "#btn_step" ).prop( "disabled", true );
 	$("#div_azioni").hide();
 	$("#div_alert_exist").hide();
-	if (mese_busta.length!=0 && anno_busta.length!=0) {
+	if (tipo_cedolino!=0 && mese_busta.length!=0 && anno_busta.length!=0) {
 		$( "#btn_step" ).prop( "disabled", false );
 		
 	}	
@@ -142,14 +144,16 @@ function page_count() {
 	});
 	mese_busta=$("#mese_busta").val()
 	anno_busta=$("#anno_busta").val()
+	tipo_cedolino=$("#tipo_cedolino").val()
 	periodo=mese_busta+anno_busta	
+	
 
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
 		async:false,
 		url: base_path+"/count_pdf",
-		data: {_token: CSRF_TOKEN, periodo:periodo},
+		data: {_token: CSRF_TOKEN, tipo_cedolino:tipo_cedolino,periodo:periodo},
 		success: function (data) {
 			item=JSON.parse(data)
 			$("#pagecount").val(item.pagecount)
@@ -183,7 +187,7 @@ function split_pdf(page,from) {
 	mese_busta=$("#mese_busta").val()
 	anno_busta=$("#anno_busta").val()
 	periodo=mese_busta+anno_busta	
-	
+	tipo_cedolino=$("#tipo_cedolino").val();
 	pagecount=$("#pagecount").val()
 	perc=100
 	if (page=="1") $("#div_progr").show(150)
@@ -208,7 +212,7 @@ function split_pdf(page,from) {
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/split_pdf",
-		data: {_token: CSRF_TOKEN, pagecount:pagecount,page:page,periodo:periodo},
+		data: {_token: CSRF_TOKEN, pagecount:pagecount,page:page,tipo_cedolino:tipo_cedolino,periodo:periodo},
 		success: function (data) {
 			item=JSON.parse(data)
 
@@ -231,6 +235,7 @@ function split_pdf(page,from) {
 function analisi_pdf() {
 	
 	$("#div_analisi").empty();
+	tipo_cedolino=$("#tipo_cedolino").val()
 	mese_busta=$("#mese_busta").val()
 	anno_busta=$("#anno_busta").val()
 	periodo=mese_busta+anno_busta	
@@ -247,7 +252,7 @@ function analisi_pdf() {
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/analisi_pdf",
-		data: {_token: CSRF_TOKEN,  pagecount:pagecount,periodo:periodo},
+		data: {_token: CSRF_TOKEN,  pagecount:pagecount,tipo_cedolino:tipo_cedolino,periodo:periodo},
 		success: function (data) {
 			item=JSON.parse(data)
 			if (item.message[0].length==0) {
@@ -270,7 +275,7 @@ function analisi_pdf() {
 					cf_old="?"
 					for (sca=0;sca<=item.message[0].length-1;sca++) {
 						cf=item.message[0][sca]
-						url="allegati/cedolini/"+periodo+"/"+cf+".pdf";
+						url="allegati/cedolini/"+tipo_cedolino+"/"+periodo+"/"+cf+".pdf";
 						c_url=false
 						
 						if(check_url(url)=="OK") c_url=true

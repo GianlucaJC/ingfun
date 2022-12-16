@@ -136,9 +136,10 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('check_url', 'App\Http\Controllers\AjaxControllerCand@check_url');
 
 	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');
-	Route::post('count_pdf', 'App\Http\Controllers\AjaxControllerCand@count_pdf');
-	Route::post('analisi_pdf', 'App\Http\Controllers\AjaxControllerCand@analisi_pdf');
-	Route::post('split_pdf', 'App\Http\Controllers\AjaxControllerCand@split_pdf');
+	
+	Route::post('count_pdf', 'App\Http\Controllers\ControllerPdf@count_pdf');
+	Route::post('analisi_pdf', 'App\Http\Controllers\ControllerPdf@analisi_pdf');
+	Route::post('split_pdf', 'App\Http\Controllers\ControllerPdf@split_pdf');
 });
 
 

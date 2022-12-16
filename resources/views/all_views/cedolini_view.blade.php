@@ -74,7 +74,31 @@ $user = User::find($id);
 
 			
 			<div class="row mb-3">
-				<div class="col-md-6">
+				<div class="col-md-3">
+				  <div class="form-floating mb-3 mb-md-0">
+					
+					<select class="form-select" id="tipo_cedolino" aria-label="tipo cedolino" name='tipo_cedolino' onchange="$('#frm_documenti').submit()" >
+						<option value=''>Select...</option>
+						<option value='PR'
+						<?php if ($tipo_cedolino=="PR") echo " selected ";?>
+						>Provvisorio</option>
+						<option value='DE'
+						<?php if ($tipo_cedolino=="DE") echo " selected ";?>
+						>Definitivo</option>
+						<option value='TR'
+						<?php if ($tipo_cedolino=="TR") echo " selected ";?>
+						>13^</option>
+						<option value='QU'
+						<?php if ($tipo_cedolino=="QU") echo " selected ";?>
+						>14^</option>
+
+					</select>
+					<label for="tipo_cedolino">Tipo Cedolino</label>
+				  </div>
+				 </div>
+
+
+				<div class="col-md-4">
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select" name="periodo" id="periodo" onchange="$('#frm_documenti').submit()" >
 							<option value=''>Select...</option>
@@ -92,7 +116,7 @@ $user = User::find($id);
 					</div>	
 				</div>
 
-				<div class="col-md-6">
+				<div class="col-md-4">
 					<div class="form-floating mb-3 mb-md-0">
 						@php ($dis="disabled")
 						@if ($user->hasRole('admin')) 
