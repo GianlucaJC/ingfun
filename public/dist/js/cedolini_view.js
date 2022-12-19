@@ -1,12 +1,12 @@
 $(document).ready( function () {
-    $('#tbl_list_documenti tfoot th').each(function () {
+    $('#tbl_list_cedolini tfoot th').each(function () {
         var title = $(this).text();
 		if (title.length!=0)
 			$(this).html('<input type="text" placeholder="Search ' + title + '" />');
     });	
-    var table=$('#tbl_list_documenti').DataTable({
+    var table=$('#tbl_list_cedolini').DataTable({
 		"order": [[ 0, 'desc' ]],
-		pageLength: 50,
+		pageLength: 100,
 		lengthMenu: [10, 15, 20, 50, 100, 200, 500],
 
 		pagingType: 'full_numbers',		
@@ -40,6 +40,14 @@ $(document).ready( function () {
     });
 	
 } );
+
+function dele_all() {
+	if( $('#deleall').is(':checked') ) 
+		$(".delec").prop('checked', true);
+	else
+		$(".delec").prop('checked', false);
+	
+}
 
 function edit_doc(id_doc) {
 	$("#tipodoc").val('')

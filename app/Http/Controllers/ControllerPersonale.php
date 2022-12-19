@@ -33,6 +33,7 @@ class ControllerPersonale extends Controller
 {
 	public function __construct()
 	{
+		if (!Auth::user())
 		$this->middleware('auth')->except(['index','servizio_scadenze']);
 	}	
 
@@ -41,6 +42,8 @@ class ControllerPersonale extends Controller
 		$id = Auth::user()->id;
 		$user = User::find($id);
 		$ref_lav=array();$ref_lav[0]['id_ref']=0;$ref_lav[0]['codfisc']="";
+
+		
 		if ($user->hasRole('user')) {
 			$ref_lav=candidati::select('id as id_ref','codfisc')
 			->where("id_user","=",$id)
@@ -66,9 +69,29 @@ class ControllerPersonale extends Controller
 		$periodo_sel=$m1.$a;
 
 		$id_cand=request()->input("id_cand");
-		$dir="allegati/cedoliniview/$tipo_cedolino/";
+		$dir="allegati/cedoliniview/$tipo_cedolino";
+
+		$status="";
+		if (request()->has("btn_dele")) {
+			$dir1="allegati/cedoliniview/$tipo_cedolino/$periodo_sel";
+			$dir_orig="allegati/cedolini/$tipo_cedolino/$periodo_sel";
+
+			if(is_dir($dir1)) {
+				$cedolino=request()->input("cedolino");
+				if (is_array($cedolino)) {
+					for ($sca=0;$sca<count($cedolino);$sca++) {
+						$ced= $cedolino[$sca].".pdf";
+						$ced_md5=md5($cedolino[$sca]).".pdf";
+						@unlink ($dir_orig."/".$ced);
+						@unlink ($dir1."/".$ced_md5);
+					}
+					$status="canc";
+				}
+			}
+		}		
+
+
 		$results = @scandir($dir);
-		
 		if (!is_array($results)) $results=array();
 		
 		$periodi_raw=array();
@@ -96,6 +119,7 @@ class ControllerPersonale extends Controller
 				}
 			}
 		}
+		
 		rsort($periodi_raw);
 		$periodi=array();
 		for ($sca=0;$sca<count($periodi_raw);$sca++) {
@@ -132,22 +156,29 @@ class ControllerPersonale extends Controller
 		$elenco = @scandir($sub);
 		if (!is_array($elenco)) $elenco=array();
 		$tb_risp=array();
+		
 		for ($sca=0;$sca<count($elenco);$sca++) {
 			$fx_src=$elenco[$sca];
 			$fx=str_replace(".pdf","",$fx_src);
+			
 			if (strlen($id_cand)!=0) {
 				$ref=explode("-",$id_cand);
 				$cf_ref=$ref[1];
 				$includi=false;
 				if ($fx==$cf_ref) $includi=true;
 			} else $includi=true;
+			
 			if (strlen($fx)==16 && $includi==true) {
 				$fx_dest=md5($fx).".pdf";
-				if (file_exists($sub."/".$fx_src)) $tb_risp[$fx]=$fx_dest;
+				
+				if (file_exists($sub."/".$fx_src)) {
+					$tb_risp[$fx]=$fx_dest;
+				}	
 			}
 		}
+
 		$dir_ref=str_replace("cedolini","cedoliniview",$sub);
-		return view('all_views/cedolini_view')->with('candidati', $candidati)->with('periodi',$periodi)->with('tipo_cedolino',$tipo_cedolino)->with('periodo',$periodo)->with('id_cand',$id_cand)->with('tb_risp',$tb_risp)->with('cand_cf',$cand_cf)->with('periodo_sel',$periodo_sel)->with('dir_ref',$dir_ref)->with('ref_lav',$ref_lav);
+		return view('all_views/cedolini_view')->with('candidati', $candidati)->with('periodi',$periodi)->with('tipo_cedolino',$tipo_cedolino)->with('periodo',$periodo)->with('id_cand',$id_cand)->with('tb_risp',$tb_risp)->with('cand_cf',$cand_cf)->with('periodo_sel',$periodo_sel)->with('dir_ref',$dir_ref)->with('ref_lav',$ref_lav)->with('status',$status);
 	}
 
 

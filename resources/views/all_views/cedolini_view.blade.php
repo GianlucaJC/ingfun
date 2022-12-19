@@ -62,16 +62,15 @@ $user = User::find($id);
 			<input type='hidden' name='id_cand' name='id_cand' value=''>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<input type='hidden' name='allegato' id='allegato'>
-				@if (session('status')) 
-					@if (session('esito')=="OK")
-						<div class="alert alert-success">
-					@else
-						<div class="alert alert-danger">
-					@endif	
-						{{ session('status') }}
+				@if ($status=="canc")
+					<div class="alert alert-success">
+						Elemento/i rimosso/i con successo
 					</div>
 				@endif
 
+
+				
+				
 			
 			<div class="row mb-3">
 				<div class="col-md-3">
@@ -143,20 +142,41 @@ $user = User::find($id);
 		
 		<hr>
 
+		@if ($user->hasRole('admin')) 
+			<div class="row mb-4">
+			  <div class="col-md-12">
+				<button type="submit" name='btn_dele' class="btn btn-primary btn-lg" onclick='if (!confirm("Sicuri di eliminare i cedolini selezionati?"))  event.preventDefault()' value='btn_dele'>Elimina cedolini selezionati</button>
+			  </div>
+			</div>
+		@endif
         <div class="row">
           <div class="col-md-12">
-		  
-				<table id='tbl_list_documenti' class="display">
+
+
+
+				<table id='tbl_list_cedolini' class="display">
 					<thead>
 						<tr>
 							<th>CF</th>
 							<th>Nominativo</th>
+							@if ($user->hasRole('admin')) 
+								<th style='width:30px'>
+									<div class="form-check">
+									  <input class="form-check-input" type="checkbox" value="" id="deleall" onclick='dele_all()'>
+									  <label class="form-check-label" for="deleall">
+										Select 
+									  </label>
+									</div>									
+								</th>
+							@endif
+							
 						</tr>
 					</thead>
 					<tbody>
+
 						@foreach ($tb_risp as $k=>$v)
 							@php ($k_c=md5($k).".pdf")
-							@if (isset($cand_cf[$k]))
+							
 								<tr>
 									<td>
 										<a href='{{$dir_ref}}/{{$k_c}}' target='_blank'>
@@ -164,6 +184,7 @@ $user = User::find($id);
 										</a>
 									</td>
 									<td>
+									@if (isset($cand_cf[$k]))
 										@if (count($cand_cf[$k])==1)
 											{{$cand_cf[$k][0]}}
 										@else
@@ -177,18 +198,36 @@ $user = User::find($id);
 												echo $anagr;
 											?>
 										@endif
+									@else 
+										<font color='red'><i>In sospeso</i><font>
+									@endif	
 									</td>
+									
+									@if ($user->hasRole('admin'))
+										<td style='width:30px'>
+											<div class="form-check">
+											  <input class="form-check-input delec" type="checkbox" value="{{$k}}" id="cedolino-{{$k}}" name='cedolino[]'>
+											  <label class="form-check-label" for="dele_cedolino">
+												
+											  </label>
+											</div>									
+										</td>
+									@endif
 								</tr>
-							@endif	
+							
 						@endforeach	
 					</tbody>
 					<tfoot>
 						<tr>
 							<th>CF</th>
 							<th>Nominativo</th>
+							@if ($user->hasRole('admin'))
+								<th></th>
+							@endif
 						</tr>
 					</tfoot>					
 				</table>
+			
           </div>
 
         </div>
@@ -257,6 +296,6 @@ $user = User::find($id);
 	<script src="{{ URL::asset('/') }}dist/js/upload_doc/demo-config.js?ver=2.347"></script>
 	<!-- fine upload -->		
 
-	<script src="{{ URL::asset('/') }}dist/js/documenti.js?ver=1.95"></script>
+	<script src="{{ URL::asset('/') }}dist/js/cedolini_view.js?ver=1.97"></script>
 
 @endsection
