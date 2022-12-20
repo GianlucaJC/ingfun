@@ -143,10 +143,19 @@ $user = User::find($id);
 		<hr>
 
 		@if ($user->hasRole('admin')) 
+			<?php
+				$out="btn-primary";
+				if (strlen($tipo_cedolino)==0 || strlen($periodo)==0 || count($periodi)==0) $out="btn-outline-primary disabled";
+					
+			?>
 			<div class="row mb-4">
-			  <div class="col-md-12">
-				<button type="submit" name='btn_dele' class="btn btn-primary btn-lg" onclick='if (!confirm("Sicuri di eliminare i cedolini selezionati?"))  event.preventDefault()' value='btn_dele'>Elimina cedolini selezionati</button>
+			  <div class="col-md-3">
+				<button type="submit" name='btn_dele_all' class="btn {{$out}} btn-lg btn-block" onclick='if (!confirm("Sicuri di eliminare tutti i cedolini del tipo e periodo impostato?"))  event.preventDefault()' value='btn_dele_all'>Elimina tutti</button>
 			  </div>
+			  <div class="col-md-3">
+				<button type="submit" name='btn_dele' class="btn {{$out}} btn-lg btn-block" onclick='if (!confirm("Sicuri di eliminare i cedolini selezionati?"))  event.preventDefault()' value='btn_dele'>Elimina solo selezionati</button>
+			  </div>
+
 			</div>
 		@endif
         <div class="row">

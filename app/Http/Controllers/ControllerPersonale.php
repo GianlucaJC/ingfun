@@ -89,6 +89,16 @@ class ControllerPersonale extends Controller
 				}
 			}
 		}		
+		if (request()->has("btn_dele_all")) {
+			$dir = "allegati/cedolini/$tipo_cedolino/$periodo_sel/";
+			array_map('unlink', glob("$dir/*.pdf"));
+			array_map('unlink', glob("$dir/*.ddd"));
+			@rmdir($dir);
+			$dir = "allegati/cedoliniview/$tipo_cedolino/$periodo_sel/";
+			array_map('unlink', glob("$dir/*.pdf"));
+			@rmdir($dir);
+			$status="canc";
+		}
 
 
 		$results = @scandir($dir);
@@ -212,6 +222,8 @@ class ControllerPersonale extends Controller
 			$dir = "allegati/cedolini/$tipo_cedolino/$periodo/";
 			array_map('unlink', glob("$dir/*.pdf"));
 			array_map('unlink', glob("$dir/*.ddd"));
+			$dir = "allegati/cedoliniview/$tipo_cedolino/$periodo/";
+			array_map('unlink', glob("$dir/*.pdf"));
 		}
 		
 		

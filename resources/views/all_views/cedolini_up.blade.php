@@ -157,7 +157,7 @@ use App\Models\User;
 				
 				<?php 
 					$dis_step="disabled";
-					if ($dele_pdf=="1") $dis_step="";
+					if ($dele_pdf=="1" || $distr_run==true) $dis_step="";
 				?>	
 
 				<div class="col-md-3">
