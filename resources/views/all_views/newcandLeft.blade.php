@@ -231,6 +231,22 @@
 	<div class="row mb-3">
 		<div class="col-md-6">
 			<div class="form-floating">
+				<input class="form-control" id="email_az" name='email_az' type="email" placeholder="Email Aziendale" maxlength=150 value="{{ $candidati[0]['email_az']}}" onkeyup="this.value = this.value.toLowerCase();" />
+				<label for="email_az">Email Aziendale</label>
+			</div>
+		</div>
+
+		<div class="col-md-6">
+			<div class="form-floating">
+				<input class="form-control" id="telefono_az" name='telefono_az' type="text" placeholder="Telefono Aziendale" maxlength=20 value="{{ $candidati[0]['telefono_az']}}"  />
+				<label for="telefono_az">Telefono Aziendale</label>
+			</div>
+		</div>
+	</div>
+
+	<div class="row mb-3">
+		<div class="col-md-6">
+			<div class="form-floating">
 				<input class="form-control" id="pec" name='pec' type="email" placeholder="Pec"  maxlength=150 value="{{ $candidati[0]['pec']}}" onkeyup="this.value = this.value.toLowerCase();" />
 				<label for="pec">Pec</label>
 			</div>

@@ -42,7 +42,8 @@ class ControllerPersonale extends Controller
 		$id = Auth::user()->id;
 		$user = User::find($id);
 		$ref_lav=array();$ref_lav[0]['id_ref']=0;$ref_lav[0]['codfisc']="";
-
+		
+		$mail1=request()->input("mail1");
 		
 		if ($user->hasRole('user')) {
 			$ref_lav=candidati::select('id as id_ref','codfisc')
@@ -199,6 +200,9 @@ class ControllerPersonale extends Controller
 		$periodo=$mese_busta.$anno_busta;
 		$dele_pdf=$request->input("dele_pdf");
 		$distr=$request->input("distr");
+		$maildip=$request->input("maildip");
+		
+		
 		if ($distr=="distr") {
 			$dir="allegati/cedolini/$tipo_cedolino/$periodo";
 			$sub="allegati/cedoliniview/$tipo_cedolino";
@@ -209,9 +213,21 @@ class ControllerPersonale extends Controller
 			for ($sca=0;$sca<count($elenco);$sca++) {
 				$fx_src=$elenco[$sca];
 				$fx=str_replace(".pdf","",$fx_src);
+
 				if (strlen($fx)==16) {
 					$fx_dest=md5($fx).".pdf";
 					copy($dir."/".$fx_src,$sub."/".$fx_dest);
+
+					if ($maildip=="on" || $maildip=="ON") {
+						$mailpers=candidati::select('email')
+						->where('codfisc', "=",$fx)
+						->take(1)
+						->get();
+						if (isset($mailpers[0]->email)) {
+							$mail_p=$mailpers[0]->email;
+							$this->send_m($mail_p,$tipo_cedolino,$periodo);
+						}						
+					}					
 				}
 			}
 			$f1 = fopen($dir."/distr.ddd", "w") or die("Unable to open file!");
@@ -230,7 +246,65 @@ class ControllerPersonale extends Controller
 		return view('all_views/cedolini_up')->with('tipo_cedolino',$tipo_cedolino)->with('mese_busta',$mese_busta)->with('anno_busta',$anno_busta)->with("dele_pdf",$dele_pdf)->with('distr',$distr);
 	}
 	
+	public function send_m($email,$tipo_cedolino,$periodo){
+		$titolo="";$body_msg="";
+		$d=date("Y-m-d");
+		$d1 = date('Y-m-d', strtotime($d.' + 2 days'));
+		$h=date("H:i:s");
+		$date=date_create($d1);
+		$d_max=date_format($date,"d-m-Y");		
+		
+		if ($tipo_cedolino=="PR") {
+			$titolo="Caricamento cedolino provvisorio relativo al mese: $periodo";
+			$body_msg="Gentile utente,\n
+			la informiamo che è stato caricato il cedolino di prova nella sua area personale del gestionale.\n
+			Vi preghiamo di visionarlo, di segnalare eventuali anomalie ed inviare le integrazioni richieste rispondendo a questa e-mail entro e non oltre il ".$d_max." ".$h.".\n\n
+			Distinti saluti.";				
+		}
+		if ($tipo_cedolino=="DE") {
+			$titolo="Caricamento cedolino relativo al mese:  $periodo";
+			$body_msg="Gentile utente,\n
+			la informiamo che è stato caricato il cedolino del mese di $periodo nella sua area personale del gestionale.\n
+			Distinti saluti.";
+		}
+		if ($tipo_cedolino=="TR") {
+			$titolo="Caricamento cedolino relativo alla tredicesima ($periodo)";
+			$body_msg="Gentile utente,\n
+			la informiamo che è stato caricato il cedolino relativo alla tredicesima mensilità nella sua area personale del gestionale.\n
+			Distinti saluti.";
+		}	
+		if ($tipo_cedolino=="QU") {
+			$titolo="Caricamento cedolino relativo alla quattordicesima ($periodo)";
+			$body_msg="Gentile utente,\n
+			la informiamo che è stato caricato il cedolino relativo alla quattordicesima mensilità nella sua area personale del gestionale.\n
+			Distinti saluti.";			
+		}	
+		
+		
+		try {
 
+			$data["email"] = $email;
+			$data["title"] = $titolo;
+			$data["body"] = $body_msg;
+
+
+			Mail::send('emails.notifdoc', $data, function($message)use($data) {
+				$message->to($data["email"], $data["email"])
+				->subject($data["title"]);
+
+			});
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo!";
+
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+		}		
+			
+			
+		
+		return json_encode($status);
+	}
 	public function popola_array_info() {
 		$info_soc=array();
 		$info_area=array();

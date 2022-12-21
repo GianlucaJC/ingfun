@@ -100,6 +100,8 @@ public function __construct()
 		$candidati[0]['pro_nasc']=null;
 		$candidati[0]['email']=null;
 		$candidati[0]['telefono']=null;
+		$candidati[0]['email_az']=null;
+		$candidati[0]['telefono_az']=null;
 		$candidati[0]['pec']=null;
 		$candidati[0]['iban']=null;
 		$candidati[0]['file_curr']=null;
@@ -250,6 +252,8 @@ public function __construct()
 			$candidati->pro_nasc = $request->input('pro_nasc');
 			$candidati->email = $request->input('email');
 			$candidati->telefono = $request->input('telefono');
+			$candidati->email_az = $request->input('email_az');
+			$candidati->telefono_az = $request->input('telefono_az');
 			$candidati->pec = $request->input('pec');
 			$candidati->iban = $request->input('iban');
 			

@@ -219,14 +219,23 @@ use App\Models\User;
 					
 					<button type="button" class="btn btn-primary  btn-lg btn-block" {{$dis}} id='btn_analisi' onclick='analisi_pdf()'>Analisi PDF (Estrapolazione dei CF)</button>
 
-
 					@if ($distr_run==false)
 						<button type="button" class="btn btn-success  btn-lg btn-block" {{$dis}} style='{{$vis_procedi}}' id='btn_split' onclick='split_pdf(1,0)'>Procedi con la suddivisione</button>
 
 								
+						<div class="form-check form-switch ml-4 mt-4" style='{{$vis_up}}' id='div_maildip'>
+						  <input class="form-check-input" type="checkbox" id="maildip" name='maildip' checked>
+						  <label class="form-check-label" for="maildip">Invia Mail ai dipendenti</label>
+						</div>						
+
 						<button type="submit" name='distr' id='distr' class="btn btn-success  btn-lg btn-block" style='{{$vis_up}}' onclick="if (!confirm('Sicuri di aggiornare la sezione per i dipendenti?')) event.preventDefault()" value='distr' >Aggiorna Sezione Cedolini per dipendenti</button>
+						
 					@endif
-							
+
+
+						
+
+								
 					
 
 
@@ -273,7 +282,7 @@ use App\Models\User;
 	<!-- fine DataTables !-->
 
 	
-	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.552"></script>
+	<script src="{{ URL::asset('/') }}dist/js/cedolini_up.js?ver=1.553"></script>
 	
 
 	<!-- fine upload -->		
