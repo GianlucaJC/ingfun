@@ -127,7 +127,26 @@ class ControllerPdf extends Controller
 			
 			$pdf = new FPDI();
 			$filename="allegati/cedolini/$tipo_cedolino/$periodo/busta.pdf";
-			$pagecount = $pdf->setSourceFile($filename); // How many pages?		
+			$rename="allegati/cedolini/$tipo_cedolino/$periodo/busta_old.pdf";
+			$f1="allegati/cedolini/$tipo_cedolino/$periodo/busta1.pdf";
+			
+			$filepdf = fopen($filename,"r");
+			if($filepdf) {
+				$line_first = fgets($filepdf);
+				fclose($filepdf);
+			}
+			// extract number such as 1.4,1.5 from first read line of pdf file
+			preg_match_all('!\d+!', $line_first, $matches);
+			// save that number in a variable
+			$pdfversion = implode('.', $matches[0]);
+			if($pdfversion > "1.4"){
+				$result = exec('gswin32c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dBATCH -sOutputFile="'.$f1.'" "'.$filename.'"');
+				rename($filename,$rename);
+				rename($f1,$filename);
+				$pagecount=$pdf->setSourceFile($filename);
+			} else 
+				$pagecount=$pdf->setSourceFile($filename);
+				
 			$status['status']="OK";
 			$status['pagecount']=$pagecount;
 			return json_encode($status);		
