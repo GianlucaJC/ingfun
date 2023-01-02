@@ -351,6 +351,7 @@ class ControllerPersonale extends Controller
 	}
 	
 	public function scadenze_contratti(Request $request) {
+		$dx=date("Y-m-d");
 		$arr=$this->popola_array_info();
 		$info_soc=$arr['info_soc'];
 		$info_area=$arr['info_area'];
@@ -365,7 +366,13 @@ class ControllerPersonale extends Controller
 		$today=date("Y-m-d");
 		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
 		->where("dele","=",0)
-		->where("status_candidatura","=",3)
+		->where(function ($query){
+			$query->where("status_candidatura","=",3)
+			->orWhere(function($q2) use ($dx) {
+				$q2->where("status_candidatura","=",6)
+				->where("data_fine","<=",$dx);
+			});
+		})
 		->whereNotNull('data_fine')
 		->orderBy('data_fine')
 		->get();
