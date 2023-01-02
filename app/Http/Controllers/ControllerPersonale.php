@@ -366,11 +366,11 @@ class ControllerPersonale extends Controller
 		$today=date("Y-m-d");
 		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
 		->where("dele","=",0)
-		->where(function ($query){
+		->where(function ($query) use($dx){
 			$query->where("status_candidatura","=",3)
 			->orWhere(function($q2) use ($dx) {
-				$q2->where("status_candidatura","=",6)
-				->where("data_fine","<=",$dx);
+				$q2->where("status_candidatura","=",6);
+				//->where("data_fine","<=",$dx);
 			});
 		})
 		->whereNotNull('data_fine')
@@ -381,7 +381,7 @@ class ControllerPersonale extends Controller
 	}
 
 	public function listpers(Request $request) {
-		
+		$dx=date("Y-m-d");
 		
 		$view_dele=0;
 		if ($request->has("view_dele")) $view_dele=$request->input("view_dele");
@@ -411,7 +411,12 @@ class ControllerPersonale extends Controller
 		$arr_cap=$arr['cap'];
 
 		
-		$count = candidati::where('status_candidatura', '=',3)->count();
+		$count = candidati::where('status_candidatura', '=',3)
+			->orWhere(function($q2) use ($dx) {
+				$q2->where("status_candidatura","=",6)
+				->where("data_fine",">=",$dx);
+			})	
+		->count();
 		$all_ris = candidati::count();
 		
 		
@@ -419,7 +424,13 @@ class ControllerPersonale extends Controller
 		->when($view_dele=="0", function ($scadenze) {
 			return $scadenze->where('dele', "=","0");
 		})		
-		->where("status_candidatura","=",3)
+		->where(function ($query) use($dx){
+			$query->where("status_candidatura","=",3)
+			->orWhere(function($q2) use ($dx) {
+				$q2->where("status_candidatura","=",6)
+				->where("data_fine",">=",$dx);
+			});
+		})		
 		->orderBy('nominativo')	
 		->get();
 		
@@ -456,6 +467,9 @@ class ControllerPersonale extends Controller
 			->select('c.soc_ass','c.nominativo','c.data_inizio', 'c.data_fine','s.descrizione','s.mail_scadenze')
 			->where("c.dele","=",0)
 			->where("c.status_candidatura","=",3)
+			->orWhere(function($q2){
+				$q2->where("status_candidatura","=",6);
+			})			
 			->where('c.data_fine','>=',$first_date)
 			->where('c.data_fine','<=',$last_date)
 			->where('s.mail_scadenze','like','%@%')
@@ -481,6 +495,8 @@ class ControllerPersonale extends Controller
 			
 			$titolo = "Reminder Scadenze contrattuali";
 			$body_msg="Elenco dei nominativi con contratto in scadenza nel periodo $first_date_i - $last_date_i";
+
+
 
 			try {
 				$destinatari=array();
