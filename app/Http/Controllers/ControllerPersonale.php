@@ -366,13 +366,9 @@ class ControllerPersonale extends Controller
 		$today=date("Y-m-d");
 		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
 		->where("dele","=",0)
-		->where(function ($query) use($dx){
-			$query->where("status_candidatura","=",3)
-			->orWhere(function($q2) use ($dx) {
-				$q2->where("status_candidatura","=",6);
-				//->where("data_fine","<=",$dx);
-			});
-		})
+		->where("status_candidatura","<>",1)
+		->where("status_candidatura","<>",2)
+		->where("data_fine",">=", $today)
 		->whereNotNull('data_fine')
 		->orderBy('data_fine')
 		->get();
@@ -412,10 +408,8 @@ class ControllerPersonale extends Controller
 
 		
 		$count = candidati::where('status_candidatura', '=',3)
-			->orWhere(function($q2) use ($dx) {
-				$q2->where("status_candidatura","=",6)
-				->where("data_fine",">=",$dx);
-			})	
+
+		//->where("data_fine",">=",$dx)
 		->count();
 		$all_ris = candidati::count();
 		
@@ -427,14 +421,19 @@ class ControllerPersonale extends Controller
 		->where(function ($query) use($dx){
 			$query->where("status_candidatura","=",3)
 			->orWhere(function($q2) use ($dx) {
+				$q2->where("status_candidatura","=",4);
+			})
+			->orWhere(function($q2) use ($dx) {
+				$q2->where("status_candidatura","=",5);
+			})
+			->orWhere(function($q2) use ($dx) {
 				$q2->where("status_candidatura","=",6);
-				
 			});
-		})		
+		})
+		->orderBy('status_candidatura')	
 		->orderBy('nominativo')	
 		->get();
 		
-		//->where("data_fine",">=",$dx);
 	
 
 		return view('all_views/listpers')->with('scadenze', $scadenze)->with('info_soc',$info_soc)->with('info_area',$info_area)->with('centri_costo',$centri_costo)->with('ccnl',$ccnl)->with('tipoc',$tipoc)->with('arr_loc',$arr_loc)->with('arr_cap',$arr_cap)->with('view_dele',$view_dele)->with('count',$count)->with('all_ris',$all_ris);
