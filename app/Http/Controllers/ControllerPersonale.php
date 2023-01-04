@@ -428,7 +428,6 @@ class ControllerPersonale extends Controller
 			$query->where("status_candidatura","=",3)
 			->orWhere(function($q2) use ($dx) {
 				$q2->where("status_candidatura","=",6)
-				->where("data_fine",">=",$dx);
 			});
 		})		
 		->orderBy('nominativo')	
