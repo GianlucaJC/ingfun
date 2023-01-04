@@ -452,7 +452,8 @@ class ControllerPersonale extends Controller
 		$count=DB::table('candidatis as c')
 		->join('societa as s', 'c.soc_ass', '=', 's.id')
 		->where("c.dele","=",0)
-		->where("c.status_candidatura","=",3)
+		->where("c.status_candidatura","<>",1)
+		->where("c.status_candidatura","<>",2)
 		->where('c.data_fine','>=',$first_date)
 		->where('c.data_fine','<=',$last_date)
 		->where('s.mail_scadenze','like','%@%')
@@ -466,10 +467,8 @@ class ControllerPersonale extends Controller
 			->join('societa as s', 'c.soc_ass', '=', 's.id')
 			->select('c.soc_ass','c.nominativo','c.data_inizio', 'c.data_fine','s.descrizione','s.mail_scadenze')
 			->where("c.dele","=",0)
-			->where("c.status_candidatura","=",3)
-			->orWhere(function($q2){
-				$q2->where("status_candidatura","=",6);
-			})			
+			->where("c.status_candidatura","<>",1)
+			->where("c.status_candidatura","<>",2)
 			->where('c.data_fine','>=',$first_date)
 			->where('c.data_fine','<=',$last_date)
 			->where('s.mail_scadenze','like','%@%')
