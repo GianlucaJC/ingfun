@@ -427,12 +427,14 @@ class ControllerPersonale extends Controller
 		->where(function ($query) use($dx){
 			$query->where("status_candidatura","=",3)
 			->orWhere(function($q2) use ($dx) {
-				$q2->where("status_candidatura","=",6)
+				$q2->where("status_candidatura","=",6);
+				
 			});
 		})		
 		->orderBy('nominativo')	
 		->get();
 		
+		//->where("data_fine",">=",$dx);
 	
 
 		return view('all_views/listpers')->with('scadenze', $scadenze)->with('info_soc',$info_soc)->with('info_area',$info_area)->with('centri_costo',$centri_costo)->with('ccnl',$ccnl)->with('tipoc',$tipoc)->with('arr_loc',$arr_loc)->with('arr_cap',$arr_cap)->with('view_dele',$view_dele)->with('count',$count)->with('all_ris',$all_ris);
