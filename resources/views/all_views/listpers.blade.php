@@ -107,7 +107,7 @@
 									@if ($scadenza->status_candidatura=="4") DIMISSIONI @endif
 									@if ($scadenza->status_candidatura=="5") LICENZIAMENTO 
 									@endif
-									@if ($scadenza->status_candidatura=="5") CONTRATTO SCADUTO
+									@if ($scadenza->status_candidatura=="6") SCADENZA NATURALE
 									@endif
 									
 									</td>
