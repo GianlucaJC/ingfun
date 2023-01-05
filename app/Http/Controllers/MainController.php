@@ -446,6 +446,7 @@ public function __construct()
 		}				
 		
 		$candidati=DB::table('candidatis')
+		->where('status_candidatura','=',1) 
 		->when($view_dele=="0", function ($candidati) {
 			return $candidati->where('dele', "=","0");
 		})
