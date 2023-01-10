@@ -31,6 +31,7 @@
         <div class="row mb-2">
           <div class="col-sm-6">
             <h1 class="m-0">LISTA CANDIDATURE</h1>
+			<span id='tot_cand'>(Nominativi presenti {{$countall}})</span>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
@@ -189,6 +190,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listcand.js?ver=1.25"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listcand.js?ver=1.27"></script>
 
 @endsection

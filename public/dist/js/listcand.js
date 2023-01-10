@@ -34,7 +34,10 @@ $(document).ready( function () {
             infoEmpty: 'Non sono disponibili candidature',
             infoFiltered: '(Filtrati da _MAX_ candidature totali)',
         },
-    });	
+    });
+
+   
+
 	
 } );
 

@@ -445,12 +445,19 @@ public function __construct()
 			  ->update(['dele' => 0]);			
 		}				
 		
+		//->where('status_candidatura','=',1) 
+		$countall=DB::table('candidatis')
+		->when($view_dele=="0", function ($candidati) {
+			return $candidati->where('dele', "=","0");
+		})->count();
+
+		
 		$candidati=DB::table('candidatis')
-		->where('status_candidatura','=',1) 
 		->when($view_dele=="0", function ($candidati) {
 			return $candidati->where('dele', "=","0");
 		})
 		->orderBy('nominativo')->get();
+		
 
 		$mansione=mansione::orderBy('descrizione')->get();
 		$mansioni=array();
@@ -459,7 +466,7 @@ public function __construct()
 			$mansioni[$id_m]=$descrizione;
 		}
 
-		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele)->with("mansioni",$mansioni);
+		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele)->with("mansioni",$mansioni)->with("countall",$countall);
 	}
 
 }
