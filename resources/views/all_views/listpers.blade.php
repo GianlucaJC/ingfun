@@ -57,7 +57,7 @@
 					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
-								<th>View</th>
+								<th>Operazioni</th>
 								<th>Dipendente</th>
 								<th>Stato</th>
 								<th>Inizio</th>
@@ -91,14 +91,35 @@
 				
 							@foreach($scadenze as $scadenza)
 								<tr>
-									<td>
-										<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1]) }}" >
-											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-										</a>
-									</td>
 
 									<td>
+										@if ($scadenza->dele=="0") 
+											<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1]) }}" >
+												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+											</a>
+										@endif
+
+										@if ($scadenza->dele=="0") 
+										<a href='#' onclick="dele_element({{$scadenza->id}})">
+											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>
+										</a>
+										@endif
+										@if ($scadenza->dele=="1") 
+											<a href='#'onclick="restore_element({{$scadenza->id}})" >
+												<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+											</a>
+										@endif									
+
+									</td>									
+
+									<td>
+										@if ($scadenza->dele=="1") 
+											<font color='red'><del> 
+										@endif									
 										{{ $scadenza->nominativo }}
+										@if ($scadenza->dele=="1") 
+											</del></font>
+										@endif											
 									</td>
 									<td>
 									@if ($scadenza->status_candidatura=="1") GESTIONE @endif

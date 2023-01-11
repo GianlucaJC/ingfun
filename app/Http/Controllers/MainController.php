@@ -234,7 +234,10 @@ public function __construct()
 			//Dati Anagrafici
 			$nominativo=$request->input('cognome')." ".$request->input('nome');
 			if ($id_cand==0) {
-				$candidati->tipo_init_anagr = "CAND";
+				if ($request->input('from')=="1")
+					$candidati->tipo_init_anagr = "PERS";
+				else
+					$candidati->tipo_init_anagr = "CAND";
 				$candidati->tipo_anagr = "CAND";
 			}
 			$candidati->cognome = $request->input('cognome');
@@ -447,12 +450,14 @@ public function __construct()
 		
 		//->where('status_candidatura','=',1) 
 		$countall=DB::table('candidatis')
+		->where('tipo_init_anagr','=',"CAND") 
 		->when($view_dele=="0", function ($candidati) {
 			return $candidati->where('dele', "=","0");
 		})->count();
 
 		
 		$candidati=DB::table('candidatis')
+		->where('tipo_init_anagr','=',"CAND") 
 		->when($view_dele=="0", function ($candidati) {
 			return $candidati->where('dele', "=","0");
 		})

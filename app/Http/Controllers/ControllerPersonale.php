@@ -386,7 +386,7 @@ class ControllerPersonale extends Controller
 		$restore_cand=$request->input("restore_cand");
 		$dele_cand=$request->input("dele_cand");
 
-		/*
+		
 		if (strlen($dele_cand)!=0) {
 			candidati::where('id', $dele_cand)
 			  ->update(['dele' => 1]);			
@@ -395,7 +395,7 @@ class ControllerPersonale extends Controller
 			candidati::where('id', $restore_cand)
 			  ->update(['dele' => 0]);			
 		}
-		*/		
+			
 
 		$arr=$this->popola_array_info();
 		$info_soc=$arr['info_soc'];
@@ -414,7 +414,7 @@ class ControllerPersonale extends Controller
 		$all_ris = candidati::count();
 		
 		
-		$scadenze=candidati::select('id', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
+		$scadenze=candidati::select('id', 'dele', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
 		->when($view_dele=="0", function ($scadenze) {
 			return $scadenze->where('dele', "=","0");
 		})		
