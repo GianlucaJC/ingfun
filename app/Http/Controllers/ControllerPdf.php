@@ -139,6 +139,7 @@ class ControllerPdf extends Controller
 			preg_match_all('!\d+!', $line_first, $matches);
 			// save that number in a variable
 			$pdfversion = implode('.', $matches[0]);
+			echo "versionePDF: ".$pdfversion;
 			if($pdfversion > "1.4"){
 				$result = exec('gswin32c -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dNOPAUSE -dBATCH -sOutputFile="'.$f1.'" "'.$filename.'"');
 				rename($filename,$rename);
