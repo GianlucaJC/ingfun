@@ -186,24 +186,37 @@ use App\Models\User;
 				</div>
 			</a>
 
-			<a href="#">
-				<div class="d-grid gap-2 mt-2">
-				  <button class="btn btn-primary disabled" type="button">
-				  <i class="fas fa-users-cog" style='font-size:36px'></i><br>
-					GESTIONE ASSENZE PERSONALI
-				  </button>
-				</div>
-			</a>
 
 			<a href="{{ route('archivi') }}">
 				<div class="d-grid gap-2 mt-2">
 				  <button class="btn btn-primary" type="button">
 				  
 				  <i class="fas fa-cogs" style='font-size:36px'></i><br>
-					ARCHIVI
+					ARCHIVI PERSONALE
 				  </button>
 				</div>
-			</a>			
+			</a>
+
+			<a href="{{ route('listapp') }}">
+				<div class="d-grid gap-2 mt-2">
+				  <button class="btn btn-primary" type="button">
+				  <i class="fas fa-people-arrows" style='font-size:36px'></i><br>
+					GESTIONE APPALTI
+				  </button>
+				</div>
+			</a>
+
+
+			<a href="{{ route('archiviserv') }}">
+				<div class="d-grid gap-2 mt-2">
+				  <button class="btn btn-primary" type="button">
+					<i class="fas fa-cog" style='font-size:36px'></i><br>
+					ARCHIVI SERVIZI
+				  </button>
+				</div>
+			</a>
+
+			
 
 
 		@endif	

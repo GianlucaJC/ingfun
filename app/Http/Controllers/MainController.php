@@ -71,6 +71,9 @@ public function __construct()
 	public function archivi() {
 		return view('all_views/archivi');
 	}
+	public function archiviserv() {
+		return view('all_views/archiviserv');
+	}
 	
 	public function dashboard() {
 		$name="";

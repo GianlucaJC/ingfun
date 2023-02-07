@@ -31,6 +31,8 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::get('archivi', [ 'as' => 'archivi', 'uses' => 'App\Http\Controllers\MainController@archivi'])->middleware(['auth']);
 
+	Route::get('archiviserv', [ 'as' => 'archiviserv', 'uses' => 'App\Http\Controllers\MainController@archiviserv'])->middleware(['auth']);
+
 	
 	Route::get('newcand/{id?}/{from?}', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['permission:gestione_archivi']);
 
@@ -49,9 +51,6 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::get('cedolini_up', [ 'as' => 'cedolini_up', 'uses' => 'App\Http\Controllers\ControllerPersonale@cedolini_up'])->middleware(['permission:gestione_archivi']);
 	Route::post('cedolini_up', [ 'as' => 'cedolini_up', 'uses' => 'App\Http\Controllers\ControllerPersonale@cedolini_up'])->middleware(['permission:gestione_archivi']);
-
-
-
 
 	Route::get('tipo_contratto', [ 'as' => 'tipo_contratto', 'uses' => 'App\Http\Controllers\ControllerArchivi@tipo_contratto'])->middleware(['permission:gestione_archivi']);
 	Route::post('tipo_contratto', [ 'as' => 'tipo_contratto', 'uses' => 'App\Http\Controllers\ControllerArchivi@tipo_contratto'])->middleware(['permission:gestione_archivi']);
@@ -98,6 +97,28 @@ Route::group(['only_log' => ['auth']], function () {
 
 
 
+
+
+
+	Route::get('servizi', [ 'as' => 'servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@servizi'])->middleware(['permission:gestione_archivi']);
+	Route::post('servizi', [ 'as' => 'servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@servizi'])->middleware(['permission:gestione_archivi']);
+
+	Route::get('ditte', [ 'as' => 'ditte', 'uses' => 'App\Http\Controllers\ControllerServizi@ditte'])->middleware(['permission:gestione_archivi']);
+	Route::post('ditte', [ 'as' => 'ditte', 'uses' => 'App\Http\Controllers\ControllerServizi@ditte'])->middleware(['permission:gestione_archivi']);
+
+	Route::get('lavoratori', [ 'as' => 'lavoratori', 'uses' => 'App\Http\Controllers\ControllerServizi@lavoratori'])->middleware(['permission:gestione_archivi']);
+	Route::post('lavoratori', [ 'as' => 'lavoratori', 'uses' => 'App\Http\Controllers\ControllerServizi@lavoratori'])->middleware(['permission:gestione_archivi']);
+
+
+	Route::get('listapp', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
+	Route::post('listapp', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
+
+
+	Route::get('newapp/{id?}/{from?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@newapp'])->middleware(['permission:gestione_archivi']);
+
+	Route::post('save_newapp', [ 'as' => 'save_newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@save_newapp'])->middleware(['permission:gestione_archivi']);
+
+
 });
 
 
@@ -137,6 +158,12 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('count_pdf', 'App\Http\Controllers\ControllerPdf@count_pdf');
 	Route::post('analisi_pdf', 'App\Http\Controllers\ControllerPdf@analisi_pdf');
 	Route::post('split_pdf', 'App\Http\Controllers\ControllerPdf@split_pdf');
+	
+	
+	Route::post('popola_lav', 'App\Http\Controllers\AjaxControllerServ@popola_lav');
+
+	Route::post('getditta', 'App\Http\Controllers\AjaxControllerServ@getditta');
+
 });
 
 

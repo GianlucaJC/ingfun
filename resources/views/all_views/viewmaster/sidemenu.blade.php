@@ -106,7 +106,7 @@ use App\Models\User;
 				<a href="#" class="nav-link">
 				  <i class="fas fa-cogs"></i> 
 				  <p>
-					Archivi
+					Archivi Personale
 					<i class="right fas fa-angle-left"></i>
 				  </p>
 				</a>
@@ -189,7 +189,39 @@ use App\Models\User;
 					</a>
 				  </li>
 				</ul>
-			  </li>		  
+			  </li>		
+
+			  <li class="nav-item menu">
+				<a href="#" class="nav-link">
+				  <i class="fas fa-cogs"></i> 
+				  <p>
+					Archivi Servizi
+					<i class="right fas fa-angle-left"></i>
+				  </p>
+				</a>
+				<ul class="nav nav-treeview">
+				  <li class="nav-item">
+					<a href="{{ route('ditte') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Ditte/Persone Legali</p>
+					</a>
+				  </li>
+				
+				  <li class="nav-item">
+					<a href="{{ route('lavoratori') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Lavoratori</p>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('servizi') }}" class="nav-link ">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Servizi</p>
+					</a>
+				  </li>
+				</ul>  
+			   </li>	
+			  
 			 @endif 
 			
           

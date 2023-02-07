@@ -20,7 +20,7 @@ use App\Models\User;
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Divisione FUNEBRE | Archivi</h1>
+            <h1 class="m-0">Divisione FUNEBRE | Archivi Personale</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
