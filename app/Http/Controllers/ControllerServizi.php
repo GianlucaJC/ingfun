@@ -95,10 +95,46 @@ class ControllerServizi extends Controller
 
 
 	public function lavoratori(Request $request){
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		
 		$view_dele=$request->input("view_dele");
 		$ditta=$request->input("ditta");
+		if ($request->has("old_ditta")) $ditta=$request->input("old_ditta");
+
+		$cognome=$request->input("cognome");
+		$cognome=strtoupper($cognome);
+		$nome=$request->input("nome");
+		$nome=strtoupper($nome);
+		$nominativo=$cognome." ".$nome;
+		
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
+
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+		
+		$data=['dele'=>0, 'id_ditta'=>$ditta, 'cognome' => $cognome,'nome' => $nome,'nominativo' => $nominativo];
+
+		//Creazione nuovo elemento
+		if (strlen($cognome)!=0 && $edit_elem==0) {
+			DB::table("lavoratori")->insert($data);
+		}
+		
+		//Modifica elemento
+		if (strlen($cognome)!=0 && $edit_elem!=0) {
+			lavoratori::where('id', $edit_elem)			
+			  ->update($data);
+		}
+		if (strlen($dele_contr)!=0) {
+			lavoratori::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			lavoratori::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		
 		$ditte=DB::table('ditte as d')
 		->select("*")
 		->orderBy('denominazione')

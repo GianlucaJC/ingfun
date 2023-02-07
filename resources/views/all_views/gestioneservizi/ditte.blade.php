@@ -43,7 +43,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-		<!-- form new contratti !-->	
+		<!-- form new ditte !-->	
 		@include('all_views.gestioneservizi.newditte')
 
 		<form method='post' action="{{ route('ditte') }}" id='frm_ditte' name='frm_ditte' autocomplete="off">

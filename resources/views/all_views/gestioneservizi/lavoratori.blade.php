@@ -44,6 +44,8 @@
     <div class="content">
       <div class="container-fluid">
 		<!-- form new contratti !-->	
+		<!-- form new ditte !-->	
+		@include('all_views.gestioneservizi.newlav')
 		
 
 		<form method='post' action="{{ route('lavoratori') }}" id='frm_lav' name='frm_lav' autocomplete="off">
@@ -70,7 +72,7 @@
 								@endif
 							@endforeach	
 						</select>
-						<label for="ditta">Ditta</label>
+						<label for="ditta">Scegli Ditta di riferimento </label>
 					</div>	
 				</div>
 			</div>	
@@ -94,6 +96,10 @@
 								 @if ($lavoratore->dele=="1") 
 									<font color='red'><del> 
 								 @endif
+								 <span id='ref_cognome{{$lavoratore->id}}' data-cognome='{{ $lavoratore->cognome }}'>
+								 </span>
+								 <span id='ref_nome{{$lavoratore->id}}' data-nome='{{ $lavoratore->nome }}'>
+								 </span>								 
 									{{ $lavoratore->nominativo }}
 									
 								 @if ($lavoratore->dele=="1") 
@@ -145,7 +151,7 @@
 						<i class="fa fa-plus-circle"></i> Nuovo Lavoratore
 					</button>
 					<div class="form-check form-switch mt-3 ml-3">
-					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_ditte').submit()" {{ $check }}>
+					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_lav').submit()" {{ $check }}>
 					  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
 					</div>
 				</div>
@@ -184,6 +190,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/lavoratori.js?ver=1.01"></script>
+	<script src="{{ URL::asset('/') }}dist/js/lavoratori.js?ver=1.05"></script>
 
 @endsection

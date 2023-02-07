@@ -37,9 +37,16 @@ $(document).ready( function () {
 } );
 
 function new_ditta() {
-	$('#frm_lav')[0].reset();	
+	ditta=$("#ditta").val()
+	if (ditta.length==0) {
+		alert("Selezionare la ditta di riferimento!")
+		return false;
+	}
+	$("#old_ditta").val(ditta)
+
+	$('#frm_lav1')[0].reset();	
 	$('#edit_elem').val('');
-	$('#denominazione').val('');
+	
 	$('#div_definition').hide()
 	$('#div_definition').show(150)
 }
@@ -50,39 +57,18 @@ function popola_cap_pro(value) {
 	$("#provincia").val(value.split("|")[1])
 }
 
-function edit_elem(id_ditta) {	
-	$('#div_definition').hide()
-	base_path = $("#url").val();
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
-	let CSRF_TOKEN = $("#token_csrf").val();
-	$.ajax({
-		type: 'POST',
-		url: base_path+"/getditta",
-		data: {_token: CSRF_TOKEN, id_ditta:id_ditta},
-		success: function (data) {
-			
-			info=JSON.parse(data)
-			$("#descr_contr").val(info[0].denominazione)
-			$("#comune").val(info[0].comune)
-			$("#cap").val(info[0].cap)
-			$("#provincia").val(info[0].provincia)
-			$("#piva").val(info[0].piva)
-			$("#cf").val(info[0].cf)
-			$("#email").val(info[0].email)
-			$("#pec").val(info[0].pec)
-			$("#telefono").val(info[0].telefono)
-			$("#fax").val(info[0].fax)
-			$("#edit_elem").val(id_ditta)
-			$('#div_definition').show(150)
+function edit_elem(id_elem) {	
+	ditta=$("#ditta").val()
+	$("#old_ditta").val(ditta)
+	
+	cognome=$("#ref_cognome"+id_elem).data("cognome")
+	nome=$("#ref_nome"+id_elem).data("nome")
+	$("#cognome").val(cognome)
+	$("#nome").val(nome)
+	
+	$("#div_definition").show(150)
+	$("#edit_elem").val(id_elem)
 
-		}
-	});		
-	
-	
 	
 }
 
