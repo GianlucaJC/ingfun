@@ -112,8 +112,17 @@
 								<?php
 									$id_appalto=$gest->id;
 
+									$lavoratoriapp=lavoratoriapp::select('c.nominativo')
+									->join('candidatis as c', 'lavoratoriapp.id_lav_ref','=','c.id')
+									->where('lavoratoriapp.id_appalto','=',$id_appalto)
+									->get();
+									$n_l=0;
 								?>
-
+								@foreach($lavoratoriapp as $lavoratori)
+									@if ($n_l!=0), @endif
+									{{ $lavoratori->nominativo}}
+									<?php $n_l++; ?>
+								@endforeach
 							</td>
 							<td>
 								<?php

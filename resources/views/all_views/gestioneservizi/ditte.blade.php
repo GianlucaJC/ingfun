@@ -59,7 +59,7 @@
 						<tr>
 							
 							<th>Denominazione</th>
-							<th>Lavoratori</th>
+							
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -77,20 +77,6 @@
 									 </del></font>
 								 @endif	
 								</td>	
-								<td>
-									
-									<?php
-										if (isset($info_lav[$ditta->id])) {		
-										$c=count($info_lav[$ditta->id]);
-										 for ($sca=0;$sca<=$c-1;$sca++) {
-											if ($sca>0) echo ", ";
-											echo $info_lav[$ditta->id][$sca]->nominativo;
-										 }
-										} 
-									?>
-									
-	
-								</td>
 								<td>
 									@if ($ditta->dele=="0") 
 										<a href='#' onclick="edit_elem({{$ditta->id}})">
@@ -116,7 +102,7 @@
 						<tr>
 							
 							<th>Denominazione</th>
-							<th>Lavoratori</th>
+							
 							<th></th>
 						</tr>
 					</tfoot>					
