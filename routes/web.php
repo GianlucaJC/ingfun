@@ -20,7 +20,15 @@ Route::get('/', function () {
 
 Route::get('dashboard', [ 'as' => 'dashboard', 'uses' => 'App\Http\Controllers\MainController@dashboard'])->middleware(['auth']);
 
+Route::get('menuhr', [ 'as' => 'menuhr', 'uses' => 'App\Http\Controllers\MainController@menuhr'])->middleware(['auth']);
 
+Route::get('amministrazione', [ 'as' => 'amministrazione', 'uses' => 'App\Http\Controllers\MainController@amministrazione'])->middleware(['auth']);
+
+Route::get('menuaziende', [ 'as' => 'menuaziende', 'uses' => 'App\Http\Controllers\MainController@menuaziende'])->middleware(['auth']);
+
+Route::get('cliditte', [ 'as' => 'cliditte', 'uses' => 'App\Http\Controllers\MainController@cliditte'])->middleware(['auth']);
+
+Route::get('serviziapp', [ 'as' => 'serviziapp', 'uses' => 'App\Http\Controllers\MainController@serviziapp'])->middleware(['auth']);
 
 
 Route::group(['only_log' => ['auth']], function () {
@@ -30,8 +38,6 @@ Route::group(['only_log' => ['auth']], function () {
 
 	
 	Route::get('archivi', [ 'as' => 'archivi', 'uses' => 'App\Http\Controllers\MainController@archivi'])->middleware(['auth']);
-
-	Route::get('archiviserv', [ 'as' => 'archiviserv', 'uses' => 'App\Http\Controllers\MainController@archiviserv'])->middleware(['auth']);
 
 	
 	Route::get('newcand/{id?}/{from?}', [ 'as' => 'newcand', 'uses' => 'App\Http\Controllers\MainController@newcand'])->middleware(['permission:gestione_archivi']);

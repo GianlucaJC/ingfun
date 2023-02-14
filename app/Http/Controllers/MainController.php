@@ -87,6 +87,33 @@ public function __construct()
 		return view('all_views/dashboard')->with('name', $name)->with('scadenze',$scadenze)->with('descr_num',$descr_num);
 	}
 
+
+	public function amministrazione() {
+		return view('all_views/amministrazione');
+	}
+
+	public function menuaziende() {
+		return view('all_views/menuaziende');
+	}
+
+	public function cliditte() {
+		return view('all_views/cliditte');
+	}
+	public function serviziapp() {
+		return view('all_views/serviziapp');
+	}
+	public function menuhr() {
+		$name="";
+		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche
+		//valutare se spostare su un processo esterno all'applicativo
+		$scadenze=$this->check_scadenze_contratti();
+		$descr_num="nuovi Contratti";		
+		
+		if (count($scadenze)==1) $descr_num="nuovo Contratto";
+
+		return view('all_views/menuhr')->with('scadenze',$scadenze)->with('descr_num',$descr_num);
+	}
+
 	public function init_newcand() {
 		$candidati=array();
 		$candidati[0]['cognome']=null;
