@@ -1,6 +1,5 @@
 <?php
 	use App\Models\appalti;
-	use App\Models\lavoratori;
 	use App\Models\lavoratoriapp;
 	use App\Models\servizi;
 	use App\Models\serviziapp;
@@ -112,18 +111,9 @@
 							<td>
 								<?php
 									$id_appalto=$gest->id;
-									$lavoratori=lavoratori::select('nominativo')
-									->join('lavoratoriapp as la', 'lavoratori.id','=','la.id_lav_ref')
-									->where('la.id_appalto','=',$id_appalto)
-									->get();
-									
-								$n_l=0;
+
 								?>
-								@foreach($lavoratori as $lavoratore)
-									@if ($n_l!=0), @endif
-									{{ $lavoratore->nominativo}}
-									<?php $n_l++; ?>
-								@endforeach
+
 							</td>
 							<td>
 								<?php

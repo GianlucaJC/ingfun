@@ -166,7 +166,6 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('split_pdf', 'App\Http\Controllers\ControllerPdf@split_pdf');
 	
 	
-	Route::post('popola_lav', 'App\Http\Controllers\AjaxControllerServ@popola_lav');
 
 	Route::post('getditta', 'App\Http\Controllers\AjaxControllerServ@getditta');
 

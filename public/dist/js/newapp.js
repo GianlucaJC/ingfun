@@ -31,6 +31,7 @@
 $(document).ready( function () {
 	$('body').addClass("sidebar-collapse");
 	$('.select2').select2()
+	$('#lavoratori').select2().attr('required');
 
 	$("#sub_newcand").click(function(){
 		 
@@ -39,31 +40,3 @@ $(document).ready( function () {
 
 
 
-
-
-function popola_lav(id_ditta) {
-	base_path = $("#url").val();
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
-	let CSRF_TOKEN = $("#token_csrf").val();
-	$.ajax({
-		type: 'POST',
-		url: base_path+"/popola_lav",
-		data: {_token: CSRF_TOKEN, id_ditta:id_ditta},
-		success: function (data) {
-			$("#lavoratori")
-			.find('option')
-			.remove()
-			.end();	
-			
-			
-			$.each(JSON.parse(data), function (i, item) {
-				$('#lavoratori').append('<option value="' + item.id + '">' + item.nominativo + '</option>');
-						
-			});
-		}
-	});		
-}

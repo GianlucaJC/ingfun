@@ -6,10 +6,9 @@ use App\Models\servizi;
 use App\Models\serviziapp;
 use App\Models\appalti;
 use App\Models\ditte;
-use App\Models\lavoratori;
 use App\Models\lavoratoriapp;
 use App\Models\italy_cities;
-
+use App\Models\candidati;
 
 use DB;
 
@@ -79,80 +78,12 @@ class ControllerServizi extends Controller
 		})
 		->orderBy('denominazione')->get();
 
-		$lavoratori=DB::table('lavoratori as l')
-		->select('l.*')
-		->orderBy('nominativo')
-		->get();		
 
-		$info_lav=array();
-		foreach($lavoratori as $lavoratore) {
-			$id_ditta=$lavoratore->id_ditta;
-			$info_lav[$id_ditta][]=$lavoratore;
-		}
-
-		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('info_lav',$info_lav);		
+		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni);		
 	}	
 
 
-	public function lavoratori(Request $request){
-		$edit_elem=0;
-		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
-		
-		$view_dele=$request->input("view_dele");
-		$ditta=$request->input("ditta");
-		if ($request->has("old_ditta")) $ditta=$request->input("old_ditta");
 
-		$cognome=$request->input("cognome");
-		$cognome=strtoupper($cognome);
-		$nome=$request->input("nome");
-		$nome=strtoupper($nome);
-		$nominativo=$cognome." ".$nome;
-		
-		if (strlen($view_dele)==0) $view_dele=0;
-		if ($view_dele=="on") $view_dele=1;
-
-		$dele_contr=$request->input("dele_contr");
-		$restore_contr=$request->input("restore_contr");
-		
-		$data=['dele'=>0, 'id_ditta'=>$ditta, 'cognome' => $cognome,'nome' => $nome,'nominativo' => $nominativo];
-
-		//Creazione nuovo elemento
-		if (strlen($cognome)!=0 && $edit_elem==0) {
-			DB::table("lavoratori")->insert($data);
-		}
-		
-		//Modifica elemento
-		if (strlen($cognome)!=0 && $edit_elem!=0) {
-			lavoratori::where('id', $edit_elem)			
-			  ->update($data);
-		}
-		if (strlen($dele_contr)!=0) {
-			lavoratori::where('id', $dele_contr)
-			  ->update(['dele' => 1]);			
-		}
-		if (strlen($restore_contr)!=0) {
-			lavoratori::where('id', $restore_contr)
-			  ->update(['dele' => 0]);			
-		}		
-		
-		$ditte=DB::table('ditte as d')
-		->select("*")
-		->orderBy('denominazione')
-		->get();
-
-		$lavoratori=DB::table('lavoratori as l')
-		->select('l.*')
-		->where('l.id_ditta','=',$ditta)
-		->when($view_dele=="0", function ($lavoratori) {
-			return $lavoratori->where('l.dele', "=","0");
-		})
-		->orderBy('nominativo')
-		->get();		
-
-
-
-		return view('all_views/gestioneservizi/lavoratori')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('lavoratori',$lavoratori)->with('ditta',$ditta);		
-	}
 
 	public function servizi(Request $request){
 		$edit_elem=0;
@@ -278,16 +209,34 @@ class ControllerServizi extends Controller
 	
 	public function newapp($id=0,$from=0) {
 		$appalti=array();
-		$id_servizi=array();$ids_lav=array();
+		$ids_lav=array();
+		$id_servizi=array();
 		$view_dele="0";
+		$today=date("Y-m-d");
+		$lavoratori=candidati::select('id','nominativo')
+		->where("data_fine","<=", $today)
+		->where('dele', "=","0")
+		->where(function ($query){
+			$query->where("status_candidatura","=",3)
+			->orWhere(function($q2){
+				$q2->where("status_candidatura","=",4);
+			})
+			->orWhere(function($q2){
+				$q2->where("status_candidatura","=",5);
+			})
+			->orWhere(function($q2){
+				$q2->where("status_candidatura","=",6);
+			});
+		})
+		->orderBy('nominativo')	
+		->get();
 		
 		if ($id!=0) {
 			$view_dele="1";
 			$appalti=DB::table('appalti AS a')
-			->select('a.*','sa.id_servizio','la.id_lav_ref','l.nominativo')
+			->select('a.*','sa.id_servizio','la.id_lav_ref')
 			->join('serviziapp as sa','a.id','sa.id_appalto')
-			->join('lavoratoriapp as la','a.id','la.id_appalto')
-			->join('lavoratori as l','la.id_lav_ref','l.id')
+			->join('lavoratoriapp as la','a.id','la.id_appalto')			
 			->where('a.id', "=", $id)
 			->get();
 			
@@ -297,7 +246,8 @@ class ControllerServizi extends Controller
 				if (!in_array($appalto->id_servizio,$id_servizi)) 
 					$id_servizi[]=$appalto->id_servizio;
 				if (!in_array($appalto->id_lav_ref,$ids_lav))  
-					$ids_lav[$appalto->id_lav_ref]=$appalto->nominativo;
+					$ids_lav[]=$appalto->id_lav_ref;				
+
 			}			
 
 
@@ -318,7 +268,7 @@ class ControllerServizi extends Controller
 		->orderBy('descrizione')	
 		->get();	
 		
-		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with('ids_lav',$ids_lav);
+		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav);
 
 	}
 

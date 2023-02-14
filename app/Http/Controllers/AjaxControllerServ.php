@@ -13,12 +13,6 @@ use DB;
 class AjaxControllerServ extends Controller
 	{
 
-	public function popola_lav(Request $request){
-		$lavoratori=array();		
-		$id_ditta = $request->input('id_ditta');
-		$lavoratori = lavoratori::where('id_ditta', '=', $id_ditta)->orderBy('nominativo')->get();
-        return json_encode($lavoratori);
-	}
 
 	public function getditta(Request $request){		
 		$id_ditta = $request->input('id_ditta');

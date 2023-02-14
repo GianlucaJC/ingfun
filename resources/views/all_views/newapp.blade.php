@@ -85,7 +85,7 @@
 			</div>	
 		</div>		
 
-		<center><h4>Ditte in Appalto</h4></center>
+		<center><h4>FORMAZIONE SQUADRA</h4></center>
 			<?php
 				$id_ditta_db=0;
 				if (isset($appalti[0]->id_ditta))  $id_ditta_db=$appalti[0]->id_ditta;
@@ -96,7 +96,7 @@
 				<div class="row mb-3">
 					<div class="col-md-6">
 						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-select" name="ditta" id="ditta" onchange='popola_lav(this.value)' required>
+							<select class="form-select" name="ditta" id="ditta"  required>
 							<option value=''>Select...</option>
 							<?php
 								foreach ($ditte as $ditta_ref) {
@@ -111,28 +111,28 @@
 							<label for="ditta">Ditta*</label>
 						</div>
 					</div>	
-				
-
-				</div>	
-				<div class="row mb-3">
-					
 					<div class="col-md-6">
 						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-select" name="lavoratori[]" id="lavoratori" required style='height:auto' multiple >
-								@foreach($ids_lav as $id_lav=>$nominativo)
-									<option value="{{$id_lav}}" selected
-									>{{$nominativo}}</option> 
-									
+							<select class="form-select select2" id="lavoratori" aria-label="Lavoratori" name='lavoratori[]' multiple="multiple" required>
+								@foreach ($lavoratori as $lavoratore)
+									<option value='{{$lavoratore->id}}'
+									<?php
+										if (in_array($lavoratore->id,$ids_lav)) echo " selected ";
+											
+									?>
+									>{{$lavoratore->nominativo}}</option>
 								@endforeach
+
 							</select>
-							<label for="lavoratori">Lavoratori*</label>
+							<b>Squadra</b>
 						</div>
-					</div>
-				</div>
+					</div>				
+
+				</div>	
 				
 			
 				<div class="row mb-3">
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<div class="form-floating">					  
 							
 							<textarea class="form-control" name='note' id="note" rows="4">{{$appalti[0]->note ?? ''}}</textarea>
@@ -144,18 +144,6 @@
 			</div>
 			
 		
-		
-
-        <!-- 
-		<div class="row mb-3">
-			<div class="col-md-2">
-				<button class="btn btn-success" type="button" onclick='add_ditta()'>
-					<i class="fas fa-plus-circle"></i> Aggiungi Ditta
-				</button>
-			</div>			
-		</div>
-		!-->
-
 		
 
         <div class="row">
@@ -221,7 +209,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.09"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.11"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
