@@ -231,6 +231,7 @@ class ControllerServizi extends Controller
 		->orderBy('nominativo')	
 		->get();
 		
+
 		if ($id!=0) {
 			$view_dele="1";
 			$appalti=DB::table('appalti AS a')
