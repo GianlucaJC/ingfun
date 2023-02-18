@@ -76,6 +76,7 @@ public function __construct()
 	}
 	
 	public function dashboard() {
+		
 		$name="";
 		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche
 		//valutare se spostare su un processo esterno all'applicativo

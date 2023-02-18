@@ -112,16 +112,30 @@
 								<?php
 									$id_appalto=$gest->id;
 
-									$lavoratoriapp=lavoratoriapp::select('c.nominativo')
+									$lavoratoriapp=lavoratoriapp::select('c.nominativo','lavoratoriapp.status')
 									->join('candidatis as c', 'lavoratoriapp.id_lav_ref','=','c.id')
 									->where('lavoratoriapp.id_appalto','=',$id_appalto)
 									->get();
-									$n_l=0;
+									
 								?>
 								@foreach($lavoratoriapp as $lavoratori)
-									@if ($n_l!=0), @endif
-									{{ $lavoratori->nominativo}}
-									<?php $n_l++; ?>
+									<?php 
+									$colo="yellow";
+									if ($lavoratori->status==0) {
+										$back="yellow";$colo="black";
+									}
+									if ($lavoratori->status==1) {
+										$back="red";$colo="white";
+									}
+									if ($lavoratori->status==2) {
+										$back="green";$colo="white";
+									}
+									?>
+									
+									<div style='inline;background-color:{{$back}};color:{{$colo}}'>
+										{{ $lavoratori->nominativo}}
+									</div>
+									
 								@endforeach
 							</td>
 							<td>

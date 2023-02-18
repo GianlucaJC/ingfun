@@ -12,6 +12,11 @@ return [
     | as required, but they're a perfect start for most applications.
     |
     */
+	'api' => [
+		'driver' => 'token',
+		'provider' => 'users',
+		'hash' => true,
+	],
 
     'defaults' => [
         'guard' => 'web',
