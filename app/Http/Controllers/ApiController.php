@@ -50,6 +50,7 @@ class ApiController extends Controller
 			 exit;
 		} 
 		$id_lav_ref=$check['id_user'];
+		/*
 		$count=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->join('lavoratoriapp as l','l.id_ditta_ref','d.id')
@@ -58,8 +59,13 @@ class ApiController extends Controller
 		->groupBy('appalti.id')
 		->orderByDesc('appalti.id')
 		->count();
+		*/
 		
-		
+		$count=appalti::select('appalti.id')
+		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
+		->where('appalti.dele', "=","0")
+		->where('l.id_lav_ref',"=",$id_lav_ref)
+		->count();
 		
 	
 		$risp['header']=$check;
