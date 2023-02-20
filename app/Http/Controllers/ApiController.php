@@ -12,22 +12,35 @@ use App\Models\appalti;
 
 class ApiController extends Controller
 {
-	
+	/*
+	public function __construct() {
+		header("Access-Control-Allow-Origin: *");
+		header("Content-Type: application/json; charset=UTF-8");
+	}
+	*/
 	public function check_log($request) {
 		$utente=$request->input("utente");
 		$pw=$request->input("pw");
-		$check=user::select('c.id_user','c.id as id_cand')
+		$check=user::select('users.password','c.id_user','c.id as id_cand')
 		->join("candidatis as c","users.id","=","c.id_user")
-		//->where('password',"=",$pw_c)
 		->where('users.email',"=",$utente);
 		$count=$check->count();
+		
+		
 		
 		$resp=array();
 		if ($count>0) {
 			$c=$check->get();
-			$resp['esito']="OK";
-			$resp['id_user']=$c[0]->id_user;
-			$resp['id_cand']=$c[0]->id_cand;
+			$hash=$c[0]->password;
+			if (password_verify($pw, $hash)) {
+				$resp['esito']="OK";
+				$pw_hash=$c[0]->password;
+
+				$resp['id_user']=$c[0]->id_user;
+				$resp['id_cand']=$c[0]->id_cand;
+			} else {
+			   $resp['esito']="KO";
+			}
 		}	
 		else {
 			$resp['esito']="KO";
@@ -64,12 +77,28 @@ class ApiController extends Controller
 		$count=appalti::select('appalti.id')
 		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 		->where('appalti.dele', "=","0")
+		->where('l.status', "=","0")
 		->where('l.id_lav_ref',"=",$id_lav_ref)
 		->count();
-		
-	
+
+		$storici_si=appalti::select('appalti.id')
+		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
+		->where('appalti.dele', "=","0")
+		->where('l.status', "=","1")
+		->where('l.id_lav_ref',"=",$id_lav_ref)
+		->count();
+
+		$storici_no=appalti::select('appalti.id')
+		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
+		->where('appalti.dele', "=","0")
+		->where('l.status', "=","2")
+		->where('l.id_lav_ref',"=",$id_lav_ref)
+		->count();
+			
 		$risp['header']=$check;
 		$risp['count']=$count;
+		$risp['storici_si']=$storici_si;
+		$risp['storici_no']=$storici_no;
 
 		
 		echo json_encode($risp);
