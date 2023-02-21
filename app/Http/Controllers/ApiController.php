@@ -24,7 +24,7 @@ class ApiController extends Controller
 	public function check_log($request) {
 		$utente=$request->input("utente");
 		$pw=$request->input("pw");
-		$check=user::select('users.password','c.id_user','c.id as id_cand')
+		$check=user::select('users.password','c.id','c.id as id_cand')
 		->join("candidatis as c","users.id","=","c.id_user")
 		->where('users.email',"=",$utente);
 		$count=$check->count();
@@ -37,9 +37,7 @@ class ApiController extends Controller
 			$hash=$c[0]->password;
 			if (password_verify($pw, $hash)) {
 				$resp['esito']="OK";
-				$pw_hash=$c[0]->password;
-
-				$resp['id_user']=$c[0]->id_user;
+				$resp['id_user']=$c[0]->id;
 				$resp['id_cand']=$c[0]->id_cand;
 			} else {
 			   $resp['esito']="KO";
@@ -148,7 +146,7 @@ class ApiController extends Controller
 			//lavoratori presenti nell'appalto
 			$id_appalto=$record->id;
 			$lavoratori=lavoratoriapp::select('c.nominativo')
-			->join('candidatis as c','lavoratoriapp.id_lav_ref','c.id_user')
+			->join('candidatis as c','lavoratoriapp.id_lav_ref','c.id')
 			->where('lavoratoriapp.id_appalto', "=",$id_appalto)
 			->get();
 			$lav="";
