@@ -125,10 +125,10 @@
 										$back="yellow";$colo="black";
 									}
 									if ($lavoratori->status==1) {
-										$back="red";$colo="white";
+										$back="green";$colo="white";
 									}
 									if ($lavoratori->status==2) {
-										$back="green";$colo="white";
+										$back="red";$colo="white";
 									}
 									?>
 									

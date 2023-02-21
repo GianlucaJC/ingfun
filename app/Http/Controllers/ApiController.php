@@ -155,6 +155,8 @@ class ApiController extends Controller
 				$lav.=$lavoratore->nominativo;
 			}
 			$info[$sc]['lavoratori']=$lav;
+			
+			$info[$sc]['id_appalto']=$id_appalto;
 		
 			
 			
@@ -167,7 +169,28 @@ class ApiController extends Controller
 		
 		echo json_encode($risp);
 		
-	}	
+	}
+	
+	public function risposta_user(Request $request) {
+		$check=$this->check_log($request); 
+		if ($check['esito']=="KO") {
+			$risp['header']=$check;
+			 echo json_encode($risp);
+			 exit;
+		} 
+		$id_lav_ref=$check['id_user'];
+		$id_appalto=$request->input("id_appalto");
+		$sn=$request->input("sn");
+		$status=0;
+		if ($sn=="S") $status=1;
+		if ($sn=="N") $status=2;
+		lavoratoriapp::where('id_appalto', $id_appalto)
+		->where('id_lav_ref', $id_lav_ref)
+		->update(['status' => $status]);
+		$risp['header']=$check;
+		$risp['info']="Set risposta: $sn";
+		echo json_encode($risp);	
+	}
   
 
 }
