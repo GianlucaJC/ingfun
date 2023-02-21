@@ -21,3 +21,5 @@ Route::get('servizio_scadenze', [ 'as' => 'servizio_scadenze', 'uses' => 'App\Ht
 Route::post('login', [ 'as' => 'login', 'uses' => 'App\Http\Controllers\ApiController@login']);
 
 Route::post('countappalti', [ 'as' => 'countappalti', 'uses' => 'App\Http\Controllers\ApiController@countappalti']);
+
+Route::post('infoappalti', [ 'as' => 'infoappalti', 'uses' => 'App\Http\Controllers\ApiController@infoappalti']);

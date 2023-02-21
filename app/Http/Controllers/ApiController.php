@@ -6,6 +6,9 @@ use Illuminate\Support\Facades\Auth;
 
 use App\Models\User;
 use App\Models\appalti;
+use App\Models\ditte;
+use App\Models\lavoratoriapp;
+
 
 
 
@@ -104,5 +107,69 @@ class ApiController extends Controller
 		echo json_encode($risp);
 		
 	}	
+
+	public function infoappalti(Request $request) {
+
+		$check=$this->check_log($request); 
+		if ($check['esito']=="KO") {
+			$risp['header']=$check;
+			 echo json_encode($risp);
+			 exit;
+		} 
+		$id_lav_ref=$check['id_user'];
+
+		$allinfo=appalti::select('appalti.*')
+		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
+		->where('appalti.dele', "=","0")
+		->where('l.status', "=","0")
+		->where('l.id_lav_ref',"=",$id_lav_ref)
+		->get();
+		
+		$info=array();$sc=0;
+		foreach($allinfo as $record) {			
+			$id_ditta=$record->id_ditta;
+			$ditta=ditte::select('denominazione','cap','comune','provincia')
+			->where('id', "=",$id_ditta)
+			->get()
+			->first();
+			$info_ditta="";
+			if ($ditta->denominazione) $info_ditta.=$ditta->denominazione;
+			if ($ditta->cap) $info_ditta.=" - ".$ditta->cap;
+			if ($ditta->comune) $info_ditta.=" - ".$ditta->comune;
+			if ($ditta->provincia) $info_ditta.=" - ".$ditta->provincia;
+			$info[$sc]['ditta']=$info_ditta;
+			$info[$sc]['descrizione_appalto']=$record->descrizione_appalto;
+			$d=$record->data_ref;
+			$date=date_create($d);
+			$data_ref=date_format($date,"d-m-Y");
+			$info[$sc]['data_ref']=$data_ref;
+			$info[$sc]['note']=$record->note;
+			
+			//lavoratori presenti nell'appalto
+			$id_appalto=$record->id;
+			$lavoratori=lavoratoriapp::select('c.nominativo')
+			->join('candidatis as c','lavoratoriapp.id_lav_ref','c.id_user')
+			->where('lavoratoriapp.id_appalto', "=",$id_appalto)
+			->get();
+			$lav="";
+			foreach($lavoratori as $lavoratore) {
+				if (strlen($lav)!=0) $lav.=", ";
+				$lav.=$lavoratore->nominativo;
+			}
+			$info[$sc]['lavoratori']=$lav;
+		
+			
+			
+			$sc++;
+		}
+			
+		$risp['header']=$check;
+		$risp['info']=$info;
+
+		
+		echo json_encode($risp);
+		
+	}	
   
+
 }
