@@ -190,17 +190,31 @@ class ControllerServizi extends Controller
 			]);			
 		}
 		
-		$deleted = lavoratoriapp::where('id_appalto', $id_app)->delete();
+		
+		$to_delete = lavoratoriapp::where('id_appalto', $id_app)->update(['to_delete'=>1]);
 		$lavoratori=$request->input('lavoratori');
+		
 		for ($sca=0;$sca<=count($lavoratori)-1;$sca++) {
-			DB::table('lavoratoriapp')->insert([
-				'id_appalto' => $id_app,
-				'id_ditta_ref' => $request->input('ditta'),
-				'id_lav_ref' => $lavoratori[$sca],
-				'created_at'=>now(),
-				'updated_at'=>now()
-			]);			
+			$id_lav_ref=$lavoratori[$sca];
+			$count=lavoratoriapp::where('id_appalto','=',$id_app)
+			->where('id_lav_ref','=',$id_lav_ref)
+			->count();
+			if ($count==0) {
+				DB::table('lavoratoriapp')->insert([
+					'id_appalto' => $id_app,					
+					'id_lav_ref' => $id_lav_ref,
+					'created_at'=>now(),
+					'updated_at'=>now()
+				]);		
+			} else {
+				$data=['to_delete' => 0];
+				lavoratoriapp::where('id_appalto', $id_app)			
+				->where('id_lav_ref','=',$id_lav_ref)
+				->update($data);
+			}	
+
 		}
+		$deleted = lavoratoriapp::where('to_delete','=',1)->delete();
 		
 		return redirect()->route("newapp",['id'=>$id_app,'from'=>1]);
 
