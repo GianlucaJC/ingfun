@@ -24,12 +24,10 @@ class ApiController extends Controller
 	public function check_log($request) {
 		$utente=$request->input("utente");
 		$pw=$request->input("pw");
-		$check=user::select('users.password','c.id','c.id as id_cand','users.id userid')
+		$check=user::select('users.password','c.id','c.id as id_cand','users.id as userid')
 		->join("candidatis as c","users.id","=","c.id_user")
 		->where('users.email',"=",$utente);
 		$count=$check->count();
-		
-		
 		
 		$resp=array();
 		if ($count>0) {
@@ -41,9 +39,9 @@ class ApiController extends Controller
 				$resp['id_cand']=$c[0]->id_cand;
 				//registrazione dispositivo per push notification
 				if ($request->has("pushid")) {
-					if ($request->("pushid")]!="?") {
-					user::where('id', $c[0]->userid)
-					->update(['push_id' => $pushid=$request->("pushid")]);
+					$pushid=$request->input("pushid");
+					if ($pushid!="?") {
+						user::where('id', $c[0]->userid)->update(['push_id' => $push_id]);
 					}
 				}
 			} else {
