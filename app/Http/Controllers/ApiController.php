@@ -41,7 +41,7 @@ class ApiController extends Controller
 				if ($request->has("pushid")) {
 					$pushid=$request->input("pushid");
 					if ($pushid!="?") {
-						user::where('id', $c[0]->userid)->update(['push_id' => $push_id]);
+						user::where('id', $c[0]->userid)->update(['push_id' => $pushid]);
 					}
 				}
 			} else {
