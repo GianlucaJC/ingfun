@@ -120,7 +120,7 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('listapp', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
 
 
-	Route::get('newapp/{id?}/{from?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@newapp'])->middleware(['permission:gestione_archivi']);
+	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@newapp'])->middleware(['permission:gestione_archivi']);
 
 	Route::post('save_newapp', [ 'as' => 'save_newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@save_newapp'])->middleware(['permission:gestione_archivi']);
 

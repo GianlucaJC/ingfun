@@ -38,8 +38,10 @@ class ApiController extends Controller
 				$resp['id_user']=$c[0]->id;
 				$resp['id_cand']=$c[0]->id_cand;
 				
-				//registrazione dispositivo per push notification
-				if ($request->has("pushid") && $c[0]->push_id!=null) {
+				//registrazione dispositivo per push notification:
+				//in caso di registrazione non avvenuta con successo o 
+				//push_id non valido e quindi mancata ricezione del push, rendere a mano nullo il campo push_id nella tabella users
+				if ($request->has("pushid") && $c[0]->push_id==null) {
 					$pushid=$request->input("pushid");
 					if ($pushid!="?") {
 						user::where('id', $c[0]->userid)->update(['push_id' => $pushid]);

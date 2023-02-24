@@ -32,7 +32,7 @@
 			<h1 class="m-0">
 				<center>
 					<font color='red'>
-							DEFINIZIONE DELL'APPALTO
+						DEFINIZIONE DELL'APPALTO
 					</font>
 				</center>
 				
@@ -48,6 +48,18 @@
     <div class="content">
       <div class="container-fluid">
 
+		<div class="row">
+			<?php
+			
+				if (!empty($num_send) && $num_send>0) {
+					$txt="Notifiche push inviate!";
+					if ($num_send==1) $txt="Notificha push inviata!";
+					echo "<div class='alert alert-success' role='alert'>";
+					  echo "<b>$num_send</b> $txt";
+					echo "</div>";
+				}
+			?>
+		</div>
 
 
 		<div class="row mb-3">
@@ -144,7 +156,7 @@
 			</div>
 			
 		
-		
+
 
         <div class="row">
 

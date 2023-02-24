@@ -9,6 +9,7 @@ use App\Models\ditte;
 use App\Models\lavoratoriapp;
 use App\Models\italy_cities;
 use App\Models\candidati;
+use OneSignal;
 
 use DB;
 
@@ -132,6 +133,8 @@ class ControllerServizi extends Controller
 	}
 	
 	public function listapp(Request $request) {
+		
+		
 		$dx=date("Y-m-d");
 		
 		$view_dele=0;
@@ -193,8 +196,9 @@ class ControllerServizi extends Controller
 		
 		$to_delete = lavoratoriapp::where('id_appalto', $id_app)->update(['to_delete'=>1]);
 		$lavoratori=$request->input('lavoratori');
-		
+		$num_send=0;
 		for ($sca=0;$sca<=count($lavoratori)-1;$sca++) {
+			$send=false;
 			$id_lav_ref=$lavoratori[$sca];
 			$count=lavoratoriapp::where('id_appalto','=',$id_app)
 			->where('id_lav_ref','=',$id_lav_ref)
@@ -205,23 +209,60 @@ class ControllerServizi extends Controller
 					'id_lav_ref' => $id_lav_ref,
 					'created_at'=>now(),
 					'updated_at'=>now()
-				]);		
+				]);
+				//in caso di nuovi lavoratori inseriti, invio push
+				$send=true;
+				$resp=candidati::select('u.push_id')
+				->join('users as u','candidatis.id_user','u.id')
+				->where("candidatis.id","=", $id_lav_ref);
+				if ($resp->count()==0) $send=false;
+				else {
+					$push_id=$resp->get()->first()->push_id;
+					if ($push_id==null || strlen($push_id)==0) $send=false;
+				}				
 			} else {
 				$data=['to_delete' => 0];
 				lavoratoriapp::where('id_appalto', $id_app)			
 				->where('id_lav_ref','=',$id_lav_ref)
 				->update($data);
+				
+			}	
+			if ($send==true) {
+				$num_send++;
+				$this->send_push($push_id);
 			}	
 
 		}
 		$deleted = lavoratoriapp::where('to_delete','=',1)->delete();
 		
-		return redirect()->route("newapp",['id'=>$id_app,'from'=>1]);
+		return redirect()->route("newapp",['id'=>$id_app,'from'=>1,'num_send'=>$num_send]);
 
 	}	
+	
+	public function send_push($userId) {
+		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f";
+		$params = []; 
+		$params['include_player_ids'] = [$userId]; 
+		$headings = array(
+			"it" => 'App ING News',
+			"en" => 'App ING News'
+			);
+		
+		$contents = [ 
+		   "it" => "Nuova richiesta accettazione Servizio", 
+		   "en" => "Request acceptance of new service"
+		]; 
+		$params['priority'] = 10; 
+		$params['contents'] = $contents; 
+		$params['headings'] = $headings; 
+		//$params['delayed_option'] = "timezone"; // Will deliver on user's timezone 
+		//$params['delivery_time_of_day'] = "2:30PM"; // Delivery time
+
+		$resp=OneSignal::sendNotificationCustom($params);		
+	}
 
 	
-	public function newapp($id=0,$from=0) {
+	public function newapp($id=0,$from=0,$num_send) {
 		$appalti=array();
 		$ids_lav=array();
 		$id_servizi=array();
@@ -283,7 +324,7 @@ class ControllerServizi extends Controller
 		->orderBy('descrizione')	
 		->get();	
 		
-		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav);
+		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav)->with("num_send",$num_send);
 
 	}
 

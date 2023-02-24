@@ -78,7 +78,7 @@
 
 							<td>
 								@if ($gest->dele=="0") 
-									<a href="{{ route('newapp',['id'=>$gest->id,'from'=>1]) }}" >
+									<a href="{{ route('newapp',['id'=>$gest->id,'from'=>1,'num_send'=>0]) }}" >
 										<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 									</a>
 								@endif
