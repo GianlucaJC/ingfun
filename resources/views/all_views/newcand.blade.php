@@ -2,6 +2,60 @@
 
 @section('title', 'IngFUN')
 
+@section('operazioni')
+<!-- Pannello gestione utenza !-->
+	<div class="p-3">
+		<h5>Accesso Utente</h5>
+		<p>
+			@if ($user_active==false) 				
+				<h6>
+					L'utente non possiede credenziali per accedere!"
+				</h6>
+			@endif
+			<form method='post' action="{{ route('save_newuser') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">
+			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+			<input type='hidden' name='from' value="{{$from}}">
+			<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
+			<input type="hidden" name="nome" id="nome" value="{{ $candidati[0]['nome']}}">
+			
+			  <div class="form-group">
+				<label for="email_accesso">Email accesso</label>
+				<input type="email" class="form-control" id="email_accesso" name="email_accesso" aria-describedby="email_accesso" placeholder="Email Accesso" required maxlength=150 onkeyup="this.value = this.value.toLowerCase();" value="{{ $email_accesso }}" >
+				<small id="email_accesso" class="form-text text-muted">L'email di accesso è correlata al sistema di amministrazione interna</small>
+			  </div>
+			  <div class="form-group">
+				<label for="pw_first">Password Iniziale</label>
+				<input type="password" class="form-control" id="pw_first" name="pw_first" placeholder="Password" required>
+			  </div>
+			  <div class="form-group">
+				<label for="pw_ripeti">Ripeti Password</label>
+				<input type="password" class="form-control" id="pw_ripeti" name="pw_ripeti" placeholder="Password" required>
+			  </div>
+
+				@if ($user_active==false) 
+					@php($lbl_crea="Crea utenza")
+				@else 
+					@php($lbl_crea="Reset password")
+				@endif					
+					<button type="submit" id="btn_crea" class="btn btn-primary">{{$lbl_crea}}</button>
+				
+			</form>	
+			@if ($user_active==true) 
+				<hr>
+				<form method='post' action="{{ route('disable_user') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">
+					<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+					<input type='hidden' name='from' value="{{$from}}">
+					<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
+					<input type="hidden" name="nome" id="nome" value="{{ $candidati[0]['nome']}}">
+					<button type="submit" id='btn_disable' class="btn btn-info" >Disabilita Accesso</button>
+				</form>
+			@endif
+
+		</p>
+    </div>
+	
+	
+@endsection
 
 
 
@@ -163,7 +217,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.92"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.96"></script>
 	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.18"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>

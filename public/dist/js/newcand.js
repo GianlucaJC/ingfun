@@ -35,7 +35,21 @@ $(document).ready( function () {
 		 $('#data_inizio').attr('required', false); 
 	});
 
+ 	
 
+	$( "#btn_disable" ).on( "click", function() {
+		if (!confirm("Sicuri di disabilitare?")) event.preventDefault()
+	});
+
+	$( "#btn_crea" ).on( "click", function() {
+		pw_first=$("#pw_first").val()
+		pw_ripeti=$("#pw_ripeti").val()
+
+		if (pw_first!=pw_ripeti) {
+			alert("Le due password non coincidono")
+			event.preventDefault()
+		}
+	});
 
 } );
 

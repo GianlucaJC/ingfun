@@ -180,7 +180,18 @@ public function __construct()
 		
 		//in caso di nuovo form l'array candidati è vuoto...per cui lo inizializzo 
 		$candidati=$this->init_newcand();
-		if ($id!=0) $candidati=candidati::where('id', "=", $id)->get();
+		$user=null;
+		$user_active=false;$email_accesso="";
+		if ($id!=0) {
+			$candidati=candidati::where('id', "=", $id)->get();
+			$id_user=$candidati[0]['id_user'];
+			if ($id_user!=null && strlen($id_user)!=0) {
+				$user_active=true;
+				$utenti=User::select('email')
+				->where('id', "=", $id_user)->get();
+				$email_accesso=$utenti[0]->email;
+			}
+		}	
 
 		$stati = stati::orderBy('nome_stati')->get();
 		$regioni = regioni::orderBy('regione')->get();
@@ -246,7 +257,7 @@ public function __construct()
 		})
 		->get();
 		
-		return view('all_views/newcand')->with('stati', $stati)->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc);
+		return view('all_views/newcand')->with('stati', $stati)->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc)->with('email_accesso',$email_accesso)->with('user_active',$user_active);
 	}
 
 	public function save_newcand(Request $request) {
@@ -374,6 +385,46 @@ public function __construct()
 		
 	}
 	
+	public function disable_user(Request $request) {
+		$id_cand=$request->input('id_cand');
+		$from=$request->input('from');
+		$resp=candidati::select('id_user')->where("id","=",$id_cand)->get();
+		$id_user=$resp[0]->id_user;
+
+		//revoca il permesso su table permessi
+		$user = user::find($id_user);
+		$user->revokePermissionTo('user_view');
+		
+		candidati::where('id','=',$id_cand)
+		->update(['id_user' => null]);
+
+		user::where('id','=',$id_user)->delete();
+		return redirect()->route("newcand",['id'=>$id_cand,'from'=>$request->input('from')]);
+	}		
+	public function save_newuser(Request $request) {
+		$id_cand=$request->input('id_cand');
+		$from=$request->input('from');
+		$resp=candidati::select('id_user')->where("id","=",$id_cand)->get();
+		if ($resp[0]->id_user==null || strlen($resp[0]->id_user)==0) 
+			$user = new User;
+		else
+			$user = User::find($resp[0]->id_user);
+		
+		$pw_first=$request->input('pw_first');
+		$password = Hash::make($pw_first);
+		$user->name=strtolower($request->input('nome'));
+		$user->email=$request->input('email_accesso');
+		$user->password=$password;
+		$user->save();
+		$id_user=$user->id;
+		candidati::where('id','=',$id_cand)
+		->update(['id_user' => $id_user]);
+		
+		$user = user::find($id_user);
+		$user->givePermissionTo('user_view'); //assegna il permesso		
+		
+		return redirect()->route("newcand",['id'=>$id_cand,'from'=>$request->input('from')]);
+	}		
 	
 	public function storicizza($request,$id_cand) {
 	
