@@ -52,3 +52,10 @@ function restore_element(value) {
 	else 
 		$('#restore_cand').val(value)	
 }
+
+function push_appalti(value) {
+	if(!confirm("Sicuri di sollecitare tutti i lavoratori dell'appalto (che non hanno risposto)?")) 
+		event.preventDefault() 
+	else 
+		$('#push_appalti').val(value)	
+}

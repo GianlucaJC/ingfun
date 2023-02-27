@@ -52,6 +52,20 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+
+		<div class="row">
+			<?php
+			
+				if (!empty($num_send) && $num_send>0) {
+					$txt="Notifiche push inviate!";
+					if ($num_send==1) $txt="Notifica push inviata!";
+					echo "<div class='alert alert-success' role='alert'>";
+					  echo "<b>$num_send</b> $txt";
+					echo "</div>";
+				}
+			?>
+		</div>
+	  
 		<form method='post' action="{{ route('listapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
 			<div class="row">
@@ -79,21 +93,24 @@
 							<td>
 								@if ($gest->dele=="0") 
 									<a href="{{ route('newapp',['id'=>$gest->id,'from'=>1,'num_send'=>0]) }}" >
-										<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+										<button type="button" class="btn btn-info" alt='Edit' title="Modifica Appalto"><i class="fas fa-edit"></i></button>
 									</a>
 								@endif
 
 								@if ($gest->dele=="0") 
 								<a href='#' onclick="dele_element({{$gest->id}})">
-									<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>
+									<button type="submit" name='dele_ele' class="btn btn-danger" title="Cancella Appalto"><i class="fas fa-trash"></i></button>
 								</a>
 								@endif
 								@if ($gest->dele=="1") 
 									<a href='#'onclick="restore_element({{$gest->id}})" >
-										<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+										<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore" title="Ripristina"></i></button>
 									</a>
-								@endif									
-
+								@endif	
+								
+								<a href='#'onclick="push_appalti({{$gest->id}})" >
+									<button type="submit" class="btn btn-warning" alt='Sollecito'><i class="fas fa-share-square" title="Invia Sollecito Push solo a chi non ha risposto"></i></button>
+								</a>
 							</td>									
 
 							<td>
@@ -195,7 +212,7 @@
 
 			<div class="row">
 				<div class="col-lg-12">
-					<a href="{{ route('newapp',['id'=>0,'from'=>1]) }}" class="nav-link active">
+					<a href="{{ route('newapp',['id'=>0,'from'=>1,'num_send'=>0]) }}" class="nav-link active">
 						<button type="button" class="btn btn-primary btn-lg btn-block">Definisci Nuovo Appalto</button>
 					</a>
 				</div>
@@ -214,6 +231,7 @@
 			</div>	
 			<input type='hidden' id='dele_cand' name='dele_cand'>
 			<input type='hidden' id='restore_cand' name='restore_cand'>
+			<input type='hidden' id='push_appalti' name='push_appalti'>
 		</form>
       </div><!-- /.container-fluid -->
     </div>
@@ -244,6 +262,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.01"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.02"></script>
 
 @endsection

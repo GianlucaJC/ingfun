@@ -9,6 +9,7 @@ use App\Models\ditte;
 use App\Models\lavoratoriapp;
 use App\Models\italy_cities;
 use App\Models\candidati;
+use App\Models\user;
 use OneSignal;
 
 use DB;
@@ -143,6 +144,7 @@ class ControllerServizi extends Controller
 
 		$restore_cand=$request->input("restore_cand");
 		$dele_cand=$request->input("dele_cand");
+		$push_appalti=$request->input("push_appalti");
 
 		
 		if (strlen($dele_cand)!=0) {
@@ -153,6 +155,34 @@ class ControllerServizi extends Controller
 			appalti::where('id', $restore_cand)
 			  ->update(['dele' => 0]);			
 		}
+		
+		$num_send=0;
+		if (strlen($push_appalti)!=0) {
+			$list_push=appalti::select('l.id_lav_ref')
+			->join("lavoratoriapp as l","appalti.id","l.id_appalto")
+			->where('appalti.id', $push_appalti)
+			->groupby('l.id_lav_ref')
+			->get();
+			foreach ($list_push as $list ){
+				$send=false;
+				$id_ref=$list->id_lav_ref;
+				$user_ref=candidati::select('id_user')
+				->where('id','=',$id_ref)->get()->first();
+				if ($user_ref->id_user!=null) {
+					$push=user::select('push_id')
+					->where('id','=',$user_ref->id_user)->get()->first();
+					$push_id=$push->push_id;
+					if ($push_id==null || strlen($push_id)==0) $send=false;
+					else $send=true;
+					if ($send==true) {
+						$num_send++;
+						$this->send_push($push_id);
+					}	
+				}
+			}
+			
+		}
+
 
 		$gestione=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
@@ -163,7 +193,7 @@ class ControllerServizi extends Controller
 		->get();		
 		
 
-		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione);
+		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send);
 
 	}
 	
@@ -269,20 +299,7 @@ class ControllerServizi extends Controller
 		$view_dele="0";
 		$today=date("Y-m-d");
 		$lavoratori=candidati::select('id','nominativo')
-		->where("data_fine","<=", $today)
-		->where('dele', "=","0")
-		->where(function ($query){
-			$query->where("status_candidatura","=",3)
-			->orWhere(function($q2){
-				$q2->where("status_candidatura","=",4);
-			})
-			->orWhere(function($q2){
-				$q2->where("status_candidatura","=",5);
-			})
-			->orWhere(function($q2){
-				$q2->where("status_candidatura","=",6);
-			});
-		})
+		->where('status_candidatura','=',3)		
 		->orderBy('nominativo')	
 		->get();
 		

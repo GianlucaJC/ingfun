@@ -422,6 +422,7 @@ public function __construct()
 		
 		$user = user::find($id_user);
 		$user->givePermissionTo('user_view'); //assegna il permesso		
+		$user->assignRole('user');
 		
 		return redirect()->route("newcand",['id'=>$id_cand,'from'=>$request->input('from')]);
 	}		

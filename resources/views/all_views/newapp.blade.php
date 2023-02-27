@@ -53,7 +53,7 @@
 			
 				if (!empty($num_send) && $num_send>0) {
 					$txt="Notifiche push inviate!";
-					if ($num_send==1) $txt="Notificha push inviata!";
+					if ($num_send==1) $txt="Notifica push inviata!";
 					echo "<div class='alert alert-success' role='alert'>";
 					  echo "<b>$num_send</b> $txt";
 					echo "</div>";
