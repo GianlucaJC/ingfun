@@ -458,7 +458,7 @@ class ControllerPersonale extends Controller
 		$count=DB::table('candidatis as c')
 		->join('societa as s', 'c.soc_ass', '=', 's.id')
 		->where("c.dele","=",0)
-		->where("c.tipo_anagr","=","SCAD")
+		->where('c.status_candidatura','=',3)	
 		->where('c.data_fine','>=',$first_date)
 		->where('c.data_fine','<=',$last_date)
 		->where('s.mail_scadenze','like','%@%')
