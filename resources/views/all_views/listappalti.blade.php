@@ -82,7 +82,7 @@
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
-							<th>Data</th>
+							<th>Data e ora del servizio</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -183,6 +183,7 @@
 									$date=date_format($date,"d/m/Y");
 								}	
 								
+								$date.=" ".$gest->orario_ref;
 							?>
 							
 								{{ $date }}
@@ -197,7 +198,7 @@
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
-							<th>Data</th>
+							<th>Data-ora</th>
 							
 						</tr>
 					</tfoot>					

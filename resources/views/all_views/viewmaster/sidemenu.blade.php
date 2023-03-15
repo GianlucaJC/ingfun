@@ -265,7 +265,7 @@ use App\Models\User;
 			  </li>
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
-				  <i class="nav-icon fas fa-database""></i>
+				  <i class="nav-icon fas fa-database"></i>
 				  <p>Gestione Appalti
 					<i class="right fas fa-angle-left"></i>
 				  </p>

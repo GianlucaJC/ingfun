@@ -185,7 +185,7 @@ class ControllerServizi extends Controller
 		}
 
 
-		$gestione=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','appalti.id_ditta','d.denominazione')
+		$gestione=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->when($view_dele=="0", function ($gestione) {
 			return $gestione->where('appalti.dele', "=","0");
@@ -208,6 +208,7 @@ class ControllerServizi extends Controller
 
 		$appalti->descrizione_appalto = $request->input('descrizione_appalto');
 		$appalti->data_ref = $request->input('data_app');
+		$appalti->orario_ref = $request->input('ora_app');
 		$appalti->id_ditta = $request->input('ditta');
 		$appalti->note = $request->input('note');
 		$appalti->save();
@@ -308,7 +309,7 @@ class ControllerServizi extends Controller
 		if ($id!=0) {
 			$view_dele="1";
 			$appalti=DB::table('appalti AS a')
-			->select('a.*','sa.id_servizio','la.id_lav_ref')
+			->select('a.*','sa.id_servizio','la.id_lav_ref','la.status')
 			->join('serviziapp as sa','a.id','sa.id_appalto')
 			->join('lavoratoriapp as la','a.id','la.id_appalto')			
 			->where('a.id', "=", $id)
@@ -319,8 +320,8 @@ class ControllerServizi extends Controller
 			foreach($appalti as $appalto) {
 				if (!in_array($appalto->id_servizio,$id_servizi)) 
 					$id_servizi[]=$appalto->id_servizio;
-				if (!in_array($appalto->id_lav_ref,$ids_lav))  
-					$ids_lav[]=$appalto->id_lav_ref;				
+				if (!array_key_exists($appalto->id_lav_ref,$ids_lav))  
+					$ids_lav[$appalto->id_lav_ref]=$appalto->status;
 
 			}			
 

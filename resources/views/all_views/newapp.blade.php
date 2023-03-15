@@ -69,12 +69,20 @@
 					<label for="descrizione_appalto">Descrizione Appalto*</label>
 				</div>
 			</div>
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control" id="data_app" name='data_app' type="date" required value="{{$appalti[0]->data_ref ?? ''}}" />
-					<label for="data_app">Data*</label>
+					<label for="data_app">Data del servizio*</label>
 				</div>
 			</div>			
+
+			<div class="col-md-3">
+				<div class="form-floating">
+					<input class="form-control" id="ora_app" name='ora_app' type="time" required value="{{$appalti[0]->orario_ref ?? ''}}" maxlength=5 />
+					<label for="data_app">Orario del servizio*</label>
+				</div>
+			</div>	
+
 		</div>
 		
 		<div class="row mb-3">
@@ -129,10 +137,17 @@
 								@foreach ($lavoratori as $lavoratore)
 									<option value='{{$lavoratore->id}}'
 									<?php
-										if (in_array($lavoratore->id,$ids_lav)) echo " selected ";
-											
+										$status=0;
+										if (array_key_exists($lavoratore->id,$ids_lav)) {
+											echo " selected ";
+											$status=$ids_lav[$lavoratore->id];
+										}
 									?>
-									>{{$lavoratore->nominativo}}</option>
+									> 
+									{{$lavoratore->nominativo}}
+									@if ($status==1) (Accettato) @endif
+									@if ($status==2) (Rifiutato) @endif
+									</option>
 								@endforeach
 
 							</select>
