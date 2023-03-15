@@ -49,12 +49,101 @@ use App\Models\User;
 			@if ($user->hasRole('admin'))
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
-				  <i class="nav-icon fas fa-cube"></i>
-				  <p>Candidature
+				  <i class="nav-icon fas fa-users"></i>
+				  <p>Risorse Umane
 					<i class="right fas fa-angle-left"></i>
 				  </p>
 				</a>
 				<ul class="nav nav-treeview">
+					 <li class="nav-item menu">
+						<a href="#" class="nav-link">
+						  <i class="fas fa-cogs"></i>
+						  <p>Archivi
+							<i class="right fas fa-angle-left"></i>
+						  </p>
+						</a>
+						<ul class="nav nav-treeview">
+						  <li class="nav-item">
+							<a href="{{ route('tipologia_contr') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Tipologie di Contratto</p>
+							</a>
+						  </li>
+						
+						  <li class="nav-item">
+							<a href="{{ route('tipo_contratto') }}" class="nav-link ">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Tipo Contratto</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('mansione') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Mansioni</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('frm_attestati') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Corsi Formazione</p>
+							</a>
+						  </li>
+						  
+						  <li class="nav-item">
+							<a href="{{ route('societa_assunzione') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Società di assunzione</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('costo') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Centri di Costo</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('area_impiego') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Aree di impiego</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('ccnl') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Contratti CCNL</p>
+							</a>
+						  </li>
+
+						  <li class="nav-item">
+							<a href="{{ route('tipo_documento') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Tipologie di Documento</p>
+							</a>
+						  </li>				  
+
+						  <li class="nav-item">
+							<a href="{{ route('sotto_tipo_documento') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>SottoTipo di Documento</p>
+							</a>
+						  </li>
+
+						  <li class="nav-item">
+							<a href="{{ route('documenti') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Area Documenti</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('contatti') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Contatti interni</p>
+							</a>
+						  </li>
+						</ul>
+
+					 </li>					  
+				  
 				  <li class="nav-item">
 					<a href="{{ route('newcand') }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
@@ -67,161 +156,130 @@ use App\Models\User;
 					  <p>Lista candidature</p>
 					</a>
 				  </li>
+				  
+				  <li class="nav-item">
+					<a href="{{ route('listpers') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Gestione Personale</p>
+					</a>
+				  </li>				  
+
+				  <li class="nav-item">
+					<a href="{{ route('scadenze_contratti') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Scadenze Contratti</p>
+					</a>
+				  </li>	
+
+				  <li class="nav-item">
+					<a href="#" class="nav-link disabled">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Registro Servizi</p>
+					</a>
+				  </li>	
+
+				  <li class="nav-item">
+					<a href="{{ route('cedolini_view') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Cedolini</p>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('cedolini_up') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Upload/Sospesi Cedolini</p>
+					</a>
+				  </li>					  
+
+
 
 				</ul>
 			  </li>
 
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
-				  <i class="nav-icon fas fa-users"></i>
-				  <p>Gestione Personale
+				  <i class="nav-icon fas fa-cubes"></i>
+				  <p>Amministrazione
 					<i class="right fas fa-angle-left"></i>
 				  </p>
 				</a>
 				<ul class="nav nav-treeview">
-				  <li class="nav-item">
-					<a href="{{ route('newcand',['id'=>0,'from'=>1]) }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Nuova Anagrafica</p>
+				 <li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="nav-icon fas fa-city"></i>
+					  <p>Appalti
+						<i class="right fas fa-angle-left"></i>
+					  </p>
 					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('listpers') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Elenco</p>
+					<ul class="nav nav-treeview">
+					  <li class="nav-item">
+						<a href="#" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Servizi</p>
+						</a>
+					  </li>					
+					</ul>
+				 </li>	
+				 
+				 <li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="nav-icon fas fa-user-tie"></i>
+					  <p>Clienti/Ditte
+						<i class="right fas fa-angle-left"></i>
+					  </p>
 					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('scadenze_contratti') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Scadenze contratti</p>
+					<ul class="nav nav-treeview">
+					  <li class="nav-item">
+						<a href="{{route('ditte')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Anagrafiche</p>
+						</a>
+					  </li>					
+					</ul>
+				 </li>
+				 
+				 <li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="nav-icon fas fa-user-tie"></i>
+					  <p>Aziende di Proprietà
+						<i class="right fas fa-angle-left"></i>
+					  </p>
 					</a>
-				  </li>
+					<ul class="nav nav-treeview">
+					  <li class="nav-item">
+						<a href="{{route('servizi')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Servizi</p>
+						</a>
+					  </li>					
+					  <li class="nav-item">
+						<a href="#" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Inviti a fatturare</p>
+						</a>
+					  </li>
+					</ul>
+				 </li>				 
+				 
 				</ul>
 			  </li>
-
-			
-			
-			  <li class="nav-item menu">
+			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
-				  <i class="fas fa-cogs"></i> 
-				  <p>
-					Archivi Personale
+				  <i class="nav-icon fas fa-database""></i>
+				  <p>Gestione Appalti
 					<i class="right fas fa-angle-left"></i>
 				  </p>
 				</a>
 				<ul class="nav nav-treeview">
 				  <li class="nav-item">
-					<a href="{{ route('tipologia_contr') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Tipologie di Contratto</p>
+					<a href="{{route('listapp')}}" class="nav-link">
+					  <i class="far fa-circle nav-icon" nav-icon"></i>
+					  <p>Lista Appalti</p>
 					</a>
-				  </li>
-				
-				  <li class="nav-item">
-					<a href="{{ route('tipo_contratto') }}" class="nav-link ">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Tipo Contratto</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('mansione') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Mansioni</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('frm_attestati') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Corsi Formazione</p>
-					</a>
-				  </li>
-				  
-				  <li class="nav-item">
-					<a href="{{ route('societa_assunzione') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Società di assunzione</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('costo') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Centri di Costo</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('area_impiego') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Aree di impiego</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('ccnl') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Contratti CCNL</p>
-					</a>
-				  </li>
-
-				  <li class="nav-item">
-					<a href="{{ route('tipo_documento') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Tipologie di Documento</p>
-					</a>
-				  </li>				  
-
-				  <li class="nav-item">
-					<a href="{{ route('sotto_tipo_documento') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>SottoTipo di Documento</p>
-					</a>
-				  </li>
-
-				  <li class="nav-item">
-					<a href="{{ route('documenti') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Area Documenti</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('contatti') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Contatti interni</p>
-					</a>
-				  </li>
+				  </li>	
 				</ul>
-			  </li>		
-
-			  <li class="nav-item menu">
-				<a href="#" class="nav-link">
-				  <i class="fas fa-cogs"></i> 
-				  <p>
-					Archivi Servizi
-					<i class="right fas fa-angle-left"></i>
-				  </p>
-				</a>
-				<ul class="nav nav-treeview">
-				  <li class="nav-item">
-					<a href="{{ route('ditte') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Ditte/Persone Legali</p>
-					</a>
-				  </li>
-				
-				  <li class="nav-item">
-					<a href="{{ route('lavoratori') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Lavoratori</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('servizi') }}" class="nav-link ">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Servizi</p>
-					</a>
-				  </li>
-				</ul>  
-			   </li>	
-			  
+			  </li>	
+				 
 			 @endif 
 			
           
