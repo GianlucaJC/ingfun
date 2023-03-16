@@ -63,6 +63,52 @@ class ApiController extends Controller
 		$login['header']=$risp;
 		echo json_encode($login);
 	}
+	
+	public function send_foto(Request $request) {
+		$login=array();
+		
+		 if ((isset($_SERVER["HTTP_FILENAME"])) && (isset($_SERVER["CONTENT_TYPE"])) && (isset($_SERVER["CONTENT_LENGTH"]))) {
+			 $login['header']="OK1";
+			 echo json_encode($login);
+			 exit;
+		}
+		
+		$file = $request->file('filename');
+		
+		echo json_encode($file);exit;
+	
+/*
+      $file = $request->file('filename');
+   
+      //Display File Name
+      echo 'File Name: '.$file->getClientOriginalName();
+      echo '<br>';
+   
+      //Display File Extension
+      echo 'File Extension: '.$file->getClientOriginalExtension();
+      echo '<br>';
+   
+      //Display File Real Path
+      echo 'File Real Path: '.$file->getRealPath();
+      echo '<br>';
+   
+      //Display File Size
+      echo 'File Size: '.$file->getSize();
+      echo '<br>';
+   
+      //Display File Mime Type
+      echo 'File Mime Type: '.$file->getMimeType();
+   
+      //Move Uploaded File
+	  /*
+      $destinationPath = 'uploads';
+      $file->move($destinationPath,$file->getClientOriginalName());
+	  */
+   }
+
+
+
+	
 	public function countappalti(Request $request) {
 
 		$check=$this->check_log($request); 

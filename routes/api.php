@@ -22,6 +22,8 @@ Route::post('login', [ 'as' => 'login', 'uses' => 'App\Http\Controllers\ApiContr
 
 Route::post('countappalti', [ 'as' => 'countappalti', 'uses' => 'App\Http\Controllers\ApiController@countappalti']);
 
+Route::post('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
+
 Route::post('infoappalti', [ 'as' => 'infoappalti', 'uses' => 'App\Http\Controllers\ApiController@infoappalti']);
 
 Route::post('risposta_user', [ 'as' => 'risposta_user', 'uses' => 'App\Http\Controllers\ApiController@risposta_user']);
