@@ -24,6 +24,9 @@ Route::post('countappalti', [ 'as' => 'countappalti', 'uses' => 'App\Http\Contro
 
 Route::get('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 
+Route::put('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
+
+
 Route::post('send_foto', [ 'as' => 'send_foto', 'uses' => 
 'App\Http\Controllers\ApiController@send_foto']);
 

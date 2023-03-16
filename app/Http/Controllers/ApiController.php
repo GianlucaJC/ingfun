@@ -22,8 +22,13 @@ class ApiController extends Controller
 	}
 	*/
 	public function check_log($request) {
-		$utente=$request->input("utente");
-		$pw=$request->input("pw");
+		if ($request->hasHeader('utente')) {
+			$utente=$request->header("utente");
+			$pw=$request->header("pw");
+		} else {
+			$utente=$request->input("utente");
+			$pw=$request->input("pw");
+		}
 		$check=user::select('users.password','c.id','c.id as id_cand','users.id as userid','users.push_id')
 		->join("candidatis as c","users.id","=","c.id_user")
 		->where('users.email',"=",$utente);
@@ -65,45 +70,42 @@ class ApiController extends Controller
 	}
 	
 	public function send_foto(Request $request) {
-		$login=array();
 		
-		 if ((isset($_SERVER["HTTP_FILENAME"])) && (isset($_SERVER["CONTENT_TYPE"])) && (isset($_SERVER["CONTENT_LENGTH"]))) {
-			 $login['header']="OK1";
-			 echo json_encode($login);
+		$check=$this->check_log($request); 
+		if ($check['esito']=="KO") {
+			$risp['header']=$check;
+			 echo json_encode($risp);
 			 exit;
+		} 
+		$id_lav_ref=$check['id_user'];
+		
+		
+		$filename = $request->header('filename');		
+		$login=array();
+		$login['header']="OK";
+		/* PUT data comes in on the stdin stream */
+		$putdata = fopen("php://input", "r");
+		
+		if ($putdata) {
+			/* Open a file for writing */
+			$tmpfname = tempnam("dist/upload", "photo");
+			$fp = fopen($tmpfname, "w");
+			if ($fp) {
+				
+				/* Read the data 1 KB at a time and write to the file */
+				while ($data = fread($putdata, 1024)) {
+					fwrite($fp, $data);
+				}
+				/* Close the streams */
+				fclose($fp);
+				fclose($putdata);
+				
+				$result = rename($tmpfname, "dist/upload/" . $filename);  
+				if ($result) {
+				}
+			}
 		}
-		$login['header']="OK2";
-		$file = $request->file('filename');
-		echo json_encode($login);exit;
-		echo json_encode($file);exit;
-	
-/*
-      $file = $request->file('filename');
-   
-      //Display File Name
-      echo 'File Name: '.$file->getClientOriginalName();
-      echo '<br>';
-   
-      //Display File Extension
-      echo 'File Extension: '.$file->getClientOriginalExtension();
-      echo '<br>';
-   
-      //Display File Real Path
-      echo 'File Real Path: '.$file->getRealPath();
-      echo '<br>';
-   
-      //Display File Size
-      echo 'File Size: '.$file->getSize();
-      echo '<br>';
-   
-      //Display File Mime Type
-      echo 'File Mime Type: '.$file->getMimeType();
-   
-      //Move Uploaded File
-	  /*
-      $destinationPath = 'uploads';
-      $file->move($destinationPath,$file->getClientOriginalName());
-	  */
+		
    }
 
 
