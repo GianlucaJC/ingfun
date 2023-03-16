@@ -72,9 +72,9 @@ class ApiController extends Controller
 			 echo json_encode($login);
 			 exit;
 		}
-		
+		$login['header']="OK2";
 		$file = $request->file('filename');
-		
+		echo json_encode($login);exit;
 		echo json_encode($file);exit;
 	
 /*
