@@ -8,7 +8,7 @@ use App\Models\User;
 use App\Models\appalti;
 use App\Models\ditte;
 use App\Models\lavoratoriapp;
-
+use App\Models\mezzi;
 
 
 
@@ -34,6 +34,11 @@ class ApiController extends Controller
 		->where('users.email',"=",$utente);
 		$count=$check->count();
 		
+		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
+		->orderBy('marca')
+		->orderBy('modello')
+		->get();
+		
 		$resp=array();
 		if ($count>0) {
 			$c=$check->get();
@@ -42,6 +47,7 @@ class ApiController extends Controller
 				$resp['esito']="OK";
 				$resp['id_user']=$c[0]->id;
 				$resp['id_cand']=$c[0]->id_cand;
+				$resp['mezzi']=$mezzi;
 				
 				//registrazione dispositivo per push notification:
 				//in caso di registrazione non avvenuta con successo o 
