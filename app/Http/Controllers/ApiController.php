@@ -50,9 +50,8 @@ class ApiController extends Controller
 				$resp['mezzi']=$mezzi;
 				
 				//registrazione dispositivo per push notification:
-				//in caso di registrazione non avvenuta con successo o 
-				//push_id non valido e quindi mancata ricezione del push, rendere a mano nullo il campo push_id nella tabella users
-				if ($request->has("pushid") && $c[0]->push_id==null) {
+				 //&& $c[0]->push_id==null
+				if ($request->has("pushid")) {
 					$pushid=$request->input("pushid");
 					if ($pushid!="?") {
 						user::where('id', $c[0]->userid)->update(['push_id' => $pushid]);
@@ -84,9 +83,16 @@ class ApiController extends Controller
 			 exit;
 		} 
 		$id_lav_ref=$check['id_user'];
+		$id_cand=$check['id_cand'];
+
+		$filename = $request->header('filename');
+		$importo = $request->header('importo');
+		$km = $request->header('km');
+		$note = $request->header('note');
+		$mezzo = $request->header('mezzo');
+		$info=explode("-",$mezzo);
+		$targa=trim($info[1]);
 		
-		
-		$filename = $request->header('filename');		
 		$login=array();
 		$login['header']="OK";
 		/* PUT data comes in on the stdin stream */
