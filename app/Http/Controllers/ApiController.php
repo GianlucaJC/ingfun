@@ -92,7 +92,7 @@ class ApiController extends Controller
 		$login['header']="OK";
 		/* PUT data comes in on the stdin stream */
 		$putdata = fopen("php://input", "r");
-		
+		$filename = $request->header('filename');
 		if ($putdata) {
 			/* Open a file for writing */
 			$tmpfname = tempnam("dist/upload", "photo");
@@ -109,7 +109,7 @@ class ApiController extends Controller
 				
 				$result = rename($tmpfname, "dist/upload/" . $filename);  
 				$id_appalto = $request->header('id_appalto');
-				$filename = $request->header('filename');
+				
 				$importo = $request->header('importo');
 				$km = $request->header('km');
 				$note = $request->header('note');
