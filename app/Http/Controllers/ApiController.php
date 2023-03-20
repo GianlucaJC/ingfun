@@ -131,7 +131,7 @@ class ApiController extends Controller
 		$id_lav_ref=$check['id_user'];
 
 
-		$lavori=appalti::select(DB::raw("DATE_FORMAT(appalti.data_ref,'%d-%m-%Y') as data_ref"),'appalti.id','appalti.descrizione_appalto','appalti.orario_ref','l.status')
+		$lavori=appalti::select(DB::raw("DATE_FORMAT(appalti.data_ref,'%d-%m-%Y') as data_ref"),'appalti.id','appalti.descrizione_appalto','appalti.orario_ref','appalti.targa','l.status')
 		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 		->where('appalti.dele', "=","0")
 		->where('l.id_lav_ref',"=",$id_lav_ref)

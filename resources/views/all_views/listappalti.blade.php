@@ -82,6 +82,7 @@
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
+							<th>Mezzo</th>
 							<th>Data e ora del servizio</th>
 						</tr>
 					</thead>
@@ -173,6 +174,13 @@
 
 							
 							</td>
+							<td>
+								<?php
+								
+									if (isset($targhe[$gest->targa]))
+										echo $targhe[$gest->targa];
+								?>
+							</td>
 							
 							<td>
 							<?php 
@@ -198,6 +206,7 @@
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
+							<th>Mezzo</th>
 							<th>Data-ora</th>
 							
 						</tr>

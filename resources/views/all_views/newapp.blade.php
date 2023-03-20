@@ -105,6 +105,31 @@
 			</div>	
 		</div>		
 
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" style='height:auto' name="mezzo" id="mezzo" required>
+					<option value=''>Select...</option>
+					<?php
+						foreach ($mezzi as $mezzo) {
+							$id_mezzo=$servizio->id;
+							$marca=$mezzo->marca;
+							$modello=$mezzo->modello;
+							$targa=$mezzo->targa;
+							$ref_mezzo="$marca - $modello - $targa";
+							echo "<option value='".$targa."' ";
+							if (isset($appalti[0]->targa)) {
+								if ($appalti[0]->targa==$targa) echo " selected ";
+							}
+							echo ">".$ref_mezzo."</option>";
+						}
+					?>						
+					</select>
+					<label for="mezzi">Mezzo*</label>
+				</div>
+			</div>	
+		</div>
+
 		<center><h4>FORMAZIONE SQUADRA</h4></center>
 			<?php
 				$id_ditta_db=0;

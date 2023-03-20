@@ -10,6 +10,7 @@ use App\Models\lavoratoriapp;
 use App\Models\italy_cities;
 use App\Models\candidati;
 use App\Models\user;
+use App\Models\mezzi;
 use OneSignal;
 
 use DB;
@@ -142,6 +143,15 @@ class ControllerServizi extends Controller
 		if ($request->has("view_dele")) $view_dele=$request->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;
 
+		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
+		->orderBy('marca')
+		->orderBy('targa')
+		->get();
+		$targhe=array();
+		foreach($mezzi as $mezzo) {
+			$targhe[$mezzo->targa]=$mezzo->marca." - ".$mezzo->modello." - ".$mezzo->targa;
+		}	
+
 		$restore_cand=$request->input("restore_cand");
 		$dele_cand=$request->input("dele_cand");
 		$push_appalti=$request->input("push_appalti");
@@ -185,7 +195,7 @@ class ControllerServizi extends Controller
 		}
 
 
-		$gestione=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
+		$gestione=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->when($view_dele=="0", function ($gestione) {
 			return $gestione->where('appalti.dele', "=","0");
@@ -194,7 +204,7 @@ class ControllerServizi extends Controller
 		->get();		
 		
 
-		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send);
+		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('targhe',$targhe);
 
 	}
 	
@@ -210,6 +220,7 @@ class ControllerServizi extends Controller
 		$appalti->data_ref = $request->input('data_app');
 		$appalti->orario_ref = $request->input('ora_app');
 		$appalti->id_ditta = $request->input('ditta');
+		$appalti->targa = $request->input('mezzo');
 		$appalti->note = $request->input('note');
 		$appalti->save();
 		if ($id_app==0) $id_app=$appalti->id;
@@ -224,6 +235,7 @@ class ControllerServizi extends Controller
 				'updated_at'=>now()
 			]);			
 		}
+		
 		
 		
 		$to_delete = lavoratoriapp::where('id_appalto', $id_app)->update(['to_delete'=>1]);
@@ -305,6 +317,10 @@ class ControllerServizi extends Controller
 		->orderBy('nominativo')	
 		->get();
 		
+		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
+		->orderBy('marca')
+		->orderBy('targa')
+		->get();
 
 		if ($id!=0) {
 			$view_dele="1";
@@ -343,7 +359,7 @@ class ControllerServizi extends Controller
 		->orderBy('descrizione')	
 		->get();	
 		
-		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav)->with("num_send",$num_send);
+		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav)->with("num_send",$num_send)->with('mezzi',$mezzi);
 
 	}
 
