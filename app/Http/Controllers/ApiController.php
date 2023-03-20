@@ -86,13 +86,7 @@ class ApiController extends Controller
 		$id_lav_ref=$check['id_user'];
 		$id_cand=$check['id_cand'];
 
-		$filename = $request->header('filename');
-		$importo = $request->header('importo');
-		$km = $request->header('km');
-		$note = $request->header('note');
-		$mezzo = $request->header('mezzo');
-		$info=explode("-",$mezzo);
-		$targa=trim($info[1]);
+
 		
 		$login=array();
 		$login['header']="OK";
@@ -114,15 +108,26 @@ class ApiController extends Controller
 				fclose($putdata);
 				
 				$result = rename($tmpfname, "dist/upload/" . $filename);  
+				$id_appalto = $request->header('id_appalto');
+				$filename = $request->header('filename');
+				$importo = $request->header('importo');
+				$km = $request->header('km');
+				$note = $request->header('note');
+				$mezzo = $request->header('mezzo');
+				$info=explode("-",$mezzo);
+				$targa=trim($info[1]);
+				$data=date("Y-m-d");
 
 				$rifornimenti = new rifornimenti;
 				//riverso i dati nel DB
 				$rifornimenti->id_user = $id_lav_ref;
-				$rifornimenti->id_appalto->input('id_appalto');
-				$rifornimenti->filename->input('filename');
-				$rifornimenti->importo->input('importo');
-				$rifornimenti->km->input('km');
-				$rifornimenti->note->input('note');
+				$rifornimenti->id_appalto=$id_appalto;
+				$rifornimenti->filename=$filename;
+				$rifornimenti->importo=$importo;
+				$rifornimenti->km=$km;
+				$rifornimenti->note=$note;
+				$rifornimenti->targa=$targa;
+				$rifornimenti->data=$data;
 				$rifornimenti->save();
 				$risp['header']="OK";
 				$risp['message']="File e dati riversati sul server";
