@@ -87,7 +87,7 @@ class ApiController extends Controller
 		$id_cand=$check['id_cand'];
 
 
-		
+		$risp=array();
 		$login=array();
 		$login['header']="OK";
 		/* PUT data comes in on the stdin stream */
@@ -108,7 +108,7 @@ class ApiController extends Controller
 				fclose($putdata);
 				
 				$result = rename($tmpfname, "dist/upload/" . $filename);  
-				$id_appalto = $request->header('id_appalto');
+				$idappalto = $request->header('idappalto');
 				
 				$importo = $request->header('importo');
 				$km = $request->header('km');
@@ -119,9 +119,9 @@ class ApiController extends Controller
 				$data=date("Y-m-d");
 
 				$rifornimenti = new rifornimenti;
-				//riverso i dati nel DB
+				//riverso i dati nel DB-->Attenzione agli underscore!!!!
 				$rifornimenti->id_user = $id_lav_ref;
-				$rifornimenti->id_appalto=$id_appalto;
+				$rifornimenti->id_appalto=$idappalto;
 				$rifornimenti->filename=$filename;
 				$rifornimenti->importo=$importo;
 				$rifornimenti->km=$km;
