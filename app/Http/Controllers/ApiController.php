@@ -9,6 +9,7 @@ use App\Models\appalti;
 use App\Models\ditte;
 use App\Models\lavoratoriapp;
 use App\Models\mezzi;
+use App\Models\rifornimenti;
 use DB;
 
 
@@ -113,10 +114,25 @@ class ApiController extends Controller
 				fclose($putdata);
 				
 				$result = rename($tmpfname, "dist/upload/" . $filename);  
-				if ($result) {
-				}
+
+				$rifornimenti = new rifornimenti;
+				//riverso i dati nel DB
+				$rifornimenti->id_user = $id_lav_ref;
+				$rifornimenti->id_appalto->input('id_appalto');
+				$rifornimenti->filename->input('filename');
+				$rifornimenti->importo->input('importo');
+				$rifornimenti->km->input('km');
+				$rifornimenti->note->input('note');
+				$rifornimenti->save();
+				$risp['header']="OK";
+				$risp['message']="File e dati riversati sul server";
+				echo json_encode($risp);
+				exit;
 			}
 		}
+		$risp['header']="KO";
+		$risp['message']="Dati non riversati";
+		echo json_encode($risp);
 		
    }
 
