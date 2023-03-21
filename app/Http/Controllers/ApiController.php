@@ -296,7 +296,7 @@ class ApiController extends Controller
 				if (strlen($lav)!=0) $lav.=", ";
 				$lav.=$lavoratore->nominativo;
 				if ($lavoratore->id==$id_lav_ref) {
-					$info[$sc]['status']=$record->status;
+					$info[$sc]['status']=$lavoratore->status;
 					$ent=true;
 				}
 			}
