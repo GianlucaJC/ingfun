@@ -133,6 +133,11 @@
 								<a href='#' onclick="dele_element({{$rif->id}})">
 									<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
 								</a>
+								@if ($rif->dele=="1") 
+									<a href='#'onclick="restore_element({{$rif->id}})" >
+										<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+									</a>
+								@endif								
 
 									
 									
@@ -151,7 +156,7 @@
 							<th>Km</th>
 							<th>Mezzo</th>
 							<th>Note</th>
-							<th>Foto</th>
+							<th></th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -163,19 +168,21 @@
 
         </div>
 
-			<?php if (1==2) {?>
-				<div class="row">
-					<div class="col-lg-12">
-						<button type="button" class="btn btn-primary" onclick="$('#edit_elem').val('');$('#descr_contr').val('');$('#div_definition').show(150)">
-							<i class="fa fa-plus-circle"></i> Nuovo Servizio
-						</button>
-							<div class="form-check form-switch mt-3 ml-3">
-							  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_tipoc').submit()" {{ $check }}>
-							  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
-							</div>
-					</div>
-				</div>	
-			<?php } ?>
+		<?php
+		
+			$check="";
+			if ($view_dele=="1") $check="checked";
+		?>			
+		<div class="row">
+			<div class="col-lg-12">
+
+				<div class="form-check form-switch mt-3 ml-3">
+				  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_rif').submit()" {{ $check }}>
+				  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
+				</div>
+			</div>
+		</div>	
+			
 		</form>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
