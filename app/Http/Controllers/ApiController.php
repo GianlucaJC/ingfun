@@ -226,16 +226,46 @@ class ApiController extends Controller
 			 exit;
 		} 
 		$id_lav_ref=$check['id_user'];
+		$wh=99;$id_ref_a=0;
+		if ($request->has("from")) {
+			$from=$request->input("from");
+			if ($from=="menu") $wh=0;
+			if ($from=="storico") {
+				$wh=1;
+				$id_ref_a=$request->input("id_ref_a");
+			}
+		}	
 
-		$allinfo=appalti::select('appalti.*')
-		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
-		->where('appalti.dele', "=","0")
-		->where('l.status', "=","0")
-		->where('l.id_lav_ref',"=",$id_lav_ref)
-		->get();
+		if ($wh==99) {
+			$risp['header']=$check;
+			$risp['info']=array();
+			echo json_encode($risp);
+			exit;
+		}
+
+		//tutti gli appalti appena assegnati ad un operatore
+		if ($wh==0) {
+			$allinfo=appalti::select('appalti.*','l.status')
+			->join('lavoratoriapp as l','appalti.id','l.id_appalto')
+			->where('appalti.dele', "=",0)
+			->where('l.status', "=",0)
+			->where('l.id_lav_ref',"=",$id_lav_ref)
+			->get();
+		}
+		
+		//chiatama da storico appalti su un appalto
+		if ($wh==1) {
+			$allinfo=appalti::select('appalti.*','l.status')
+			->join('lavoratoriapp as l','appalti.id','l.id_appalto')
+			->where('appalti.id', "=",$id_ref_a)
+			->groupBy('appalti.id')
+			->get();
+		}
+		
 		
 		$info=array();$sc=0;
-		foreach($allinfo as $record) {			
+		foreach($allinfo as $record) {
+
 			$id_ditta=$record->id_ditta;
 			$ditta=ditte::select('denominazione','cap','comune','provincia')
 			->where('id', "=",$id_ditta)
@@ -248,6 +278,7 @@ class ApiController extends Controller
 			if ($ditta->provincia) $info_ditta.=" - ".$ditta->provincia;
 			$info[$sc]['ditta']=$info_ditta;
 			$info[$sc]['descrizione_appalto']=$record->descrizione_appalto;
+			$info[$sc]['status']=$record->status;
 			$d=$record->data_ref;
 			$date=date_create($d);
 			$data_ref=date_format($date,"d-m-Y");
