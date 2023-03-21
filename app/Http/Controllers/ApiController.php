@@ -287,7 +287,7 @@ class ApiController extends Controller
 			
 			//lavoratori presenti nell'appalto
 			$id_appalto=$record->id;
-			$lavoratori=lavoratoriapp::select('c.nominativo','c.id')
+			$lavoratori=lavoratoriapp::select('c.nominativo','c.id','lavoratoriapp.status')
 			->join('candidatis as c','lavoratoriapp.id_lav_ref','c.id')
 			->where('lavoratoriapp.id_appalto', "=",$id_appalto)
 			->get();
