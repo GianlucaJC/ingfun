@@ -134,13 +134,13 @@ class ControllerServizi extends Controller
 
 	}
 	
-	public function listapp(Request $request) {
+	public function listapp($id_appalto=0) {
 		
 		
 		$dx=date("Y-m-d");
 		
 		$view_dele=0;
-		if ($request->has("view_dele")) $view_dele=$request->input("view_dele");
+		if (request()->has("view_dele")) $view_dele=request()->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;
 
 		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
@@ -152,9 +152,9 @@ class ControllerServizi extends Controller
 			$targhe[$mezzo->targa]=$mezzo->marca." - ".$mezzo->modello." - ".$mezzo->targa;
 		}	
 
-		$restore_cand=$request->input("restore_cand");
-		$dele_cand=$request->input("dele_cand");
-		$push_appalti=$request->input("push_appalti");
+		$restore_cand=request()->input("restore_cand");
+		$dele_cand=request()->input("dele_cand");
+		$push_appalti=request()->input("push_appalti");
 
 		
 		if (strlen($dele_cand)!=0) {
@@ -199,6 +199,9 @@ class ControllerServizi extends Controller
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->when($view_dele=="0", function ($gestione) {
 			return $gestione->where('appalti.dele', "=","0");
+		})
+		->when($id_appalto!="0", function ($gestione) use ($id_appalto) {
+			return $gestione->where('appalti.id', "=",$id_appalto);
 		})
 		->orderByDesc('appalti.id')	
 		->get();		

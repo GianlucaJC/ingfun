@@ -48,6 +48,7 @@ class ApiController extends Controller
 				$resp['esito']="OK";
 				$resp['id_user']=$c[0]->id;
 				$resp['id_cand']=$c[0]->id_cand;
+				//id_cand e id_user sono identici! Non l'ho tolto...
 				$resp['mezzi']=$mezzi;
 				
 				//registrazione dispositivo per push notification:
@@ -84,7 +85,7 @@ class ApiController extends Controller
 			 exit;
 		} 
 		$id_lav_ref=$check['id_user'];
-		$id_cand=$check['id_cand'];
+		
 
 
 		$risp=array();

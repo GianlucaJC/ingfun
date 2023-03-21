@@ -24,6 +24,8 @@ Route::get('menuhr', [ 'as' => 'menuhr', 'uses' => 'App\Http\Controllers\MainCon
 
 Route::get('amministrazione', [ 'as' => 'amministrazione', 'uses' => 'App\Http\Controllers\MainController@amministrazione'])->middleware(['auth']);
 
+Route::get('appalti', [ 'as' => 'appalti', 'uses' => 'App\Http\Controllers\MainController@appalti'])->middleware(['auth']);
+
 Route::get('menuaziende', [ 'as' => 'menuaziende', 'uses' => 'App\Http\Controllers\MainController@menuaziende'])->middleware(['auth']);
 
 Route::get('cliditte', [ 'as' => 'cliditte', 'uses' => 'App\Http\Controllers\MainController@cliditte'])->middleware(['auth']);
@@ -120,8 +122,12 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('lavoratori', [ 'as' => 'lavoratori', 'uses' => 'App\Http\Controllers\ControllerServizi@lavoratori'])->middleware(['permission:gestione_archivi']);
 
 
-	Route::get('listapp', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
-	Route::post('listapp', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
+	Route::get('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
+	Route::post('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
+
+
+	Route::get('rifornimenti', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['permission:gestione_archivi']);
+	Route::post('rifornimenti', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['permission:gestione_archivi']);
 
 
 	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@newapp'])->middleware(['permission:gestione_archivi']);

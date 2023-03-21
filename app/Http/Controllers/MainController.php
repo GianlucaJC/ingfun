@@ -93,6 +93,9 @@ public function __construct()
 		return view('all_views/amministrazione');
 	}
 
+	public function appalti() {
+		return view('all_views/appalti');
+	}
 	public function menuaziende() {
 		return view('all_views/menuaziende');
 	}

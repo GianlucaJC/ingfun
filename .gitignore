@@ -1,5 +1,6 @@
 /node_modules
 /public/build
+/public/dist/upload
 /public/hot
 /public/allegati
 /public/storage
