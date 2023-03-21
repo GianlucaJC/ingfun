@@ -243,9 +243,9 @@ class ApiController extends Controller
 			exit;
 		}
 
-		//tutti gli appalti appena assegnati ad un operatore
+		//tutti gli appalti assegnati ad un operatore
 		if ($wh==0) {
-			$allinfo=appalti::select('appalti.*','l.status')
+			$allinfo=appalti::select('appalti.*')
 			->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 			->where('appalti.dele', "=",0)
 			->where('l.status', "=",0)
@@ -253,9 +253,9 @@ class ApiController extends Controller
 			->get();
 		}
 		
-		//chiatama da storico appalti su un appalto
+		//chiamata da storico appalti relativi ad un particolare appalto
 		if ($wh==1) {
-			$allinfo=appalti::select('appalti.*','l.status')
+			$allinfo=appalti::select('appalti.*')
 			->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 			->where('appalti.id', "=",$id_ref_a)
 			->groupBy('appalti.id')
@@ -278,7 +278,7 @@ class ApiController extends Controller
 			if ($ditta->provincia) $info_ditta.=" - ".$ditta->provincia;
 			$info[$sc]['ditta']=$info_ditta;
 			$info[$sc]['descrizione_appalto']=$record->descrizione_appalto;
-			$info[$sc]['status']=$record->status;
+			
 			$d=$record->data_ref;
 			$date=date_create($d);
 			$data_ref=date_format($date,"d-m-Y");
@@ -287,15 +287,20 @@ class ApiController extends Controller
 			
 			//lavoratori presenti nell'appalto
 			$id_appalto=$record->id;
-			$lavoratori=lavoratoriapp::select('c.nominativo')
+			$lavoratori=lavoratoriapp::select('c.nominativo','c.id')
 			->join('candidatis as c','lavoratoriapp.id_lav_ref','c.id')
 			->where('lavoratoriapp.id_appalto', "=",$id_appalto)
 			->get();
-			$lav="";
+			$lav="";$ent=false;
 			foreach($lavoratori as $lavoratore) {
 				if (strlen($lav)!=0) $lav.=", ";
 				$lav.=$lavoratore->nominativo;
+				if ($lavoratore->id==$id_lav_ref) {
+					$info[$sc]['status']=$record->status;
+					$ent=true;
+				}
 			}
+			if ($ent==false) $info[$sc]['status']=-1;
 			$info[$sc]['lavoratori']=$lav;
 			
 			$info[$sc]['id_appalto']=$id_appalto;
