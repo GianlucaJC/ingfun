@@ -192,6 +192,25 @@
 						</div>
 					</div>	
 				</div>
+				
+				<?php 
+					$flag_variazione="0";
+					if (strlen($id_app)!=0 && $id_app!=0) {
+						$only="";
+						if (strlen($appalti[0]->variazione)!=0) 
+							$only="readonly";
+						else $flag_variazione="1";
+						?>
+					<div class="row mb-3">
+						<div class="col-md-12">
+							<div class="form-floating">
+								<textarea class="form-control" name='variazione' id="variazione" rows="4" {{$only}}>{{$appalti[0]->variazione ?? ''}}</textarea>
+								<label for="variazione">Variazione (max una) </label>
+							</div>
+						</div>	
+					</div>				
+				<?php }	?>
+				<input type='hidden' name='flag_variazione' id='flag_variazione' value='{{$flag_variazione}}'>
 				<hr>
 			</div>
 			

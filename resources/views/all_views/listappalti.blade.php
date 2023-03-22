@@ -114,7 +114,7 @@
 								</a>
 								
 
-								<a href="rifornimenti/{{$gest->id}}">
+								<a href="{{ URL::asset('/') }}rifornimenti/{{$gest->id}}">
 									<button type="button" class="btn btn-secondary" alt='Rifornimenti'><i class="fas fa-euro-sign" title="Visualizza tutti i rifornimenti dell'appalto"></i></button>
 								</a>
 

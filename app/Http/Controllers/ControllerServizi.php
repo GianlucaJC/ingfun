@@ -225,6 +225,7 @@ class ControllerServizi extends Controller
 		$appalti->id_ditta = $request->input('ditta');
 		$appalti->targa = $request->input('mezzo');
 		$appalti->note = $request->input('note');
+		$appalti->variazione = $request->input('variazione');
 		$appalti->save();
 		if ($id_app==0) $id_app=$appalti->id;
 
@@ -299,12 +300,33 @@ class ControllerServizi extends Controller
 		$deleted = lavoratoriapp::where('to_delete','=',1)
 		->where('id_appalto','=',$id_app)->delete();
 		
+		//push per eventuale variazione (max una)
+		$flag_variazione=$request->input('flag_variazione');
+		if ($flag_variazione=="1" && strlen($request->input('variazione'))!=0) {
+			$resp=candidati::select('u.push_id')
+			->join('users as u','candidatis.id_user','u.id')
+			->join('lavoratoriapp as l','l.id_lav_ref','candidatis.id')		
+			->where("l.id_appalto","=", $id_app)
+			->groupBy('candidatis.id');	
+			if ($resp->count()!=0){
+				$all_push=$resp->get();
+				foreach($all_push as $single) {
+					$push_id=$single->push_id;
+					$this->send_push($push_id,"edit",$request->input('descrizione_appalto'));
+				}					
+
+			}			
+		}
+			
+		//
+		
 		return redirect()->route("newapp",['id'=>$id_app,'from'=>1,'num_send'=>$num_send]);
 
 	}	
 	
 	public function send_push($userId,$tipo="new",$message_extra="") {
 		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f";
+		if (strlen($userId)==0) return;
 		$params = []; 
 		$params['include_player_ids'] = [$userId]; 
 		$headings = array(
@@ -316,6 +338,12 @@ class ControllerServizi extends Controller
 			$contents = [ 
 			   "it" => "Nuova richiesta accettazione Servizio", 
 			   "en" => "Request acceptance of new service"
+			]; 
+
+		if ($tipo=="edit")
+			$contents = [ 
+			   "it" => "Segnalazione di variazione su appalto $message_extra", 
+			   "en" => "Edit service"
 			]; 
 		if ($tipo=="dele")
 			$contents = [ 
