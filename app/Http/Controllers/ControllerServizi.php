@@ -187,7 +187,7 @@ class ControllerServizi extends Controller
 					else $send=true;
 					if ($send==true) {
 						$num_send++;
-						$this->send_push($push_id,"new","");
+						$this->send_push($push_id,"alert","");
 					}	
 				}
 			}
@@ -337,6 +337,12 @@ class ControllerServizi extends Controller
 		if ($tipo=="new")
 			$contents = [ 
 			   "it" => "Nuova richiesta accettazione Servizio", 
+			   "en" => "Request acceptance of new service"
+			]; 
+
+		if ($tipo=="alert")
+			$contents = [ 
+			   "it" => "Sollecito accettazione Servizio $message_extra", 
 			   "en" => "Request acceptance of new service"
 			]; 
 
