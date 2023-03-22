@@ -193,11 +193,11 @@
   
 
 	<!-- Modal -->
-	<div class="modal fade bd-example-modal-xl" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_img">
-	  <div class="modal-dialog modal-xl">
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_img">
+	  <div class="modal-dialog modal-dialog-centered">
 		<div class="modal-content">
 		  <div class="modal-header">
-			<h5 class="modal-title" id="title_modal">Zoom Image</h5>
+			<h5 class="modal-title" id="title_modal">Foto inviata</h5>
 			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
 			  <span aria-hidden="true">&times;</span>
 			</button>
@@ -240,6 +240,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/rifornimenti.js?ver=1.16"></script>
+	<script src="{{ URL::asset('/') }}dist/js/rifornimenti.js?ver=1.170"></script>
 
 @endsection

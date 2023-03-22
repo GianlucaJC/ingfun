@@ -40,9 +40,13 @@ $(document).ready( function () {
 function zoom(id_foto) {
 	filename=$("#id_foto"+id_foto).data("foto")	
 	html="";
-	html+="<div style='overflow-x: scroll;overflow-y: scroll;height:640px'>";
-		html+="<img src='dist/upload/"+filename+"'>";
+	html+="<div>";
+		html+="<img src='dist/upload/rifornimenti/thumbnail/medium/"+filename+"'>";
 	html+="</div>"
+	html+="<hr>";
+	html+="<a href='dist/upload/rifornimenti/"+filename+"' target='_blank'>";
+		html+="<button type='button' class='btn btn-primary'>Zoom</button>";
+	html+="</a>"
 	$('#modal_img').modal('show')
 	$("#body_modal").html(html)	
 }
