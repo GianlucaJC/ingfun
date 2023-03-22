@@ -112,6 +112,13 @@
 								<a href='#'onclick="push_appalti({{$gest->id}})" >
 									<button type="submit" class="btn btn-warning" alt='Sollecito'><i class="fas fa-share-square" title="Invia Sollecito Push solo a chi non ha risposto"></i></button>
 								</a>
+								
+
+								<a href="rifornimenti/{{$gest->id}}">
+									<button type="button" class="btn btn-secondary" alt='Rifornimenti'><i class="fas fa-euro-sign" title="Visualizza tutti i rifornimenti dell'appalto"></i></button>
+								</a>
+
+								
 							</td>									
 
 							<td>

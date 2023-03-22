@@ -17,11 +17,11 @@ use DB;
 
 class ControllerRifornimenti extends Controller
 {
-	public function rifornimenti(Request $request) {
+	public function rifornimenti($id_rif=0) {
 
-		$dele_contr=$request->input("dele_contr");
-		$restore_contr=$request->input("restore_contr");
-		$view_dele=$request->input("view_dele");
+		$dele_contr=request()->input("dele_contr");
+		$restore_contr=request()->input("restore_contr");
+		$view_dele=request()->input("view_dele");
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 
@@ -47,6 +47,9 @@ class ControllerRifornimenti extends Controller
 		->select("r.*",DB::raw("DATE_FORMAT(r.data,'%d-%m-%Y') as data_it"), 'c.nominativo','a.descrizione_appalto')
 		->join("candidatis as c","r.id_user","c.id")
 		->join("appalti as a","r.id_appalto","a.id")
+		->when($id_rif!="0", function ($rifornimenti) use($id_rif) {
+			return $rifornimenti->where('a.id', "=",$id_rif);
+		})
 		->when($view_dele=="0", function ($rifornimenti) {
 			return $rifornimenti->where('r.dele', "=","0");
 		})		

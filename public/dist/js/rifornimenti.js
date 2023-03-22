@@ -38,13 +38,14 @@ $(document).ready( function () {
 } );
 
 function zoom(id_foto) {
+	url=$("#url").val()
 	filename=$("#id_foto"+id_foto).data("foto")	
 	html="";
 	html+="<div>";
-		html+="<img src='dist/upload/rifornimenti/thumbnail/medium/"+filename+"'>";
+		html+="<img src='"+url+"/dist/upload/rifornimenti/thumbnail/medium/"+filename+"'>";
 	html+="</div>"
 	html+="<hr>";
-	html+="<a href='dist/upload/rifornimenti/"+filename+"' target='_blank'>";
+	html+="<a href='"+url+"/dist/upload/rifornimenti/"+filename+"' target='_blank'>";
 		html+="<button type='button' class='btn btn-primary'>Zoom</button>";
 	html+="</a>"
 	$('#modal_img').modal('show')

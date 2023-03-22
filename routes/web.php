@@ -126,8 +126,8 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['permission:gestione_archivi']);
 
 
-	Route::get('rifornimenti', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['permission:gestione_archivi']);
-	Route::post('rifornimenti', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['permission:gestione_archivi']);
+	Route::get('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['permission:gestione_archivi']);
+	Route::post('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['permission:gestione_archivi']);
 
 
 	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@newapp'])->middleware(['permission:gestione_archivi']);

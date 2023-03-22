@@ -49,7 +49,7 @@
 		<form method='post' action="{{ route('rifornimenti') }}" id='frm_rif' name='frm_rif' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
-
+		<input type="hidden" value="{{url('/')}}" id="url" name="url">
         <div class="row">
           <div class="col-md-12">
 		  
@@ -117,7 +117,7 @@
 								<td style='width:100px'>
 									<span id='id_foto{{$id_foto}}' data-foto='{{$rif->filename}}'>
 									<a href='javascript:void(0)' onclick='zoom({{$id_foto}})'>
-										<img class="rounded float-left img-fluid img-thumbnail"  src='dist/upload/rifornimenti/thumbnail/small/{{$rif->filename}}'>
+										<img class="rounded float-left img-fluid img-thumbnail"  src='{{ URL::asset('/') }}dist/upload/rifornimenti/thumbnail/small/{{$rif->filename}}'>
 									</a>
 								</td>
 								
@@ -218,11 +218,11 @@
  
  @section('content_plugin')
 	<!-- jQuery -->
-	<script src="plugins/jquery/jquery.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/jquery/jquery.min.js"></script>
 	<!-- Bootstrap 4 -->
-	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
-	<script src="dist/js/adminlte.min.js"></script>
+	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 
 
 	
@@ -240,6 +240,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/rifornimenti.js?ver=1.170"></script>
+	<script src="{{ URL::asset('/') }}dist/js/rifornimenti.js?ver=1.174"></script>
 
 @endsection
