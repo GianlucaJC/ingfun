@@ -18,6 +18,7 @@ use DB;
 class ControllerRifornimenti extends Controller
 {
 	public function rifornimenti(Request $request) {
+
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		$view_dele=$request->input("view_dele");

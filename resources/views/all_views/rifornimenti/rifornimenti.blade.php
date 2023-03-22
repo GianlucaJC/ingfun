@@ -117,7 +117,7 @@
 								<td style='width:100px'>
 									<span id='id_foto{{$id_foto}}' data-foto='{{$rif->filename}}'>
 									<a href='javascript:void(0)' onclick='zoom({{$id_foto}})'>
-										<img class="rounded float-left img-fluid img-thumbnail"  src='dist/upload/{{$rif->filename}}'>
+										<img class="rounded float-left img-fluid img-thumbnail"  src='dist/upload/rifornimenti/thumbnail/small/{{$rif->filename}}'>
 									</a>
 								</td>
 								

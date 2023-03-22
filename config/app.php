@@ -196,6 +196,7 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
 		Berkayk\OneSignal\OneSignalServiceProvider::class,
+		Intervention\Image\ImageServiceProvider::class,
 
     ],
 
@@ -213,6 +214,7 @@ return [
     'aliases' => Facade::defaultAliases()->merge([
 		'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 		'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
+		'Image' => Intervention\Image\Facades\Image::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

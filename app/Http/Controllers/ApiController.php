@@ -11,7 +11,7 @@ use App\Models\lavoratoriapp;
 use App\Models\mezzi;
 use App\Models\rifornimenti;
 use DB;
-
+use Image;
 
 
 class ApiController extends Controller
@@ -96,7 +96,7 @@ class ApiController extends Controller
 		$filename = $request->header('filename');
 		if ($putdata) {
 			/* Open a file for writing */
-			$tmpfname = tempnam("dist/upload", "photo");
+			$tmpfname = tempnam("dist/upload/rifornimenti", "photo");
 			$fp = fopen($tmpfname, "w");
 			if ($fp) {
 				
@@ -108,7 +108,16 @@ class ApiController extends Controller
 				fclose($fp);
 				fclose($putdata);
 				
-				$result = rename($tmpfname, "dist/upload/" . $filename);  
+				$path="dist/upload/rifornimenti/";
+				$small = "dist/upload/rifornimenti/thumbnail/small/";
+				$medium = "dist/upload/rifornimenti/thumbnail/medium/";
+				$result = rename($tmpfname, $path . $filename);  
+				copy($path.$filename, $small.$filename);
+				copy($path.$filename, $medium.$filename);
+				
+				$this->createThumbnail($small.$filename, 150, 93);
+				$this->createThumbnail($medium.$filename, 300, 185);
+						
 				$idappalto = $request->header('idappalto');
 				
 				$importo = $request->header('importo');
@@ -142,6 +151,14 @@ class ApiController extends Controller
 		
    }
 
+
+	public function createThumbnail($path, $width, $height)
+	{
+		$img = Image::make($path)->resize($width, $height, function ($constraint) {
+			$constraint->aspectRatio();
+		});
+		$img->save($path);
+	}
 
 	public function lavori(Request $request) {
 		$check=$this->check_log($request); 
