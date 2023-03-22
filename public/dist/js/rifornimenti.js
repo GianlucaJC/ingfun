@@ -42,7 +42,9 @@ function zoom(id_foto) {
 	filename=$("#id_foto"+id_foto).data("foto")	
 	html="";
 	html+="<div>";
-		html+="<img src='"+url+"/dist/upload/rifornimenti/thumbnail/medium/"+filename+"'>";
+		html+="<a href='"+url+"/dist/upload/rifornimenti/"+filename+"' 	target='_blank'>";
+			html+="<img src='"+url+"/dist/upload/rifornimenti/thumbnail/medium/"+filename+"'>";
+		html+="</a>";	
 	html+="</div>"
 	html+="<hr>";
 	html+="<a href='"+url+"/dist/upload/rifornimenti/"+filename+"' target='_blank'>";

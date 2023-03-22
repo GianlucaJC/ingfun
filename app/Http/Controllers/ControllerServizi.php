@@ -187,7 +187,7 @@ class ControllerServizi extends Controller
 					else $send=true;
 					if ($send==true) {
 						$num_send++;
-						$this->send_push($push_id);
+						$this->send_push($push_id,"new","");
 					}	
 				}
 			}
@@ -276,17 +276,34 @@ class ControllerServizi extends Controller
 			}	
 			if ($send==true) {
 				$num_send++;
-				$this->send_push($push_id);
+				$this->send_push($push_id,"new","");
 			}	
 
 		}
-		$deleted = lavoratoriapp::where('to_delete','=',1)->delete();
+		
+		//push per eventuali estromessi dall'appalto
+		$resp=candidati::select('u.push_id')
+		->join('users as u','candidatis.id_user','u.id')
+		->join('lavoratoriapp as l','l.id_lav_ref','candidatis.id')		
+		->where("l.to_delete","=", 1)
+		->where("l.id_appalto","=", $id_app)
+		->groupBy('candidatis.id');
+		if ($resp->count()!=0){
+			$all_push=$resp->get();
+			foreach($all_push as $single) {
+				$push_id=$single->push_id;
+				$this->send_push($push_id,"dele",$request->input('descrizione_appalto'));
+			}					
+
+		}		
+		$deleted = lavoratoriapp::where('to_delete','=',1)
+		->where('id_appalto','=',$id_app)->delete();
 		
 		return redirect()->route("newapp",['id'=>$id_app,'from'=>1,'num_send'=>$num_send]);
 
 	}	
 	
-	public function send_push($userId) {
+	public function send_push($userId,$tipo="new",$message_extra="") {
 		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f";
 		$params = []; 
 		$params['include_player_ids'] = [$userId]; 
@@ -295,10 +312,17 @@ class ControllerServizi extends Controller
 			"en" => 'App ING News'
 			);
 		
-		$contents = [ 
-		   "it" => "Nuova richiesta accettazione Servizio", 
-		   "en" => "Request acceptance of new service"
-		]; 
+		if ($tipo=="new")
+			$contents = [ 
+			   "it" => "Nuova richiesta accettazione Servizio", 
+			   "en" => "Request acceptance of new service"
+			]; 
+		if ($tipo=="dele")
+			$contents = [ 
+			   "it" => "Estromissione da appalto $message_extra", 
+			   "en" => "Dele from service"
+			]; 
+			
 		$params['priority'] = 10; 
 		$params['contents'] = $contents; 
 		$params['headings'] = $headings; 

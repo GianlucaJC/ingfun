@@ -240,6 +240,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/rifornimenti.js?ver=1.174"></script>
+	<script src="{{ URL::asset('/') }}dist/js/rifornimenti.js?ver=1.175"></script>
 
 @endsection

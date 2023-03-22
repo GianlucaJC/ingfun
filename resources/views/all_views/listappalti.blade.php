@@ -109,7 +109,7 @@
 									</a>
 								@endif	
 								
-								<a href='#'onclick="push_appalti({{$gest->id}})" >
+								<a href='#' onclick="push_appalti({{$gest->id}})" >
 									<button type="submit" class="btn btn-warning" alt='Sollecito'><i class="fas fa-share-square" title="Invia Sollecito Push solo a chi non ha risposto"></i></button>
 								</a>
 								
