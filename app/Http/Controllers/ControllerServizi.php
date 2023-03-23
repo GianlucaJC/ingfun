@@ -330,8 +330,8 @@ class ControllerServizi extends Controller
 		$params = []; 
 		$params['include_player_ids'] = [$userId]; 
 		$headings = array(
-			"it" => 'App ING News',
-			"en" => 'App ING News'
+			"it" => 'MisAPP News',
+			"en" => 'MisAPP News'
 			);
 		
 		if ($tipo=="new")
