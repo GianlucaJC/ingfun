@@ -9,8 +9,11 @@ use App\Models\User;
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
     <a href="{{ route('dashboard') }}" class="brand-link">
-      <img src="{{ URL::asset('/') }}dist/img/if.png" alt="IngFUN Logo" class="brand-image img-circle elevation-3" style="opacity: .8">
-      <span class="brand-text font-weight-light">IngFUN</span>
+      <img src="{{ URL::asset('/') }}dist/img/4.png" alt="IngFUN Logo" class="brand-image img-circle elevation-5" style="opacity: 5;" >
+      
+	  
+	  
+	  <span class="brand-text font-weight-light">DayByDay</span>
     </a>
 
     <!-- Sidebar -->
