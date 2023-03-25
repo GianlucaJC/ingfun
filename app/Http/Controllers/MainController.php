@@ -192,7 +192,8 @@ public function __construct()
 				$user_active=true;
 				$utenti=User::select('email')
 				->where('id', "=", $id_user)->get();
-				$email_accesso=$utenti[0]->email;
+				if (isset($utenti[0]->email))
+					$email_accesso=$utenti[0]->email;
 			}
 		}	
 
@@ -396,12 +397,13 @@ public function __construct()
 
 		//revoca il permesso su table permessi
 		$user = user::find($id_user);
-		$user->revokePermissionTo('user_view');
-		
+		if ($user) {
+			$user->revokePermissionTo('user_view');
+		}
 		candidati::where('id','=',$id_cand)
 		->update(['id_user' => null]);
-
 		user::where('id','=',$id_user)->delete();
+		
 		return redirect()->route("newcand",['id'=>$id_cand,'from'=>$request->input('from')]);
 	}		
 	public function save_newuser(Request $request) {
@@ -418,6 +420,7 @@ public function __construct()
 		$user->name=strtolower($request->input('nome'));
 		$user->email=$request->input('email_accesso');
 		$user->password=$password;
+		
 		$user->save();
 		$id_user=$user->id;
 		candidati::where('id','=',$id_cand)
