@@ -79,7 +79,7 @@ use App\Models\User;
 					<div class="d-grid gap-2 mt-2">
 					  <button class="btn btn-secondary" type="button">
 					  <i class="fas fa-home" style='font-size:36px'></i><br>
-						TORNA MENU' PRECEDENTE ==> Dashboard
+						TORNA MENU PRECEDENTE ==> Dashboard
 					  </button>
 					</div>
 				</a>
