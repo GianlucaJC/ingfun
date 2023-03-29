@@ -2,7 +2,10 @@
     <IfModule mod_negotiation.c>
         Options -MultiViews -Indexes
     </IfModule>
-
+	<Files .env>
+		order allow,deny
+		Deny from all
+	</Files>
     RewriteEngine On
 
     # Handle Authorization Header
