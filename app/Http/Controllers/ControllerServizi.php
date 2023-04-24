@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\servizi;
 use App\Models\serviziapp;
@@ -17,6 +18,10 @@ use DB;
 
 class ControllerServizi extends Controller
 {
+public function __construct()
+	{
+		$this->middleware('auth')->except(['index']);
+	}		
 
 	public function save_edit(Request $request) {
 		$edit_elem=0;
@@ -212,11 +217,14 @@ class ControllerServizi extends Controller
 	}
 	
 	public function save_newapp(Request $request) {			
+		$id_user=Auth::user()->id;
 		$id_app=$request->input('id_app');
 		if ($id_app!=0)
 			$appalti = appalti::find($id_app);
-		else
+		else {
 			$appalti = new appalti;
+			$appalti->id_creator = $id_user;
+		}	
 	
 
 		$appalti->descrizione_appalto = $request->input('descrizione_appalto');
@@ -373,8 +381,16 @@ class ControllerServizi extends Controller
 		$id_servizi=array();
 		$view_dele="0";
 		$today=date("Y-m-d");
-		$lavoratori=candidati::select('id','nominativo')
+		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('status_candidatura','=',3)		
+		->orderByRaw('case 
+			when `tipo_contr` = "2" and `tipo_contratto`="2"  then 1 
+			when `tipo_contr` = "2" and `tipo_contratto`="1"  then 2
+			when `tipo_contr` = "2" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 3
+			when `tipo_contr` = "1" and `tipo_contratto`="2"  then 4
+			when `tipo_contr` = "1" and `tipo_contratto`="1"  then 5
+			when `tipo_contr` = "1" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 6
+			else 7 end')
 		->orderBy('nominativo')	
 		->get();
 		

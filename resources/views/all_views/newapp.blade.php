@@ -71,7 +71,13 @@
 			</div>
 			<div class="col-md-3">
 				<div class="form-floating">
-					<input class="form-control" id="data_app" name='data_app' type="date" required value="{{$appalti[0]->data_ref ?? ''}}" />
+				<?php
+					$d_def=date("Y-m-d");
+					$d_def=date('Y-m-d', strtotime($d_def. ' + 1 days'));
+					if (!isset($appalti[0]->data_ref)) $d_app=$d_def;
+					else $d_app=$appalti[0]->data_ref;
+				?>
+					<input class="form-control" id="data_app" name='data_app' type="date" required value="{{$d_app}}" />
 					<label for="data_app">Data del servizio*</label>
 				</div>
 			</div>			
@@ -159,7 +165,41 @@
 					<div class="col-md-6">
 						<div class="form-floating mb-3 mb-md-0">
 							<select class="form-select select2" id="lavoratori" aria-label="Lavoratori" name='lavoratori[]' multiple="multiple" required>
+								@php ($old_t="?")
 								@foreach ($lavoratori as $lavoratore)
+								
+								<?php
+									
+
+								$tipo_contr=$lavoratore->tipo_contr;
+								$tipo_contratto=$lavoratore->tipo_contratto;
+								$ref_tipo=$tipo_contr.$tipo_contratto;
+								$descr_t="";
+
+									
+								if ($tipo_contr==2 && $tipo_contratto==2)
+									$descr_t="Indeterminati - Full Time";
+								elseif ($tipo_contr==2 && $tipo_contratto==1)
+									$descr_t="Indeterminati - Part Time";
+								elseif ($tipo_contr==2 && ($tipo_contratto>2))
+									$descr_t="Indeterminati - Altro";
+								if ($tipo_contr==1 && $tipo_contratto==2)
+									$descr_t="Determinati - Full Time";
+								elseif ($tipo_contr==1 && $tipo_contratto==1)
+									$descr_t="Determinati - Part Time";
+								elseif ($tipo_contr==1 && ($tipo_contratto>2))
+									$descr_t="Determinati - Altro";
+								
+
+										
+								if ($old_t!=$ref_tipo) {
+									if ($old_t!="?") echo "</optgroup>";
+									echo "<optgroup label='$descr_t'>"; 
+								}
+								$old_t=$ref_tipo;
+									
+								?>
+								
 									<option value='{{$lavoratore->id}}'
 									<?php
 										$status=0;
@@ -167,6 +207,7 @@
 											echo " selected ";
 											$status=$ids_lav[$lavoratore->id];
 										}
+										
 									?>
 									> 
 									{{$lavoratore->nominativo}}
@@ -174,7 +215,7 @@
 									@if ($status==2) (Rifiutato) @endif
 									</option>
 								@endforeach
-
+								</optgroup>
 							</select>
 							<b>Squadra</b>
 						</div>

@@ -12,7 +12,7 @@ use App\Models\mezzi;
 use App\Models\rifornimenti;
 use DB;
 use Image;
-
+use Mail;
 
 class ApiController extends Controller
 {
@@ -22,6 +22,7 @@ class ApiController extends Controller
 		header("Content-Type: application/json; charset=UTF-8");
 	}
 	*/
+
 	public function check_log($request) {
 		if ($request->hasHeader('utente')) {
 			$utente=$request->header("utente");
@@ -349,12 +350,70 @@ class ApiController extends Controller
 		$status=0;
 		if ($sn=="S") $status=1;
 		if ($sn=="N") $status=2;
+		
+		$this->send_mail_creator($id_appalto,$id_lav_ref,$sn);
+		
 		lavoratoriapp::where('id_appalto', $id_appalto)
 		->where('id_lav_ref', $id_lav_ref)
 		->update(['status' => $status]);
 		$risp['header']=$check;
 		$risp['info']="Set risposta: $sn";
-		echo json_encode($risp);	
+		echo json_encode($risp);
+		
+		
+	}
+	
+	public function send_mail_creator($id_appalto,$id_lav_ref,$sn) {
+		$nome_lav= DB::table('candidatis as c')
+		->where('c.id', "=",$id_lav_ref)
+		->first()->nominativo;
+		
+		$info_app=appalti::select('u.email')
+		->join('users as u','appalti.id_creator','u.id')
+		->where('appalti.id', "=",$id_appalto)
+		->first();
+		if ($info_app->email) {
+			$email=$info_app->email;
+			
+			//$email="morescogianluca@gmail.com";
+			$status=array();
+			try {
+				$msg="";
+				$data["email"] = $email;					
+				$data["title"] = "Risposta lavoratore per partecipazione appalto";
+				if ($sn=="S") 
+					$msg = "Il lavoratore $nome_lav ha accettato la proposta di partecipazione all'appalto";
+				else
+					$msg = "Il lavoratore $nome_lav ha rifiutato la proposta di partecipazione all'appalto";
+
+				//$prefix="http://localhost:8012";
+				$prefix="https://217.18.125.177";
+
+				$lnk=$prefix."/ingfun/public/newapp/$id_appalto/0/0";
+
+				$msg.="\nCliccare quì $lnk per i dettagli sull'appalto";
+				
+				$data["body"]=$msg;
+				
+
+				Mail::send('emails.risposta_appalti', $data, function($message)use($data) {
+					$message->to($data["email"], $data["email"])
+					->subject($data["title"]);
+
+				});
+				
+				$status['status']="OK";
+				$status['message']="Mail inviata con successo";
+				
+				
+				
+			} catch (Throwable $e) {
+				$status['status']="KO";
+				$status['message']="Errore occorso durante l'invio! $e";
+			}
+			print_r($status);
+			
+		}	
 	}
   
 

@@ -23,7 +23,11 @@ use App\Models\User;
         <div class="image">
 			@if ($user->hasRole('admin'))
 				<img src="{{ URL::asset('/') }}dist/img/AdminLTELogo.png" class="img-circle elevation-2" alt="User Image">
-			@else
+			@elseif ($user->hasRole('coord'))
+				<img src="{{ URL::asset('/') }}dist/img/coord.png" class="img-circle elevation-2" alt="User Image">
+			@elseif ($user->hasRole('resp'))
+				<img src="{{ URL::asset('/') }}dist/img/resp.png" class="img-circle elevation-2" alt="User Image">
+			@else	
 				<img src="{{ URL::asset('/') }}dist/img/avatar1.png" class="img-circle elevation-2" alt="User Image">
 			@endif
         </div>
@@ -175,7 +179,7 @@ use App\Models\User;
 				  </li>	
 
 				  <li class="nav-item">
-					<a href="#" class="nav-link disabled">
+					<a href="{{ route('registro') }}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
 					  <p>Registro Servizi</p>
 					</a>

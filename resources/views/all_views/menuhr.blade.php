@@ -72,19 +72,20 @@ use App\Models\User;
     <div class="content">
       <div class="container-fluid">
 
-	    @if ($user->hasRole('admin'))
-			<div class="row">
-				<div class="col-md-12">
-				<a href="{{ route('dashboard') }}">
-					<div class="d-grid gap-2 mt-2">
-					  <button class="btn btn-secondary" type="button">
-					  <i class="fas fa-home" style='font-size:36px'></i><br>
-						TORNA MENU PRECEDENTE ==> Dashboard
-					  </button>
-					</div>
-				</a>
+	   
+		<div class="row">
+			<div class="col-md-12">
+			<a href="{{ route('dashboard') }}">
+				<div class="d-grid gap-2 mt-2">
+				  <button class="btn btn-secondary" type="button">
+				  <i class="fas fa-home" style='font-size:36px'></i><br>
+					TORNA MENU PRECEDENTE ==> Dashboard
+				  </button>
 				</div>
-			</div>			
+			</a>
+			</div>
+		</div>			
+		@if ($user->hasRole('admin'))
 			<div class="row">
 				<div class="col-md-12">
 				<a href="{{ route('newcand') }}">
@@ -122,23 +123,26 @@ use App\Models\User;
 
 			</div>
 
-
+		@endif
+		@if ($user->hasRole('admin') || ($user->hasRole('coord')) )
 			<div class="row">
-				<div class="col-md-12">
-					<a href="{{ route('scadenze_contratti') }}">
-						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary" type="button">
-						  <i class="fas fa-file-signature" style='font-size:36px'></i><br>
-							GESTIONE SCADENZA CONTRATTI
-						  </button>
-						</div>
-					</a>
-				</div>
+				@if ($user->hasRole('admin'))
+					<div class="col-md-12">
+						<a href="{{ route('scadenze_contratti') }}">
+							<div class="d-grid gap-2 mt-2">
+							  <button class="btn btn-primary" type="button">
+							  <i class="fas fa-file-signature" style='font-size:36px'></i><br>
+								GESTIONE SCADENZA CONTRATTI
+							  </button>
+							</div>
+						</a>
+					</div>
+				@endif
 				<div class="col-md-12">
 					
-					<a href="#">
+					<a href="{{ route('registro') }}">
 						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary disabled" type="button">
+						  <button class="btn btn-primary" type="button">
 						  <i class="fas fa-list" style='font-size:36px'></i><br>
 							REGISTRO SERVIZI
 						  </button>
@@ -148,7 +152,8 @@ use App\Models\User;
 
 	
 			</div>
-		@endif
+		@endif	
+		
 
 		@if ($user->hasRole('admin'))
 

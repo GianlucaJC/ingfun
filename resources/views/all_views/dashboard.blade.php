@@ -80,22 +80,20 @@ use App\Models\User;
 		
 		
 		
-		
-
-	    @if ($user->hasRole('admin'))
-
-			<div class="row">
-				<div class="col-md-12">
-				<a href="{{ route('menuhr') }}">
-					<div class="d-grid gap-2 mt-2">
-					  <button class="btn btn-primary" type="button">
-					  <i class="fas fa-users" style='font-size:36px'></i><br>
-						RISORSE UMANE
-					  </button>
+	    @if ($user->hasRole('admin') || ($user->hasRole('coord')) )
+				<div class="row">
+					<div class="col-md-12">
+					<a href="{{ route('menuhr') }}">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary" type="button">
+						  <i class="fas fa-users" style='font-size:36px'></i><br>
+							RISORSE UMANE
+						  </button>
+						</div>
+					</a>
 					</div>
-				</a>
 				</div>
-			</div>
+			
 
 			<div class="row">
 				<div class="col-md-12">
@@ -109,7 +107,8 @@ use App\Models\User;
 					</a>
 				</div>
 			</div>
-
+		@endif	
+		@if ($user->hasRole('admin') || ($user->hasRole('coord'))  || ($user->hasRole('resp')) )
 			<div class="row">
 				<div class="col-md-12">
 				<a href="{{ route('appalti') }}">
@@ -124,6 +123,22 @@ use App\Models\User;
 			</div>	
 
 		@endif
+		
+		@if ($user->hasRole('admin'))
+				<hr>
+				<div class="row">
+					<div class="col-md-12">
+					<a href="{{ route('utenti') }}">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-info" type="button">
+						  <i class="fas fa-users-cog"  style='font-size:36px'></i><br>
+							GESTIONE UTENTI
+						  </button>
+						</div>
+					</a>
+					</div>
+				</div>		
+		@endif		
 
 
       </div><!-- /.container-fluid -->

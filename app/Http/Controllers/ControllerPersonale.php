@@ -36,6 +36,106 @@ class ControllerPersonale extends Controller
 		if (!Auth::user())
 		$this->middleware('auth')->except(['index','servizio_scadenze']);
 	}	
+	
+
+	public function save_edit_utenti(Request $request) {
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		$nome=$request->input("nome");
+		$email=$request->input("email");
+		$email=strtolower($email);
+		$ruolo=$request->input("ruolo");
+		$pw_first=$request->input("pw_first");
+		$pw_ripeti=$request->input("pw_ripeti");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+		$resp=array();
+		$resp['esito']=true;
+		$resp['msg']="";
+		if (strlen($nome)!=0 && $edit_elem==0) {
+			//verifica se già presente
+			$count=user::where('name',"=",$nome)
+			->orWhere(function($q2) use ($email) {
+				$q2->where("email","=",$email);
+			})->count();
+			if ($count>0) {
+				$resp['esito']=false;
+				$resp['msg']="Nome utente o mail già in uso!";
+			} else {
+				$user = new User;
+				$user->profilo_by_candidati=0;
+			}
+		}
+		else
+			$user = User::find($edit_elem);
+
+		
+		if (strlen($nome)!=0 || $edit_elem!=0) {
+			if (strlen($pw_first)>0 || strlen($pw_ripeti)>0 || strlen($edit_elem)==0) {
+				if ($pw_first!=$pw_ripeti) {
+					$resp['esito']=false;
+					$resp['msg']="Le due password non coincidono!";
+				} else {
+					if (strlen($pw_first)<8) {
+						$resp['esito']=false;
+						$resp['msg']="La lunghezza minima della password deve essere di 8 caratteri!";
+					}
+				}
+			}	
+			if ($resp['esito']==true) {
+				$user->name=strtolower($request->input('nome'));
+				$user->email=$request->input('email');
+				if (strlen($pw_first)>0) {
+					$password = Hash::make($pw_first);
+					$user->password=$password;
+				}	
+				$user->save();
+				
+				$id_user=$user->id;
+				$user = user::find($id_user);
+				$user->syncRoles([]);
+				$user->assignRole($ruolo);
+				if ($ruolo=="user") $user->givePermissionTo('user_view'); 	
+			}
+			
+		}
+
+	
+		if (strlen($dele_contr)!=0) {
+			user::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			user::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}
+		
+		return $resp;
+	
+	}	
+
+	public function utenti(Request $request){
+		$save_edit=$this->save_edit_utenti($request);
+		$view_dele=$request->input("view_dele");
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		$utenti=DB::table('users as u')
+		->select("u.id","u.dele","u.name","u.email","r.name as ruolo")
+		->join("model_has_roles as m","m.model_id","u.id")
+		->join("roles as r","m.role_id","r.id")
+		->when($view_dele=="0", function ($utenti) {
+			return $utenti->where('u.dele', "=","0");
+		})
+		->orderBy('u.name')->get();
+
+		$roles=DB::table('roles as r')
+		->select("r.id","r.name")
+		->orderBy('r.name')->get();
+
+		return view('all_views/gestione/utenti')->with('utenti',$utenti)->with('view_dele',$view_dele)->with('roles',$roles)->with('save_edit',$save_edit);		
+	}
 
 	public function cedolini_view() {
 

@@ -41,7 +41,7 @@ use App\Models\User;
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-	    @if ($user->hasRole('admin'))
+	    @if ($user->hasRole('admin') || ($user->hasRole('coord')) )
 	
 			<div class="row">
 				<div class="col-md-12">
