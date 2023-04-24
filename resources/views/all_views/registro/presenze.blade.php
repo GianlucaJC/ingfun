@@ -49,7 +49,6 @@
 		<!-- form new ditte !-->	
 		
 <?php $periodi=array(); ?>
-
 		<form method='post' action="{{ route('registro') }}" id='frm_registro' name='frm_registro' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
@@ -318,6 +317,6 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.442"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.443"></script>
 
 @endsection

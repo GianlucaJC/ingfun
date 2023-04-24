@@ -46,7 +46,7 @@ $(document).ready( function () {
 
 function save_value() {
 	console.warn("mese",ins_value.mese,"id_lav",ins_value.id_lav,"id_servizio",ins_value.id_servizio)
-
+	$("#btn_save").prop("disabled",true);
 	var formData = new FormData()
 
 	//Each through elements
@@ -172,7 +172,7 @@ function ins_value() {
 	
 	
 
-	html="<button type='button' class='btn btn-primary' onclick='save_value()'>Salva</button>";
+	html="<button type='button' class='btn btn-primary' onclick='save_value()' id='btn_save'>Salva</button>";
 	$("#div_save").html(html)
 
 	$('#modalvalue').modal('show')

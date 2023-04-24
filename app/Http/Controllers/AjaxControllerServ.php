@@ -3,10 +3,12 @@
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
 
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\lavoratori;
 use App\Models\ditte;
 use App\Models\presenze;
+use App\Models\log_presenze;
 use Mail;
 use DB;
 
@@ -24,7 +26,9 @@ class AjaxControllerServ extends Controller
         return json_encode($infoditta);
 	}	
 
-	public function save_value_presenze(Request $request){		
+	public function save_value_presenze(Request $request){
+		$id_user=Auth::user()->id;
+		
 		$periodo = $request->input('periodo');
 		$giorni = $request->input('giorni');
 		$id_lav = $request->input('id_lav');
@@ -47,11 +51,11 @@ class AjaxControllerServ extends Controller
 			
 			if (strlen($value)==0) {
 				if (isset($check[0]->id) && $check[0]->id!=null) {
-						$dele=presenze::where("periodo","=",$periodo)
-						->where("id_lav","=",$id_lav)
-						->where("id_servizio","=",$id_servizio)
-						->where("data","=",$data)
-						->delete();						
+					$dele=presenze::where("periodo","=",$periodo)
+					->where("id_lav","=",$id_lav)
+					->where("id_servizio","=",$id_servizio)
+					->where("data","=",$data)
+					->delete();						
 				}	
 			} else {
 				
@@ -66,14 +70,33 @@ class AjaxControllerServ extends Controller
 				$presenze->id_servizio=$id_servizio;
 				$presenze->periodo=$periodo;
 				$presenze->data=$data;
-				if ($id_servizio==1000)
+				if ($id_servizio==1000) {
 					$presenze->note=$value;
-				else
+					$presenze->importo=null;
+				}	
+				else 
 					$presenze->importo=$value;
+				
 
 				$presenze->save();
 			}
-			
+
+
+			//Log operazione
+			$log_presenze= new log_presenze;
+			$log_presenze->id_user=$id_user;
+			$log_presenze->id_lav=$id_lav;
+			$log_presenze->id_servizio=$id_servizio;
+			$log_presenze->periodo=$periodo;
+			$log_presenze->data=$data;
+			if ($id_servizio==1000) {
+				$log_presenze->note=$value;
+				$log_presenze->importo=null;
+			}	
+			else 
+				$log_presenze->importo=$value;
+
+			$log_presenze->save();		
 			
 		}
 		$info=array();
