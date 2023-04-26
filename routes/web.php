@@ -61,6 +61,8 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('save_newuser', [ 'as' => 'save_newuser', 'uses' => 'App\Http\Controllers\MainController@save_newuser'])->middleware(['role:admin']);
 
 	Route::post('disable_user', [ 'as' => 'disable_user', 'uses' => 'App\Http\Controllers\MainController@disable_user'])->middleware(['role:admin']);
+
+	Route::post('set_ruolo', [ 'as' => 'set_ruolo', 'uses' => 'App\Http\Controllers\MainController@set_ruolo'])->middleware(['role:admin']);
 	
 	Route::get('listcand', [ 'as' => 'listcand', 'uses' => 'App\Http\Controllers\MainController@listcand'])->middleware(['role:admin']);
 	

@@ -69,6 +69,21 @@ function check_nazione(value) {
 	
 }
 
+function showp() {
+  var x = document.getElementById("pw_first");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+
+  var x = document.getElementById("pw_ripeti");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
 function popola_sotto_tipo(tipodoc) {
 	base_path = $("#url").val();
 	$.ajaxSetup({

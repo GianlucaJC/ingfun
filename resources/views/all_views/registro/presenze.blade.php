@@ -47,8 +47,7 @@
     <div class="content">
       <div class="container-fluid">
 		<!-- form new ditte !-->	
-		
-<?php $periodi=array(); ?>
+
 		<form method='post' action="{{ route('registro') }}" id='frm_registro' name='frm_registro' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">

@@ -27,7 +27,14 @@
 				</div>
 				
 				<div class="row mb-3">
-					
+
+					<div class="form-check">
+					  <input class="form-check-input" type="checkbox" value="" id="shwp" onclick="showp()">
+					  <label class="form-check-label" for="shwp">
+						Mostra Password
+					  </label>
+					</div>						
+	
 				  <div class="col-md-6">
 					  <div class="form-group">
 						<label for="pw_first">Password Iniziale</label>

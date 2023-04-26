@@ -36,6 +36,23 @@ $(document).ready( function () {
 	
 } );
 
+
+function showp() {
+  var x = document.getElementById("pw_first");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+
+  var x = document.getElementById("pw_ripeti");
+  if (x.type === "password") {
+    x.type = "text";
+  } else {
+    x.type = "password";
+  }
+}
+
 function new_user() {
 	$('#pw_first').attr('placeholder','Password');
 	$('#pw_ripeti').attr('placeholder','Password');

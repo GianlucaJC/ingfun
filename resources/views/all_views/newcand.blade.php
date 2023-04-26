@@ -23,6 +23,14 @@
 				<input type="email" class="form-control" id="email_accesso" name="email_accesso" aria-describedby="email_accesso" placeholder="Email Accesso" required maxlength=150 onkeyup="this.value = this.value.toLowerCase();" value="{{ $email_accesso }}" >
 				<small id="email_accesso" class="form-text text-muted">L'email di accesso è correlata al sistema di amministrazione interna</small>
 			  </div>
+			  
+			<div class="form-check">
+			  <input class="form-check-input" type="checkbox" value="" id="shwp" onclick="showp()">
+			  <label class="form-check-label" for="shwp">
+				Mostra Password
+			  </label>
+			</div>				  
+			  
 			  <div class="form-group">
 				<label for="pw_first">Password Iniziale</label>
 				<input type="password" class="form-control" id="pw_first" name="pw_first" placeholder="Password" required>
@@ -42,6 +50,32 @@
 			</form>	
 			@if ($user_active==true) 
 				<hr>
+			
+				
+				<form method='post' action="{{ route('set_ruolo') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">					
+					<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>				
+					<input type='hidden' name='from' value="{{$from}}">
+					<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
+
+					<div class="input-group">
+						<select class="form-select" name="ruolo" id="ruolo" aria-label="Ruolo" required>
+							<option value=''>Select...</option>
+							@foreach ($roles as $role) 
+								<option value="{{$role->name}}" 
+								<?php if($ruolo==$role->name) echo "selected";?>
+								
+								>{{$role->name}}</option>		
+								
+							@endforeach
+						</select>
+					  <button type='submit' class="btn btn-outline-secondary" type="button">Imposta</button>
+					</div>					
+					<label for="ruolo">Ruolo</label>
+				</form>
+				
+					
+				
+				
 				<form method='post' action="{{ route('disable_user') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">
 					<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 					<input type='hidden' name='from' value="{{$from}}">
@@ -217,7 +251,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.96"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.97"></script>
 	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.18"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>

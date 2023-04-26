@@ -180,6 +180,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/utenti.js?ver=1.122"></script>
+	<script src="{{ URL::asset('/') }}dist/js/utenti.js?ver=1.125"></script>
 
 @endsection

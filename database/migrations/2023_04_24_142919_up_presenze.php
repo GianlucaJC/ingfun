@@ -14,7 +14,7 @@ return new class extends Migration
     public function up()
     {
         Schema::table('presenze', function ($table) {
-			$table->integer('importo')->nullable()->change();
+			$table->double('importo',10,3)->nullable()->change();
 			$table->string('note',100)->nullable()->change();
 		});
 

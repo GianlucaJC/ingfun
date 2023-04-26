@@ -184,12 +184,21 @@ public function __construct()
 		//in caso di nuovo form l'array candidati è vuoto...per cui lo inizializzo 
 		$candidati=$this->init_newcand();
 		$user=null;
-		$user_active=false;$email_accesso="";
+		$user_active=false;$email_accesso="";$ruolo="";
 		if ($id!=0) {
 			$candidati=candidati::where('id', "=", $id)->get();
 			$id_user=$candidati[0]['id_user'];
 			if ($id_user!=null && strlen($id_user)!=0) {
 				$user_active=true;
+
+				$utenti=DB::table('users as u')
+				->select("r.name as ruolo")
+				->join("model_has_roles as m","m.model_id","u.id")
+				->join("roles as r","m.role_id","r.id")
+				->where('u.id','=',$id_user)
+				->get();				
+				if (isset($utenti[0]->ruolo)) $ruolo=$utenti[0]->ruolo;
+				
 				$utenti=User::select('email')
 				->where('id', "=", $id_user)->get();
 				if (isset($utenti[0]->email))
@@ -261,7 +270,13 @@ public function __construct()
 		})
 		->get();
 		
-		return view('all_views/newcand')->with('stati', $stati)->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc)->with('email_accesso',$email_accesso)->with('user_active',$user_active);
+		$roles=DB::table('roles as r')
+		->select("r.id","r.name")
+		->orderBy('r.name')->get();
+		
+		
+		
+		return view('all_views/newcand')->with('stati', $stati)->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc)->with('email_accesso',$email_accesso)->with('user_active',$user_active)->with('roles',$roles)->with('ruolo',$ruolo);
 	}
 
 	public function save_newcand(Request $request) {
@@ -406,6 +421,23 @@ public function __construct()
 		
 		return redirect()->route("newcand",['id'=>$id_cand,'from'=>$request->input('from')]);
 	}		
+	
+	public function set_ruolo(Request $request) {
+		$id_cand=$request->input('id_cand');
+		$ruolo=$request->input('ruolo');
+		$from=$request->input('from');
+		$resp=candidati::select('id_user')->where("id","=",$id_cand)->get();
+		$id_user=$resp[0]->id_user;
+
+		
+		$user = user::find($id_user);
+		$user->syncRoles([]);
+		$user->assignRole($ruolo);
+		if ($ruolo=="user") $user->givePermissionTo('user_view'); 
+		
+		return redirect()->route("newcand",['id'=>$id_cand,'from'=>$request->input('from')]);
+	}	
+
 	public function save_newuser(Request $request) {
 		$id_cand=$request->input('id_cand');
 		$from=$request->input('from');
