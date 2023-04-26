@@ -104,8 +104,10 @@ class ControllerPersonale extends Controller
 
 	
 		if (strlen($dele_contr)!=0) {
-			user::where('id', $dele_contr)
-			  ->update(['dele' => 1]);			
+			//->update(['dele' => 1]);
+			user::where('id', $dele_contr)->delete();
+			candidati::where("id_user","=",$dele_contr)
+			->update(['id_user' => null]);
 		}
 		if (strlen($restore_contr)!=0) {
 			user::where('id', $restore_contr)
