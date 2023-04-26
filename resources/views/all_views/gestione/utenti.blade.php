@@ -135,19 +135,21 @@
 			$check="";
 			if ($view_dele=="1") $check="checked";
 		?>
-			<?php if (1==2) {?>
-				<div class="row">
-					<div class="col-lg-12">
-						<button type="button" class="btn btn-primary" onclick="new_user()">
-							<i class="fa fa-plus-circle"></i> Nuovo Utente
-						</button>
+			
+			<div class="row">
+				<div class="col-lg-12">
+					<button type="button" class="btn btn-primary" onclick="new_user()">
+						<i class="fa fa-plus-circle"></i> Nuovo Utente
+					</button>
+					<?php if (1==2) {?>
 						<div class="form-check form-switch mt-3 ml-3">
 						  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_utenti').submit()" {{ $check }}>
 						  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
 						</div>
-					</div>
-				</div>	
-			<?php } ?>
+					<?php } ?>
+				</div>
+			</div>	
+			
 		</form>
         <!-- /.row -->
       </div><!-- /.container-fluid -->

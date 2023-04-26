@@ -9,7 +9,7 @@
 		<p>
 			@if ($user_active==false) 				
 				<h6>
-					L'utente non possiede credenziali per accedere!"
+					L'utente non possiede credenziali per accedere!
 				</h6>
 			@endif
 			<form method='post' action="{{ route('save_newuser') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">
