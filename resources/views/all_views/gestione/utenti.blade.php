@@ -135,7 +135,7 @@
 			$check="";
 			if ($view_dele=="1") $check="checked";
 		?>
-			<?php if (1==1) {?>
+			<?php if (1==2) {?>
 				<div class="row">
 					<div class="col-lg-12">
 						<button type="button" class="btn btn-primary" onclick="new_user()">
