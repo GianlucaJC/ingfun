@@ -42,7 +42,7 @@
     </div>
     <!-- /.content-header -->
 
-
+<?php $periodi=array(); ?>
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
