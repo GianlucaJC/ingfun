@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\candidatis;
 use App\Models\presenze;
+use App\Models\giustificativi;
 use DB;
 
 class Registro extends Controller
@@ -176,6 +177,43 @@ class Registro extends Controller
 		$mese=intval($info[1]);
 		$d=cal_days_in_month(CAL_GREGORIAN,$mese,$anno);
 		return $d;	
+	}
+
+
+
+	public function save_edit_giustificativi(Request $request) {
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+		$resp=array();
+		$resp['esito']=true;
+		$resp['msg']="";
+
+	
+		if (strlen($dele_contr)!=0) {
+			giustificativi::where('id', $dele_contr)->delete();
+		}
+		
+		return $resp;
+	
+	}	
+
+	public function giustificativi(Request $request){
+		
+		$save_edit=$this->save_edit_giustificativi($request);
+		$view_dele=$request->input("view_dele");
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$giustificativi=DB::table('giustificativi as g')
+		->select("g.id","c.nominativo",DB::raw("DATE_FORMAT(g.da_data,'%d-%m-%Y') as da_data"),DB::raw("DATE_FORMAT(g.a_data,'%d-%m-%Y') as a_data"),"id_cand","ore_gg")
+		->join("candidatis as c","g.id_cand","c.id")
+		->get();
+
+		return view('all_views/gestione/giustificativi')->with('giustificativi',$giustificativi)->with('view_dele',$view_dele)->with('save_edit',$save_edit);		
 	}
 
 

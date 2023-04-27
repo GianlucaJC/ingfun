@@ -48,6 +48,11 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('registro', [ 'as' => 'registro', 'uses' => 'App\Http\Controllers\Registro@presenze'])->middleware(['role:admin|coord']);
 
 
+	Route::get('giustificativi', [ 'as' => 'giustificativi', 'uses' => 'App\Http\Controllers\Registro@giustificativi'])->middleware(['role:admin|coord|resp']);
+
+	Route::post('giustificativi', [ 'as' => 'giustificativi', 'uses' => 'App\Http\Controllers\Registro@giustificativi'])->middleware(['role:admin|coord|resp']);
+
+
 
 	Route::get('archivi', [ 'as' => 'archivi', 'uses' => 'App\Http\Controllers\MainController@archivi'])->middleware(['role:admin']);
 
@@ -158,8 +163,6 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['role:admin|coord|resp']);
 	
 	Route::post('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['role:admin|coord|resp']);
-
-
 
 	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@newapp'])->middleware(['role:admin|coord|resp']);
 
