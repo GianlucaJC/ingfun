@@ -177,15 +177,15 @@
 								$descr_t="";
 
 									
-								if ($tipo_contr==2 && $tipo_contratto==2)
+								if ($tipo_contr==2 && $tipo_contratto==1)
 									$descr_t="Indeterminati - Full Time";
-								elseif ($tipo_contr==2 && $tipo_contratto==1)
+								elseif ($tipo_contr==2 && $tipo_contratto==2)
 									$descr_t="Indeterminati - Part Time";
 								elseif ($tipo_contr==2 && ($tipo_contratto>2))
 									$descr_t="Indeterminati - Altro";
-								if ($tipo_contr==1 && $tipo_contratto==2)
+								if ($tipo_contr==1 && $tipo_contratto==1)
 									$descr_t="Determinati - Full Time";
-								elseif ($tipo_contr==1 && $tipo_contratto==1)
+								elseif ($tipo_contr==1 && $tipo_contratto==2)
 									$descr_t="Determinati - Part Time";
 								elseif ($tipo_contr==1 && ($tipo_contratto>2))
 									$descr_t="Determinati - Altro";
