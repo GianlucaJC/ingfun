@@ -118,7 +118,6 @@ class Registro extends Controller
 		->select("s1.id","s1.descrizione","s1.importo")
 		->join("serviziapp as s","s.id_appalto","a.id")
 		->join("servizi as s1","s1.id","s.id_servizio")
-		->where("a.dele","=",0)
 		->groupBy('s1.id')
 		->orderBy('s1.descrizione')->get();
 		$servizi=array();
