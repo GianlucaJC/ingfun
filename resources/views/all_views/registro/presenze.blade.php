@@ -43,7 +43,7 @@
     <!-- /.content-header -->
 
 <?php 
-	$periodi=array(); 
+	//$periodi=array(); 
 ?>
     <!-- Main content -->
     <div class="content">
@@ -109,6 +109,10 @@
 						?>
 						@php ($inc=0)	
 						@foreach($servizi as $servizio)
+							<?php
+								$view_main=view_main($giorni,$lav_lista,$lavoratore,$servizio);	
+								if (($view_main['presenza'])==false) continue;
+							?>
 							@php($inc++)
 							<tr>
 								<?php
@@ -134,6 +138,7 @@
 										$js.="ins_value.mese_num='$mese_num';";
 										$js.="ins_value.id_lav=".$lavoratore->id_lav.";";
 										$js.="ins_value.id_servizio='".$servizio['id']."';";
+										$js.="ins_value.tipo_dato='".$servizio['tipo_dato']."';";
 										$js.="ins_value()";
 									?>
 									<a href='#' class="link-primary" onclick="{{$js}}">
@@ -142,7 +147,6 @@
 								</td>
 								
 								<?php
-									$view_main=view_main($giorni,$lav_lista,$lavoratore,$servizio);
 									echo $view_main['view'];
 									$somma_lav+=$view_main['somma'];
 								?>	
@@ -231,7 +235,7 @@
 
 function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 	
-	$view="";$somma=0;
+	$view="";$somma=0;$presenza=false;
 	for ($sca=1;$sca<=$giorni;$sca++) {
 		$value="";
 		$view.="<td>";
@@ -248,6 +252,7 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 						if (strlen($d_ref)>8) {
 							if (intval(substr($d_ref,8,2))==$sca)
 								$value=$servizio['importo'];
+								if (strlen($value)>0) $presenza=true;
 						}
 					}
 				}
@@ -262,11 +267,12 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 						$d_ref=$obj[$ser]->data;
 						if (strlen($d_ref)>8) {
 							if (intval(substr($d_ref,8,2))==$sca)
-								//1000:note	
-								if ($id_servizio==1000)
-									$value=$obj[$ser]->note;
-								else
+								if ($servizio['tipo_dato']==0)
 									$value=$obj[$ser]->importo;
+								else
+									$value=$obj[$ser]->note;
+
+								if (strlen($value)>0) $presenza=true;
 						}
 					}
 				}
@@ -283,6 +289,8 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 	
 	$info['view']=$view;
 	$info['somma']=$somma;
+	if ($servizio['pre_load']=="S") $presenza=true;
+	$info['presenza']=$presenza;
 	return $info;
 }
 ?> 
@@ -318,6 +326,6 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.443"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.445"></script>
 
 @endsection

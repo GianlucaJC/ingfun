@@ -13,16 +13,10 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('giustificativi', function (Blueprint $table) {
-            $table->id();
-			$table->integer('id_cand')->index();
-			$table->date('da_data');
-			$table->date('a_data');
-			$table->double('ore_gg',10,3)->nullable();
-			$table->string('value_descr',100)->nullable();
-            $table->timestamps();
-        });
-
+        Schema::table('servizi_custom', function ($table) {
+			$table->string('pre_load',1)->after('alias_ref')->default('N');
+			$table->integer('tipo_dato')->after('alias_ref');
+		});
     }
 
     /**

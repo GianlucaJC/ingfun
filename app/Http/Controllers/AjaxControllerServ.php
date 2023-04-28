@@ -28,7 +28,7 @@ class AjaxControllerServ extends Controller
 
 	public function save_value_presenze(Request $request){
 		$id_user=Auth::user()->id;
-		
+		$tipo_dato = $request->input('tipo_dato');
 		$periodo = $request->input('periodo');
 		$giorni = $request->input('giorni');
 		$id_lav = $request->input('id_lav');
@@ -70,12 +70,14 @@ class AjaxControllerServ extends Controller
 				$presenze->id_servizio=$id_servizio;
 				$presenze->periodo=$periodo;
 				$presenze->data=$data;
-				if ($id_servizio==1000) {
+				if ($tipo_dato=="1") {
 					$presenze->note=$value;
 					$presenze->importo=null;
 				}	
-				else 
+				else {
 					$presenze->importo=$value;
+					$presenze->note=null;
+				}
 				
 
 				$presenze->save();
@@ -89,12 +91,14 @@ class AjaxControllerServ extends Controller
 			$log_presenze->id_servizio=$id_servizio;
 			$log_presenze->periodo=$periodo;
 			$log_presenze->data=$data;
-			if ($id_servizio==1000) {
+			if ($tipo_dato=="1") {
 				$log_presenze->note=$value;
 				$log_presenze->importo=null;
 			}	
-			else 
+			else {
 				$log_presenze->importo=$value;
+				$log_presenze->note=null;
+			}
 
 			$log_presenze->save();		
 			

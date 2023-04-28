@@ -382,7 +382,7 @@ public function __construct()
 				if ($status_candidatura=="3") $candidati->tipo_anagr = "ASS";
 			}
 
-			$candidati->save();		
+			$candidati->save();
 			if ($id_cand==0) $id_cand=$candidati->id;
 			
 			$this->storicizza($request,$id_cand);

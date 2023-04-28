@@ -52,6 +52,7 @@ function save_value() {
 	//Each through elements
 	let CSRF_TOKEN = $("#token_csrf").val();
 	formData.append("_token", CSRF_TOKEN)
+	formData.append("tipo_dato",save_value.tipo_dato)
 	formData.append("periodo",save_value.periodo)
 	formData.append("id_lav",save_value.id_lav)
 	formData.append("id_servizio",save_value.id_servizio)
@@ -101,13 +102,15 @@ function save_value() {
 
 function ins_value() {
 	console.warn("giorni",ins_value.giorni,"mese",ins_value.mese,"id_lav",ins_value.id_lav,"id_servizio",ins_value.id_servizio)
-
+	
+	tipo_dato=ins_value.tipo_dato
 	periodo=ins_value.periodo
 	mese=ins_value.mese
 	mese_num=ins_value.mese_num
 	giorni=ins_value.giorni
 	anno=periodo.substr(0,4)
 	
+	save_value.tipo_dato=tipo_dato
 	save_value.periodo=ins_value.periodo
 	save_value.mese=ins_value.mese
 	save_value.mese_num=ins_value.mese_num
@@ -125,7 +128,7 @@ function ins_value() {
 	
 		html+="<div class='row'>";
 		for (sca=1;sca<=giorni;sca++) {
-			if (id_servizio!=1000) {
+			if (tipo_dato=="0") {
 				if (sca==8 || sca==15 || sca==22  || sca==29) {
 					html+="</div>";
 					html+="<div class='row mt-2'>";
@@ -147,7 +150,7 @@ function ins_value() {
 			if (day==6) day_d="Sab";
 			if (day==0) day_d="Dom";
 			max="";on="";
-			if (id_servizio==1000)  {
+			if (tipo_dato=="1")  {
 				max="maxlength=100"
 				html+="<div class='col-sm-4 mt-2'>";
 			}

@@ -8,6 +8,7 @@
 <!-- x button export -->
 <link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
 <!-- -->
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/daterangepicker/daterangepicker.css">
 @endsection
 
 
@@ -73,6 +74,7 @@
 						<th>Da data</th>
 						<th>A data</th>
 						<th>Ore GG</th>
+						<th>Descrizione (alternativa ore GG)</th>
 						<th>Elimina</th>
 					</tr>
 				</thead>
@@ -94,6 +96,9 @@
 							<td>
 								{{$giustificativo->ore_gg}}
 							</td>
+							<td>
+								{{$giustificativo->value_descr}}
+							</td>
 							
 						    <td>
 								<a href='#' onclick="dele_element({{$giustificativo->id}})">
@@ -111,6 +116,7 @@
 						<th>Da data</th>
 						<th>A data</th>
 						<th>Ore GG</th>
+						<th>Descrizione</th>
 						<th></th>
 					</tr>
 				</tfoot>					
@@ -152,6 +158,7 @@
  @endsection
  
  @section('content_plugin')
+
 	<!-- jQuery -->
 	<script src="plugins/jquery/jquery.min.js"></script>
 	<!-- Bootstrap 4 -->
@@ -159,8 +166,6 @@
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
 
-
-	
 	<!-- inclusione standard
 		per personalizzare le dipendenze DataTables in funzione delle opzioni da aggiungere: https://datatables.net/download/
 	!-->
@@ -174,8 +179,11 @@
 		<script type="text/javascript" src="https://cdn.datatables.net/v/dt/jszip-2.5.0/dt-1.12.1/b-2.2.3/b-colvis-2.2.3/b-html5-2.2.3/b-print-2.2.3/datatables.min.js"></script>
 	<!-- fine DataTables !-->
 	
+	<script src="{{ URL::asset('/') }}plugins/moment/moment.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/daterangepicker/daterangepicker.js"></script>
+	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/giustificativi.js?ver=1.005"></script>
+	<script src="{{ URL::asset('/') }}dist/js/giustificativi.js?ver=1.027"></script>
 
 @endsection

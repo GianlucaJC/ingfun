@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
-use App\Models\candidatis;
+use App\Models\candidati;
 use App\Models\presenze;
 use App\Models\giustificativi;
+use App\Models\servizi_custom;
 use DB;
 
 class Registro extends Controller
@@ -116,25 +117,37 @@ class Registro extends Controller
 		->select("s1.id","s1.descrizione","s1.importo")
 		->join("serviziapp as s","s.id_appalto","a.id")
 		->join("servizi as s1","s1.id","s.id_servizio")
-		
 		->groupBy('s1.id')
 		->orderBy('s1.descrizione')->get();
 		$servizi=array();
 		foreach($servizi_all as $s) {
 			$servizi[$s->id]['id']=$s->id;
 			$servizi[$s->id]['descrizione']=$s->descrizione;
+			$servizi[$s->id]['alias_ref']="";
 			$servizi[$s->id]['importo']=$s->importo;
+			$servizi[$s->id]['tipo_dato']=0; //tutti importi
+			$servizi[$s->id]['pre_load']="S"; //sempre visualizzato nella table
+			
 		}
 		
-		$servizi[1000]['id']=1000;
-		$servizi[1000]['descrizione']="NOTE";
-		$servizi[1000]['importo']="";
-		
-		
-		$servizi[1001]['id']=1001;
-		$servizi[1001]['descrizione']="FERIE";
-		$servizi[1001]['importo']="";
-
+		//in servizi_custom (oltre elementi definiti da utente mediante procedura giustificativi), ci sono anche degli elementi con pre_load='S' da me definiti di default: Ferie, Permessi, Note
+		$servizi_custom=DB::table('servizi_custom as s1')
+		->select("s1.id","s1.descrizione","s1.alias_ref","s1.tipo_dato","s1.pre_load")
+		->leftjoin("presenze as p","s1.id","p.id_servizio")
+		->where("p.data",">=",$per_da)
+		->where("p.data","<=",$per_a)
+		->orWhere("s1.pre_load","=", "S")
+		->groupBy('s1.id')
+		->get();
+		//->orderBy('s1.descrizione')
+		foreach($servizi_custom as $s) {
+			$servizi[$s->id]['id']=$s->id;
+			$servizi[$s->id]['descrizione']=$s->descrizione;
+			$servizi[$s->id]['alias_ref']=$s->alias_ref;
+			$servizi[$s->id]['importo']=null;
+			$servizi[$s->id]['tipo_dato']=$s->tipo_dato;
+			$servizi[$s->id]['pre_load']=$s->pre_load;
+		}
 
 		//servizi associati ai lavoratori nel periodo
 		$servizi_lav=DB::table('appalti as a')
@@ -146,6 +159,7 @@ class Registro extends Controller
 		->where("a.data_ref",">=",$per_da)
 		->where("a.data_ref","<=",$per_a)
 		->orderBy('s1.descrizione')->get();
+		
 		foreach ($servizi_lav as $service) {
 			if (isset($lav_lista[$service->id_lav_ref])) 
 				$lav_lista[$service->id_lav_ref]['service'][]=$service;
@@ -182,12 +196,71 @@ class Registro extends Controller
 
 
 	public function save_edit_giustificativi(Request $request) {
-		$edit_elem=0;
-		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
+		$lavoratori=$request->input("lavoratori");
+		$ore_gg=$request->input("ore_gg");		
+		$value_descr=$request->input("value_descr");
+		if (strlen($ore_gg)==0) $ore_gg=null;
+		if (strlen($value_descr)==0) $value_descr=null;
+		$tmp=$request->input("range_date");
+		$tmp=str_replace(" - ",";",$tmp);
+		$tmp=str_replace("/","-",$tmp);
+		
+		$arr=explode(";",$tmp);
+		$descrizione=$request->input("descrizione");
+		$tipo_d=$request->input("tipo_d");
+		$alias_ref=$request->input("alias_ref");
+		$id_serv=$request->input("servizio_custom");
+		if (strlen($descrizione)!=0) {
+			$servizi_custom = new servizi_custom;
+			$servizi_custom->descrizione=strtoupper($descrizione);
+			$servizi_custom->alias_ref=$alias_ref;
+			$servizi_custom->tipo_dato=$tipo_d;
+			$servizi_custom->save();
+			$id_serv=$servizi_custom->id;
+		}
+		
+		if (is_array($lavoratori) && count($lavoratori)>0 && count($arr)>0) {
 
+			$d1=$arr[0];$d2=$arr[1];
+			$da_data=substr($d1,6,4)."-".substr($d1,3,2)."-".substr($d1,0,2);
+			$a_data=substr($d2,6,4)."-".substr($d2,3,2)."-".substr($d2,0,2);
+
+
+			$begin = strtotime( $da_data );
+			$end   = strtotime( $a_data );
+			for($sca=0;$sca<=count($lavoratori)-1;$sca++) {
+				$giustificativi = new giustificativi;			
+				$id_lav=$lavoratori[$sca];
+				$giustificativi->id_cand=$id_lav;
+				$giustificativi->da_data=$da_data;
+				$giustificativi->a_data=$a_data;
+				$giustificativi->ore_gg=$ore_gg;
+				$giustificativi->value_descr=$value_descr;
+				$giustificativi->save();	
+				$id_giust=$giustificativi->id;
+				
+				//creazione ferie su presenze
+				
+				
+				for($gg=$begin;$gg<=$end;$gg=$gg+86400) {
+					$dx = date( 'Y-m-d', $gg );
+					$presenze = new presenze;
+					$periodo=substr($dx,0,7);
+					$presenze->id_lav=$id_lav;
+					$presenze->id_servizio=$id_serv;
+					$presenze->id_giustificativo=$id_giust;
+					$presenze->periodo=$periodo;
+					$presenze->data=$dx;
+					$presenze->importo=$ore_gg;
+					$presenze->note=$value_descr;
+					$presenze->save();
+				}
+				
+			}
+		}
 		$resp=array();
 		$resp['esito']=true;
 		$resp['msg']="";
@@ -195,6 +268,8 @@ class Registro extends Controller
 	
 		if (strlen($dele_contr)!=0) {
 			giustificativi::where('id', $dele_contr)->delete();
+			presenze::where('id_giustificativo', $dele_contr)->delete();
+			
 		}
 		
 		return $resp;
@@ -207,13 +282,31 @@ class Registro extends Controller
 		$view_dele=$request->input("view_dele");
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
+
+		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
+		->where('status_candidatura','=',3)		
+		->orderByRaw('case 
+			when `tipo_contr` = "2" and `tipo_contratto`="1"  then 1 
+			when `tipo_contr` = "2" and `tipo_contratto`="2"  then 2
+			when `tipo_contr` = "2" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 3
+			when `tipo_contr` = "1" and `tipo_contratto`="1"  then 4
+			when `tipo_contr` = "1" and `tipo_contratto`="2"  then 5
+			when `tipo_contr` = "1" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 6
+			else 7 end')
+		->orderBy('nominativo')	
+		->get();
+		
+		$servizi_custom=DB::table('servizi_custom as s1')
+		->select("s1.id","s1.descrizione","s1.alias_ref","s1.tipo_dato")
+		->where("s1.pre_load","<>","S")
+		->orderBy('s1.descrizione')->get();	
 		
 		$giustificativi=DB::table('giustificativi as g')
-		->select("g.id","c.nominativo",DB::raw("DATE_FORMAT(g.da_data,'%d-%m-%Y') as da_data"),DB::raw("DATE_FORMAT(g.a_data,'%d-%m-%Y') as a_data"),"id_cand","ore_gg")
+		->select("g.id","c.nominativo",DB::raw("DATE_FORMAT(g.da_data,'%d-%m-%Y') as da_data"),DB::raw("DATE_FORMAT(g.a_data,'%d-%m-%Y') as a_data"),"id_cand","ore_gg","value_descr")
 		->join("candidatis as c","g.id_cand","c.id")
 		->get();
 
-		return view('all_views/gestione/giustificativi')->with('giustificativi',$giustificativi)->with('view_dele',$view_dele)->with('save_edit',$save_edit);		
+		return view('all_views/gestione/giustificativi')->with('giustificativi',$giustificativi)->with('view_dele',$view_dele)->with('save_edit',$save_edit)->with('lavoratori',$lavoratori)->with("servizi_custom",$servizi_custom);		
 	}
 
 

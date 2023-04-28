@@ -35,37 +35,104 @@ $(document).ready( function () {
     });
 	$('.select2').select2()
 
+
+$('#range_date').daterangepicker({
+    "locale": {
+        "format": "DD/MM/YYYY",
+        "separator": " - ",
+        "applyLabel": "Applica",
+        "cancelLabel": "Annulla",
+        "fromLabel": "Da",
+        "toLabel": "A",
+        "customRangeLabel": "Custom",
+        "daysOfWeek": [
+            "Dom",
+            "Lun",
+            "Mar",
+            "Mer",
+            "Gio",
+            "Ven",
+            "Sab"
+        ],
+        "monthNames": [
+            "Gennaio",
+            "Febbraio",
+            "Marzo",
+            "Aprile",
+            "Maggio",
+            "Giugno",
+            "Luglio",
+            "Agosto",
+            "Settembre",
+            "Ottobre",
+            "Novembre",
+            "Dicembre"
+        ],
+        "firstDay": 1
+    }
+})
+	
+	/*
+	$('form#frm_giust1').submit(function(e) {		
+		ore_gg=$("#ore_gg").val()
+		value_descr=$("#value_descr").val()
+		if (ore_gg.length==0 && value_descr.length==0) {
+			e.preventDefault();
+			alert("Compilare il campo Ore GG o Descrizione");
+		}
+		if (ore_gg.length!=0 && value_descr.length!=0) {
+			e.preventDefault();
+			alert("Compilare solo uno dei due campi tra Ore GG e Descrizione");
+		}
+	});	
+	*/
 	
 } );
 
 
 
+function select_servizi(value) {
+	$(".tipi").hide()
+	$("#div_newserv").hide(150);
+	tipo_dato=$("#servizio_custom").find(':selected').data("tipo_dato");
+	
+	$("#descrizione").val('');$("#alias_ref").val('');
+	$('#descrizione').removeAttr('required');
+	$('#alias_ref').removeAttr('required');
+	$('#tipo_d').removeAttr('required');
+	if (value=="0") {
+		$("#div_newserv").show(150);
+		$('#descrizione').prop('required',true);
+		$('#alias_ref').prop('required',true);
+		$('#tipo_d').prop('required',true);
+	}
+	if (tipo_dato=="0") $("#div_oregg").show(150);
+	if (tipo_dato=="1") $("#div_descr").show(150);
+}
+
+function set_tipo(tipo_dato) {
+	$(".tipi").hide()
+	$('#ore_gg').removeAttr('required');
+	$('#value_descr').removeAttr('required');
+	if (tipo_dato=="0") {
+		$('#ore_gg').prop('required',true);
+		$("#div_oregg").show(150);
+	}	
+	if (tipo_dato=="1") {
+		$('#value_descr').prop('required',true);
+		$("#div_descr").show(150);
+	}
+}
+
 
 function new_giust() {
 	$('#frm_giust1')[0].reset();
 	$("#lavoratori").val('').trigger('change')
-	$('#edit_elem').val('');
 	$('#div_definition').hide()
 	$('#div_definition').show(150)
 }
 
-function popola_cap_pro(value) {
-	$("#cap").val('');$("#provincia").val('')
-	$("#cap").val(value.split("|")[0])
-	$("#provincia").val(value.split("|")[1])
-}
 
-function edit_elem(obj) {
-	$('#pw_first').attr('placeholder','Non indicare se si lascia la stessa');
-	$('#pw_ripeti').attr('placeholder','Non indicare se si lascia la stessa');
-	$('#div_definition').show()
-	$("#email").val($(obj).data("mail"))
-	$("#nome").val($(obj).data("nominativo"))
-	$("#ruolo").val($(obj).data("idrole"))
-	$("#edit_elem").val($(obj).data("id_elem"))
-	
-	
-}
 
 function dele_element(value) {
 	if(!confirm('Sicuri di eliminare l\'utente?')) 

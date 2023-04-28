@@ -82,6 +82,20 @@ use App\Models\User;
 
 			</div>
 
+			<div class="row">
+				<div class="col-md-12">
+					<a href="{{ route('giustificativi') }}">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary" type="button">
+						  
+						  <i class="fas fa-address-card" style='font-size:36px'></i><br>
+							GIUSTIFICATIVI
+						  </button>
+						</div>
+					</a>
+				</div>
+
+			</div>
 
 		@endif
 

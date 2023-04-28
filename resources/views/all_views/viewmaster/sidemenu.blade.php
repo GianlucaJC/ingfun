@@ -293,6 +293,14 @@ use App\Models\User;
 					</a>
 				  </li>	
 				</ul>
+				<ul class="nav nav-treeview">
+				  <li class="nav-item">
+					<a href="{{route('giustificativi')}}" class="nav-link">
+					  <i class="far fa-circle nav-icon" nav-icon"></i>
+					  <p>Giustificativi</p>
+					</a>
+				  </li>	
+				</ul>
 			  </li>	
 				 
 			 @endif 
