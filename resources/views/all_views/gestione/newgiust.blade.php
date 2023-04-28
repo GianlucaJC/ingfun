@@ -13,7 +13,7 @@
 			  <div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" id="servizio_custom" aria-label="Servizio Custom" name='servizio_custom' onchange='select_servizi(this.value)' required>
 						<option value=''>Select...</option>
-						<option value='0'>Altro (Non presente in lista: da definire)</option>
+						<option value='0'>(Nuova Definizione)</option>
 						@foreach ($servizi_custom as $servizio)
 							<option value='{{$servizio->id}}' data-tipo_dato='{{$servizio->tipo_dato}}'> 
 								{{$servizio->descrizione}}
@@ -63,7 +63,7 @@
 				//$arr_patenti=explode(";",$candidati[0]['patenti']);
 			  ?>
 			  <div class="form-floating mb-3 mb-md-0">
-					<b>Scelta Lavoratore/i per assegnazione giustificativi</b>
+					<b>Scelta Lavoratore/i per assegnazione giustificativo</b>
 					<select class="form-select select2" id="lavoratori" aria-label="Lavoratori" name='lavoratori[]' multiple="multiple" required>
 						@php ($old_t="?")
 						@foreach ($lavoratori as $lavoratore)

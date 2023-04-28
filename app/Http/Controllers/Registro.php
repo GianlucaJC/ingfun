@@ -300,8 +300,9 @@ class Registro extends Controller
 		
 		$servizi_custom=DB::table('servizi_custom as s1')
 		->select("s1.id","s1.descrizione","s1.alias_ref","s1.tipo_dato")
-		->where("s1.pre_load","<>","S")
+		
 		->orderBy('s1.descrizione')->get();	
+	//->where("s1.pre_load","<>","S")
 		
 		$giustificativi=DB::table('giustificativi as g')
 		->select("g.id","c.nominativo",DB::raw("DATE_FORMAT(g.da_data,'%d-%m-%Y') as da_data"),DB::raw("DATE_FORMAT(g.a_data,'%d-%m-%Y') as a_data"),"id_cand","ore_gg","value_descr")

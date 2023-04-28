@@ -52,7 +52,8 @@ class ControllerRifornimenti extends Controller
 		})
 		->when($view_dele=="0", function ($rifornimenti) {
 			return $rifornimenti->where('r.dele', "=","0");
-		})		
+		})	
+		->where("a.dele","=",0)
 		->orderBy('r.id','desc')
 		->get();
 		return view('all_views/rifornimenti/rifornimenti')->with('rifornimenti', $rifornimenti)->with('targhe',$targhe)->with('view_dele',$view_dele);

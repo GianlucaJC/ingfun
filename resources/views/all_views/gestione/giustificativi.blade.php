@@ -74,7 +74,7 @@
 						<th>Da data</th>
 						<th>A data</th>
 						<th>Ore GG</th>
-						<th>Descrizione (alternativa ore GG)</th>
+						<th>Descrizione</th>
 						<th>Elimina</th>
 					</tr>
 				</thead>
