@@ -84,6 +84,7 @@ class Registro extends Controller
 		->select("c.id as id_lav","c.nominativo")
 		->join("lavoratoriapp as l","l.id_appalto","a.id")
 		->join("candidatis as c","c.id","l.id_lav_ref")
+		->where("a.dele","=",0)
 		->where("a.data_ref",">=",$per_da)
 		->where("a.data_ref","<=",$per_a)
 		->groupBy('c.id')
@@ -117,6 +118,7 @@ class Registro extends Controller
 		->select("s1.id","s1.descrizione","s1.importo")
 		->join("serviziapp as s","s.id_appalto","a.id")
 		->join("servizi as s1","s1.id","s.id_servizio")
+		->where("a.dele","=",0)
 		->groupBy('s1.id')
 		->orderBy('s1.descrizione')->get();
 		$servizi=array();
@@ -155,6 +157,7 @@ class Registro extends Controller
 		->join("serviziapp as s","s.id_appalto","a.id")
 		->join("lavoratoriapp as l","l.id_appalto","a.id")
 		->join("servizi as s1","s1.id","s.id_servizio")
+		->where("a.dele","=",0)
 		->where("l.status","=",1)
 		->where("a.data_ref",">=",$per_da)
 		->where("a.data_ref","<=",$per_a)
