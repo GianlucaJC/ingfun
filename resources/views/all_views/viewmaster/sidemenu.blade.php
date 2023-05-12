@@ -287,6 +287,14 @@ use App\Models\User;
 				</ul>
 				<ul class="nav nav-treeview">
 				  <li class="nav-item">
+					<a href="{{route('listrep')}}" class="nav-link">
+					  <i class="far fa-circle nav-icon" nav-icon"></i>
+					  <p>Lista Reperibilità</p>
+					</a>
+				  </li>	
+				</ul>
+				<ul class="nav nav-treeview">
+				  <li class="nav-item">
 					<a href="{{route('rifornimenti')}}" class="nav-link">
 					  <i class="far fa-circle nav-icon" nav-icon"></i>
 					  <p>Lista Rifornimenti</p>

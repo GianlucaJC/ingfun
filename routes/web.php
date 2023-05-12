@@ -160,6 +160,14 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['role:admin|coord|resp']);
 
 
+	Route::get('listrep/{id?}', [ 'as' => 'listrep', 'uses' => 'App\Http\Controllers\ControllerReperibilita@listrep'])->middleware(['role:admin|coord|resp']);
+	
+	Route::post('listrep/{id?}', [ 'as' => 'listrep', 'uses' => 'App\Http\Controllers\ControllerReperibilita@listrep'])->middleware(['role:admin|coord|resp']);
+
+	Route::get('newreper/{id?}', [ 'as' => 'newreper', 'uses' => 'App\Http\Controllers\ControllerReperibilita@newreper'])->middleware(['role:admin|coord|resp']);
+
+	Route::post('save_reper', [ 'as' => 'save_reper', 'uses' => 'App\Http\Controllers\ControllerReperibilita@save_reper'])->middleware(['role:admin|coord|resp']);
+	
 	Route::get('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['role:admin|coord|resp']);
 	
 	Route::post('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['role:admin|coord|resp']);

@@ -27,6 +27,7 @@ use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportUser;
 
 use DB;
+use Mail;
 
 
 
@@ -75,7 +76,47 @@ public function __construct()
 		return view('all_views/archiviserv');
 	}
 	
+	public function test_mail() {
+		$status=array();
+		$email="morescogianluca@gmail.com";
+		try {
+			$msg="";
+			$data["email"] = $email;					
+			$data["title"] = "Risposta lavoratore per partecipazione appalto";
+		
+			$msg = "Il lavoratore  ha accettato la proposta di partecipazione all'appalto";
+
+
+			//$prefix="http://localhost:8012";
+			$prefix="https://217.18.125.177";
+
+			$lnk=$prefix."/ingfun/public/newapp/1/0/0";
+
+			$msg.="\nCliccare quì $lnk per i dettagli sull'appalto";
+			
+			$data["body"]=$msg;
+			
+
+			Mail::send('emails.risposta_appalti', $data, function($message)use($data) {
+				$message->to($data["email"], $data["email"])
+				->subject($data["title"]);
+
+			});
+			
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo";
+			
+			
+			
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+		}
+		print_r($status);	
+	}
+	
 	public function dashboard() {
+		//$this->test_mail();
 		
 		$name="";
 		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche

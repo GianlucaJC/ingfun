@@ -10,6 +10,7 @@ use App\Models\ditte;
 use App\Models\lavoratoriapp;
 use App\Models\mezzi;
 use App\Models\rifornimenti;
+use App\Models\reperibilita;
 use DB;
 use Image;
 use Mail;
@@ -231,6 +232,29 @@ class ApiController extends Controller
 		$risp['storici_si']=$storici_si;
 		$risp['storici_no']=$storici_no;
 
+		////////////reperibilità
+		$count_newrep=reperibilita::select('reperibilita.id')
+		->where('reperibilita.dele', "=","0")
+		->where('reperibilita.status', "=","0")
+		->where('reperibilita.id_user',"=",$id_lav_ref)
+		->count();
+		
+		$numrepsi=reperibilita::select('reperibilita.id')
+		->where('reperibilita.dele', "=","0")
+		->where('reperibilita.status', "=","1")
+		->where('reperibilita.id_user',"=",$id_lav_ref)
+		->count();
+
+		$numrepno=reperibilita::select('reperibilita.id')
+		->where('reperibilita.dele', "=","0")
+		->where('reperibilita.status', "=","2")
+		->where('reperibilita.id_user',"=",$id_lav_ref)
+		->count();
+
+		
+		$risp['count_newrep']=$count_newrep;
+		$risp['numrepsi']=$numrepsi;
+		$risp['numrepno']=$numrepno;
 		
 		echo json_encode($risp);
 		
@@ -297,6 +321,7 @@ class ApiController extends Controller
 			if ($ditta->provincia) $info_ditta.=" - ".$ditta->provincia;
 			$info[$sc]['ditta']=$info_ditta;
 			$info[$sc]['descrizione_appalto']=$record->descrizione_appalto;
+			$info[$sc]['variazione']=$record->variazione;
 			
 			$d=$record->data_ref;
 			$date=date_create($d);
@@ -337,6 +362,84 @@ class ApiController extends Controller
 		
 	}
 	
+
+	public function lavori_rep(Request $request) {
+		$check=$this->check_log($request); 
+		if ($check['esito']=="KO") {
+			$risp['header']=$check;
+			 echo json_encode($risp);
+			 exit;
+		} 
+		$id_lav_ref=$check['id_user'];
+
+
+		$lavori=reperibilita::select(DB::raw("DATE_FORMAT(reperibilita.data,'%d-%m-%Y') as data"),'reperibilita.id','reperibilita.fascia','reperibilita.status')
+		->where('reperibilita.dele', "=","0")
+		->where('reperibilita.id_user',"=",$id_lav_ref)
+		->orderBy('reperibilita.id','desc')
+		->get();
+
+			
+		$risp['header']=$check;
+		$risp['lavori']=$lavori;
+		echo json_encode($risp);
+		
+	}	
+	
+	public function info_rep(Request $request) {
+
+		$check=$this->check_log($request); 
+		if ($check['esito']=="KO") {
+			$risp['header']=$check;
+			 echo json_encode($risp);
+			 exit;
+		} 
+		$id_lav_ref=$check['id_user'];
+		$wh=99;$id_ref_rep=0;
+		if ($request->has("from")) {
+			$from=$request->input("from");
+			if ($from=="menu") $wh=0;
+			if ($from=="storico_rep") {
+				$wh=1;
+				$id_ref_rep=$request->input("id_ref_rep");
+			}
+		}	
+
+
+		if ($wh==99) {
+			$risp['header']=$check;
+			$risp['info']=array();
+			echo json_encode($risp);
+			exit;
+		}
+		
+
+		//tutte le reperibilità assegnate ad un operatore
+		if ($wh==0) {
+			$allinfo=reperibilita::select('reperibilita.id',DB::raw("DATE_FORMAT(reperibilita.data,'%d-%m-%Y') as data"),'reperibilita.fascia','reperibilita.status')
+			->where('reperibilita.dele', "=",0)
+			->where('reperibilita.status', "=",0)
+			->where('reperibilita.id_user',"=",$id_lav_ref)
+			->get();
+		}
+		
+		//chiamata da storico appalti relativi ad un particolare appalto
+		if ($wh==1) {
+			$allinfo=reperibilita::select('reperibilita.*')
+			->where('reperibilita.id', "=",$id_ref_rep)
+			->get();
+		}
+		
+		
+			
+		$risp['header']=$check;
+		$risp['info']=$allinfo;
+
+		
+		echo json_encode($risp);
+		
+	}	
+	
 	public function risposta_user(Request $request) {
 		$check=$this->check_log($request); 
 		if ($check['esito']=="KO") {
@@ -362,6 +465,29 @@ class ApiController extends Controller
 		
 		
 	}
+	
+	public function risposta_user_rep(Request $request) {
+		$check=$this->check_log($request); 
+		if ($check['esito']=="KO") {
+			$risp['header']=$check;
+			 echo json_encode($risp);
+			 exit;
+		} 
+		$id_lav_ref=$check['id_user'];
+		$id_rep=$request->input("id_rep");
+		$sn=$request->input("sn");
+		$status=0;
+		if ($sn=="S") $status=1;
+		if ($sn=="N") $status=2;
+		
+		
+		reperibilita::where('id', $id_rep)->update(['status' => $status]);
+		$risp['header']=$check;
+		$risp['info']="Set risposta: $sn";
+		echo json_encode($risp);
+		
+		
+	}	
 	
 	public function send_mail_creator($id_appalto,$id_lav_ref,$sn) {
 		$nome_lav= DB::table('candidatis as c')
