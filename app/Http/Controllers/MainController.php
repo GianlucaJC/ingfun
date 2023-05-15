@@ -115,9 +115,24 @@ public function __construct()
 		print_r($status);	
 	}
 	
+	
+	public function newpassuser(Request $request) {
+		$id_user=Auth::user()->id;
+		$user = user::find($id_user);
+		
+		$esito="";
+		$pw_first=$request->input('pw_first');
+		if (strlen($pw_first)!=0) {
+			$password = Hash::make($pw_first);
+			$user->password=$password;
+			$user->save();
+			$esito="OK";
+		}	
+		return view('all_views/newpassuser')->with('esito',$esito);		
+	}
+	
 	public function dashboard() {
 		//$this->test_mail();
-		
 		$name="";
 		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche
 		//valutare se spostare su un processo esterno all'applicativo

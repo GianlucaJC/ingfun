@@ -73,6 +73,10 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('listcand', [ 'as' => 'listcand', 'uses' => 'App\Http\Controllers\MainController@listcand'])->middleware(['role:admin']);
 
+	Route::get('newpassuser', [ 'as' => 'newpassuser', 'uses' => 'App\Http\Controllers\MainController@newpassuser'])->middleware(['role:user']);
+	
+	Route::post('newpassuser', [ 'as' => 'newpassuser', 'uses' => 'App\Http\Controllers\MainController@newpassuser'])->middleware(['role:user']);
+
 	Route::get('listpers', [ 'as' => 'listpers', 'uses' => 'App\Http\Controllers\ControllerPersonale@listpers'])->middleware(['role:admin']);
 	
 	Route::post('listpers', [ 'as' => 'listpers', 'uses' => 'App\Http\Controllers\ControllerPersonale@listpers'])->middleware(['role:admin']);

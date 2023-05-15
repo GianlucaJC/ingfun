@@ -76,6 +76,20 @@ use App\Models\User;
 					</a>
 				</div>	
 			</div>	
+
+			<div class="row">
+				<div class="col-md-12">
+					<a href="{{ route('newpassuser') }}">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-info" type="button">
+						  <i class="fas fa-lock" style='font-size:36px'></i>
+						  <br>
+							CAMBIO PASSWORD
+						  </button>
+						</div>
+					</a>
+				</div>	
+			</div>				
 		@endif
 		
 		
