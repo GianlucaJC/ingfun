@@ -72,11 +72,14 @@ function popola_servizi(id_ditta) {
 		url: base_path+"/popola_servizi",
 		data: {_token: CSRF_TOKEN, id_ditta:id_ditta},
 		success: function (data) {
+			ent=false;
 			$.each(JSON.parse(data), function (i, item) {
-				
 				$('#servizi').append('<option value="' + item.id_servizio + '">' + item.descrizione + '</option>');
-						
+				ent=true
 			});
+			if (ent==false) {
+				alert("Non risultano servizi associati a questa ditta!")
+			}
 
 		}
 	});}
