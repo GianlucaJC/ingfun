@@ -242,6 +242,20 @@ use App\Models\User;
 						  <p>Anagrafiche</p>
 						</a>
 					  </li>					
+
+					  <li class="nav-item">
+						<a href="{{route('gestione_servizi')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Gestione Servizi</p>
+						</a>
+					  </li>	
+					  <li class="nav-item">
+						<a href="{{route('servizi')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Listino Servizi</p>
+						</a>
+					  </li>	
+					  
 					</ul>
 				 </li>
 				 
@@ -253,12 +267,7 @@ use App\Models\User;
 					  </p>
 					</a>
 					<ul class="nav nav-treeview">
-					  <li class="nav-item">
-						<a href="{{route('servizi')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Servizi</p>
-						</a>
-					  </li>					
+				
 					  <li class="nav-item">
 						<a href="#" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>

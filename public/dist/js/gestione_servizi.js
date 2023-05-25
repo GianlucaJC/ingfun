@@ -25,10 +25,10 @@ $(document).ready( function () {
         },
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',
-            zeroRecords: 'Nessun Servizio trovato',
+            zeroRecords: 'Nessun servizio trovato',
             info: 'Pagina _PAGE_ di _PAGES_',
             infoEmpty: 'Non sono presenti Servizi',
-            infoFiltered: '(Filtrati da _MAX_ Tipologie di Servizio totali)',
+            infoFiltered: '(Filtrati da _MAX_ servizi totali)',
         },
 
 		
@@ -37,51 +37,27 @@ $(document).ready( function () {
 } );
 
 
-
-function check_associa() {
-	ditta_ref=$("#ditta_ref").val()
-	if (ditta_ref.length==0) {
-		alert("Scegliere una ditta di riferimento!");
-		return false;
-	}	
-	$('#div_set_service').show(150)
-	$('#div_set_service').show(150)
-	$('#div_table_servizi').hide(150)
+function new_serv() {
+	$("#edit_elem").val('')
+	$("#descr_contr").val('');
+	$('#div_definition').hide()
+	$('#div_definition').show(150)
 }
-
 function edit_elem(id_elem) {	
-	check_associa()
-	id_servizio=$("#info_s"+id_elem).data("id_servizio")
-	id_ditta=$("#info_s"+id_elem).data("id_ditta")
-	importo_ditta=$("#info_s"+id_elem).data("importo_ditta")
-	aliquota=$("#info_s"+id_elem).data("aliquota")
-	importo_lavoratore=$("#info_s"+id_elem).data("importo_lavoratore")
-	$( "#ditta_ref" ).prop( "disabled", true );
-	$( "#service" ).prop( "disabled", true );
-	
-	$("#service").val(id_servizio)
-	$("#ditta_ref").val(id_ditta)	
-	$("#importo").val(importo_ditta)
-	$("#aliquota").val(aliquota)
-	$("#importo_lavoratore").val(importo_lavoratore)
-
+	descr_servizio=$("#info_s"+id_elem).data("descr_servizio")
+	$("#descr_contr").val(descr_servizio);
+	$('#div_definition').show(150)
 	$("#edit_elem").val(id_elem)
-
 }
 
 function dele_element(value) {
-	ditta_ref=$("#ditta_ref").val()
-	$("#ditta_from_frm1").val(ditta_ref)
 	if(!confirm('Sicuri di eliminare l\'elemento?')) 
 		event.preventDefault() 
 	else 
-		$('#dele_ds').val(value)	
-
+		$('#dele_contr').val(value)	
 }
 
 function restore_element(value) {
-	ditta_ref=$("#ditta_ref").val()
-	$("#ditta_from_frm1").val(ditta_ref)
 	if(!confirm('Sicuri di ripristinare l\'elemento?')) 
 		event.preventDefault() 
 	else 

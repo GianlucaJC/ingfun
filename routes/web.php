@@ -145,6 +145,9 @@ Route::group(['only_log' => ['auth']], function () {
 
 
 
+	Route::get('gestione_servizi', [ 'as' => 'gestione_servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@gestione_servizi'])->middleware(['role:admin']);
+	
+	Route::post('gestione_servizi', [ 'as' => 'gestione_servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@gestione_servizi'])->middleware(['role:admin']);
 
 	Route::get('servizi', [ 'as' => 'servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@servizi'])->middleware(['role:admin']);
 	
@@ -154,14 +157,15 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('ditte', [ 'as' => 'ditte', 'uses' => 'App\Http\Controllers\ControllerServizi@ditte'])->middleware(['role:admin|coord']);
 
-	Route::get('lavoratori', [ 'as' => 'lavoratori', 'uses' => 'App\Http\Controllers\ControllerServizi@lavoratori'])->middleware(['role:admin']);
-	
-	Route::post('lavoratori', [ 'as' => 'lavoratori', 'uses' => 'App\Http\Controllers\ControllerServizi@lavoratori'])->middleware(['role:admin']);
 
-
-	Route::get('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['role:admin|coord|resp']);
+	Route::get('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@listapp'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerServizi@listapp'])->middleware(['role:admin|coord|resp']);
+	Route::post('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@listapp'])->middleware(['role:admin|coord|resp']);
+	
+
+	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@newapp'])->middleware(['role:admin|coord|resp']);
+
+	Route::post('save_newapp', [ 'as' => 'save_newapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@save_newapp'])->middleware(['role:admin|coord|resp']);
 
 
 	Route::get('listrep/{id?}', [ 'as' => 'listrep', 'uses' => 'App\Http\Controllers\ControllerReperibilita@listrep'])->middleware(['role:admin|coord|resp']);
@@ -176,9 +180,7 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti'])->middleware(['role:admin|coord|resp']);
 
-	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@newapp'])->middleware(['role:admin|coord|resp']);
 
-	Route::post('save_newapp', [ 'as' => 'save_newapp', 'uses' => 'App\Http\Controllers\ControllerServizi@save_newapp'])->middleware(['role:admin|coord|resp']);
 
 
 });
@@ -188,7 +190,10 @@ Route::group(['only_log' => ['auth']], function () {
 
 //routing Ajax
 Route::group(['only_log' => ['auth']], function () {
+	Route::post('popola_servizi', 'App\Http\Controllers\AjaxControllerServ@popola_servizi');
+
 	Route::post('save_value_presenze', 'App\Http\Controllers\AjaxControllerServ@save_value_presenze');
+
 
 	Route::get('save_value_presenze', 'App\Http\Controllers\AjaxControllerServ@save_value_presenze');
 

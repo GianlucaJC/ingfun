@@ -16,6 +16,16 @@ use DB;
 class AjaxControllerServ extends Controller
 	{
 
+	public function popola_servizi(Request $request){		
+		$id_ditta = $request->input('id_ditta');
+		$infoditta=DB::table('servizi as s')
+		->join('servizi_ditte as d','s.id','d.id_servizio')
+		->select('s.descrizione','d.id_servizio','d.importo_ditta','d.aliquota','d.importo_lavoratore')
+		->where('d.id_ditta', '=', $id_ditta)
+		->get();
+        return json_encode($infoditta);
+	}	
+
 
 	public function getditta(Request $request){		
 		$id_ditta = $request->input('id_ditta');

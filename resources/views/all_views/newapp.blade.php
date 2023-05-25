@@ -60,7 +60,10 @@
 				}
 			?>
 		</div>
-
+		<?php
+			$id_ditta_db=0;
+			if (isset($appalti[0]->id_ditta))  $id_ditta_db=$appalti[0]->id_ditta;
+		?>	
 
 		<div class="row mb-3">
 			<div class="col-md-6">
@@ -90,24 +93,47 @@
 			</div>	
 
 		</div>
-		
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" style='height:auto' name="servizi[]" id="servizi" required multiple>
-					
+					<select class="form-select" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
+					<option value=''>Select...</option>
 					<?php
-						foreach ($servizi as $servizio) {
-							$id_servizio=$servizio->id;
-							$descr_servizio=$servizio->descrizione;
-							echo "<option value='".$id_servizio."' ";
-							if (in_array($id_servizio,$id_servizi)) echo " selected ";
-							echo ">".$descr_servizio."</option>";
+						foreach ($ditte as $ditta_ref) {
+							$id_ditta=$ditta_ref->id;
+							$denominazione=$ditta_ref->denominazione;
+							echo "<option value='".$id_ditta."' ";
+							if ($id_ditta==$id_ditta_db) echo " selected ";
+							echo ">".$denominazione."</option>";
 						}
 					?>						
 					</select>
-					<label for="servizi">Servizi*</label>
+					<label for="ditta">Ditta*</label>
 				</div>
+			</div>			
+		</div>
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select select2" style='height:auto' name="servizi[]" id="servizi" required multiple>
+					
+
+					<?php
+						if (strlen($id_app)!=0 && $id_app!=0) {
+							
+							foreach ($servizi as $servizio) {
+								$id_servizio=$servizio->id_servizio;
+								$descr_servizio=$servizio->descrizione;
+								echo "<option value='".$id_servizio."' ";
+								if (in_array($id_servizio,$id_servizi)) echo " selected ";
+								echo ">".$descr_servizio."</option>";
+							}
+						}
+					?>						
+					</select>
+					
+				</div>
+				<label for="servizi">Servizi*</label>
 			</div>	
 		</div>		
 
@@ -118,7 +144,6 @@
 					<option value=''>Select...</option>
 					<?php
 						foreach ($mezzi as $mezzo) {
-							$id_mezzo=$servizio->id;
 							$marca=$mezzo->marca;
 							$modello=$mezzo->modello;
 							$targa=$mezzo->targa;
@@ -137,32 +162,12 @@
 		</div>
 
 		<center><h4>FORMAZIONE SQUADRA</h4></center>
-			<?php
-				$id_ditta_db=0;
-				if (isset($appalti[0]->id_ditta))  $id_ditta_db=$appalti[0]->id_ditta;
-			?>	
+
 
 		
 			<div id='div_ditta'>
 				<div class="row mb-3">
-					<div class="col-md-6">
-						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-select" name="ditta" id="ditta"  required>
-							<option value=''>Select...</option>
-							<?php
-								foreach ($ditte as $ditta_ref) {
-									$id_ditta=$ditta_ref->id;
-									$denominazione=$ditta_ref->denominazione;
-									echo "<option value='".$id_ditta."' ";
-									if ($id_ditta==$id_ditta_db) echo " selected ";
-									echo ">".$denominazione."</option>";
-								}
-							?>						
-							</select>
-							<label for="ditta">Ditta*</label>
-						</div>
-					</div>	
-					<div class="col-md-6">
+					<div class="col-md-12">
 						<div class="form-floating mb-3 mb-md-0">
 							<select class="form-select select2" id="lavoratori" aria-label="Lavoratori" name='lavoratori[]' multiple="multiple" required>
 								@php ($old_t="?")
@@ -260,7 +265,7 @@
 
         <div class="row">
 
-			<button type="submit" name='sub_newcand_onlysave' id='sub_newcand_onlysave' class="btn btn-success btn-lg btn-block">SALVA</button>  
+			<button type="submit" name='sub_newcand_onlysave' id='sub_newcand_onlysave' onclick='check_save()' class="btn btn-success btn-lg btn-block">SALVA</button>  
 			
 			<a href="{{ route('listapp') }}">
 				<button type="button"  id='back_appalti' class="btn btn-info btn-lg btn-block mt-3">TORNA AD ELENCO APPALTI</button> 
@@ -321,7 +326,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.11"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.108"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

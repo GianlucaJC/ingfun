@@ -93,7 +93,7 @@
 				</div>
 				
 				<div class="row mb-3">
-					<div class="col-md-4">
+					<div class="col-md-3">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">
 							<span class="input-group-text" id="basic-addon4">@ PEC</span>
@@ -102,7 +102,7 @@
 						</div>			
 					</div>
 					
-					<div class="col-md-4">
+					<div class="col-md-3">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">
 							<span class="input-group-text" id="basic-addon5">Telefono</span>
@@ -111,12 +111,21 @@
 						</div>			
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-md-3">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">
 							<span class="input-group-text" id="basic-addon6">Fax</span>
 						  </div>
 						  <input type="text" class="form-control" placeholder="Fax" id="fax" name='fax' maxlength=50>
+						</div>			
+					</div>
+
+					<div class="col-md-3">
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<span class="input-group-text" id="basic-addon6">SDI</span>
+						  </div>
+						  <input type="text" class="form-control" placeholder="sdi" id="sdi" name='sdi' maxlength=10>
 						</div>			
 					</div>
 				</div>
