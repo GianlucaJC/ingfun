@@ -97,7 +97,7 @@ public function __construct()
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$save_ds=$request->input("save_ds");
 		$esito_saveds=0;
-		if ($save_ds=="1" && strlen($importo)!=0) {
+		if ($save_ds=="1" && strlen($request->input("importo"))!=0) {
 			$ditta_ref=$request->input("ditta_ref");
 			$service=$request->input("service");
 			$importo=$request->input("importo");
@@ -105,7 +105,7 @@ public function __construct()
 			$importo_lavoratore=$request->input("importo_lavoratore");
 		}
 
-		if ($save_ds=="1" && $edit_elem!=0 && strlen($importo)!=0) {
+		if ($save_ds=="1" && $edit_elem!=0 && strlen($request->input("importo"))!=0) {
 			$data=['dele'=>0, 'importo_ditta' => $importo,'aliquota' => $aliquota,'importo_lavoratore' => $importo_lavoratore];			
 
 			$esito_saveds=3;
@@ -113,7 +113,7 @@ public function __construct()
 			->where('id', $edit_elem)
 			->update($data);
 		}			
-		if ($save_ds=="1" && $edit_elem==0 && strlen($importo)!=0) {
+		if ($save_ds=="1" && $edit_elem==0 && strlen($request->input("importo"))!=0) {
 			$data=['dele'=>0, 'id_ditta' => $ditta_ref,'id_servizio' => $service,'importo_ditta' => $importo,'aliquota' => $aliquota,'importo_lavoratore' => $importo_lavoratore];			
 
 			$esito_saveds=1;		
