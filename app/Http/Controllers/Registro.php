@@ -115,7 +115,7 @@ class Registro extends Controller
 		->where("a.data_ref","<=",$per_a)
 		*/
 		$servizi_all=DB::table('appalti as a')
-		->select("s1.id","s1.descrizione","s1.importo")
+		->select("s1.id","s1.descrizione","s.importo_lavoratore as importo")
 		->join("serviziapp as s","s.id_appalto","a.id")
 		->join("servizi as s1","s1.id","s.id_servizio")
 		->groupBy('s1.id')

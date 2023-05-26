@@ -31,12 +31,12 @@ public function __construct()
 			$appalti = new appalti;
 			$appalti->id_creator = $id_user;
 		}	
-	
+		$id_ditta=$request->input('ditta');
 
 		$appalti->descrizione_appalto = $request->input('descrizione_appalto');
 		$appalti->data_ref = $request->input('data_app');
 		$appalti->orario_ref = $request->input('ora_app');
-		$appalti->id_ditta = $request->input('ditta');
+		$appalti->id_ditta = $id_ditta;
 		$appalti->targa = $request->input('mezzo');
 		$appalti->note = $request->input('note');
 		$appalti->variazione = $request->input('variazione');
@@ -46,9 +46,19 @@ public function __construct()
 		$deleted = serviziapp::where('id_appalto', $id_app)->delete();
 		$servizi=$request->input('servizi');
 		for ($sca=0;$sca<=count($servizi)-1;$sca++) {
+			$id_servizio=$servizi[$sca];
+			
+			$importo_lavoratore=DB::table('servizi_ditte')
+			->select('importo_lavoratore')
+			->where('id_ditta', "=", $id_ditta)
+			->where('id_servizio', "=", $id_servizio)
+			->get()->first()->importo_lavoratore;
+			if ($importo_lavoratore==null || strlen($importo_lavoratore)==0) $importo_lavoratore=0;
+			
 			DB::table('serviziapp')->insert([
 				'id_appalto' => $id_app,
-				'id_servizio' => $servizi[$sca],
+				'id_servizio' => $id_servizio,
+				'importo_lavoratore' => $importo_lavoratore,
 				'created_at'=>now(),
 				'updated_at'=>now()
 			]);			
