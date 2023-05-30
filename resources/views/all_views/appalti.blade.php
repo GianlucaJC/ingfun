@@ -54,6 +54,21 @@ use App\Models\User;
 				</a>
 				</div>
 			</div>
+
+
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('newapp',['id'=>0,'from'=>1,'num_send'=>0]) }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-file" style='font-size:36px'></i><br>
+						NUOVO APPALTO
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>
+
 			<div class="row">
 				<div class="col-md-12">
 				<a href="{{ route('listapp') }}">

@@ -54,23 +54,11 @@ use App\Models\User;
 				</a>
 				</div>
 			</div>
-	
-			<div class="row">
-				<div class="col-md-12">
-				<a href="">
-					<div class="d-grid gap-2 mt-2">
-					  <button class="btn btn-primary" type="button">
-					  <i class="fas fa-users" style='font-size:36px'></i><br>
-						SERVIZI
-					  </button>
-					</div>
-				</a>
-				</div>
-			</div>
+
 		
 			<div class="row">
 				<div class="col-md-12">
-					<a href="">
+					<a href="{{route('invito')}}">
 						<div class="d-grid gap-2 mt-2">
 						  <button class="btn btn-primary" type="button">
 						  <i class="fas fa-cubes" style='font-size:36px'></i><br>

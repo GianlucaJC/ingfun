@@ -269,7 +269,7 @@ use App\Models\User;
 					<ul class="nav nav-treeview">
 				
 					  <li class="nav-item">
-						<a href="#" class="nav-link">
+						<a href="{{route('invito')}}" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>
 						  <p>Inviti a fatturare</p>
 						</a>
@@ -286,6 +286,16 @@ use App\Models\User;
 					<i class="right fas fa-angle-left"></i>
 				  </p>
 				</a>
+				<ul class="nav nav-treeview">
+				  <li class="nav-item">
+
+				  
+					<a href="{{ route('newapp',['id'=>0,'from'=>1,'num_send'=>0]) }}" class="nav-link">
+					  <i class="far fa-circle nav-icon" nav-icon"></i>
+					  <p>Nuovo Appalto</p>
+					</a>
+				  </li>	
+				</ul>
 				<ul class="nav nav-treeview">
 				  <li class="nav-item">
 					<a href="{{route('listapp')}}" class="nav-link">
