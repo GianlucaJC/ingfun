@@ -26,8 +26,16 @@
 						<td>{{$articolo->um}}</td>
 						<td>{{$articolo->prezzo_unitario}}€</td>
 						<td>{{$articolo->subtotale}}€</td>
-						<td>{{$articolo->aliquota}}%</td>
 						<td>
+							@if (isset($arr_aliquota[$articolo->aliquota]))
+								{{$arr_aliquota[$articolo->aliquota]}}%
+							@endif
+						</td>
+						<td>
+							<!-- riga info per js !-->
+							<span id='inforow{{$articolo->id}}' data-codice='{{ $articolo->codice}}' data-descrizione='{{ $articolo->descrizione}}' data-quantita='{{ $articolo->quantita}}' data-um='{{ $articolo->um}}' data-prezzo_unitario='{{ $articolo->prezzo_unitario}}'  data-subtotale='{{ $articolo->subtotale}}' data-aliquota='{{ $articolo->aliquota}}' >
+							</span>	
+							
 							<a href='#' onclick="edit_product({{$articolo->id}})">
 								<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 							</a>

@@ -13,7 +13,7 @@ use App\Models\candidati;
 use App\Models\servizi_ditte;
 use App\Models\user;
 use App\Models\mezzi;
-
+use App\Models\aliquote_iva;
 
 use DB;
 
@@ -193,8 +193,16 @@ public function __construct()
 		->where('d.dele', "=","0")
 		->orderBy('d.denominazione')
 		->get();
+		
+		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		->get();		
+		$arr_aliquota=array();
+		foreach ($aliquote_iva as $aliquota) {
+			if (isset($aliquota->id))
+				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
+		}
 
-		return view('all_views/gestioneservizi/servizi')->with('servizi_ditte', $servizi_ditte)->with('ditte',$ditte)->with("view_dele",$view_dele)->with('ditta_ref',$ditta_ref)->with('servizi',$servizi)->with('service',$service)->with('esito_saveds',$esito_saveds);
+		return view('all_views/gestioneservizi/servizi')->with('servizi_ditte', $servizi_ditte)->with('ditte',$ditte)->with("view_dele",$view_dele)->with('ditta_ref',$ditta_ref)->with('servizi',$servizi)->with('service',$service)->with('esito_saveds',$esito_saveds)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota);
 
 	}
 

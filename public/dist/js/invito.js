@@ -71,6 +71,48 @@ function set_table() {
 	
 }
 
+function edit_product(id_riga) {
+	$("#title_modal").html("Inserimento/Modifica dati riga fattura")
+	
+	$('#modal_story').modal('toggle')
+	//$("#body_modal").html("Caricamento informazioni in corso...")		
+	
+	codice=$("#inforow"+id_riga).data("codice")
+	descrizione=$("#inforow"+id_riga).data("descrizione")
+	quantita=$("#inforow"+id_riga).data("quantita")
+	um=$("#inforow"+id_riga).data("um")
+	prezzo_unitario=$("#inforow"+id_riga).data("prezzo_unitario")
+	subtotale=$("#inforow"+id_riga).data("subtotale")
+	aliquota=$("#inforow"+id_riga).data("aliquota")
+	$("#codice").val(codice)
+	$("#prodotto").val(descrizione)
+	$("#quantita").val(quantita)
+	$("#um").val(um)
+	$("#prezzo_unitario").val(prezzo_unitario)
+	$("#subtotale").val(subtotale)
+	$("#aliquota").val(aliquota)
+	
+	
+	
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/edit_row_fattura",
+		data: {_token: CSRF_TOKEN, id_riga:id_riga},
+		success: function (data) {
+			$.each(JSON.parse(data), function (i, item) {
+
+			});
+		}
+	});	
+}
+
 function dele_product() {
 	if (!confirm("Sicuri di cancellare la riga dell'articolo?")) {
 		  event.preventDefault();
@@ -187,6 +229,7 @@ function popola_servizi(id_ditta) {
 			}
 
 		}
-	});}
+	});
+}
 
 

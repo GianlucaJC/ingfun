@@ -44,6 +44,7 @@
 			</div>
 		</div>	
 
+		<!--
 		<div class="col-md-3">
 			<div class="form-floating mb-3 mb-md-0">
 				<input class="form-control" id="aliquota" name='aliquota' type="text" placeholder="aliquota" required oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" required />
@@ -51,6 +52,23 @@
 			</div>
 
 		</div>
+		!-->
+		
+		<div class="col-md-3">
+		  <div class="form-floating mb-3 mb-md-0">
+			
+			<select class="form-select" id="aliquota" aria-label="Aliquota" name='aliquota' required>
+				<option value=''>Select...</option>
+				@foreach ($aliquote_iva as $aliquota) 
+					<option value='{{$aliquota->id}}'>
+						{{$aliquota->aliquota}}% - {{$aliquota->descrizione}}
+					</option>	
+				@endforeach
+			</select>
+			
+			<label for="aliquota">Aliquota Iva</label>
+			</div>
+		</div>		
 
 		<div class="col-md-3">
 			<div class="form-floating mb-3 mb-md-0">

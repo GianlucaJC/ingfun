@@ -109,8 +109,8 @@
   </div>
 
 <!-- Modal -->
-<div class="modal fade bd-example-modal-lg" id="modal_story" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
-  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+<div class="modal fade bd-example-modal-xl" id="modal_story" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title" id="title_modal">Modal title</h5>
@@ -119,7 +119,70 @@
         </button>
       </div>
       <div class="modal-body" id='body_modal'>
-        ...
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<div class="row mb-3">
+						<div class="col-md-3">
+							<div class="form-floating">
+								<input class="form-control" id="codice" name='codice' type="text" placeholder="Codice"   />
+								<label for="codice">Codice</label>
+							</div>
+						</div>
+						<div class="col-md-6">
+							<div class="form-floating">
+								<input class="form-control" id="prodotto" name='prodotto' type="text" placeholder="Prodotto"  />
+								<label for="prodotto">Prodotto</label>
+							</div>		
+						</div>
+						<div class="col-md-3">
+							<div class="form-floating">
+								<input class="form-control" id="quantita" name='quantita' type="text" placeholder="Q.tà" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" />
+								<label for="quantita">Quantità</label>
+							</div>		
+						</div>
+					</div>
+					
+				</div>
+				
+
+				<div class="col-md-6">
+					<div class="row mb-3">
+						<div class="col-md-2">
+							<div class="form-floating">
+								<input class="form-control" id="um" name='um' type="text" placeholder="UM"  />
+								<label for="um">U.M.</label>
+							</div>		
+						</div>							
+						<div class="col-md-4">
+							<div class="form-floating">
+								<input class="form-control" id="prezzo_unitario" name='prezzo_unitario' type="text" placeholder="Prezzo unitario" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" />
+								<label for="prezzo_unitario">Prezzo Unitario</label>
+							</div>		
+						</div>	
+						<div class="col-md-3">
+							<div class="form-floating">
+								<input class="form-control" id="subtotale" name='subtotale' type="text" placeholder="Subtotale" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" />
+								<label for="subtotale" >Subtotale</label>
+							</div>		
+						</div>
+						<div class="col-md-3">
+						  <div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-select" id="aliquota" aria-label="Stato Occupazione" name='aliquota' required>
+								<option value=''>Select...</option>
+								@foreach ($aliquote_iva as $aliquota) 
+									<option value='{{$aliquota->id}}'>
+										{{$aliquota->aliquota}}% - {{$aliquota->descrizione}}
+									</option>	
+								@endforeach
+							</select>
+							
+							<label for="aliquota">Aliquota Iva</label>
+							</div>
+						</div>						
+					</div>	
+				</div>
+			</div>			
       </div>
       <div class="modal-footer">
 		<div id='altri_btn'></div>
@@ -147,7 +210,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.057"></script>
+	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.065"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 

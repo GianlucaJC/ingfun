@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\ditte;
 use App\Models\articoli_fattura;
+use App\Models\aliquote_iva;
 use DB;
 
 class ControllerInvito extends Controller
@@ -83,6 +84,7 @@ public function __construct()
 		->where(function ($query) use($ditta){	
 			$query->where('a.id_ditta', "=",$ditta);	
 		})
+		->where('a.dele','=',0)
 		->orderBy('a.data_ref','desc')
 		->orderBy('d.denominazione')
 		->get();
@@ -90,7 +92,16 @@ public function __construct()
 		$ditte=ditte::select('id','denominazione')
 		->orderBy('denominazione')	
 		->get();				
+
+		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		->get();
 		
+		$arr_aliquota=array();
+		foreach ($aliquote_iva as $aliquota) {
+			if (isset($aliquota->id))
+				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
+		}
+
 		$dele_ele=$request->input('dele_ele');
 		if (strlen($dele_ele)!=0) {
 				$deleted = articoli_fattura::where('id',$dele_ele)
@@ -109,7 +120,7 @@ public function __construct()
 		->get();
 		
 
-		return view('all_views/invitofatt/invito')->with('session_cart',$session_cart)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura);
+		return view('all_views/invitofatt/invito')->with('session_cart',$session_cart)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota);
 	}
 
 

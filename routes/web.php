@@ -237,6 +237,8 @@ Route::group(['only_log' => ['auth']], function () {
 	
 
 	Route::post('getditta', 'App\Http\Controllers\AjaxControllerServ@getditta');
+	
+	Route::post('edit_row_fattura', 'App\Http\Controllers\AjaxControllerFatture@edit_row_fattura');
 
 });
 

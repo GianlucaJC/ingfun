@@ -125,7 +125,10 @@
 									</td>
 									<td>
 										<span id='id_importo{{$tipo->id}}' data-importo='{{ $tipo->aliquota }}'>
-											{{ $tipo->aliquota }}%
+										
+										@if (isset($arr_aliquota[$tipo->aliquota]))
+											{{$arr_aliquota[$tipo->aliquota]}}%
+										@endif									
 										</span>	
 									</td>
 									<td>
