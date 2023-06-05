@@ -6,6 +6,25 @@
 		<div class="container-fluid">
 
 				<div class="row mb-3">
+				
+					<div class="col-md-12">
+						<div class="form-floating mb-3 mb-md-0">
+							<select class="form-select" name="azienda_prop" id="azienda_prop"  required >
+							<option value=''>Select...</option>
+							<?php
+								foreach ($aziende_prop as $azienda) {
+									$id_azienda=$azienda->id;
+									$denominazione=$azienda->azienda_prop;
+									echo "<option value='".$id_azienda."' ";
+									echo ">".$denominazione."</option>";
+								}
+							?>						
+							</select>
+							<label for="azienda_prop">Azienda di proprietà di riferimento*</label>
+						</div>
+					</div>
+				</div>	
+				<div class="row mb-3">
 					<div class="col-md-12">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">

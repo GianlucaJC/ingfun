@@ -27,6 +27,7 @@ public function __construct()
 	public function save_edit(Request $request) {
 		$edit_elem=0;
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		$azienda_prop=$request->input("azienda_prop");
 		$descr_contr=$request->input("descr_contr");
 		$cap=$request->input("cap");
 		$comune=$request->input("comune");
@@ -46,7 +47,7 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['dele'=>0, 'denominazione' => $descr_contr,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax];
+		$data=['id_azienda_prop'=>$azienda_prop,'dele'=>0, 'denominazione' => $descr_contr,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax];
 
 		//Creazione nuovo elemento
 		if (strlen($descr_contr)!=0 && $edit_elem==0) {
@@ -77,6 +78,12 @@ public function __construct()
 		$view_dele=$request->input("view_dele");
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		
+		$aziende_prop=DB::table('societa as s')
+		->select('s.id','s.descrizione as azienda_prop')
+		->where('s.dele','=',0)
+		->orderBy('s.descrizione')
+		->get();
+		
 		
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
@@ -89,7 +96,7 @@ public function __construct()
 		->orderBy('denominazione')->get();
 
 
-		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni);		
+		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('aziende_prop',$aziende_prop);		
 	}	
 
 

@@ -166,6 +166,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.11"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.12"></script>
 
 @endsection

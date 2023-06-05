@@ -126,8 +126,10 @@ public function __construct()
 		->orderBy('d.denominazione')
 		->get();
 
-		$ditte=ditte::select('id','denominazione')
-		->orderBy('denominazione')	
+		$ditte=DB::table('ditte as d')
+		->join('societa as s','d.id_azienda_prop','s.id')
+		->select('d.id','d.denominazione','s.id as id_azienda','s.descrizione as azienda')
+		->orderBy('d.denominazione')	
 		->get();				
 
 		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')

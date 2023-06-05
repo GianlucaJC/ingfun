@@ -7,7 +7,16 @@
 					<select class="form-select" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
 					<option value=''>Select...</option>
 					<?php
+						$old_az="?";
 						foreach ($ditte as $ditta_ref) {
+							$id_azienda=$ditta_ref->id_azienda;
+							$azienda=$ditta_ref->azienda;
+							if ($old_az!=$id_azienda) {
+								$old_az=$id_azienda;
+								if ($old_az!="?")echo "</optgroup>";
+								echo "<optgroup label='$azienda'>";
+							}	
+							$azienda=$ditta_ref->azienda;
 							$id_ditta=$ditta_ref->id;
 							$denominazione=$ditta_ref->denominazione;
 							echo "<option value='".$id_ditta."' ";
