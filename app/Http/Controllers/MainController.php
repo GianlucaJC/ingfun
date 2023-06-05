@@ -159,9 +159,7 @@ public function __construct()
 	public function cliditte() {
 		return view('all_views/cliditte');
 	}
-	public function serviziapp() {
-		return view('all_views/serviziapp');
-	}
+
 	public function menuhr() {
 		$name="";
 		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche

@@ -81,7 +81,8 @@ public function __construct()
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		$ditte=DB::table('ditte as d')
-		->select("*")
+		->join('societa as s','d.id_azienda_prop','s.id')
+		->select("d.id","d.dele","d.denominazione","s.descrizione as azienda_prop")
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('d.dele', "=","0");
 		})

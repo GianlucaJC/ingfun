@@ -30,7 +30,6 @@ Route::get('menuaziende', [ 'as' => 'menuaziende', 'uses' => 'App\Http\Controlle
 
 Route::get('cliditte', [ 'as' => 'cliditte', 'uses' => 'App\Http\Controllers\MainController@cliditte'])->middleware(['role:admin|coord']);
 
-Route::get('serviziapp', [ 'as' => 'serviziapp', 'uses' => 'App\Http\Controllers\MainController@serviziapp'])->middleware(['role:admin|coord']);
 
 
 Route::group(['only_log' => ['auth']], function () {

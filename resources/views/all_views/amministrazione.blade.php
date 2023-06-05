@@ -54,19 +54,21 @@ use App\Models\User;
 				</a>
 				</div>
 			</div>
+
 			<div class="row">
 				<div class="col-md-12">
-				<a href="{{ route('serviziapp') }}">
+				<a href="{{ route('appalti') }}">
 					<div class="d-grid gap-2 mt-2">
 					  <button class="btn btn-primary" type="button">
-					  <i class="fas fa-city" style='font-size:36px'></i><br>
-						APPALTI
+					  <i class="fas fa-database" style='font-size:36px'></i><br>
+						GESTIONE APPALTI
 					  </button>
 					</div>
 				</a>
 				</div>
-			</div>
-		
+			</div>	
+
+			
 			<div class="row">
 				<div class="col-md-12">
 					<a href="{{ route('cliditte') }}">

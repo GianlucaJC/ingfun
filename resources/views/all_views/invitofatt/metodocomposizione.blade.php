@@ -10,8 +10,10 @@
 	</button>
 	<div class="dropdown-menu" role="menu">
 	  <a class="dropdown-item" href="#" onclick="metodo_ins(1)">a) Modalità di inserimento manuale</a>
-	  <a class="dropdown-item" href="#" onclick="metodo_ins(2)">b) Importazione da Appalti</a>
-	  <a class="dropdown-item" href="#" onclick="metodo_ins(3)">c) Servizi associati alle ditte</a>
+	  <a class="dropdown-item" href="#" onclick="metodo_ins(2)">b) Importazione da Appalti relativi alla ditta selezionata</a>
+	  <!--
+	  <a class="dropdown-item" href="#" onclick="metodo_ins(3)">c) Servizi associati alla ditta selezionata</a>
+	  !-->
 	  <div class="dropdown-divider"></div>
 	  <a class="dropdown-item" href="#" onclick="metodo_ins(4)"><i>Torna alla visualizzazione degli articoli</i></a>
 

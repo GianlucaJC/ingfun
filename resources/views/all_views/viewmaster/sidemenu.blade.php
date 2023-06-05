@@ -211,78 +211,11 @@ use App\Models\User;
 				  </p>
 				</a>
 				<ul class="nav nav-treeview">
-				 <li class="nav-item menu">
-					<a href="#" class="nav-link">
-					  <i class="nav-icon fas fa-city"></i>
-					  <p>Appalti
-						<i class="right fas fa-angle-left"></i>
-					  </p>
-					</a>
-					<ul class="nav nav-treeview">
-					  <li class="nav-item">
-						<a href="#" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Servizi</p>
-						</a>
-					  </li>					
-					</ul>
-				 </li>	
-				 
-				 <li class="nav-item menu">
-					<a href="#" class="nav-link">
-					  <i class="nav-icon fas fa-user-tie"></i>
-					  <p>Clienti/Ditte
-						<i class="right fas fa-angle-left"></i>
-					  </p>
-					</a>
-					<ul class="nav nav-treeview">
-					  <li class="nav-item">
-						<a href="{{route('ditte')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Anagrafiche</p>
-						</a>
-					  </li>					
 
-					  <li class="nav-item">
-						<a href="{{route('gestione_servizi')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Gestione Servizi</p>
-						</a>
-					  </li>	
-					  <li class="nav-item">
-						<a href="{{route('servizi')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Listino Servizi</p>
-						</a>
-					  </li>	
-					  
-					</ul>
-				 </li>
-				 
-				 <li class="nav-item menu">
-					<a href="#" class="nav-link">
-					  <i class="nav-icon fas fa-user-tie"></i>
-					  <p>Aziende di Proprietà
-						<i class="right fas fa-angle-left"></i>
-					  </p>
-					</a>
-					<ul class="nav nav-treeview">
-				
-					  <li class="nav-item">
-						<a href="{{route('invito')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Inviti a fatturare</p>
-						</a>
-					  </li>
-					</ul>
-				 </li>				 
-				 
-				</ul>
-			  </li>
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
 				  <i class="nav-icon fas fa-database"></i>
-				  <p>Gestione Appalti
+				  <p>Appalti
 					<i class="right fas fa-angle-left"></i>
 				  </p>
 				</a>
@@ -328,7 +261,66 @@ use App\Models\User;
 					</a>
 				  </li>	
 				</ul>
-			  </li>	
+			  </li>
+				 
+				 <li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="nav-icon fas fa-user-tie"></i>
+					  <p>Clienti/Ditte
+						<i class="right fas fa-angle-left"></i>
+					  </p>
+					</a>
+					<ul class="nav nav-treeview">
+					  <li class="nav-item">
+						<a href="{{route('ditte')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Anagrafiche</p>
+						</a>
+					  </li>					
+
+					  <li class="nav-item">
+						<a href="{{route('gestione_servizi')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Gestione Servizi</p>
+						</a>
+					  </li>	
+					  <li class="nav-item">
+						<a href="{{route('servizi')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Listino Servizi</p>
+						</a>
+					  </li>	
+					  
+					</ul>
+				 </li>
+				 
+				 <li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="nav-icon fas fa-user-tie"></i>
+					  <p>Aziende di Proprietà
+						<i class="right fas fa-angle-left"></i>
+					  </p>
+					</a>
+					<ul class="nav nav-treeview">
+
+					  <li class="nav-item">
+						<a href="#" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Anagrafiche</p>
+						</a>
+					  </li>				
+					  <li class="nav-item">
+						<a href="{{route('invito')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Inviti a fatturare</p>
+						</a>
+					  </li>
+					</ul>
+				 </li>				 
+				 
+				</ul>
+			  </li>
+	
 				 
 			 @endif 
 			

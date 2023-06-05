@@ -17,9 +17,10 @@ $(document).on('submit','#needs-validation2', function(){
 })	
 
 
+
 function set_table() {
 
-    var table=$('#tbl_list_appalti').DataTable({
+    var t1=$('#tbl_list_appalti').DataTable({
 		"pageLength": 100,
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',
@@ -45,20 +46,7 @@ function set_table() {
 			'excel', 'pdf'
 		],
 		*/		
-        initComplete: function () {
-            // Apply the search
-            this.api()
-                .columns()
-                .every(function () {
-                    var that = this;
- 
-                    $('input', this.footer()).on('keyup change clear', function () {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-                });
-        },
+
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',
             zeroRecords: 'Nessun articolo trovato',
@@ -71,46 +59,102 @@ function set_table() {
 	
 }
 
-function edit_product(id_riga) {
+
+function calcolo_riga() {
+	quantita=$("#quantita").val()
+	prezzo_unitario=$("#prezzo_unitario").val()
+	infoaliquota=$("#aliquota").val()
+	aliquota=infoaliquota.split("|")[1]/100
+	if (quantita && prezzo_unitario) {
+		subtotale=quantita*prezzo_unitario
+		if (aliquota && aliquota!=0) {
+			aliquota=aliquota+1
+			subtotale=subtotale*aliquota
+		}
+		subtotale=subtotale.toFixed(2)
+		$("#subtotale").val(subtotale)
+	}
+}
+
+function edit_product(id_riga,last_ordine) {
+	
+	save_art.id_riga=id_riga
 	$("#title_modal").html("Inserimento/Modifica dati riga fattura")
 	
 	$('#modal_story').modal('toggle')
 	//$("#body_modal").html("Caricamento informazioni in corso...")		
 	
-	codice=$("#inforow"+id_riga).data("codice")
-	descrizione=$("#inforow"+id_riga).data("descrizione")
-	quantita=$("#inforow"+id_riga).data("quantita")
-	um=$("#inforow"+id_riga).data("um")
-	prezzo_unitario=$("#inforow"+id_riga).data("prezzo_unitario")
-	subtotale=$("#inforow"+id_riga).data("subtotale")
-	aliquota=$("#inforow"+id_riga).data("aliquota")
-	$("#codice").val(codice)
-	$("#prodotto").val(descrizione)
-	$("#quantita").val(quantita)
-	$("#um").val(um)
-	$("#prezzo_unitario").val(prezzo_unitario)
-	$("#subtotale").val(subtotale)
-	$("#aliquota").val(aliquota)
+	if (last_ordine==0) 
+		ordine=$("#inforow"+id_riga).data("ordine")
+	else
+		ordine=last_ordine
 	
-	
-	
-	base_path = $("#url").val();
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
-	let CSRF_TOKEN = $("#token_csrf").val();
-	$.ajax({
-		type: 'POST',
-		url: base_path+"/edit_row_fattura",
-		data: {_token: CSRF_TOKEN, id_riga:id_riga},
-		success: function (data) {
-			$.each(JSON.parse(data), function (i, item) {
+	if (id_riga!=0) {
+		codice=$("#inforow"+id_riga).data("codice")
+		descrizione=$("#inforow"+id_riga).data("descrizione")
+		quantita=$("#inforow"+id_riga).data("quantita")
+		um=$("#inforow"+id_riga).data("um")
+		prezzo_unitario=$("#inforow"+id_riga).data("prezzo_unitario")
+		prezzo_unitario=prezzo_unitario.toFixed(2)
+		
+		subtotale=$("#inforow"+id_riga).data("subtotale")
+		subtotale=subtotale.toFixed(2)
+		aliquota=$("#inforow"+id_riga).data("aliquota")
 
-			});
-		}
-	});	
+		$("#codice").val(codice)
+		$("#prodotto").val(descrizione)
+		$("#quantita").val(quantita)
+		$("#um").val(um)
+		$("#prezzo_unitario").val(prezzo_unitario)
+		$("#subtotale").val(subtotale)
+		$("#aliquota").val(aliquota)
+		
+		
+	}
+	else
+		$("#frm_modal")[0].reset()
+	
+	$("#ordine").val(ordine)
+
+}
+
+function save_art() {
+	var forms = document.getElementsByClassName('needs-validation4');
+	var validation = Array.prototype.filter.call(forms, function(form) {
+		if (form.checkValidity() === false) {
+		  event.preventDefault();
+		  event.stopPropagation();
+		} else {
+			if (save_art.id_riga !== undefined) {
+				$("#edit_riga").val(save_art.id_riga)
+				/*
+				codice=$("#codice").val()
+				prodotto=$("#prodotto").val()
+				base_path = $("#url").val();
+				$.ajaxSetup({
+					headers: {
+						'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+					}
+				});
+				let CSRF_TOKEN = $("#token_csrf").val();
+				$.ajax({
+					type: 'POST',
+					url: base_path+"/edit_row_fattura",
+					data: {_token: CSRF_TOKEN, id_riga:save_art.id_riga,codice:codice},
+					success: function (data) {
+						$.each(JSON.parse(data), function (i, item) {
+
+						});
+					}
+				});
+*/				
+				
+			}
+
+			
+		}	
+		form.classList.add('was-validated');
+	});
 }
 
 function dele_product() {
@@ -130,9 +174,10 @@ function valida(form_val) {
 		  event.preventDefault();
 		  event.stopPropagation();
 		  html=""
-    	  html+="<div class='alert alert-warning' role='alert'>";
-			if (form_val=="needs-validation2") html+="Controllare i campi evidenziati in rosso";
+		  html+="<div class='alert alert-warning' role='alert'>";
+			 html+="Controllare i campi evidenziati in rosso";
 		  html+="</div>";
+		  
 		  $("#div_alert").html(html)
 		} else {
 		
@@ -143,7 +188,6 @@ function valida(form_val) {
 				event.stopPropagation();
 				
 			}
-			save_sez()
 		}	
 		form.classList.add('was-validated');
 	});
@@ -162,17 +206,18 @@ function set_step(step_active) {
 	$('#btn_step_'+step_active).addClass('btn-primary');
 }
 
-function save_sez() {
-	step_active=$("#step_active").val()
-	step_active++;	
-	$(".sezioni").hide(80)
-	$("#div_sez"+step_active).show(150)
-
-}
 
 
 function metodo_ins(value) {
+		
 	$('.metodi').hide(150);
+	if (value==1) {
+		edit_product(0,)
+		$("#div_lista_articoli").show(100)
+		return false;
+	}
+
+	
 	if (value=="2") $('#div_from_appalti').show(150)
 	ditta=$("#ditta").val()
 	if (value=="3") {

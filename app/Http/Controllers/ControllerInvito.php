@@ -21,6 +21,16 @@ public function __construct()
 		$session_cart=$request->input('session_cart');
 		$importi=array();
 		
+
+		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		->get();
+		
+		$arr_aliquota=array();
+		foreach ($aliquote_iva as $aliquota) {
+			if (isset($aliquota->id))
+				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
+		}
+		
 		if (is_array($app_sel)) {
 			$indice=0;
 			for ($sca=0;$sca<=count($app_sel)-1;$sca++) {
@@ -43,16 +53,22 @@ public function __construct()
 					->select("s.descrizione","sd.importo_ditta","sd.aliquota")
 					->where('sd.id_ditta', "=",$id_ditta)	
 					->where('sd.id_servizio', "=",$id_servizio)	
-					->get();
+					->get(); 
 					foreach ($servizi_ditte as $servizio) {
+						$importo_ditta=$servizio->importo_ditta;
+						$aliquota=$servizio->aliquota;
+						$subtotale=$importo_ditta;
+						if (isset($arr_aliquota[$aliquota])) 
+							$subtotale=$importo_ditta*(($arr_aliquota[$aliquota]/100)+1);
+							
 						DB::table('articoli_fattura')->insert([
 							'id_appalto' => $id_app,
 							'id_temp' => $session_cart,
 							'descrizione' =>$servizio->descrizione,
 							'quantita' => 1,
-							'prezzo_unitario' =>$servizio->importo_ditta,
-							'aliquota' =>$servizio->aliquota,
-							'subtotale' =>$servizio->importo_ditta,
+							'prezzo_unitario' =>$importo_ditta,
+							'aliquota' =>$aliquota,
+							'subtotale' =>$subtotale,
 							'created_at'=>now(),
 							'updated_at'=>now()
 						]);							
@@ -63,19 +79,40 @@ public function __construct()
 		return $importi;
 	}
 
+	public function edit_riga($id_row) {
+		$request=request();
+		if ($id_row!=0)
+			$art = articoli_fattura::find($id_row);
+		else 
+			$art = new articoli_fattura;
+		$art->ordine = $request->input('ordine');
+		$art->codice = $request->input('codice');
+		$art->descrizione = $request->input('prodotto');
+		$art->quantita = $request->input('quantita');
+		$art->um = $request->input('um');
+		$art->prezzo_unitario = $request->input('prezzo_unitario');
+		$art->subtotale = $request->input('subtotale');
+		$art->aliquota = $request->input('aliquota');
+		$art->id_temp=$request->input('session_cart');
+		
+		$art->save();
+	}
+
 	public function invito($id=0) {		
 		$request=request();
-		$step_active=$request->input('step_active');
-		if ($step_active=="ditte") $step_active="articoli";
+		
 		$session_cart=$request->input('session_cart');
 		if (strlen($session_cart)==0) $session_cart=uniqid();
 		
-		
-		if (strlen($step_active)==0) $step_active="ditte";
+		$step_active=$request->input('step_active');
+		if (strlen($step_active)==0) $step_active=0;
 		$ditta=$request->input('ditta');
 		
 		$btn_import_app=$request->input('btn_import_app');
 		if ($btn_import_app=="import_a") $this->import_from_appalti();
+
+		$edit_riga=$request->input('edit_riga');
+		if (strlen($edit_riga)!=0) $this->edit_riga($edit_riga);
 
 		
 		$ditteinapp=DB::table('appalti as a')
@@ -110,7 +147,7 @@ public function __construct()
 
 		
 		$articoli_fattura=DB::table('articoli_fattura as a')
-		->select('a.id','a.id_doc','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota')
+		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota')
 		->when($id!=0, function ($articoli_fattura) use ($id) {
 			return $articoli_fattura->where('a.id_doc', "=",$id);
 		})	
@@ -120,9 +157,28 @@ public function __construct()
 		->get();
 		
 
-		return view('all_views/invitofatt/invito')->with('session_cart',$session_cart)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota);
+		$lista_sezionali=DB::table('societa as s')
+		->select('s.id','s.descrizione')
+		->get();
+		$lista_pagamenti=$this->lista_pagamenti();
+	
+	
+		return view('all_views/invitofatt/invito')->with('session_cart',$session_cart)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota)->with('lista_sezionali',$lista_sezionali)->with('lista_pagamenti',$lista_pagamenti);
 	}
 
+	function lista_pagamenti() {
+		$lista=array();
+		$lista[0]['id']=1;
+		$lista[0]['descrizione']="Contanti";
+		$lista[1]['id']=2;
+		$lista[1]['descrizione']="Bancomat";
+		$lista[2]['id']=3;
+		$lista[2]['descrizione']="Assegno";
+		$lista[3]['id']=4;
+		$lista[3]['descrizione']="Bonifico";
+
+		return $lista;
+	}
 
 	public function save_newapp(Request $request) {
 		$id_user=Auth::user()->id;

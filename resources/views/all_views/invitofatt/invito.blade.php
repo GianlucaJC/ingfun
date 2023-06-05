@@ -52,10 +52,9 @@
 		  
 		  <div class="card-header">
 			<div id='div-step' class="btn-group mb-3" role="group" aria-label="Step" >
-			  <button type="button" id="btn_step_ditte" class="btn btn-primary steps">Definizione Ditta/Cliente</button>
-			  <button type="button" id="btn_step_datidoc" class="btn btn-secondary steps">Dati Documento</button>
-			  <button type="button" id="btn_step_articoli" class="btn btn-secondary steps">Lista Articoli</button>
-			  <button type="button" id="btn_step_pagamenti" class="btn btn-secondary steps">Pagamenti</button>
+			  <button type="button" id="btn_step_0" class="btn btn-primary steps">Definizione Ditta/Cliente</button>
+			  <button type="button" id="btn_step_1" class="btn btn-secondary steps">Dati Documento</button>
+			  <button type="button" id="btn_step_2" class="btn btn-secondary steps">Lista Articoli</button>
 			</div>	
 			
 		  </div>
@@ -64,21 +63,30 @@
 			
 			<form class="needs-validation2" id='needs-validation2' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
-				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}'>
+				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 				
 				<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
 				
 				@include('all_views.invitofatt.stepditte')
 				
 			</form>
-			
 
 
-			<form class="needs-validation3" id='needs-validation2' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
+			<form class="needs-validation2a" id='needs-validation2a' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
-				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}'>
+				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 				<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
+				<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
 			
+					@include('all_views.invitofatt.stepdoc')
+			</form>	
+			
+
+
+			<form class="needs-validation3" id='needs-validation3' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
+			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
+				<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
 				<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
 			
 					@include('all_views.invitofatt.steparticoli')
@@ -93,105 +101,32 @@
 			<a href="">
 				<button type="button"  id='back_appalti' class="btn btn-secondary btn-lg btn-block mt-3">TORNA AD ELENCO INVITI DA FATTURARE</button> 
 			</a>
-
-
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
-			
 			<input type="hidden" name="id_fatt" id="id_fatt" value="">
 		</div>
 		
 			
 		
         <!-- /.row -->
+		<form id='frm_modal' class="needs-validation4" id='needs-validation4' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
+					<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+
+			<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
+			<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
+			<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
+					
+			<input type='hidden' id='edit_riga' name='edit_riga'>
+					
+			@include('all_views.invitofatt.editmodal')
+		</form>	
+
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
   </div>
 
-<!-- Modal -->
-<div class="modal fade bd-example-modal-xl" id="modal_story" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
-  <div class="modal-dialog modal-xl modal-dialog-centered" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title" id="title_modal">Modal title</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body" id='body_modal'>
-			<div class="row mb-3">
-				<div class="col-md-6">
-					<div class="row mb-3">
-						<div class="col-md-3">
-							<div class="form-floating">
-								<input class="form-control" id="codice" name='codice' type="text" placeholder="Codice"   />
-								<label for="codice">Codice</label>
-							</div>
-						</div>
-						<div class="col-md-6">
-							<div class="form-floating">
-								<input class="form-control" id="prodotto" name='prodotto' type="text" placeholder="Prodotto"  />
-								<label for="prodotto">Prodotto</label>
-							</div>		
-						</div>
-						<div class="col-md-3">
-							<div class="form-floating">
-								<input class="form-control" id="quantita" name='quantita' type="text" placeholder="Q.tà" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" />
-								<label for="quantita">Quantità</label>
-							</div>		
-						</div>
-					</div>
-					
-				</div>
-				
 
-				<div class="col-md-6">
-					<div class="row mb-3">
-						<div class="col-md-2">
-							<div class="form-floating">
-								<input class="form-control" id="um" name='um' type="text" placeholder="UM"  />
-								<label for="um">U.M.</label>
-							</div>		
-						</div>							
-						<div class="col-md-4">
-							<div class="form-floating">
-								<input class="form-control" id="prezzo_unitario" name='prezzo_unitario' type="text" placeholder="Prezzo unitario" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" />
-								<label for="prezzo_unitario">Prezzo Unitario</label>
-							</div>		
-						</div>	
-						<div class="col-md-3">
-							<div class="form-floating">
-								<input class="form-control" id="subtotale" name='subtotale' type="text" placeholder="Subtotale" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" />
-								<label for="subtotale" >Subtotale</label>
-							</div>		
-						</div>
-						<div class="col-md-3">
-						  <div class="form-floating mb-3 mb-md-0">
-							
-							<select class="form-select" id="aliquota" aria-label="Stato Occupazione" name='aliquota' required>
-								<option value=''>Select...</option>
-								@foreach ($aliquote_iva as $aliquota) 
-									<option value='{{$aliquota->id}}'>
-										{{$aliquota->aliquota}}% - {{$aliquota->descrizione}}
-									</option>	
-								@endforeach
-							</select>
-							
-							<label for="aliquota">Aliquota Iva</label>
-							</div>
-						</div>						
-					</div>	
-				</div>
-			</div>			
-      </div>
-      <div class="modal-footer">
-		<div id='altri_btn'></div>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        
-      </div>
-    </div>
-  </div>
-</div> 
+
 
   <!-- /.content-wrapper -->
 
@@ -210,7 +145,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.065"></script>
+	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.122"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 

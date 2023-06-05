@@ -1,5 +1,5 @@
 <!-- SEZIONE SELEZIONE DITTE / CLIENTI !-->
-<div id='div_sez_ditte' class="sezioni mb-5">
+<div id='div_sez_0' class="sezioni mb-5">
 	<div class="card-body">
 		<div class="row mb-3">
 			<div class="col-md-12">
@@ -21,7 +21,7 @@
 			</div>			
 		</div>				
 		<div class="float-sm-right">		
-			<button type="submit" name='btn_save' id='btn_save' onclick='' class="btn btn-success btn-lg">Avanti</button>
+			<button type="submit" name='btn_save' id='btn_save' onclick="$('.step').val('1')" class="btn btn-success btn-lg">Avanti</button>
 		</div>
 	</div>
 </div> 

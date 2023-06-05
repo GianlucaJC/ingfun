@@ -22,7 +22,7 @@ return new class extends Migration
 			$table->string('codice',30)->index()->nullable();
 			$table->string('descrizione');
 			$table->double('quantita',10,2);
-			$table->integer('um')->nullable();
+			$table->string('um',20)->nullable();
 			$table->double('prezzo_unitario',10,2);
 			$table->double('sconto',10,2)->nullable();
 			$table->double('subtotale',10,2);
