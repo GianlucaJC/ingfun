@@ -1,6 +1,11 @@
 <!-- SEZIONE SELEZIONE DITTE / CLIENTI !-->
 <div id='div_sez_0' class="sezioni mb-5">
 	<div class="card-body">
+		<?php
+			if (strlen($id_fattura)!=0 && $id_fattura!=0)
+				echo "<div class='mb-2'><small>Attenzione! Se si modifica la ditta ed in precedenza sono stati importati servizi tramite associazione appalti, gli articoli inseriti in fattura andranno persi!</small></div>"; 
+
+		?>		
 		<div class="row mb-3">
 			<div class="col-md-4">
 				<div class="form-floating">
