@@ -6,6 +6,8 @@ use Illuminate\Http\Request;
 use App\Models\ditte;
 use App\Models\articoli_fattura;
 use App\Models\aliquote_iva;
+use App\Models\pagamenti;
+use App\Models\fatture;
 use DB;
 
 class ControllerInvito extends Controller
@@ -18,7 +20,7 @@ public function __construct()
 	public function import_from_appalti() {
 		$request=request();
 		$app_sel=$request->input('app_sel');
-		$session_cart=$request->input('session_cart');
+		$id_doc=$request->input('id_doc');
 		$importi=array();
 		
 
@@ -36,7 +38,7 @@ public function __construct()
 			for ($sca=0;$sca<=count($app_sel)-1;$sca++) {
 				$id_app=$app_sel[$sca];
 				$deleted = articoli_fattura::where('id_appalto', $id_app)
-				->where('id_temp',$session_cart)
+				->where('id_doc',$id_doc)
 				->delete();
 				
 				$appalti=DB::table('appalti as a')
@@ -63,7 +65,7 @@ public function __construct()
 							
 						DB::table('articoli_fattura')->insert([
 							'id_appalto' => $id_app,
-							'id_temp' => $session_cart,
+							'id_doc' => $id_doc,
 							'descrizione' =>$servizio->descrizione,
 							'quantita' => 1,
 							'prezzo_unitario' =>$importo_ditta,
@@ -81,6 +83,7 @@ public function __construct()
 
 	public function edit_riga($id_row) {
 		$request=request();
+		$id_doc=$request->input('id_doc');
 		if ($id_row!=0)
 			$art = articoli_fattura::find($id_row);
 		else 
@@ -92,24 +95,94 @@ public function __construct()
 		$art->um = $request->input('um');
 		$art->prezzo_unitario = $request->input('prezzo_unitario');
 		$art->subtotale = $request->input('subtotale');
+		if ($id_row==0) $art->id_doc=$id_doc;
 		$art->aliquota = $request->input('aliquota');
-		$art->id_temp=$request->input('session_cart');
+		
 		
 		$art->save();
 	}
 
+	public function pagamenti() {
+		$request=request();
+		$id_doc=$request->input('id_doc');
+		
+		$tipo_pagamento=$request->input('tipo_pagamento');
+		$data_scadenza=$request->input('data_scadenza');
+		$importo=$request->input('importo');
+		$persona=$request->input('persona');
+		$coordinate=$request->input('coordinate');
+		
+		$deleted = pagamenti::where('id_doc',$id_doc)->delete();
+
+		
+		if (is_array($data_scadenza)) {
+			for ($sca=0;$sca<=count($data_scadenza)-1;$sca++) {
+				$pagamenti = new pagamenti;
+				$pagamenti->id_doc=$id_doc;
+				$tipo=$tipo_pagamento[$sca];
+				$ds=$data_scadenza[$sca];
+				$im=$importo[$sca];
+				$ps=$persona[$sca];
+				$co=$coordinate[$sca];
+				
+				$pagamenti->tipo_pagamento=$tipo;
+				$pagamenti->data_scadenza=$ds;
+				$pagamenti->importo=$im;
+				$pagamenti->persona=$ps;
+				$pagamenti->coordinate=$co;
+				$pagamenti->save();
+			}
+		}
+		
+		
+		
+	}
+	
+	public function crea_fattura() {
+		$request=request();
+		$id_doc=$request->input('id_doc');
+
+		if (strlen($id_doc)==0)
+			$fattura = new fatture;
+		else 
+			$fattura = fatture::find($id_doc);
+
+		$fattura->id_ditta = $request->input('ditta');
+		$fattura->data_invito = $request->input('data_invito');		
+		$fattura->save();
+		$id_doc=$fattura->id;
+		return $id_doc;
+	}
+
 	public function invito($id=0) {		
 		$request=request();
-		
-		$session_cart=$request->input('session_cart');
-		if (strlen($session_cart)==0) $session_cart=uniqid();
+
 		
 		$step_active=$request->input('step_active');
 		if (strlen($step_active)==0) $step_active=0;
 		$ditta=$request->input('ditta');
+		$data_invito = $request->input('data_invito');
+		
+
+		$id_doc=$request->input('id_doc');
+		if ($id!=0) {
+			$id_doc=$id;
+			$load_fattura=fatture::select('id_ditta','data_invito')
+			->where('id','=',$id_doc)
+			->get();
+			$ditta=$load_fattura[0]->id_ditta;
+			$data_invito=$load_fattura[0]->data_invito;
+			
+		}	
+		$btn_ditta=$request->input('btn_ditta');
+		if ($btn_ditta=="btn_ditta") $id_doc=$this->crea_fattura();
 		
 		$btn_import_app=$request->input('btn_import_app');
 		if ($btn_import_app=="import_a") $this->import_from_appalti();
+
+		$btn_pagamenti=$request->input('btn_pagamenti');
+		if ($btn_pagamenti=="btn_pagamenti") $this->pagamenti();
+
 
 		$edit_riga=$request->input('edit_riga');
 		if (strlen($edit_riga)!=0) $this->edit_riga($edit_riga);
@@ -150,22 +223,29 @@ public function __construct()
 		
 		$articoli_fattura=DB::table('articoli_fattura as a')
 		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota')
-		->when($id!=0, function ($articoli_fattura) use ($id) {
-			return $articoli_fattura->where('a.id_doc', "=",$id);
-		})	
-		->when($id==0, function ($articoli_fattura) use ($session_cart) {
-			return $articoli_fattura->where('a.id_temp', "=",$session_cart);
-		})	
+		->where('a.id_doc', "=",$id_doc)
 		->get();
 		
-
-		$lista_sezionali=DB::table('societa as s')
-		->select('s.id','s.descrizione')
-		->get();
+		//update totale in fattura from articoli_fattura
+		if (strlen($id_doc)!=0) {
+			$sum=DB::table('articoli_fattura as a')
+			->select(DB::raw('SUM(a.subtotale) AS somma'))
+			->where('a.id_doc', "=",$id_doc)
+			->get();
+			$totale=$sum[0]->somma;
+			fatture::where('id', $id_doc)->update(['totale'=>$totale]);			
+		}
+		//
+		
 		$lista_pagamenti=$this->lista_pagamenti();
+		
+		$elenco_pagamenti_presenti=DB::table('pagamenti as p')
+		->select('p.id','p.id_doc','p.tipo_pagamento','p.data_scadenza','p.importo','p.persona','p.coordinate')
+		->where('p.id_doc', "=",$id_doc)
+		->get();		
 	
 	
-		return view('all_views/invitofatt/invito')->with('session_cart',$session_cart)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota)->with('lista_sezionali',$lista_sezionali)->with('lista_pagamenti',$lista_pagamenti);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti);
 	}
 
 	function lista_pagamenti() {
@@ -307,6 +387,41 @@ public function __construct()
 		return redirect()->route("newapp",['id'=>$id_app,'from'=>1,'num_send'=>$num_send]);
 
 	}
+	
+	public function lista_inviti(Request $request) {
+
+		$view_dele=$request->input("view_dele");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+		
+		if (strlen($dele_contr)!=0) {
+			fatture::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			fatture::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+
+		
+		$fatture=DB::table('fatture as f')
+		->join('ditte as d','f.id_ditta','d.id')
+		->join('societa as s','d.id','s.id')
+		->select("f.status","f.id","f.dele",DB::raw("DATE_FORMAT(f.data_invito,'%d-%m-%Y') as data_invito"),"f.totale","d.denominazione","s.descrizione as sezionale")
+		->when($view_dele=="0", function ($fatture) {
+			return $fatture->where('f.dele', "=","0");
+		})
+		->groupBy('f.id')
+		->orderBy('f.id','desc')->get();
+		
+
+		return view('all_views/invitofatt/lista_inviti')->with("view_dele",$view_dele)->with('fatture',$fatture);
+
+		
+	}	
 
 
 

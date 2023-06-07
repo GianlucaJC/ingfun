@@ -37,6 +37,12 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('invito/{id?}', [ 'as' => 'invito', 'uses' => 'App\Http\Controllers\ControllerInvito@invito'])->middleware(['role:admin']);
 
+	Route::get('lista_inviti', [ 'as' => 'lista_inviti', 'uses' => 'App\Http\Controllers\ControllerInvito@lista_inviti'])->middleware(['role:admin']);
+	
+	Route::post('lista_inviti', [ 'as' => 'lista_inviti', 'uses' => 'App\Http\Controllers\ControllerInvito@lista_inviti'])->middleware(['role:admin']);
+
+
+
 
 	Route::get('utenti', [ 'as' => 'utenti', 'uses' => 'App\Http\Controllers\ControllerPersonale@utenti'])->middleware(['role:admin']);
 	

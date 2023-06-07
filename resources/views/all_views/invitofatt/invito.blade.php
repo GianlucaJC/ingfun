@@ -65,7 +65,10 @@
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 				
-				<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
+				<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
+				<!-- nel primo step 
+					i due campi [ditta] e [data_invito] vengono valorizzati all'interno della view stepditte, per gli altri form (view) vengono passati in POST in modalità hidden
+				!-->
 				
 				@include('all_views.invitofatt.stepditte')
 				
@@ -75,7 +78,9 @@
 			<form class="needs-validation2a" id='needs-validation2a' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
-				<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
+				<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
+
+				<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
 				<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
 			
 					@include('all_views.invitofatt.stepdoc')
@@ -86,7 +91,10 @@
 			<form class="needs-validation3" id='needs-validation3' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
-				<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
+				<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
+				
+				<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
+
 				<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
 			
 					@include('all_views.invitofatt.steparticoli')
@@ -98,8 +106,8 @@
 
         <hr>
 		<div class="row mb-3 mt-5">
-			<a href="">
-				<button type="button"  id='back_appalti' class="btn btn-secondary btn-lg btn-block mt-3">TORNA AD ELENCO INVITI DA FATTURARE</button> 
+			<a href="{{ route('lista_inviti') }}">
+				<button type="button"  id='back_appalti' class="btn btn-secondary btn-lg btn-block mt-3">VAI ALL'ELENCO INVITI DA FATTURARE</button> 
 			</a>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<input type="hidden" name="id_fatt" id="id_fatt" value="">
@@ -112,7 +120,10 @@
 					<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 			<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
-			<input type='hidden' name='session_cart' id='session_cart' value='{{$session_cart}}'>
+			<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
+		
+			<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
+			
 			<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
 					
 			<input type='hidden' id='edit_riga' name='edit_riga'>
@@ -145,7 +156,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.122"></script>
+	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.163"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 

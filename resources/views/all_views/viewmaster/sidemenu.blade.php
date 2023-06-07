@@ -296,7 +296,7 @@ use App\Models\User;
 				 
 				 <li class="nav-item menu">
 					<a href="#" class="nav-link">
-					  <i class="nav-icon fas fa-user-tie"></i>
+					  <i class="nav-icon fas fa-industry"></i>
 					  <p>Aziende di Proprietà
 						<i class="right fas fa-angle-left"></i>
 					  </p>
@@ -312,7 +312,13 @@ use App\Models\User;
 					  <li class="nav-item">
 						<a href="{{route('invito')}}" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>
-						  <p>Inviti a fatturare</p>
+						  <p>Nuovo Invito a fatturare</p>
+						</a>
+					  </li>
+					  <li class="nav-item">
+						<a href="{{route('lista_inviti')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Lista Inviti a fatturare</p>
 						</a>
 					  </li>
 					</ul>

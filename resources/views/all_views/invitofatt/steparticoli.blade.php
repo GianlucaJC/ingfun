@@ -28,8 +28,8 @@
 						<td>{{$articolo->descrizione}}</td>
 						<td>{{$articolo->quantita}}</td>
 						<td>{{$articolo->um}}</td>
-						<td>{{$articolo->prezzo_unitario}}€</td>
-						<td>{{$articolo->subtotale}}€</td>
+						<td><?php echo number_format($articolo->prezzo_unitario,2)." €"?></td>
+						<td><?php echo number_format($articolo->subtotale,2)." €"?></td>
 						<td>
 							@if (isset($arr_aliquota[$articolo->aliquota]))
 								{{$arr_aliquota[$articolo->aliquota]}}%
@@ -60,7 +60,9 @@
 		<button type="button" name='btn_new_row' id='btn_new_row' onclick='edit_product(0,{{$last_ordine}})' class="btn btn-primary btn-lg">Aggiungi Riga</button>
 		
 		<div class="float-sm-right">
+		<!--
 			<button type="submit" name='btn_save' id='btn_save' onclick='' class="btn btn-success btn-lg">Salva Fattura</button>
+		!-->	
 			
 			
 			<button type="button" name='btn_prec' id='btn_prec' onclick="set_step('1')" class="btn btn-secondary btn-lg">Indietro</button>

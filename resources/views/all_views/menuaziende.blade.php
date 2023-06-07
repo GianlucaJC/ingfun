@@ -74,14 +74,29 @@ use App\Models\User;
 					<a href="{{route('invito')}}">
 						<div class="d-grid gap-2 mt-2">
 						  <button class="btn btn-primary" type="button">
-						  <i class="fas fa-cubes" style='font-size:36px'></i><br>
-							INVITI A FATTURARE
+						  <i class="fas fa-file-invoice" style='font-size:36px'></i><br>
+							NUOVO INVITO A FATTURARE
 						  </button>
 						</div>
 					</a>
 				</div>
 
 			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+					<a href="{{route('lista_inviti')}}">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-primary" type="button">
+						  <i class="fas fa-folder-open" style='font-size:36px'></i><br>
+							LISTA INVITI A FATTURARE
+						  </button>
+						</div>
+					</a>
+				</div>
+
+			</div>
+			
 
 
 

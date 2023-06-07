@@ -2,7 +2,13 @@
 <div id='div_sez_0' class="sezioni mb-5">
 	<div class="card-body">
 		<div class="row mb-3">
-			<div class="col-md-12">
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control" id="data_invito" name='data_invito' type="date" required  value="{{$data_invito}}" />
+					<label for="data_invito">Data invito a fatturare*</label>
+				</div>
+			</div>		
+			<div class="col-md-8">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
 					<option value=''>Select...</option>
@@ -30,7 +36,7 @@
 			</div>			
 		</div>				
 		<div class="float-sm-right">		
-			<button type="submit" name='btn_save' id='btn_save' onclick="$('.step').val('1')" class="btn btn-success btn-lg">Avanti</button>
+			<button type="submit" name='btn_ditta' id='btn_ditta' onclick="$('.step').val('1')" value='btn_ditta' class="btn btn-success btn-lg">Salva e vai avanti</button>
 		</div>
 	</div>
 </div> 

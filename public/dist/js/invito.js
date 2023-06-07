@@ -15,7 +15,10 @@ $(document).on('submit','#needs-validation2', function(){
 	form_val="needs-validation2"
 	valida(form_val)
 })	
-
+$(document).on('submit','#needs-validation2a', function(){
+	form_val="needs-validation2a"
+	valida(form_val)
+})	
 
 
 function set_table() {
@@ -181,8 +184,21 @@ function valida(form_val) {
 		  $("#div_alert").html(html)
 		} else {
 		
-			if (form_val=="needs-validation2") {
-				
+			if (form_val=="needs-validation2" || form_val=="needs-validation2a") {
+				if (form_val=="needs-validation2a") {
+					/*
+					num_pag=0
+					$( ".importi" ).each(function() {
+						num_pag++
+					})
+					if (num_pag==0) {
+						event.preventDefault();
+						event.stopPropagation();
+						alert("Aggiungere almeno una modalità di pagamento!")
+					}
+					*/
+						
+				}
 			} else {
 				event.preventDefault();
 				event.stopPropagation();
@@ -277,4 +293,84 @@ function popola_servizi(id_ditta) {
 	});
 }
 
+
+function add_pagamento(tipo) {
+	if (add_pagamento.id_group === undefined) add_pagamento.id_group=1000
+	add_pagamento.id_group=add_pagamento.id_group+1
+	console.log(add_pagamento.id_group)
+	html="";
+	js="if (!confirm('Sicuri di eliminare il tipo di pagamento?')) return false; else $('#div_p"+add_pagamento.id_group+"').remove()"; 
+	btn_dele=`<a href='#' onclick="`+js+`">`
+	btn_dele+="<i class='fas fa-trash-alt'></i>"
+	btn_dele+="</a>";
+	color="";
+	disp1="display:none";disp2="display:none";
+	req1="";req2="";
+	if (tipo=="1") {
+		disp1="";
+		req1="required";
+		descr="Contanti"
+		color="primary";
+	}
+	if (tipo=="2") {
+		descr="Bancomat"
+		color="secondary";
+	}
+	if (tipo=="3") {
+		descr="Assegno"
+		color="info";
+	}
+	if (tipo=="4") {
+		req2="required";
+		disp2="";
+		descr="Bonifico"
+		color="warning";
+	}
+
+	html+=`
+		<div class='border border-`+color+` p-2 mb-1' id='div_p`+add_pagamento.id_group+`'>
+			<input type='hidden' name='tipo_pagamento[]' value='`+tipo+`'>
+			<div class='alert alert-`+color+`' role="alert">
+				`+btn_dele+` `+descr+`		
+			</div>
+
+			<div class='row mb-3'>
+				<div class="col-md-4">
+					
+					<div class="form-floating">
+						<input class="form-control dp" 
+						name="data_scadenza[]" type="date" required />
+						<label for="data_pagamento">Data scadenza*</label>
+					</div>
+					
+				</div>
+
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control importi" name="importo[]" type="text" placeholder="Importo" required />
+						<label for="importo" >Importo*</label>
+					</div>		
+				</div>
+		
+		
+			<div class="col-md-4" style='`+disp1+`'>
+				<div class="form-floating">
+					<input class="form-control" name="persona[]" type="text" placeholder="" `+req1+` />
+					<label for="persona" >Persona che riscuote*</label>
+				</div>		
+			</div>
+		
+			<div class="col-md-4" style='`+disp2+`'>
+				<div class="form-floating">
+					<input class="form-control" name="coordinate[]" type="text" placeholder="" `+req2+` />
+					<label for="Coordinate" >Coordinate bancarie*</label>
+				</div>		
+			</div>
+		
+
+		
+			</div>
+		</div>`
+	$("#div_pagamenti").append(html)
+}
 
