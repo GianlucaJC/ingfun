@@ -225,6 +225,54 @@ use App\Models\User;
 			 @endif 
 			
 
+			@if ($user->hasRole('resp'))
+			 <li class="nav-item menu">
+				<a href="#" class="nav-link">
+				  <i class="nav-icon fas fa-cubes"></i>
+				  <p>Amministrazione
+					<i class="right fas fa-angle-left"></i>
+				  </p>
+				</a>
+				<ul class="nav nav-treeview">
+
+				 <li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="nav-icon fas fa-database"></i>
+					  <p>Appalti
+						<i class="right fas fa-angle-left"></i>
+					  </p>
+					</a>
+					<ul class="nav nav-treeview">
+					  <li class="nav-item">
+
+					  
+						<a href="{{ route('newapp',['id'=>0,'from'=>1,'num_send'=>0]) }}" class="nav-link">
+						  <i class="far fa-circle nav-icon" nav-icon"></i>
+						  <p>Nuovo Appalto</p>
+						</a>
+					  </li>	
+					</ul>
+					<ul class="nav nav-treeview">
+					  <li class="nav-item">
+						<a href="{{route('listapp')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon" nav-icon"></i>
+						  <p>Lista Appalti</p>
+						</a>
+					  </li>	
+					</ul>
+					<ul class="nav nav-treeview">
+					  <li class="nav-item">
+						<a href="{{route('rifornimenti')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon" nav-icon"></i>
+						  <p>Lista Rifornimenti</p>
+						</a>
+					  </li>	
+					</ul>
+				  </li>
+				 </ul> 
+			    </li>	
+			@endif
+
 			@if ($user->hasRole('admin') || $user->hasRole('coord'))
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">

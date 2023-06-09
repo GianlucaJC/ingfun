@@ -40,6 +40,20 @@ use App\Models\User;
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		@if ($user->hasRole('resp'))		
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('appalti') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-database" style='font-size:36px'></i><br>
+						GESTIONE APPALTI
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>	
+		@endif
 	    @if ($user->hasRole('admin') || ($user->hasRole('coord')) )
 	
 			<div class="row">

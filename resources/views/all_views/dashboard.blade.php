@@ -94,7 +94,8 @@ use App\Models\User;
 		
 		
 		
-	    @if ($user->hasRole('admin') || ($user->hasRole('coord')) )
+	    @if ($user->hasRole('admin') || ($user->hasRole('coord'))  || ($user->hasRole('resp')) )
+				@if(!($user->hasRole('resp')))
 				<div class="row">
 					<div class="col-md-12">
 					<a href="{{ route('menuhr') }}">
@@ -107,7 +108,7 @@ use App\Models\User;
 					</a>
 					</div>
 				</div>
-			
+				@endif
 
 			<div class="row">
 				<div class="col-md-12">
