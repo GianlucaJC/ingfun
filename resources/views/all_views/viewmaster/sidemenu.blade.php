@@ -53,6 +53,26 @@ use App\Models\User;
         <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
           <!-- Add icons to the links using the .nav-icon class
                with font-awesome or any other icon font library -->
+			@if ($user->hasRole('coord'))
+			 <li class="nav-item menu">
+				<a href="#" class="nav-link">
+				  <i class="nav-icon fas fa-users"></i>
+				  <p>Risorse Umane
+					<i class="right fas fa-angle-left"></i>
+				  </p>
+				</a>
+				<ul class="nav nav-treeview">
+				  <li class="nav-item">
+					<a href="{{ route('registro') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Registro Servizi</p>
+					</a>
+				  </li>	
+				</ul>  
+			 </li>
+			@endif
+			
+			
 			@if ($user->hasRole('admin'))
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
@@ -202,7 +222,10 @@ use App\Models\User;
 
 				</ul>
 			  </li>
+			 @endif 
+			
 
+			@if ($user->hasRole('admin') || $user->hasRole('coord'))
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
 				  <i class="nav-icon fas fa-cubes"></i>
@@ -326,10 +349,7 @@ use App\Models\User;
 				 
 				</ul>
 			  </li>
-	
-				 
-			 @endif 
-			
+			@endif  
           
 
 	  
