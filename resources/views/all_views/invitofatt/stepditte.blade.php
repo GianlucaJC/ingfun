@@ -37,6 +37,22 @@
 					?>						
 					</select>
 					<label for="ditta">Scelta Cliente/Ditta da fatturare*</label>
+
+				<a href="{{ route('ditte') }}" class="link-primary" target='_blank' onclick="window.open(this.href, 
+                         'newwindow', 
+                         'width=1024,height=800,left=200'); 
+						 $('.up').hide();$('#div_up').show();
+						 return false;">
+					Definisci nuova o modifica esistente
+				</a>	
+				
+				<span id='div_up' class='up' style='display:none'>
+					<a href='javascript:void(0)' class='ml-2' onclick=" $('#step_active').val('');$('#needs-validation2').submit();">
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>					
 				</div>
 			</div>			
 		</div>				

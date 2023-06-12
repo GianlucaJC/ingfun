@@ -1,8 +1,4 @@
-
 // Example starter JavaScript for disabling form submissions if there are invalid fields
-
-
-
 $(document).ready( function () {
 	//$('body').addClass("sidebar-collapse");
 	$('.select2').select2()
