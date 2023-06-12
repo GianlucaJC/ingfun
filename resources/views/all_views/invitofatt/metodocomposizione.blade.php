@@ -51,8 +51,11 @@
 	</div>	
 </div>	
 
-
-<div id='div_from_appalti' style='display:none' class='metodi mt-3'>
+<?php
+	$style="display:none";
+	if ($filtroa==true) $style="";
+?>	
+<div id='div_from_appalti' style='{{$style}}' class='metodi mt-3'>
 
 
 
@@ -70,13 +73,30 @@
 			echo "</div>";
 		} else {
 			echo "<div class='alert alert-warning' role='alert'>";
-				echo "<b>Attenzione</b>: Non risultano appalti associati alla ditta selezionata";
+				echo "<b>Attenzione</b>: Nel periodo impostato non risultano appalti associati alla ditta selezionata. <i>Selezionare un periodo diverso</i>";
 			echo "</div>";
 		}
 		 
 	  ?>
-			<button type="submit" name='btn_filtro' id='btn_filtro' onclick='' class="btn btn-success btn-sm mb-3">Filtro data</button>
+
+			<div class="row mb-3">
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="range_da" name='range_da' type="date" required  value="{{$range_da}}" />
+						<label for="range_da">Da data</label>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="range_a" name='range_a' type="date" required  value="{{$range_a}}" />
+						<label for="range_a">A data</label>
+					</div>
+				</div>
+			</div>
+			
+			<button type="submit" name='btn_filtro' id='btn_filtro' onclick='' class="btn btn-success btn-sm mb-3" value='filtro_appalti'>Filtro data</button>
 		
+			
 			<table id='tbl_list_appalti' class="display">
 				<thead>
 					<tr>

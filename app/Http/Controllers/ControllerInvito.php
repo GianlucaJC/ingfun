@@ -22,7 +22,8 @@ public function __construct()
 		$app_sel=$request->input('app_sel');
 		$id_doc=$request->input('id_doc');
 		$importi=array();
-		
+		$range_da=$request->input('range_da');
+		$range_a=$request->input('range_a');
 
 		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
 		->get();
@@ -162,7 +163,12 @@ public function __construct()
 		if (strlen($step_active)==0) $step_active=0;
 		$ditta=$request->input('ditta');
 		$data_invito = $request->input('data_invito');
-		
+		$range_da = $request->input('range_da');
+		$range_a = $request->input('range_a');
+
+		$btn_filtro=$request->input('btn_filtro');
+		$filtroa=false;
+		if ($btn_filtro=="filtro_appalti") $filtroa=true;
 
 		$id_doc=$request->input('id_doc');
 		if ($id!=0) {
@@ -195,6 +201,8 @@ public function __construct()
 			$query->where('a.id_ditta', "=",$ditta);	
 		})
 		->where('a.dele','=',0)
+		->where('a.data_ref','>=',"$range_da")
+		->where('a.data_ref','<=',"$range_a")
 		->orderBy('a.data_ref','desc')
 		->orderBy('d.denominazione')
 		->get();
@@ -245,7 +253,7 @@ public function __construct()
 		->get();		
 	
 	
-		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id);
 	}
 
 	function lista_pagamenti() {

@@ -2,7 +2,11 @@
 	<div class="card-body">
 	@include('all_views.invitofatt.metodocomposizione')	
 
-	<div id='div_lista_articoli'>
+	<?php
+		$st1="";
+		if ($filtroa==true) $st1="display:none";
+	?>	
+	<div id='div_lista_articoli' style='{{$st1}}'>
 		<hr>
 		<table id='tbl_list_articoli' class="display">
 			<thead>
