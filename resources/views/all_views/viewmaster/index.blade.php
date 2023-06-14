@@ -38,6 +38,18 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
       <li class="nav-item d-none d-sm-inline-block">
+		<?php
+			$referer = $_SERVER['HTTP_REFERER'] ?? null;
+			if (strlen($referer)!=0) {
+				echo "<a href='$referer' class='nav-link'>";	
+					echo "<button type='button' class='btn btn-secondary btn-sm'>Indietro</button>";
+				echo "</a>";
+			}	
+
+			
+		?>
+	</li>	
+	<li class="nav-item d-none d-sm-inline-block">	
         <a href="{{ route('dashboard') }}" class="nav-link">
 			<button type="button" class="btn btn-primary btn-sm">Homepage</button>	
 		</a>
