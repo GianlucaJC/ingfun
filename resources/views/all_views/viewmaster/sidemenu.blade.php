@@ -82,6 +82,55 @@ use App\Models\User;
 				  </p>
 				</a>
 				<ul class="nav nav-treeview">
+				  <li class="nav-item">
+					<a href="{{ route('newcand') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Nuova candidatura</p>
+					</a>
+				  </li>
+				  <li class="nav-item">
+					<a href="{{ route('listcand') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Lista candidature</p>
+					</a>
+				  </li>
+				  
+				  <li class="nav-item">
+					<a href="{{ route('listpers') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Gestione Personale</p>
+					</a>
+				  </li>				  
+
+				  <li class="nav-item">
+					<a href="{{ route('scadenze_contratti') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Scadenze Contratti</p>
+					</a>
+				  </li>	
+
+				  <li class="nav-item">
+					<a href="{{ route('registro') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Registro Servizi</p>
+					</a>
+				  </li>	
+
+				
+				  <li class="nav-item">
+					<a href="{{route('giustificativi')}}" class="nav-link">
+					  <i class="far fa-circle nav-icon" nav-icon"></i>
+					  <p>Giustificativi</p>
+					</a>
+				  </li>	
+					  
+
+				  <li class="nav-item">
+					<a href="{{ route('cedolini_up') }}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Upload/Sospesi Cedolini</p>
+					</a>
+				  </li>			
 					 <li class="nav-item menu">
 						<a href="#" class="nav-link">
 						  <i class="fas fa-cogs"></i>
@@ -170,53 +219,6 @@ use App\Models\User;
 						</ul>
 
 					 </li>					  
-				  
-				  <li class="nav-item">
-					<a href="{{ route('newcand') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Nuova candidatura</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('listcand') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Lista candidature</p>
-					</a>
-				  </li>
-				  
-				  <li class="nav-item">
-					<a href="{{ route('listpers') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Gestione Personale</p>
-					</a>
-				  </li>				  
-
-				  <li class="nav-item">
-					<a href="{{ route('scadenze_contratti') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Scadenze Contratti</p>
-					</a>
-				  </li>	
-
-				  <li class="nav-item">
-					<a href="{{ route('registro') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Registro Servizi</p>
-					</a>
-				  </li>	
-
-				  <li class="nav-item">
-					<a href="{{ route('cedolini_view') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Cedolini</p>
-					</a>
-				  </li>
-				  <li class="nav-item">
-					<a href="{{ route('cedolini_up') }}" class="nav-link">
-					  <i class="far fa-circle nav-icon"></i>
-					  <p>Upload/Sospesi Cedolini</p>
-					</a>
-				  </li>					  
 
 
 
@@ -274,6 +276,7 @@ use App\Models\User;
 			@endif
 
 			@if ($user->hasRole('admin') || $user->hasRole('coord'))
+				
 			 <li class="nav-item menu">
 				<a href="#" class="nav-link">
 				  <i class="nav-icon fas fa-cubes"></i>
@@ -283,7 +286,48 @@ use App\Models\User;
 				</a>
 				<ul class="nav nav-treeview">
 
-			 <li class="nav-item menu">
+				
+					 <li class="nav-item menu">
+						<a href="#" class="nav-link">
+						  <i class="nav-icon fas fa-industry"></i>
+						  <p>Aziende di Proprietà
+							<i class="right fas fa-angle-left"></i>
+						  </p>
+						</a>
+						<ul class="nav nav-treeview">
+
+						  <li class="nav-item">
+							<a href="#" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Anagrafiche</p>
+							</a>
+						  </li>	
+						</ul>
+					</li>	
+					
+					<li class="nav-item">
+						<a href="{{route('ditte')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Anagrafica clienti</p>
+						</a>
+					 </li>					
+					<li class="nav-item">
+						<a href="{{route('servizi')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Listino Clienti</p>
+						</a>
+					</li>	
+				  <li class="nav-item">
+					<a href="{{route('gestione_servizi')}}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Gestione Servizi</p>
+					</a>
+				  </li>						
+			 
+			 
+			 
+
+			<li class="nav-item menu">
 				<a href="#" class="nav-link">
 				  <i class="nav-icon fas fa-database"></i>
 				  <p>Appalti
@@ -324,62 +368,19 @@ use App\Models\User;
 					</a>
 				  </li>	
 				</ul>
-				<ul class="nav nav-treeview">
-				  <li class="nav-item">
-					<a href="{{route('giustificativi')}}" class="nav-link">
-					  <i class="far fa-circle nav-icon" nav-icon"></i>
-					  <p>Giustificativi</p>
-					</a>
-				  </li>	
-				</ul>
 			  </li>
 				 
-				 <li class="nav-item menu">
-					<a href="#" class="nav-link">
-					  <i class="nav-icon fas fa-user-tie"></i>
-					  <p>Clienti/Ditte
-						<i class="right fas fa-angle-left"></i>
-					  </p>
-					</a>
-					<ul class="nav nav-treeview">
-					  <li class="nav-item">
-						<a href="{{route('ditte')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Anagrafiche</p>
-						</a>
-					  </li>					
 
-					  <li class="nav-item">
-						<a href="{{route('gestione_servizi')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Gestione Servizi</p>
-						</a>
-					  </li>	
-					  <li class="nav-item">
-						<a href="{{route('servizi')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Listino Servizi</p>
-						</a>
-					  </li>	
-					  
-					</ul>
-				 </li>
 				 
 				 <li class="nav-item menu">
 					<a href="#" class="nav-link">
-					  <i class="nav-icon fas fa-industry"></i>
-					  <p>Aziende di Proprietà
+					  <i class="nav-icon fas fa-file-invoice"></i>
+					  <p>Inviti a fatturare
 						<i class="right fas fa-angle-left"></i>
 					  </p>
 					</a>
 					<ul class="nav nav-treeview">
-
-					  <li class="nav-item">
-						<a href="#" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Anagrafiche</p>
-						</a>
-					  </li>				
+			
 					  <li class="nav-item">
 						<a href="{{route('invito')}}" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>

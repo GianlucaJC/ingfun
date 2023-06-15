@@ -25,13 +25,15 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">SOTTO TIPOLOGIA DOCUMENTO</h1>
+            <h1 class="m-0">SOTTOTIPO DI DOCUMENTO</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-			  <li class="breadcrumb-item">Archivi</li>
-              <li class="breadcrumb-item active">Sotto_Tipo_doc</li>
+			  <li class="breadcrumb-item active">Risorse Umane</li>
+			  <li class="breadcrumb-item active">Archivi</li>
+
+              <li class="breadcrumb-item active">SottoTipo di Documento</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->

@@ -132,7 +132,7 @@ use App\Models\User;
 							<div class="d-grid gap-2 mt-2">
 							  <button class="btn btn-primary" type="button">
 							  <i class="fas fa-file-signature" style='font-size:36px'></i><br>
-								GESTIONE SCADENZA CONTRATTI
+								SCADENZE CONTRATTI
 							  </button>
 							</div>
 						</a>
@@ -148,6 +148,21 @@ use App\Models\User;
 						  </button>
 						</div>
 					</a>
+				</div>
+
+				<div class="row">
+					<div class="col-md-12">
+						<a href="{{ route('giustificativi') }}">
+							<div class="d-grid gap-2 mt-2">
+							  <button class="btn btn-primary" type="button">
+							  
+							  <i class="fas fa-address-card" style='font-size:36px'></i><br>
+								GIUSTIFICATIVI
+							  </button>
+							</div>
+						</a>
+					</div>
+
 				</div>				
 
 	
@@ -187,11 +202,11 @@ use App\Models\User;
 				</div>
 			</div>
 			
-			<div class="row">
+			<div class="row mb-5">
 				<div class="col-md-12">
 					<a href="{{ route('archivi') }}">
 						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary" type="button">
+						  <button class="btn btn-info" type="button">
 						  
 						  <i class="fas fa-cogs" style='font-size:36px'></i><br>
 							ARCHIVI

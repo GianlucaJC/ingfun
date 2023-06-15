@@ -25,6 +25,8 @@ use App\Models\User;
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('menuhr') }}">Risorse Umane</a></li>
+			  
               <li class="breadcrumb-item active">Archivi</li>
             </ol>
           </div><!-- /.col -->

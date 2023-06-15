@@ -29,6 +29,8 @@ use App\Models\User;
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('amministrazione') }}">Amministrazione</a></li>
+			  
               <li class="breadcrumb-item active">Appalti</li>
             </ol>
           </div><!-- /.col -->
@@ -44,11 +46,11 @@ use App\Models\User;
 	
 			<div class="row">
 				<div class="col-md-12">
-				<a href="{{ route('dashboard') }}">
+				<a href="{{ route('amministrazione') }}">
 					<div class="d-grid gap-2 mt-2">
 					  <button class="btn btn-secondary" type="button">
 					  <i class="fas fa-home" style='font-size:36px'></i><br>
-						TORNA MENU' PRECEDENTE ==> Dashboard
+						TORNA MENU' PRECEDENTE ==> Amministrazione
 					  </button>
 					</div>
 				</a>
@@ -102,21 +104,6 @@ use App\Models\User;
 						  
 						  <i class="fas fa-user-tie" style='font-size:36px'></i><br>
 							LISTA RIFORNIMENTI
-						  </button>
-						</div>
-					</a>
-				</div>
-
-			</div>
-
-			<div class="row">
-				<div class="col-md-12">
-					<a href="{{ route('giustificativi') }}">
-						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary" type="button">
-						  
-						  <i class="fas fa-address-card" style='font-size:36px'></i><br>
-							GIUSTIFICATIVI
 						  </button>
 						</div>
 					</a>

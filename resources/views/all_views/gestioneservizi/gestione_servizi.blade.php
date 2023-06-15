@@ -31,7 +31,6 @@
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
 			  <li class="breadcrumb-item">Amministrazione</li>
-			  <li class="breadcrumb-item">Clienti-Ditte</li>
               <li class="breadcrumb-item active">Gestione Servizi</li>
             </ol>
           </div><!-- /.col -->

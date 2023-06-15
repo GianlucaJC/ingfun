@@ -47,7 +47,7 @@ use App\Models\User;
 					<div class="d-grid gap-2 mt-2">
 					  <button class="btn btn-primary" type="button">
 					  <i class="fas fa-database" style='font-size:36px'></i><br>
-						GESTIONE APPALTI
+						 APPALTI
 					  </button>
 					</div>
 				</a>
@@ -69,41 +69,13 @@ use App\Models\User;
 				</div>
 			</div>
 
-			<div class="row">
-				<div class="col-md-12">
-				<a href="{{ route('appalti') }}">
-					<div class="d-grid gap-2 mt-2">
-					  <button class="btn btn-primary" type="button">
-					  <i class="fas fa-database" style='font-size:36px'></i><br>
-						GESTIONE APPALTI
-					  </button>
-					</div>
-				</a>
-				</div>
-			</div>	
-
-			
-			<div class="row">
-				<div class="col-md-12">
-					<a href="{{ route('cliditte') }}">
-						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary" type="button">
-						  
-						  <i class="fas fa-user-tie" style='font-size:36px'></i><br>
-							CLIENTI/DITTE
-						  </button>
-						</div>
-					</a>
-				</div>
-
-			</div>
 
 
 			<div class="row">
 				<div class="col-md-12">
 					<a href="{{ route('menuaziende') }}">
 						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary" type="button">
+						  <button class="btn btn-info" type="button">
 						  <i class="fas fa-industry" style='font-size:36px'></i><br>
 							AZIENDE DI PROPRIETA'
 						  </button>
@@ -112,6 +84,73 @@ use App\Models\User;
 				</div>
 
 			</div>
+			
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('ditte') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-paste" style='font-size:36px'></i><br>
+						ANAGRAFICA CLIENTI
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('servizi') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-list" style='font-size:36px'></i><br>
+						LISTINO CLIENTI
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('gestione_servizi') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-sitemap" style='font-size:36px'></i><br>
+						GESTIONE SERVIZI
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>			
+
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('appalti') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-info" type="button">
+					  <i class="fas fa-database" style='font-size:36px'></i><br>
+						 APPALTI
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>	
+			
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('menuaziende') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-info" type="button">
+					  <i class="fas fa-file-invoice" style='font-size:36px'></i><br>
+						 INVITI A FATTURARE
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>				
+
+			
+
+
 
 		@endif
 

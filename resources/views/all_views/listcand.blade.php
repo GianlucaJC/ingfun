@@ -36,6 +36,7 @@
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+			  <li class="breadcrumb-item">Risorse Umane</li>
               <li class="breadcrumb-item active">Lista Candidature</li>
             </ol>
           </div><!-- /.col -->
