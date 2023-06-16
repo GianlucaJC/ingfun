@@ -186,7 +186,7 @@
 								if (isset($appalti[0]->id_azienda_proprieta))  $azienda_db=$appalti[0]->id_azienda_proprieta;
 								foreach ($sezionali as $sezionale) {
 									echo "<option value='".$sezionale->id."' ";
-									if ($azienda_db==$sezionale->id || $sezionale->id==1) echo " selected ";
+									if ($azienda_db==$sezionale->id) echo " selected ";
 									echo ">".$sezionale->descrizione."</option>";
 								}
 							?>						

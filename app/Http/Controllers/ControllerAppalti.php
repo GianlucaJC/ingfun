@@ -35,6 +35,7 @@ public function __construct()
 		$id_ditta=$request->input('ditta');
 
 		$appalti->descrizione_appalto = $request->input('descrizione_appalto');
+		$appalti->id_azienda_proprieta = $request->input('azienda_proprieta');
 		$appalti->data_ref = $request->input('data_app');
 		$appalti->orario_ref = $request->input('ora_app');
 		$appalti->id_ditta = $id_ditta;
