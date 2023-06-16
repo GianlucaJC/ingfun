@@ -10,6 +10,7 @@ use App\Models\ditte;
 use App\Models\lavoratoriapp;
 use App\Models\candidati;
 use App\Models\user;
+use App\Models\societa;
 use App\Models\mezzi;
 use OneSignal;
 
@@ -67,7 +68,8 @@ public function __construct()
 		
 		
 		$to_delete = lavoratoriapp::where('id_appalto', $id_app)->update(['to_delete'=>1]);
-		$lavoratori=$request->input('lavoratori');
+		$info_lavoratori=$request->input('lavoratori');
+		$lavoratori=explode(";",$info_lavoratori);
 		$num_send=0;
 		for ($sca=0;$sca<=count($lavoratori)-1;$sca++) {
 			$send=false;
@@ -150,11 +152,17 @@ public function __construct()
 
 	public function newapp($id=0,$from=0,$num_send) {
 		$appalti=array();
+		
 		$servizi=array();
 		$ids_lav=array();
 		$id_servizi=array();
 		$view_dele="0";
 		$today=date("Y-m-d");
+		$sezionali=societa::select('id','descrizione')
+		->where('dele','=',0)
+		->orderBy('descrizione')
+		->get();
+		
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('status_candidatura','=',3)		
 		->orderByRaw('case 
@@ -209,7 +217,7 @@ public function __construct()
 
 	
 		
-		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav)->with("num_send",$num_send)->with('mezzi',$mezzi);
+		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav)->with("num_send",$num_send)->with('mezzi',$mezzi)->with('sezionali',$sezionali);
 
 	}
 

@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\lavoratori;
 use App\Models\ditte;
 use App\Models\presenze;
+use App\Models\candidati;
 use App\Models\log_presenze;
 use Mail;
 use DB;
@@ -24,6 +25,26 @@ class AjaxControllerServ extends Controller
 		->where('d.id_ditta', '=', $id_ditta)
 		->get();
         return json_encode($infoditta);
+	}	
+
+	public function lavoratori_sezionali(Request $request){		
+		$id_sezionale = $request->input('id_sezionale');
+		
+		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
+		->where('status_candidatura','=',3)
+		->where('soc_ass','=',$id_sezionale)
+		->orderByRaw('case 
+			when `tipo_contr` = "2" and `tipo_contratto`="1"  then 1 
+			when `tipo_contr` = "2" and `tipo_contratto`="2"  then 2
+			when `tipo_contr` = "2" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 3
+			when `tipo_contr` = "1" and `tipo_contratto`="1"  then 4
+			when `tipo_contr` = "1" and `tipo_contratto`="2"  then 5
+			when `tipo_contr` = "1" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 6
+			else 7 end')
+		->orderBy('nominativo')	
+		->get();
+
+        return json_encode($lavoratori);
 	}	
 
 

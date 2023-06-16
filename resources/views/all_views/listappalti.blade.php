@@ -81,7 +81,7 @@
 					<thead>
 						<tr>
 							<th>Operazioni</th>
-							<th>Descrizione Appalto</th>
+							<th style='max-width:40px'>ID</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
@@ -124,11 +124,11 @@
 								
 							</td>									
 
-							<td>
+							<td  style='max-width:40px'>
 								@if ($gest->dele=="1") 
 									<font color='red'><del> 
 								@endif									
-								{{ $gest->descrizione_appalto }}
+								{{ $gest->id }}
 								@if ($gest->dele=="1") 
 									</del></font>
 								@endif											
@@ -212,7 +212,7 @@
 					<tfoot>
 						<tr>
 							<th></th>
-							<th>Descrizione Appalto</th>
+							<th style='max-width:40px'>Descrizione Appalto</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>

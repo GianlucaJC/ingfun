@@ -66,13 +66,21 @@
 		?>	
 
 		<div class="row mb-3">
-			<div class="col-md-6">
+			
+			<div class="col-md-6" style='display:none'>
 				<div class="form-floating">
-					<input class="form-control" id="descrizione_appalto" name='descrizione_appalto' type="text" placeholder="Definizione" required maxlength=150 value="{{$appalti[0]->descrizione_appalto ?? ''}}" />
-					<label for="descrizione_appalto">Descrizione Appalto*</label>
+					<input class="form-control" id="descrizione_appalto" name='descrizione_appalto' type="text" placeholder="Definizione"  maxlength=150 value="{{$appalti[0]->descrizione_appalto ?? ''}}" />
+					<label for="descrizione_appalto">Descrizione Appalto</label>
 				</div>
 			</div>
-			<div class="col-md-3">
+			
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control" disabled id="ref_appalto" type="text" placeholder="ID"  value="{{$appalti[0]->id ?? ''}}" />
+					<label for="ref_appalto">ID Appalto</label>
+				</div>
+			</div>			
+			<div class="col-md-4">
 				<div class="form-floating">
 				<?php
 					$d_def=date("Y-m-d");
@@ -85,15 +93,16 @@
 				</div>
 			</div>			
 
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<div class="form-floating">
 					<input class="form-control" id="ora_app" name='ora_app' type="time" required value="{{$appalti[0]->orario_ref ?? ''}}" maxlength=5 />
 					<label for="data_app">Orario del servizio*</label>
 				</div>
 			</div>	
-
+			
 		</div>
-		<div class="row mb-3">
+		
+		<div class='row mb-3'>
 			<div class="col-md-12">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
@@ -111,7 +120,8 @@
 					<label for="ditta">Ditta*</label>
 				</div>
 			</div>			
-		</div>
+		</div>		
+		
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<div class="form-floating mb-3 mb-md-0">
@@ -169,7 +179,42 @@
 				<div class="row mb-3">
 					<div class="col-md-12">
 						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-select select2" id="lavoratori" aria-label="Lavoratori" name='lavoratori[]' multiple="multiple" required>
+							<select class="form-select" name="azienda_proprieta" id="azienda_proprieta"  required onchange='lista_lavoratori(this.value)'>
+							<option value=''>Select...</option>
+							<?php
+								$azienda_db="";
+								if (isset($appalti[0]->id_azienda_proprieta))  $azienda_db=$appalti[0]->id_azienda_proprieta;
+								foreach ($sezionali as $sezionale) {
+									echo "<option value='".$sezionale->id."' ";
+									if ($azienda_db==$sezionale->id || $sezionale->id==1) echo " selected ";
+									echo ">".$sezionale->descrizione."</option>";
+								}
+							?>						
+							</select>
+							<label for="azienda_proprieta">Azienda di Proprietà*</label>
+						</div>
+					</div>					
+				</div>
+				
+				<?php
+					$id_lav="";
+					foreach ($ids_lav as $id_l=>$v) {
+						if (strlen($id_lav)!=0) $id_lav.=";";
+						$id_lav.=$id_l;
+					}
+				?>
+				<input type='hidden' name='lavoratori' id='lavoratori' value='{{$id_lav}}'>
+				
+
+				<div class='mb-3' id='div_lavoratori'>
+					
+				</div>
+			
+			
+				<div class="row mb-3" id='div_lav_sel'>
+					<div class="col-md-12">
+						<div class="form-floating mb-3 mb-md-0">
+							<select class="form-select select2" id="lavoratoria" disabled aria-label="Lavoratori"  multiple="multiple" required>
 								@php ($old_t="?")
 								@foreach ($lavoratori as $lavoratore)
 								
@@ -326,7 +371,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.109"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.182"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

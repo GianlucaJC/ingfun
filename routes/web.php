@@ -200,6 +200,9 @@ Route::group(['only_log' => ['auth']], function () {
 //routing Ajax
 Route::group(['only_log' => ['auth']], function () {
 	Route::post('popola_servizi', 'App\Http\Controllers\AjaxControllerServ@popola_servizi');
+	
+	Route::post('lavoratori_sezionali', 'App\Http\Controllers\AjaxControllerServ@lavoratori_sezionali');
+
 
 	Route::post('save_value_presenze', 'App\Http\Controllers\AjaxControllerServ@save_value_presenze');
 
