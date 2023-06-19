@@ -1,4 +1,3 @@
-<input type='hidden' name='edit_elem' id='edit_elem'>
 <div class="row mb-3">
 	<div class="col-md-12">
 		<div class="form-floating mb-3 mb-md-0">

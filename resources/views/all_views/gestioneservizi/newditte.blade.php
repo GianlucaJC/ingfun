@@ -148,6 +148,21 @@
 						</div>			
 					</div>
 				</div>
+				
+				<div class="row mb-3">
+					<div class="col-md-12">
+						<div class="form-floating mb-3 mb-md-0">
+							<select class="form-select select2" style='height:auto' name="tipo_pagamento[]" id="tipo_pagamento" multiple>
+								<?php
+								for ($sca=0;$sca<=count($lista_pagamenti)-1;$sca++) {?>
+									<option value="{{$lista_pagamenti[$sca]['id']}}">{{$lista_pagamenti[$sca]['descrizione']}}
+									</option>
+								<?php } ?>
+							</select>
+						</div>
+						<label for="tipo_pagamento">Tipo Pagamento</label>
+					</div>	
+				</div>				
 
 				<div class="row mb-3 mt-5">
 					<div class="col-md-4">
@@ -163,5 +178,7 @@
 				
 			<hr>	
 		</div>	
-	</form>		
+	</form>	
+
+	
 </div>

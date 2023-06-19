@@ -1,7 +1,7 @@
 <div id='div_definition' style='display:none'>
 	<form method='post' action="{{ route('servizi') }}" id='frm_servizi' name='frm_servizi' autocomplete="off">	
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
-		
+
 
 		<div class="container-fluid">
 			<hr>

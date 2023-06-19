@@ -142,9 +142,11 @@ public function __construct()
 	public function crea_fattura() {
 		$request=request();
 		$id_doc=$request->input('id_doc');
-
-		if (strlen($id_doc)==0)
+		$new_f=false;
+		if (strlen($id_doc)==0) {
+			$new_f=true;
 			$fattura = new fatture;
+		}
 		else 
 			$fattura = fatture::find($id_doc);
 
@@ -152,7 +154,20 @@ public function __construct()
 		$fattura->data_invito = $request->input('data_invito');		
 		$fattura->save();
 		$id_doc=$fattura->id;
-		return $id_doc;
+		$resp=array();
+		$resp['id_doc']=$id_doc;
+
+
+		$info=DB::table('ditte as d')
+		->select('d.tipo_pagamento')
+		->where('d.id','=',$request->input('ditta'))
+		->get();
+		if (isset($info[0]->tipo_pagamento) && $new_f==true)
+			$resp['tipo_pagamento']=$info[0]->tipo_pagamento;
+		else
+			$resp['tipo_pagamento']="?";
+		
+		return $resp;
 	}
 
 	public function invito($id=0) {		
@@ -181,7 +196,13 @@ public function __construct()
 			
 		}	
 		$btn_ditta=$request->input('btn_ditta');
-		if ($btn_ditta=="btn_ditta") $id_doc=$this->crea_fattura();
+		$tipo_pagamento="?";
+		if ($btn_ditta=="btn_ditta") {
+			$info_fattura=$this->crea_fattura();
+			$id_doc=$info_fattura['id_doc'];
+			$tipo_pagamento=$info_fattura['tipo_pagamento'];
+		}	
+		
 		
 		$btn_import_app=$request->input('btn_import_app');
 		if ($btn_import_app=="import_a") $this->import_from_appalti();
@@ -212,6 +233,16 @@ public function __construct()
 		->select('d.id','d.denominazione','s.id as id_azienda','s.descrizione as azienda')
 		->orderBy('d.denominazione')	
 		->get();				
+
+		$info=DB::table('ditte as d')
+		->join('societa as s','d.id_azienda_prop','s.id')
+		->select('s.info_iban')
+		->where("d.id","=",$ditta)
+		->get();
+		$info_iban="";
+		if (isset($info[0])) $info_iban=$info[0]->info_iban;
+		
+
 
 		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
 		->get();
@@ -247,13 +278,42 @@ public function __construct()
 		
 		$lista_pagamenti=$this->lista_pagamenti();
 		
-		$elenco_pagamenti_presenti=DB::table('pagamenti as p')
-		->select('p.id','p.id_doc','p.tipo_pagamento','p.data_scadenza','p.importo','p.persona','p.coordinate')
-		->where('p.id_doc', "=",$id_doc)
-		->get();		
+		if ($tipo_pagamento!="?") {
+			$arr_p=explode(";",$tipo_pagamento);
+			
+			$elenco_pagamenti_presenti=array();
+			for ($sca=0;$sca<=count($arr_p)-1;$sca++) {
+				$t=$arr_p[$sca];
+				$elenco_pagamenti_presenti[]=[
+					"tipo_pagamento"=>$t,
+					"data_scadenza"=>"",
+					"importo"=>"",
+					"persona"=>"",
+					"coordinate"=>$info_iban,
+				];
+			}
+			
+		}	
+		else {
+			$elenco=DB::table('pagamenti as p')
+			->select('p.id','p.id_doc','p.tipo_pagamento','p.data_scadenza','p.importo','p.persona','p.coordinate')
+			->where('p.id_doc', "=",$id_doc)
+			->get();
+			$elenco_pagamenti_presenti=array();
+			foreach ($elenco as $info_pagamento) {
+				$elenco_pagamenti_presenti[]=[
+					"tipo_pagamento"=>$info_pagamento->tipo_pagamento,
+					"data_scadenza"=>$info_pagamento->data_scadenza,
+					"importo"=>$info_pagamento->importo,
+					"persona"=>$info_pagamento->persona,
+					"coordinate"=>$info_pagamento->coordinate,
+				];
+			}
+		}
+		
 	
 	
-		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban);
 	}
 
 	function lista_pagamenti() {

@@ -62,6 +62,14 @@
 		@include('all_views.gestioneservizi.newservizi')
 
 		
+		<?php
+
+		if ($ditta_ref!='0' && strlen($ditta_ref)>0 && isset($azienda)) {
+			echo "<div class='alert alert-secondary' role='alert'>";
+				echo "Azienda di proprietà: <b>".$azienda->azienda_prop."</b>";
+			echo "</div>";
+		}
+		?>
 		
 		<form method='post' action="{{ route('servizi') }}" id='frm_newservice' name='frm_newservice' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
@@ -78,7 +86,7 @@
 				<button type="button" class="btn btn-primary" onclick="check_associa()">
 					<i class="fa fa-plus-circle"></i> Associa Servizi alla ditta
 				</button>
-				<button type="button" class="btn btn-primary" onclick="$('#edit_elem').val('');$('#descr_contr').val('');$('#div_definition').show(150)">
+				<button type="button" class="btn btn-primary" onclick="$('#descr_contr').val('');$('#div_definition').show(150)">
 					<i class="fa fa-plus-circle"></i> Nuovo Servizio
 				</button>
 			</div>			
@@ -212,11 +220,11 @@
  
  @section('content_plugin')
 	<!-- jQuery -->
-	<script src="plugins/jquery/jquery.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/jquery/jquery.min.js"></script>
 	<!-- Bootstrap 4 -->
-	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
-	<script src="dist/js/adminlte.min.js"></script>
+	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 
 
 	

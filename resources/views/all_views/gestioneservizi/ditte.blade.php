@@ -2,6 +2,9 @@
 
 @section('title', 'IngFUN')
 @section('extra_style') 
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <!-- x button export -->
 
 <link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
@@ -81,12 +84,20 @@
 									{{ $ditta->azienda_prop }}
 								</td>
 								<td>
+
 									@if ($ditta->dele=="0") 
+
+
 										<a href='#' onclick="edit_elem({{$ditta->id}})">
 											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 										</a>
 										<a href='#' onclick="dele_element({{$ditta->id}})">
 											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+										</a>
+										
+	
+										<a href="{{ route('servizi',['id_ref'=>$ditta->id])}}" target='_blank' >
+											<button type="button" name='dele_ele' class="btn btn-success"><i class="fas fa-list-ol"></i></button>	
 										</a>
 									@endif
 									@if ($ditta->dele=="1") 
@@ -150,6 +161,8 @@
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
 
+	<!--select2 !-->
+	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 
 	
 	<!-- inclusione standard
@@ -166,6 +179,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.12"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.25"></script>
 
 @endsection

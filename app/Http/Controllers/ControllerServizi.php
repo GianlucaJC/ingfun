@@ -38,6 +38,13 @@ public function __construct()
 		$pec=$request->input("pec");
 		$telefono=$request->input("telefono");
 		$fax=$request->input("fax");
+		$sdi=$request->input("sdi");
+		$tipo_pagamento=$request->input("tipo_pagamento");
+		$str_pagamento=null;
+		if (is_array($tipo_pagamento))
+			$str_pagamento=implode(";",$tipo_pagamento);
+
+		
 		$descr_contr=strtoupper($descr_contr);
 		$cap=strtoupper($cap);
 		$cf=strtoupper($cf);
@@ -47,7 +54,7 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['id_azienda_prop'=>$azienda_prop,'dele'=>0, 'denominazione' => $descr_contr,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax];
+		$data=['id_azienda_prop'=>$azienda_prop,'dele'=>0, 'denominazione' => $descr_contr,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
 
 		//Creazione nuovo elemento
 		if (strlen($descr_contr)!=0 && $edit_elem==0) {
@@ -84,6 +91,8 @@ public function __construct()
 		->orderBy('s.descrizione')
 		->get();
 		
+		$lista_pagamenti=$this->lista_pagamenti();
+
 		
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
@@ -96,7 +105,7 @@ public function __construct()
 		->orderBy('denominazione')->get();
 
 
-		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('aziende_prop',$aziende_prop);		
+		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('aziende_prop',$aziende_prop)->with('lista_pagamenti',$lista_pagamenti);		
 	}	
 
 
@@ -137,11 +146,14 @@ public function __construct()
 		return $esito_saveds;
 	}
 
-	public function servizi(Request $request){
-		
+	public function servizi($id_ref=0){
+		$request=request();
 		$esito_saveds=$this->save_edit_servizi_ditte($request);
 		
 		$ditta_ref=$request->input("ditta_ref");
+		//if ($id_ref!=0) $ditta_ref=$id_ref;
+		if (request()->has("id_ref")) $ditta_ref=request()->input("id_ref");
+		
 		$ditta_from_frm1=$request->input("ditta_from_frm1");
 		if (strlen($ditta_from_frm1)!=0) $ditta_ref=$ditta_from_frm1;
 		
@@ -152,9 +164,9 @@ public function __construct()
 		
 		$dele_ds=$request->input("dele_ds");
 		$restore_contr=$request->input("restore_contr");
-
+		
 		//Creazione nuovo elemento
-		if (strlen($descr_contr)!=0 && $edit_elem==0) {
+		if (strlen($descr_contr)!=0) {
 			$descr_contr=strtoupper($descr_contr);
 			$arr=array();
 			$arr['dele']=0;
@@ -192,6 +204,16 @@ public function __construct()
 		->where('d.id_ditta','=',$ditta_ref)
 		->orderBy('s.descrizione')->get();
 
+		$azienda_prop=DB::table('societa as s')
+		->join('ditte as d','s.id','d.id_azienda_prop')
+		->select('s.id','s.descrizione as azienda_prop')
+		->where('d.id','=',$ditta_ref)
+		->get();
+		$azienda=array();
+		if (isset($azienda_prop[0])) $azienda=$azienda_prop[0];
+			
+		
+		
 		$servizi=DB::table('servizi as s')
 		->where('s.dele', "=","0")
 		->orderBy('s.descrizione')->get();
@@ -210,7 +232,7 @@ public function __construct()
 				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
 		}
 
-		return view('all_views/gestioneservizi/servizi')->with('servizi_ditte', $servizi_ditte)->with('ditte',$ditte)->with("view_dele",$view_dele)->with('ditta_ref',$ditta_ref)->with('servizi',$servizi)->with('service',$service)->with('esito_saveds',$esito_saveds)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota);
+		return view('all_views/gestioneservizi/servizi')->with('servizi_ditte', $servizi_ditte)->with('ditte',$ditte)->with("view_dele",$view_dele)->with('ditta_ref',$ditta_ref)->with('servizi',$servizi)->with('service',$service)->with('esito_saveds',$esito_saveds)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota)->with('azienda',$azienda);
 
 	}
 
@@ -270,6 +292,20 @@ public function __construct()
 
 		
 	}
+	
+	function lista_pagamenti() {
+		$lista=array();
+		$lista[0]['id']=1;
+		$lista[0]['descrizione']="Contanti";
+		$lista[1]['id']=2;
+		$lista[1]['descrizione']="Bancomat";
+		$lista[2]['id']=3;
+		$lista[2]['descrizione']="Assegno";
+		$lista[3]['id']=4;
+		$lista[3]['descrizione']="Bonifico";
+		return $lista;
+	}	
+	
 
 	
 

@@ -158,7 +158,8 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('gestione_servizi', [ 'as' => 'gestione_servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@gestione_servizi'])->middleware(['role:admin|coord']);
 
-	Route::get('servizi', [ 'as' => 'servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@servizi'])->middleware(['role:admin|coord']);
+
+	Route::get('servizi/{id_ref?}', [ 'as' => 'servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@servizi'])->middleware(['role:admin|coord']);
 	
 	Route::post('servizi', [ 'as' => 'servizi', 'uses' => 'App\Http\Controllers\ControllerServizi@servizi'])->middleware(['role:admin|coord']);
 

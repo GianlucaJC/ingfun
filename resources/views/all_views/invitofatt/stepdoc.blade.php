@@ -25,10 +25,15 @@
 
 		<div id='div_pagamenti' class='container-fluid'>
 			<!-- caricamento dati da db, in prima istanza ed in caso di aggiunte e modifiche viene gestito da js !-->
-			@php ($id_group=0)
-			@foreach ($elenco_pagamenti_presenti as $info_pagamento)
+			
+			<!--
+				Inoltre, all'atto della creazione della fattura, vengono precaricate le tipologie di pagamento ereditandole dalla anagrafica della ditta prescelta
+			!-->
+			<?php
+			
+				$id_group=0;
+				for ($sca=0;$sca<=count($elenco_pagamenti_presenti)-1;$sca++) {
 				
-				<?php
 					$id_group++;
 					$js="if (!confirm('Sicuri di eliminare il tipo di pagamento?')) return false; else $('#div_p$id_group').remove()"; 
 					$btn_dele="<a href='#' onclick=\"$js\">";
@@ -39,7 +44,9 @@
 					$disp1="display:none";$disp2="display:none";
 					$req1="";$req2="";
 					
-					$tipo=$info_pagamento->tipo_pagamento;
+					
+					$tipo=$elenco_pagamenti_presenti[$sca]['tipo_pagamento'];
+					
 					if ($tipo=="1") {
 						$disp1="";
 						$req1="required";
@@ -74,7 +81,7 @@
 							
 							<div class="form-floating">
 								<input class="form-control dp" 
-								name="data_scadenza[]" type="date" required  value="{{$info_pagamento->data_scadenza}}" />
+								name="data_scadenza[]" type="date" required  value="{{$elenco_pagamenti_presenti[$sca]['data_scadenza']}}" />
 								<label for="data_pagamento">Data scadenza*</label>
 							</div>
 							
@@ -82,7 +89,7 @@
 
 						<div class="col-md-4">
 							<div class="form-floating">
-								<input class="form-control importi" name="importo[]" type="text" placeholder="Importo" required value="{{$info_pagamento->importo}}"/>
+								<input class="form-control importi" name="importo[]" type="text" placeholder="Importo" required value="{{$elenco_pagamenti_presenti[$sca]['importo']}}"/>
 								<label for="importo" >Importo*</label>
 							</div>		
 						</div>
@@ -90,14 +97,14 @@
 				
 					<div class="col-md-4" style='{{$disp1}}'>
 						<div class="form-floating">
-							<input class="form-control" name="persona[]" type="text" placeholder="" {{$req1}} value="{{$info_pagamento->persona}}" />
+							<input class="form-control" name="persona[]" type="text" placeholder="" {{$req1}} value="{{$elenco_pagamenti_presenti[$sca]['persona']}}" />
 							<label for="persona" >Persona che riscuote*</label>
 						</div>		
 					</div>
 				
 					<div class="col-md-4" style='{{$disp2}}'>
 						<div class="form-floating">
-							<input class="form-control" name="coordinate[]" type="text" placeholder="" {{$req2}} value="{{$info_pagamento->coordinate}}" />
+							<input class="form-control" name="coordinate[]" type="text" placeholder="" {{$req2}} value="{{$elenco_pagamenti_presenti[$sca]['coordinate']}}" />
 							<label for="Coordinate" >Coordinate bancarie*</label>
 						</div>		
 					</div>
@@ -106,7 +113,7 @@
 				
 					</div>
 				</div>
-			@endforeach	
+			<?php } ?>
 			<!-- fine caricamento !-->
 		</div>
 

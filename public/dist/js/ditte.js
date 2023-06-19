@@ -34,6 +34,8 @@ $(document).ready( function () {
 		
     });
 	
+	$('#tipo_pagamento').select2();
+	
 } );
 
 function new_ditta() {
@@ -77,6 +79,15 @@ function edit_elem(id_ditta) {
 			$("#pec").val(info[0].pec)
 			$("#telefono").val(info[0].telefono)
 			$("#fax").val(info[0].fax)
+			$("#sdi").val(info[0].sdi)
+			var selectedValues = new Array();
+			
+			tipo_pagamento=info[0].tipo_pagamento
+			if (tipo_pagamento) values = tipo_pagamento.split(';');
+			$("#tipo_pagamento").val('');
+			if (tipo_pagamento && tipo_pagamento.length>0)
+				$("#tipo_pagamento").val(values).change();
+
 			$("#edit_elem").val(id_ditta)
 			$('#div_definition').show(150)
 
