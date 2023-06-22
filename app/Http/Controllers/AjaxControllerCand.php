@@ -20,6 +20,7 @@ use App\Models\voci_doc;
 use App\Models\ref_doc;
 use App\Models\story_all;
 use App\Models\contatti;
+use App\Models\fatture;
 use Mail;
 use setasign\Fpdi\Fpdi;
 use Spatie\PdfToText\Pdf;
@@ -76,6 +77,9 @@ class AjaxControllerCand extends Controller
 		
 		$nome_file="";
 		if ($request->has('nome_file')) $nome_file = $request->input('nome_file');
+		$id_fattura="";
+		if ($request->has('id_fattura')) $id_fattura = $request->input('id_fattura');
+
 		$email = $request->input('email');
 
 
@@ -88,6 +92,13 @@ class AjaxControllerCand extends Controller
 			if (strlen($nome_file)!=0) {
 				$files = [
 					public_path("allegati/doc/$id_cand/$nome_file"),
+				];
+			}
+			if (strlen($id_fattura)!=0) {
+				fatture::where('id', $id_fattura)
+				  ->update(['status' => 2]);					
+				$files = [
+					public_path("allegati/fatture/".$id_fattura.".pdf"),
 				];
 			}
 			Mail::send('emails.notifdoc', $data, function($message)use($data, $files) {

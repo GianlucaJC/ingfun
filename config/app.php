@@ -197,6 +197,7 @@ return [
         App\Providers\RouteServiceProvider::class,
 		Berkayk\OneSignal\OneSignalServiceProvider::class,
 		Intervention\Image\ImageServiceProvider::class,
+		Barryvdh\DomPDF\ServiceProvider::class,
 
     ],
 
@@ -215,6 +216,7 @@ return [
 		'Excel' => Maatwebsite\Excel\Facades\Excel::class,
 		'OneSignal' => Berkayk\OneSignal\OneSignalFacade::class,
 		'Image' => Intervention\Image\Facades\Image::class,
+		'PDF' => Barryvdh\DomPDF\Facade::class,
         // 'ExampleClass' => App\Example\ExampleClass::class,
     ])->toArray(),
 

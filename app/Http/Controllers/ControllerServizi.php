@@ -14,6 +14,7 @@ use App\Models\servizi_ditte;
 use App\Models\user;
 use App\Models\mezzi;
 use App\Models\aliquote_iva;
+use App\Models\societa;
 
 use DB;
 
@@ -23,6 +24,65 @@ public function __construct()
 	{
 		$this->middleware('auth')->except(['index']);
 	}		
+
+
+	public function save_edit_sezionali(Request $request) {
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		$descr_contr=$request->input("descr_contr");
+		
+		$descr_contr=strtoupper($descr_contr);
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+		
+		
+		$data=['dele'=>0, 'descrizione' => $descr_contr];
+		
+
+		//Creazione nuovo elemento
+		if (strlen($descr_contr)!=0 && $edit_elem==0) {
+			DB::table("societa")->insert($data);
+		}
+		
+		//Modifica elemento
+		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
+			societa::where('id', $edit_elem)			
+			  ->update($data);
+		}
+		if (strlen($dele_contr)!=0) {
+			societa::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			societa::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+	
+	}
+
+	public function sezionali(Request $request){
+		//check save/edit
+		$this->save_edit_sezionali($request);
+			
+		$view_dele=$request->input("view_dele");
+		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$sezionali=DB::table('societa as s')
+		->select('s.dele','s.id','s.descrizione','mail_scadenze','mail_fatture')
+		->when($view_dele=="0", function ($sezionali) {
+			return $sezionali->where('s.dele', "=","0");
+		})
+		->orderBy('s.descrizione')
+		->get();
+
+		
+		return view('all_views/gestioneservizi/sezionali')->with('view_dele',$view_dele)->with('sezionali', $sezionali);		
+	}
+
+
 
 	public function save_edit(Request $request) {
 		$edit_elem=0;

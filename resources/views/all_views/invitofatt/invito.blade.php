@@ -48,7 +48,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-	
+
 		<!------------ Stepper !-->	
 		<div class="card">
 		  
@@ -138,6 +138,27 @@
     <!-- /.content -->
   </div>
 
+<!-- Modal -->
+<div class="modal fade bd-example-modal-lg" id="modal_fatt" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="title_modal_fatt">Modal title</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body" id='body_modal_fatt'>
+        ...
+      </div>
+      <div class="modal-footer">
+		<div id='altri_btn_fatt'></div>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        
+      </div>
+    </div>
+  </div>
+</div> 
 
 
 
@@ -158,7 +179,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.168"></script>
+	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.181"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 

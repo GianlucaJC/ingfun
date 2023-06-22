@@ -30,7 +30,7 @@ use App\Models\User;
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
               <li class="breadcrumb-item"><a href="{{ route('amministrazione') }}">Amministrazione</a></li>
-			  <li class="breadcrumb-item active">Inviti a Fatturare</li>
+			  <li class="breadcrumb-item active">Aziende di Proprietà</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -41,7 +41,7 @@ use App\Models\User;
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-	    @if ($user->hasRole('admin') || ($user->hasRole('coord')) )
+	    @if ($user->hasRole('admin'))
 			<div class="row">
 				<div class="col-md-12">
 				<a href="{{ route('amministrazione') }}">
@@ -58,31 +58,18 @@ use App\Models\User;
 		
 			<div class="row">
 				<div class="col-md-12">
-					<a href="{{route('invito')}}">
+					<a href="{{route('sezionali')}}">
 						<div class="d-grid gap-2 mt-2">
 						  <button class="btn btn-primary" type="button">
 						  <i class="fas fa-file-invoice" style='font-size:36px'></i><br>
-							NUOVO INVITO A FATTURARE
+							ANAGRAFICHE
 						  </button>
 						</div>
 					</a>
 				</div>
 
 			</div>
-			
-			<div class="row">
-				<div class="col-md-12">
-					<a href="{{route('lista_inviti')}}">
-						<div class="d-grid gap-2 mt-2">
-						  <button class="btn btn-primary" type="button">
-						  <i class="fas fa-folder-open" style='font-size:36px'></i><br>
-							LISTA INVITI A FATTURARE
-						  </button>
-						</div>
-					</a>
-				</div>
 
-			</div>
 			
 
 

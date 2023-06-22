@@ -6,6 +6,7 @@ use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\lavoratori;
+use App\Models\societa;
 use App\Models\ditte;
 use App\Models\presenze;
 use App\Models\candidati;
@@ -16,6 +17,13 @@ use DB;
 
 class AjaxControllerServ extends Controller
 	{
+
+	public function load_contatti_soc(){
+		$contatti = societa::where('dele','=',0)
+		->orderBy('descrizione')->get();
+        return json_encode($contatti);
+	}
+	
 
 	public function popola_servizi(Request $request){		
 		$id_ditta = $request->input('id_ditta');

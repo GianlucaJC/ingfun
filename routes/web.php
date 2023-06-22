@@ -33,9 +33,15 @@ Route::get('cliditte', [ 'as' => 'cliditte', 'uses' => 'App\Http\Controllers\Mai
 
 
 Route::group(['only_log' => ['auth']], function () {
+	Route::post('load_contatti_soc', 'App\Http\Controllers\AjaxControllerServ@load_contatti_soc');
+	
+	
 	Route::get('invito/{id?}', [ 'as' => 'invito', 'uses' => 'App\Http\Controllers\ControllerInvito@invito'])->middleware(['role:admin|coord']);
 	
 	Route::post('invito/{id?}', [ 'as' => 'invito', 'uses' => 'App\Http\Controllers\ControllerInvito@invito'])->middleware(['role:admin|coord']);
+
+	Route::get('invoice/{id_doc?}', [ 'as' => 'invoice', 'uses' => 'App\Http\Controllers\ControllerInvito@invoice'])->middleware(['role:admin|coord']);
+
 
 	Route::get('lista_inviti', [ 'as' => 'lista_inviti', 'uses' => 'App\Http\Controllers\ControllerInvito@lista_inviti'])->middleware(['role:admin|coord']);
 	
@@ -167,6 +173,10 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('ditte', [ 'as' => 'ditte', 'uses' => 'App\Http\Controllers\ControllerServizi@ditte'])->middleware(['role:admin|coord']);
 
+	Route::get('sezionali', [ 'as' => 'sezionali', 'uses' => 'App\Http\Controllers\ControllerServizi@sezionali'])->middleware(['role:admin']);
+	
+	Route::post('sezionali', [ 'as' => 'sezionali', 'uses' => 'App\Http\Controllers\ControllerServizi@sezionali'])->middleware(['role:admin']);
+
 
 	Route::get('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@listapp'])->middleware(['role:admin|coord|resp']);
 	
@@ -231,7 +241,9 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
 
 	Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
+	
 	Route::post('load_contatti', 'App\Http\Controllers\AjaxControllerCand@load_contatti');
+
 	Route::post('azione', 'App\Http\Controllers\AjaxControllerCand@azione');
 	
 	

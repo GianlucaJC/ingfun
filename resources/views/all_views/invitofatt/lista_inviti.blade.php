@@ -59,7 +59,7 @@
 							<th>Cliente</th>
 							<th>Stato</th>
 							<th>Totale</th>
-							<th>Operazioni</th>
+							<th style='width:200px'>Operazioni</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -86,9 +86,17 @@
 								</td>
 								<td>
 									@if ($fattura->status==0)
-										<i>Non fatturato</i>
+										<i>Bozza</i>
 									@elseif($fattura->status==1)
-										Fatturato
+										<i>Non Inviato</i>
+									@elseif($fattura->status==2)
+										<i>Inviato</i>
+									@elseif($fattura->status==3)
+										<i>Fatturato</i>
+									@elseif($fattura->status==4)
+										<i>Non saldato</i>
+									@elseif($fattura->status==5)
+										<i>Saldato</i>
 									@endif	
 								</td>
 								<td>
@@ -96,17 +104,26 @@
 										echo number_format($fattura->totale,2)." €";
 									?>
 								</td>
-								<td>
+								<td style='width:200px'>
 									
 									@if ($fattura->dele=="0") 
 										<a href="{{ route('invito',['id'=>$fattura->id]) }}">
-											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+											<button type="button" class="btn btn-info" alt='Edit' title='Modifica fattura'><i class="fas fa-edit"></i></button>
 										</a>
-										<a href="javascript:void(0)">
-											<button type="button" class="btn btn-secondary" alt='Pdf'><i class="fas fa-file-pdf"></i></button>
-										</a>									
+										@if ($fattura->status>0)
+										<a href="allegati/fatture/{{$fattura->id}}.pdf?ver=<?php echo time();?>" target='_blank'>
+											<button type="button" class="btn btn-secondary" alt='Pdf' title='apri file pdf'><i class="fas fa-file-pdf" ></i></button>
+										</a>
+											@if ($fattura->status>=2)
+												<a href='javascript:void(0)'  onclick='change_state({{$fattura->id}})'>
+												<button type="button" class="btn btn-warning" alt='Status' title='Cambio stato'><i class="fas fa-cog"></i></button>
+												</a>
+											@endif
+
+										
+										@endif
 										<a href='#' onclick="dele_element({{$fattura->id}})">
-											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+											<button type="submit" name='dele_ele' class="btn btn-danger" title='Elimina Fattura'><i class="fas fa-trash"></i></button>	
 										</a>
 									@endif
 									@if ($fattura->dele=="1") 
@@ -130,7 +147,7 @@
 							<th>Cliente</th>
 							<th>Stato</th>
 							<th>Totale</th>
-							<th></th>
+							<th style='width:200px'></th>
 						</tr>
 					</tfoot>					
 				</table>
@@ -158,12 +175,39 @@
 					</div>
 				</div>
 			</div>	
+			
+			<!-- Modal in form-->
+			<div class="modal fade bd-example-modal-lg" id="modal_body" tabindex="-1" role="dialog" aria-labelledby="info" aria-hidden="true">
+			  <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+				<div class="modal-content">
+				  <div class="modal-header">
+					<h5 class="modal-title" id="title_modal">Modal title</h5>
+					<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					  <span aria-hidden="true">&times;</span>
+					</button>
+				  </div>
+				  <div class="modal-body" id='body_modal'>
+					...
+				  </div>
+				  <div class="modal-footer">
+					<div id='altri_btn'></div>
+					<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+					
+				  </div>
+				</div>
+			  </div>
+			</div>			
+			
 		</form>
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
     <!-- /.content -->
   </div>
+  
+ 
+
+  
   <!-- /.content-wrapper -->
   
  @endsection
@@ -192,6 +236,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.15"></script>
+	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.159"></script>
 
 @endsection

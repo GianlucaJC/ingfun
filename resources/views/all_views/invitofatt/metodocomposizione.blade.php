@@ -100,19 +100,60 @@
 			<table id='tbl_list_appalti' class="display">
 				<thead>
 					<tr>
+						<th style='text-align:center'>ID Appalto</th>
 						<th>Data</th>
-						<th>Operazioni</th>
+						<th>Squadra</th>
+						<th>Servizi</th>
+						<th>Selezione</th>
 					</tr>
 				</thead>
 				<tbody>
 					@php ($num_art=0)
+					@php ($old_ida=0)
 					@foreach($ditteinapp as $ditta)
+						<?php 
+						if ($old_ida==$ditta->id_appalto) continue;
+						$old_ida=$ditta->id_appalto;
+						?>
+						
 						<tr>
 							@php ($num_art++)
+							<td style='text-align:center'>
+								{{$ditta->id_appalto}}
+							</td>	
+
 							<td>
 								{{$ditta->data_ref}}
 							</td>	
 
+							<td>
+								<?php
+
+								if (isset($ids_lav[$ditta->id_appalto])) {
+									for ($sca=0;$sca<count($ids_lav[$ditta->id_appalto]);$sca++) {
+										$value=$ids_lav[$ditta->id_appalto][$sca];
+										if (isset($all_lav[$value])) 
+											if ($sca>0) echo ", ";
+											echo $all_lav[$value];
+									}
+								}
+
+								?>
+							</td>
+							<td>
+								<?php							
+								if (isset($id_servizi[$ditta->id_appalto])) {
+									for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
+										$value=$id_servizi[$ditta->id_appalto][$sca];
+										if (isset($all_servizi[$value])) 
+											if ($sca>0) echo ", ";
+											echo $all_servizi[$value]['descrizione'].":";
+											echo $all_servizi[$value]['importo_ditta']."€";
+
+									}
+								}		
+							?>								
+							</td>
 							<td style='text-align:center'>
 								<div class="form-check">
 								  <input class="form-check-input" type="checkbox" value="{{$ditta->id_appalto}}" id="app_sel" name="app_sel[]" checked>

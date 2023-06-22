@@ -297,7 +297,7 @@ use App\Models\User;
 						<ul class="nav nav-treeview">
 
 						  <li class="nav-item">
-							<a href="#" class="nav-link">
+							<a href="{{route('sezionali')}}" class="nav-link">
 							  <i class="far fa-circle nav-icon"></i>
 							  <p>Anagrafiche</p>
 							</a>

@@ -37,6 +37,34 @@ $(document).ready( function () {
 } );
 
 
+function change_state(id_fatt) {
+	$("#modal_body").modal('show');
+	$("#title_modal").html("Cambia stato alla fattura")
+	html=`
+		<div class="row mb-3">
+			<div class="col-md-12">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" name="stato_fattura" id="stato_fattura" required>
+					<option value=''>Select...</option>
+						<option value='3'>Fatturato</option>
+						<option value='4'>Non saldato</option>
+						<option value='5'>Saldato</option>
+					</select>
+					<label for="stato_fattura">Imposta stato fattura*</label>
+				</div>
+			</div>	
+		</div>
+	`	
+	$("#body_modal").html(html)	
+	
+	html=""
+	html+="<button type='submit' class='btn btn-primary' name='btn_change_state' id='btn_change_state' value='change'>Cambia stato</button>"
+	
+	html+="<input type='hidden' name='id_fatt_change' id='id_fatt_change' value='"+id_fatt+"'>";
+	
+	$("#altri_btn").html(html)	
+}
+
 
 function dele_element(value) {
 	if(!confirm('Sicuri di eliminare l\'elemento?')) 
