@@ -19,6 +19,9 @@ use DB;
 
 class ControllerArchivi extends Controller
 {
+	public function __construct() {
+		$this->middleware('auth')->except(['index']);
+	}
 
 	public function contatti(Request $request){
 		$edit_elem=0;

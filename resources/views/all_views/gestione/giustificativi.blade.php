@@ -138,6 +138,11 @@
 					<button type="button" class="btn btn-primary" onclick="new_giust()">
 						<i class="fa fa-plus-circle"></i> Nuovo Giustificativo
 					</button>
+					<a href="{{ route('registro') }}">
+						<button type="button" class="btn btn-success" >
+							 Registro Servizi
+						</button>
+					</a>
 					<?php if (1==2) {?>
 						<div class="form-check form-switch mt-3 ml-3">
 						  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_giust').submit()" {{ $check }}>

@@ -10,6 +10,10 @@ use DB;
 
 class Registro extends Controller
 {
+	public function __construct()
+	{
+		$this->middleware('auth')->except(['index']);
+	}
 
 	private function mese_descr($mese) {
 		$mese=intval($mese);$descr_b="";$descr_e="";
@@ -120,7 +124,7 @@ class Registro extends Controller
 		->where("a.data_ref","<=",$per_a)
 		*/
 		$servizi_all=DB::table('appalti as a')
-		->select("s1.id","s1.descrizione","s.importo_lavoratore as importo")
+		->select("s1.id","s1.descrizione","s1.acronimo","s.importo_lavoratore as importo")
 		->join("serviziapp as s","s.id_appalto","a.id")
 		->join("servizi as s1","s1.id","s.id_servizio")
 		->groupBy('s1.id')
@@ -129,6 +133,7 @@ class Registro extends Controller
 		foreach($servizi_all as $s) {
 			$servizi[$s->id]['id']=$s->id;
 			$servizi[$s->id]['descrizione']=$s->descrizione;
+			$servizi[$s->id]['acronimo']=$s->acronimo;
 			$servizi[$s->id]['alias_ref']="";
 			$servizi[$s->id]['importo']=$s->importo;
 			$servizi[$s->id]['tipo_dato']=0; //tutti importi

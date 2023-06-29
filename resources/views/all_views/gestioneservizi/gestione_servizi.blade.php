@@ -66,7 +66,7 @@
 						<tr>
 							
 							<th>Servizio</th>
-							
+							<th>Acronimo</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -85,9 +85,13 @@
 								 @endif	
 								</td>	
 								<td>
+									{{ $servizio->acronimo }}
+								</td>
+								<td>
 									<!--informazioni sulla riga per js !-->
 									<span id='info_s{{$servizio->id}}' 
 									data-descr_servizio='{{$servizio->descrizione}}'
+									data-acronimo='{{$servizio->acronimo}}'
 									>
 									</span>
 								
@@ -115,7 +119,7 @@
 						<tr>
 							
 							<th>Servizio</th>
-							
+							<th>Acronimo</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -176,6 +180,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/gestione_servizi.js?ver=1.15"></script>
+	<script src="{{ URL::asset('/') }}dist/js/gestione_servizi.js?ver=1.16"></script>
 
 @endsection

@@ -42,10 +42,10 @@ $(document).ready( function () {
 
 		
     });
+	value=$("#zoom_tbl").val()
+	setZoom(value)
 	$('body').addClass("sidebar-collapse");
-	$('#div_tb').css('transform','scale(0.65)');
-	$('#div_tb').css('transformOrigin','left top');
-	
+	$("#div_tb").show(150)
 
 	
 } );
@@ -115,8 +115,8 @@ function save_value() {
 
 }
 
-function ins_value() {
-	console.warn("giorni",ins_value.giorni,"mese",ins_value.mese,"id_lav",ins_value.id_lav,"id_servizio",ins_value.id_servizio)
+function ins_value(giorno) {
+	console.warn("giorno",giorno,"giorni",ins_value.giorni,"mese",ins_value.mese,"id_lav",ins_value.id_lav,"id_servizio",ins_value.id_servizio)
 	
 	tipo_dato=ins_value.tipo_dato
 	periodo=ins_value.periodo
@@ -153,6 +153,13 @@ function ins_value() {
 			value=$("#imp_"+id_ref).html()
 			style="color:green";
 			if (value.length!=0) style="background-color:#96d3ec!important;color:red";
+			
+			
+			if (giorno==sca) 
+				style="background-color:#7fffd4!important;color:blue";
+			
+
+			
 			d = new Date(anno+"-"+mese_num+"-"+sca);
 			
 			day = d.getDay()
@@ -176,7 +183,7 @@ function ins_value() {
 			
 				html+="<div class='form-floating'>";
 					
-					html+="<input class='form-control dati' id='dato"+sca+"' type='text' value='"+value+"' "+on+" style='"+style+"' "+max+" />";
+					html+="<input class='form-control dati' id='dato"+sca+"' type='text' value='"+value+"' "+on+" style='"+style+"' "+max+"/>";
 					
 				html+="<label for='dato"+sca+"' class='form-label'>"+day_d+" "+sca+"</label>"					
 				html+="</div>";
@@ -189,13 +196,18 @@ function ins_value() {
 	$("#bodyvalue").html(html)
 	
 	
+	
 
 	html="<button type='button' class='btn btn-primary' onclick='save_value()' id='btn_save'>Salva</button>";
 	$("#div_save").html(html)
 
 	$('#modalvalue').modal('show')
+	$('#modalvalue').on('shown.bs.modal', function() {
+		if (giorno!="0") $("#dato"+giorno).focus();
+		else $("#dato1").focus();
+	})	
 	
-
+	
 	
 	
 }

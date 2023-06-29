@@ -108,7 +108,7 @@
 			
 	
         <div class="row">
-          <div class="col-md-12" id='div_tb'>
+          <div class="col-md-12" id='div_tb' style='display:none'>
 			<table id='tbl_list_presenze' class="display cell-border" width="100%">
 				<thead>
 					<tr>
@@ -140,8 +140,23 @@
 						?>
 						@php ($inc=0)	
 						@foreach($servizi as $servizio)
+						
 							<?php
-								$view_main=view_main($giorni,$lav_lista,$lavoratore,$servizio);	
+								$js="";
+								$js.="ins_value.periodo='$periodo';";
+								$js.="ins_value.giorni=$giorni;";
+								$js.="ins_value.mese='$mese';";
+								$js.="ins_value.mese_num='$mese_num';";
+								$js.="ins_value.id_lav=".$lavoratore->id_lav.";";
+								$js.="ins_value.id_servizio='".$servizio['id']."';";
+								$js.="ins_value.tipo_dato='".$servizio['tipo_dato']."';";
+								
+									?>						
+						
+							<?php
+								$view_main=view_main($giorni,$lav_lista,$lavoratore,$servizio,$js);	
+								
+								$js.="ins_value(0)";
 								if (($view_main['presenza'])==false) continue;
 							?>
 							@php($inc++)
@@ -161,17 +176,7 @@
 								
 								</td>								
 								<td>
-									<?php
-										$js="";
-										$js.="ins_value.periodo='$periodo';";
-										$js.="ins_value.giorni=$giorni;";
-										$js.="ins_value.mese='$mese';";
-										$js.="ins_value.mese_num='$mese_num';";
-										$js.="ins_value.id_lav=".$lavoratore->id_lav.";";
-										$js.="ins_value.id_servizio='".$servizio['id']."';";
-										$js.="ins_value.tipo_dato='".$servizio['tipo_dato']."';";
-										$js.="ins_value()";
-									?>
+
 									<a href='#' class="link-primary" onclick="{{$js}}">
 										{{$servizio['descrizione']}}
 									</a>
@@ -184,9 +189,11 @@
 								@if ($inc==count($servizi))
 									<td>
 										@if ($somma_lav>0) 
+										<center>	
 											<font color='green'>
 												<b>{{$somma_lav}}</b>
 											</font>	
+										</center>	
 										@endif
 									</td>
 								@else
@@ -265,9 +272,10 @@
  
 <?php
 
-function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
+function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 	
 	$view="";$somma=0;$presenza=false;
+	
 	for ($sca=1;$sca<=$giorni;$sca++) {
 		$value="";
 		$view.="<td>";
@@ -309,12 +317,21 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 					}
 				}
 			}	
+			$js1=$js."ins_value($sca);";
 			$id_ref=$lavoratore->id_lav."_".$id_servizio."_".$sca;
-			$view.="<span id='imp_$id_ref' class='dati_presenze'>";
-				//senza formattazione, altrimenti in casi di dati 
-				//assenti ma con formattazione inserisce l'informazione nel db
-				$view.=$value;
-			$view.="</span>";
+			$view.="<a href='javascript:void(0)' onclick=\"$js1\">";
+				$view.="<div style='text-align:center;min-height:20px'>";
+					$view.="<span id='imp_$id_ref' class='dati_presenze'>";
+						//senza formattazione, altrimenti in casi di dati 
+						//assenti ma con formattazione inserisce l'informazione nel db
+						if ($value==0) 
+							if (isset($servizio['acronimo'])) $view.=$servizio['acronimo'];
+							else $view.=$value;
+						else 
+							$view.=$value;
+					$view.="</span>";
+				$view.="</div>";
+			$view.="</a>";
 			$somma+=intval($value);
 		$view.="</td>";
 	}
@@ -358,6 +375,6 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.508"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.529"></script>
 
 @endsection

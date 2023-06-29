@@ -45,7 +45,10 @@ function new_serv() {
 }
 function edit_elem(id_elem) {	
 	descr_servizio=$("#info_s"+id_elem).data("descr_servizio")
+	acronimo=$("#info_s"+id_elem).data("acronimo")
+	
 	$("#descr_contr").val(descr_servizio);
+	$("#acronimo").val(acronimo);
 	$('#div_definition').show(150)
 	$("#edit_elem").val(id_elem)
 }

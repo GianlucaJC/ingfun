@@ -12,6 +12,10 @@ use DB;
 
 class ControllerPdf extends Controller
 	{
+		public function __construct() {
+			$this->middleware('auth')->except(['index']);
+		}
+			
 		
 		public function analisi_pdf(Request $request) {
 			$pagecount=$request->input('pagecount');

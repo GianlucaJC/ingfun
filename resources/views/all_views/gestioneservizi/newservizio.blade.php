@@ -17,6 +17,15 @@
 						  <input type="text" class="form-control" placeholder="Descrizione Servizio" aria-label="Descrizione" name="descr_contr" id="descr_contr" required>
 						</div>			
 					</div>
+
+					<div class="col-md-4">
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<span class="input-group-text" id="basic-addon1">Acronimo</span>
+						  </div>
+						  <input type="text" class="form-control" placeholder="Associazione con acronimo" aria-label="Acronimo" name="acronimo" id="acronimo" required>
+						</div>			
+					</div>
 				
 					<div class="col-md-4">
 						<button type="submit" class="btn btn-success" >Crea/Modifica Servizio</button>

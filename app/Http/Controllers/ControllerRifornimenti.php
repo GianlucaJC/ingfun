@@ -17,6 +17,11 @@ use DB;
 
 class ControllerRifornimenti extends Controller
 {
+	public function __construct() {
+		$this->middleware('auth')->except(['index']);
+	}
+	
+	
 	public function rifornimenti($id_rif=0) {
 
 		$dele_contr=request()->input("dele_contr");
