@@ -81,7 +81,8 @@
 								 @if ($sezionale->dele=="1") 
 									 </del></font>
 								 @endif	
-									<span style='display:none' id='id_descr{{$sezionale->id}}' data-descr='{{ $sezionale->descrizione }}'>
+									<span style='display:none' id='id_descr{{$sezionale->id}}' data-descr='{{ $sezionale->descrizione }}' data-mail_scadenze='{{ $sezionale->mail_scadenze }}' data-mail_fatture='{{ $sezionale->mail_fatture }}'>
+									
 										{{ $sezionale->descrizione }}
 									</span>									 
 								</td>
@@ -183,6 +184,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/sezionali.js?ver=1.001"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sezionali.js?ver=1.002"></script>
 
 @endsection

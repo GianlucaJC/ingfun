@@ -63,7 +63,12 @@ class Registro extends Controller
 		$view_dele=$request->input("view_dele");
 		$periodi=$this->periodi();
 		$periodo=$request->input("periodo");
-		
+		$zoom_tbl=$request->input("zoom_tbl");
+		if (strlen($zoom_tbl)==0) $zoom_tbl=0.65;
+		if (strlen($periodo)==0) {
+			$y=date("Y");$m=date("m");
+			$periodo="$y-$m";
+		}
 		
 		$mese=$this->mese_descr(substr($periodo,5,2))['descr_b'];
 		$mese_num=substr($periodo,5,2);
@@ -182,7 +187,7 @@ class Registro extends Controller
 		
 		if (strlen($periodo)==0) $lav_all=array();
 
-		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi);
+		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi)->with('zoom_tbl',$zoom_tbl);
 		
 	}	
 	

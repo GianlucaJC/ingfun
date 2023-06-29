@@ -18,11 +18,22 @@
     }
     th, td { white-space: nowrap; }
 
+#tbl_list_presenze tbody th, #tbl_list_presenze tbody td {
+    padding: 3px 3px; /* e.g. change 8x to 4px here */
+}
+#tbl_list_presenze td {
+  font-size: 1em;
+}
+
+#div_main {
+	background-color:white
+}	
+
 
 </style>
 @section('content_main')
   <!-- Content Wrapper. Contains page content -->
-  <div class="content-wrapper">
+  <div class="content-wrapper" id='div_main'>
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -74,11 +85,31 @@
 						<label for="periodo">Periodo analisi</label>
 					</div>
 				</div>
+
+				<div class="col-md-3">
+					<div class="form-floating mb-3 mb-md-0">
+
+						<select class="form-select" name="zoom_tbl" id="zoom_tbl" onchange="setZoom(this.value)">
+							<?php
+
+								for ($sca=0.50;$sca<=1.05;$sca+=0.05) {
+									echo "<option value='$sca' ";
+									if (strval($sca)==strval($zoom_tbl)) echo " selected ";
+									echo ">$sca</option>";
+								}
+							?>
+
+		
+						</select>
+						<label for="zoom_tbl">Zoom tabella</label>
+					</div>
+				</div>				
 			</div>
+			
 	
         <div class="row">
-          <div class="col-md-12">
-			<table id='tbl_list_presenze' class="display">
+          <div class="col-md-12" id='div_tb'>
+			<table id='tbl_list_presenze' class="display cell-border" width="100%">
 				<thead>
 					<tr>
 						
@@ -201,6 +232,7 @@
         <!-- /.row -->
       </div><!-- /.container-fluid -->
     </div>
+	
 	
 <!-- Modal -->
 <div class="modal fade bd-example-modal-lg" id="modalvalue" tabindex="-1" role="dialog" aria-labelledby="title_doc" aria-hidden="true">
@@ -326,6 +358,6 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio) {
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.445"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.508"></script>
 
 @endsection

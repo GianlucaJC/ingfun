@@ -1,14 +1,15 @@
+
 $(document).ready( function () {
     $('#tbl_list_presenze tfoot th').each(function () {
         var title = $(this).text();
 		if (title.length!=0)
 			$(this).html('<input type="text" placeholder="" />');
     });	
+	
     var table=$('#tbl_list_presenze').DataTable({
-
-        scrollX:        true,
+        scrollX:        false,
         scrollCollapse: true,
-        "pageLength": 15,
+        "pageLength": 35,
         fixedColumns:   {
             left: 2
         },		
@@ -41,8 +42,22 @@ $(document).ready( function () {
 
 		
     });
+	$('body').addClass("sidebar-collapse");
+	$('#div_tb').css('transform','scale(0.65)');
+	$('#div_tb').css('transformOrigin','left top');
+	
+
 	
 } );
+
+
+function setZoom(value) {
+	$('#div_tb').css('transform','scale('+value+')');
+	$('#div_tb').css('transformOrigin','left top');
+};
+
+
+
 
 function save_value() {
 	console.warn("mese",ins_value.mese,"id_lav",ins_value.id_lav,"id_servizio",ins_value.id_servizio)

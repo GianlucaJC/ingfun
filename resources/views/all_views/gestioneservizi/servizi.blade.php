@@ -2,6 +2,9 @@
 
 @section('title', 'IngFUN')
 @section('extra_style') 
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <!-- x button export -->
 
 <link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
@@ -63,12 +66,13 @@
 
 		
 		<?php
-
-		if ($ditta_ref!='0' && strlen($ditta_ref)>0 && isset($azienda)) {
+		
+		if (is_array($ditta_ref) && isset($azienda)) {
 			echo "<div class='alert alert-secondary' role='alert'>";
 				echo "Azienda di proprietà: <b>".$azienda->azienda_prop."</b>";
 			echo "</div>";
 		}
+		
 		?>
 		
 		<form method='post' action="{{ route('servizi') }}" id='frm_newservice' name='frm_newservice' autocomplete="off">
@@ -105,6 +109,7 @@
 						<thead>
 							<tr>
 								<th>ID</th>
+								<th>Ditta</th>
 								<th>Descrizione</th>
 								<th>Importo Ditta</th>
 								<th>Aliquota</th>
@@ -116,6 +121,11 @@
 							@foreach($servizi_ditte as $tipo)
 								<tr>
 									<td>{{ $tipo->id }}</td>	
+									<td>
+										@if (isset($info_d[$tipo->id_ditta]))
+											{{$info_d[$tipo->id_ditta]}}
+										@endif				
+									</td>
 									<td>
 									 @if ($tipo->dele=="1") 
 										<font color='red'><del> 
@@ -152,7 +162,9 @@
 									data-aliquota='{{$tipo->aliquota}}'
 									data-importo_lavoratore='{{$tipo->importo_lavoratore}}'>
 									</span>
-									
+									<?php
+									if (is_array($ditta_ref) && count($ditta_ref)==1) {?>
+							
 										@if ($tipo->dele=="0") 
 											<a href='#' onclick="edit_elem({{$tipo->id}})">
 												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
@@ -166,8 +178,9 @@
 												<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
 											</a>
 										@endif
-										
-										
+									<?php }
+									else echo "N.D. per più ditte";
+									?>
 									</td>	
 								</tr>
 							@endforeach
@@ -176,6 +189,7 @@
 						<tfoot>
 							<tr>
 								<th>ID</th>
+								<th>Ditta</th>
 								<th>Descrizione</th>
 								<th>Importo Ditta</th>
 								<th>Aliquota</th>
@@ -184,6 +198,7 @@
 							</tr>
 						</tfoot>					
 					</table>
+					
 					<input type='hidden' id='dele_ds' name='dele_ds'>
 					<input type='hidden' id='restore_contr' name='restore_contr'>
 				
@@ -226,6 +241,8 @@
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 
+	<!--select2 !-->
+	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 
 	
 	<!-- inclusione standard
@@ -242,6 +259,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/servizi.js?ver=1.018"></script>
+	<script src="{{ URL::asset('/') }}dist/js/servizi.js?ver=1.027"></script>
 
 @endsection

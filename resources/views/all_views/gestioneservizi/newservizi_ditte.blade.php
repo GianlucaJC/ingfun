@@ -1,20 +1,32 @@
 <div class="row mb-3">
-	<div class="col-md-12">
+	<div class="col-md-9">
+		<!-- onchange="$('#frm_newservice').submit()"	!-->
 		<div class="form-floating mb-3 mb-md-0">
-			<select class="form-select" name="ditta_ref" id="ditta_ref" onchange="$('#frm_newservice').submit()">
-				<option value=''>Select...</option>
+			<select class="select2 form-select" name="ditta_ref[]" id="ditta_ref"  multiple>
+		
 					@foreach($ditte as $ditta) 
 						<option value='{{ $ditta->id}}' 	
 						<?php 
-							if ($ditta_ref==$ditta->id) 
-							echo " selected ";
+							if (is_array($ditta_ref)) {
+								if (in_array($ditta->id,$ditta_ref))
+								echo " selected ";
+							}
 						?>
 						>{{ $ditta->denominazione}}</option>
 					@endforeach
 			</select>
-			<label for="ditta">Ditta di riferimento</label>
+			<b>Ditta di riferimento</b>
 		</div>
 	</div>
+	<div class="col-md-3">
+		<div class="form-floating mb-3 mb-md-0">
+			<a href='javascript:void(0)'>
+				<button onclick="$('#frm_newservice').submit()" type="button" class="btn btn-success">Filtra servizi relativi alla scelta</button>
+			</a>
+		</div>
+	</div>
+			
+	
 </div>
 
 <div id='div_set_service' style='display:none'>
@@ -77,7 +89,7 @@
 		</div>
 		
 	</div>	
-	
+	<input type='hidden' id='edit_elem' name='edit_elem'>
 	<div class="d-grid gap-2 d-md-flex justify-content-md-begin">
 		<button type="submit" class="btn btn-success" onclick=' $("#ditta_ref").prop("disabled", false);$("#save_ds").val("1")'>
 			<i class="far fa-save"></i> Salva

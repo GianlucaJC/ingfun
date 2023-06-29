@@ -54,7 +54,12 @@ function popola_cap_pro(value) {
 
 function edit_elem(id_elem) {
 	descrizione=$("#id_descr"+id_elem).data("descr")
+	mail_scadenze=$("#id_descr"+id_elem).data("mail_scadenze")
+	mail_fatture=$("#id_descr"+id_elem).data("mail_fatture")
 	$("#descr_contr").val(descrizione)
+	$("#mail_scadenze").val(mail_scadenze)
+	$("#mail_fatture").val(mail_fatture)
+	
 	$("#edit_elem").val(id_elem)
 	$('#div_definition').show(150)
 }

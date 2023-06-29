@@ -30,6 +30,10 @@ public function __construct()
 		$edit_elem=0;
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$descr_contr=$request->input("descr_contr");
+		$mail_scadenze=$request->input("mail_scadenze");
+		$mail_fatture=$request->input("mail_fatture");
+		$mail_scadenze=strtolower($mail_scadenze);
+		$mail_fatture=strtolower($mail_fatture);
 		
 		$descr_contr=strtoupper($descr_contr);
 		
@@ -37,7 +41,7 @@ public function __construct()
 		$restore_contr=$request->input("restore_contr");
 		
 		
-		$data=['dele'=>0, 'descrizione' => $descr_contr];
+		$data=['dele'=>0, 'descrizione' => $descr_contr,'mail_scadenze'=>$mail_scadenze,'mail_fatture'=>$mail_fatture];
 		
 
 		//Creazione nuovo elemento
@@ -71,7 +75,7 @@ public function __construct()
 		if ($view_dele=="on") $view_dele=1;
 		
 		$sezionali=DB::table('societa as s')
-		->select('s.dele','s.id','s.descrizione','mail_scadenze','mail_fatture')
+		->select('s.dele','s.id','s.descrizione','s.mail_scadenze','s.mail_fatture')
 		->when($view_dele=="0", function ($sezionali) {
 			return $sezionali->where('s.dele', "=","0");
 		})
@@ -170,12 +174,15 @@ public function __construct()
 
 
 	public function save_edit_servizi_ditte(Request $request) {
+		/*
+			N.B.: $ditta_ref essendo derivante da una select multiple, è un'array e quindi prendo solo il primo elemento (via js non permetto la modifica o l'inserimento di un servizio riferito a più ditte)
+		*/
+		$ditta_ref=$request->input("ditta_ref");
 		$edit_elem=0;
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$save_ds=$request->input("save_ds");
 		$esito_saveds=0;
 		if ($save_ds=="1" && strlen($request->input("importo"))!=0) {
-			$ditta_ref=$request->input("ditta_ref");
 			$service=$request->input("service");
 			$importo=$request->input("importo");
 			$aliquota=$request->input("aliquota");
@@ -191,12 +198,13 @@ public function __construct()
 			->update($data);
 		}			
 		if ($save_ds=="1" && $edit_elem==0 && strlen($request->input("importo"))!=0) {
-			$data=['dele'=>0, 'id_ditta' => $ditta_ref,'id_servizio' => $service,'importo_ditta' => $importo,'aliquota' => $aliquota,'importo_lavoratore' => $importo_lavoratore];			
+			$d_ref=$ditta_ref[0];
+			$data=['dele'=>0, 'id_ditta' => $d_ref,'id_servizio' => $service,'importo_ditta' => $importo,'aliquota' => $aliquota,'importo_lavoratore' => $importo_lavoratore];			
 
 			$esito_saveds=1;		
 			$check=DB::table('servizi_ditte as s')
 			->where('s.dele', "=","0")
-			->where('s.id_ditta',"=",$ditta_ref)
+			->where('s.id_ditta',"=",$d_ref)
 			->where('s.id_servizio',"=",$service)
 			->count();
 			if ($check==0) {
@@ -211,14 +219,19 @@ public function __construct()
 		$esito_saveds=$this->save_edit_servizi_ditte($request);
 		
 		$ditta_ref=$request->input("ditta_ref");
-		//if ($id_ref!=0) $ditta_ref=$id_ref;
-		if (request()->has("id_ref")) $ditta_ref=request()->input("id_ref");
+		if (request()->has("id_ref")) {
+			$ditta_ref[0]=request()->input("id_ref");
+		}	
 		
 		$ditta_from_frm1=$request->input("ditta_from_frm1");
-		if (strlen($ditta_from_frm1)!=0) $ditta_ref=$ditta_from_frm1;
+		if (strlen($ditta_from_frm1)!=0) {
+			$ditta_ref[0]=$ditta_from_frm1;
+		}	
+		
 		
 		$service=$request->input("service");
-		if (strlen($ditta_ref)==0) $ditta_ref=0;
+
+
 		$view_dele=$request->input("view_dele");
 		$descr_contr=$request->input("descr_contr");
 		
@@ -260,16 +273,37 @@ public function __construct()
 		->join('servizi_ditte as d','s.id','d.id_servizio')
 		->when($view_dele=="0", function ($servizi) {
 			return $servizi->where('d.dele', "=","0");
-		})
-		->where('d.id_ditta','=',$ditta_ref)
-		->orderBy('s.descrizione')->get();
+		});
 
-		$azienda_prop=DB::table('societa as s')
-		->join('ditte as d','s.id','d.id_azienda_prop')
-		->select('s.id','s.descrizione as azienda_prop')
-		->where('d.id','=',$ditta_ref)
-		->get();
-		$azienda=array();
+		$arr_ditta=$ditta_ref;
+		if (!is_array($ditta_ref)) {
+			$arr_ditta=array();
+			if (strlen($ditta_ref)!=0) $arr_ditta[0]=$ditta_ref;
+			else $arr_ditta=array();
+			$servizi_ditte=$servizi_ditte->where('d.id','=',0);
+		}
+		
+		$servizi_ditte=$servizi_ditte->where(function ($query) use ($arr_ditta)  {
+			for ($sca=0;$sca<count($arr_ditta);$sca++) {
+				$d_ref=$arr_ditta[$sca];
+				if ($sca==0) 
+					$query->where('d.id_ditta','=',$d_ref);
+				else
+					$query->orWhere('d.id_ditta','=',$d_ref);
+			}
+		});	
+		
+		$servizi_ditte=$servizi_ditte->orderBy('s.descrizione');
+		$servizi_ditte=$servizi_ditte->get();
+		
+		if (is_array($ditta_ref) && count($ditta_ref)==1) {
+			$azienda_prop=DB::table('societa as s')
+			->join('ditte as d','s.id','d.id_azienda_prop')
+			->select('s.id','s.descrizione as azienda_prop')
+			->where('d.id','=',$ditta_ref)
+			->get();
+		}
+		$azienda=null;
 		if (isset($azienda_prop[0])) $azienda=$azienda_prop[0];
 			
 		
@@ -278,11 +312,18 @@ public function __construct()
 		->where('s.dele', "=","0")
 		->orderBy('s.descrizione')->get();
 
+
+
 		$ditte=DB::table('ditte as d')
 		->select("*")
 		->where('d.dele', "=","0")
 		->orderBy('d.denominazione')
 		->get();
+		
+		$info_d=array();
+		foreach ($ditte as $arr_d) {
+			$info_d[$arr_d->id]=$arr_d->denominazione;
+		}
 		
 		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
 		->get();		
@@ -292,7 +333,10 @@ public function __construct()
 				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
 		}
 
-		return view('all_views/gestioneservizi/servizi')->with('servizi_ditte', $servizi_ditte)->with('ditte',$ditte)->with("view_dele",$view_dele)->with('ditta_ref',$ditta_ref)->with('servizi',$servizi)->with('service',$service)->with('esito_saveds',$esito_saveds)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota)->with('azienda',$azienda);
+		$ditta_ref=$arr_ditta;
+		
+
+		return view('all_views/gestioneservizi/servizi')->with('servizi_ditte', $servizi_ditte)->with('ditte',$ditte)->with("view_dele",$view_dele)->with('ditta_ref',$ditta_ref)->with('servizi',$servizi)->with('service',$service)->with('esito_saveds',$esito_saveds)->with('aliquote_iva',$aliquote_iva)->with('arr_aliquota',$arr_aliquota)->with('azienda',$azienda)->with('info_d',$info_d);
 
 	}
 

@@ -33,7 +33,7 @@ $(document).ready( function () {
 
 		
     });
-	
+	$('.select2').select2()
 } );
 
 
@@ -44,13 +44,19 @@ function check_associa() {
 		alert("Scegliere una ditta di riferimento!");
 		return false;
 	}	
+	if (ditta_ref.length>1) {
+		alert("Scegliere SOLO una ditta di riferimento!");
+		return false;
+	}	
+		
 	$('#div_set_service').show(150)
 	$('#div_set_service').show(150)
 	$('#div_table_servizi').hide(150)
 }
 
 function edit_elem(id_elem) {	
-	check_associa()
+	ret=check_associa()
+	if (ret==false) return false;
 	id_servizio=$("#info_s"+id_elem).data("id_servizio")
 	id_ditta=$("#info_s"+id_elem).data("id_ditta")
 	importo_ditta=$("#info_s"+id_elem).data("importo_ditta")
