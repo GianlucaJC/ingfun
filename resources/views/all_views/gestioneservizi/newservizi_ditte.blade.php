@@ -2,7 +2,7 @@
 	<div class="col-md-9">
 		<!-- onchange="$('#frm_newservice').submit()"	!-->
 		<div class="form-floating mb-3 mb-md-0">
-			<select class="select2 form-select" name="ditta_ref[]" id="ditta_ref"  multiple>
+			<select class="select2 form-select" name="ditta_ref[]" id="ditta_ref"  multiple onchange="$('#frm_newservice').submit()">
 		
 					@foreach($ditte as $ditta) 
 						<option value='{{ $ditta->id}}' 	

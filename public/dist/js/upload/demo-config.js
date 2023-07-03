@@ -115,7 +115,10 @@ function set_class_allegati(from,id_cand) {
 			html+="</tr>";
 			$('#tb_doc tr:first').after(html);			
 			update_doc(doc_id,id_cand)
-	  } 
+	  }
+	if (from=="ditte") {
+		refresh(from,id_cand,data.filename)
+	}
 	  
 
     },
@@ -133,7 +136,49 @@ function set_class_allegati(from,id_cand) {
   });	
 }
 
+function redirect(from,id_cand) {
+	if (from=="ditte")  {
+		$("#refr").val(id_cand)
+		$("#frm_ditte1").submit()
+	}	
+}
 
+function refresh(from,id_cand,filename) {
+	if (from=="ditte") {
+		base_path = $("#url").val();
+		let CSRF_TOKEN = $("#token_csrf").val();		
+		descr_file=$("#descr_file").val()
+		html="";
+		html+="<font color='red'>Attendere. Refresh in corso...</font><hr>"
+		$("#div_allegati").html(html)
+		
+		fetch(base_path+'/update_doc_ditte', {
+			method: 'post',
+			//cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached		
+			headers: {
+			  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+			},
+			body: '_token='+ CSRF_TOKEN+'&filename='+filename+'&id_ditta='+id_cand+'&descr_file='+descr_file
+		})
+		.then(response => {
+			if (response.ok) {
+			   return response.json();
+			}
+		})
+		.then(resp=>{			
+			if (resp.status=="KO") {
+				$("#div_allegati").html('')
+				alert("Problemi occorsi durante il salvataggio.\n\nDettagli:\n"+resp.message);
+				return false;
+			}
+			timeout = setTimeout(function() {redirect(from,id_cand)}, 1500);
+		})
+		.catch(status, err => {
+			return console.log(status, err);
+		})			
+				
+	}
+}
 function update_doc(filename,id_cand) {
 	tipo_doc=$("#tipo_doc").val()
 	sotto_tipo_doc=$("#sotto_tipo_doc").val()

@@ -145,7 +145,7 @@ public function __construct()
 	public function ditte(Request $request){
 		//check save/edit
 		$this->save_edit($request);
-			
+		$refr=$request->input("refr");
 		$view_dele=$request->input("view_dele");
 		$all_comuni = italy_cities::orderBy('comune')->get();
 		
@@ -169,7 +169,7 @@ public function __construct()
 		->orderBy('denominazione')->get();
 
 
-		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('aziende_prop',$aziende_prop)->with('lista_pagamenti',$lista_pagamenti);		
+		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('aziende_prop',$aziende_prop)->with('lista_pagamenti',$lista_pagamenti)->with('refr',$refr);		
 	}	
 
 

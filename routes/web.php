@@ -225,6 +225,8 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('dele_curr', 'App\Http\Controllers\AjaxControllerCand@dele_curr');
 	Route::post('remove_doc', 'App\Http\Controllers\AjaxControllerCand@remove_doc');
 	Route::post('update_doc', 'App\Http\Controllers\AjaxControllerCand@update_doc');
+	
+	Route::post('update_doc_ditte', 'App\Http\Controllers\AjaxControllerServ@update_doc_ditte');
 
 	Route::post('sottotipo', 'App\Http\Controllers\AjaxControllerCand@sottotipo');
 	Route::post('lista_province', 'App\Http\Controllers\AjaxControllerCand@lista_province');
@@ -258,6 +260,11 @@ Route::group(['only_log' => ['auth']], function () {
 	
 
 	Route::post('getditta', 'App\Http\Controllers\AjaxControllerServ@getditta');
+
+
+	Route::post('get_doc_ditta', 'App\Http\Controllers\AjaxControllerServ@get_doc_ditta');
+	
+	Route::post('remove_doc_ditta', 'App\Http\Controllers\AjaxControllerServ@remove_doc_ditta');	
 	
 	Route::post('edit_row_fattura', 'App\Http\Controllers\AjaxControllerFatture@edit_row_fattura');
 

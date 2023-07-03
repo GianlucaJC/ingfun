@@ -2,7 +2,12 @@
 
 @section('title', 'IngFUN')
 @section('extra_style') 
+  <!-- Select2 -->
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2/css/select2.min.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
 <!-- x button export -->
+  <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/daterangepicker/daterangepicker.css">
 
 <link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
 <!-- -->
@@ -59,11 +64,16 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-		<!-- form new ditte !-->	
-
+		<!-- form new assenze !-->	
+		@include('all_views.registro.assenze')
+		
 		<form method='post' action="{{ route('registro') }}" id='frm_registro' name='frm_registro' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
+
+
+			
+
 
 			<div class="row mb-3">
 				<div class="col-md-6">
@@ -103,7 +113,10 @@
 						</select>
 						<label for="zoom_tbl">Zoom tabella</label>
 					</div>
-				</div>				
+				</div>	
+				<div class="col-md-3">
+					<button type="button" onclick="$('#div_definition').show(150)"  class="btn btn-primary btn-lg" >Definisci periodo assenza</button>
+				</div>			
 			</div>
 			
 	
@@ -312,7 +325,7 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 								else
 									$value=$obj[$ser]->note;
 
-								if (strlen($value)>0) $presenza=true;
+								if ($value==0 || strlen($value)>0) $presenza=true;
 						}
 					}
 				}
@@ -326,6 +339,7 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 						//assenti ma con formattazione inserisce l'informazione nel db
 						if ($value==0) 
 							if (isset($servizio['acronimo'])) $view.=$servizio['acronimo'];
+							elseif (isset($servizio['alias_ref'])) $view.=$servizio['alias_ref'];
 							else $view.=$value;
 						else 
 							$view.=$value;
@@ -352,7 +366,8 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 	<script src="plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="dist/js/adminlte.min.js"></script>
-
+	<!--select2 !-->
+	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 
 	
 	<!-- inclusione standard
@@ -373,8 +388,9 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 
 	<!-- fine DataTables !-->
 	
-	
+	<script src="{{ URL::asset('/') }}plugins/moment/moment.min.js"></script>
+	<script src="{{ URL::asset('/') }}plugins/daterangepicker/daterangepicker.js"></script>	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.529"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.533"></script>
 
 @endsection

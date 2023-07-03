@@ -1,5 +1,5 @@
 <div id='div_definition' style='display:none'>
-	<form method='post' action="{{ route('giustificativi') }}" id='frm_giust1' name='frm_giust1' autocomplete="off">	
+	<form method='post' action="{{ route('registro') }}" id='frm_assenze' name='frm_assenze' autocomplete="off">	
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
@@ -41,27 +41,12 @@
 					<label for="alias_ref">Alias</label>
 				</div>		
 			</div>
-
-
-			<div class="col-md-4">
-				<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" id="tipo_d" aria-label="Tipo dato" name='tipo_d' onchange='set_tipo(this.value)'>
-							<option value=''>Select...</option>
-							<option value=0>Numerico</option>
-							<option value=1>Testuale</option>
-						</select>
-					<label for="tipo_d">Tipo dato</label>
-				</div>
-			</div>
-				
 				
 		</div>
 
 		<div class="row mb-3">							
 			<div class="col-md-12">
-			  <?php
-				//$arr_patenti=explode(";",$candidati[0]['patenti']);
-			  ?>
+
 			  <div class="form-floating mb-3 mb-md-0">
 					<b>Scelta Lavoratore/i per assegnazione giustificativo</b>
 					<select class="form-select select2" id="lavoratori" aria-label="Lavoratori" name='lavoratori[]' multiple="multiple" required>
@@ -129,34 +114,18 @@
                 </div>	
 			</div>		
 		</div>
-		<div class="row mb-3">
-			<div class="col-md-4 tipi" id='div_oregg' style='display:none'>
-				<div class="form-floating mb-3 mb-md-0">
-					<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control" name="ore_gg" id="ore_gg" />		  
-					<label for="ore_gg">Ore GG</label>
-				</div>		
-			</div>
-		
-			<div class="col-md-8 tipi" id='div_descr' style='display:none'>
-				<div class="form-floating mb-3 mb-md-0">
-					<input type="text" class="form-control" name="value_descr" id="value_descr" maxlength=100 />		  
-					<label for="value_descr">Descrizione</label>
-				</div>		
-			</div>
+				
+		<div class="row mb-3 mt-5">
+			<div class="col-md-4">
+				
+				<button type="submit"  class="btn btn-success" >Crea Assenza</button>
+				<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
+				Chiudi
+				</button>
+				
+			</div>	
 		</div>
-
-				
-			<div class="row mb-3 mt-5">
-				<div class="col-md-4">
-					
-					<button type="submit"  class="btn btn-success" >Crea Giustificativo</button>
-					<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
-					Chiudi
-					</button>
-					
-				</div>	
-			</div>
-				
+			
 			<hr>	
 		</div>	
 	</form>		

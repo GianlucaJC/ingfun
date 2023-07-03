@@ -1,6 +1,7 @@
 <div id='div_definition' style='display:none'>
 	<form method='post' action="{{ route('ditte') }}" id='frm_ditte1' name='frm_ditte1' autocomplete="off">	
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+		<input type='hidden' name='refr' id='refr' value='{{$refr}}'>
 		<input type='hidden' name='edit_elem' id='edit_elem'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
 		<div class="container-fluid">
@@ -163,6 +164,36 @@
 						<label for="tipo_pagamento">Tipo Pagamento</label>
 					</div>	
 				</div>				
+				<div class="row mb-3" id='div_allega'>
+					<div class="col-md-12">
+					<div id='div_allegati'></div>
+						<a href='javascript:void(0)' onclick="$('#div_fx').show(150)">
+							Allega file relativo alla ditta
+						</a>
+					</div>
+				</div>
+				
+				<div class="row mb-3" style='display:none' id='div_fx'>
+					<div class="col-md-6">
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<span class="input-group-text" id="span_file">Descrizione associata</span>
+						  </div>
+						  <input type="text" class="form-control" placeholder="Descrivi il file da inviare" id="descr_file" name='descr_file' maxlength=50>
+						</div>			
+					</div>
+					<div class="col-md-6">
+						<button type="button" class="btn btn-success" onclick="set_sezione()">Vai Allo step successivo</button>
+
+						<button type="button" class="btn btn-secondary" onclick="$('#div_fx').hide(150)">Annulla operazione</button>
+					</div>
+
+				</div>
+				
+
+				<div id='div_doc'></div>
+
+
 
 				<div class="row mb-3 mt-5">
 					<div class="col-md-4">

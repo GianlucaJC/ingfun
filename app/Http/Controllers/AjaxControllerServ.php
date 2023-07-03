@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\lavoratori;
 use App\Models\societa;
 use App\Models\ditte;
+use App\Models\ref_doc_ditte;
 use App\Models\presenze;
 use App\Models\candidati;
 use App\Models\log_presenze;
@@ -17,6 +18,21 @@ use DB;
 
 class AjaxControllerServ extends Controller
 	{
+
+	public function update_doc_ditte() {
+		$filename=$_POST['filename'];
+		$id_ditta=$_POST['id_ditta'];
+		$descr_file=$_POST['descr_file'];
+
+		$ref_doc_ditte= new ref_doc_ditte;
+		$ref_doc_ditte->id_ditta=$id_ditta;
+		$ref_doc_ditte->nomefile=$filename;
+		$ref_doc_ditte->descr_file=$descr_file;
+		$ref_doc_ditte->save();
+		$status['status']="OK";
+		$status['message']="Dati inseriti con successo!";
+		return json_encode($status);
+	}
 
 	public function load_contatti_soc(){
 		$contatti = societa::where('dele','=',0)
@@ -64,6 +80,35 @@ class AjaxControllerServ extends Controller
 		->where('d.id', '=', $id_ditta)
 		->get();
         return json_encode($infoditta);
+	}	
+
+	public function remove_doc_ditta(Request $request){
+		$nomefile=$request->input("nomefile");
+		$id_ditta=$request->input("id_ditta");
+		
+		$id_doc=$request->input("id_doc");
+		$data=['dele'=>1];
+
+		$dele=DB::table('ref_doc_ditte')
+		->where('id', $id_doc)
+		->update($data);
+		//@unlink ("allegati/ditte/$id_ditta/$nomefile");
+		/*
+			ho optato per una cancellazione virtuale(dele=1) in caso in futuro si voglia implementare il ripristino
+		*/
+		$info=array();
+		$info['resp']="OK";
+		return json_encode($info);			
+	}
+
+	public function get_doc_ditta(Request $request){		
+		$id_ditta = $request->input('id_ditta');
+		$elenco_doc = DB::table('ref_doc_ditte as r')
+		->select('r.id','r.nomefile', 'r.descr_file','r.created_at', 'r.updated_at')
+		->where('r.id_ditta','=',$id_ditta)
+		->where('r.dele','=',0)
+		->get();
+        return json_encode($elenco_doc);
 	}	
 
 	public function save_value_presenze(Request $request){

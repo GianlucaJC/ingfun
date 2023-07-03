@@ -24,6 +24,7 @@ class ApiController extends Controller
 	}
 	*/
 
+
 	public function check_log($request) {
 		if ($request->hasHeader('utente')) {
 			$utente=$request->header("utente");

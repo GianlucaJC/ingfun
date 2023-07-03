@@ -64,6 +64,7 @@ class Registro extends Controller
 	}
 	
 	public function presenze(Request $request){
+		$save_edit=$this->save_edit_giustificativi($request);
 		$view_dele=$request->input("view_dele");
 		$periodi=$this->periodi();
 		$periodo=$request->input("periodo");
@@ -192,7 +193,23 @@ class Registro extends Controller
 		
 		if (strlen($periodo)==0) $lav_all=array();
 
-		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi)->with('zoom_tbl',$zoom_tbl);
+		$servizi_custom=DB::table('servizi_custom as s1')
+		->select("s1.id","s1.descrizione","s1.alias_ref","s1.tipo_dato")
+		->orderBy('s1.descrizione')->get();
+
+		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
+		->where('status_candidatura','=',3)		
+		->orderByRaw('case 
+			when `tipo_contr` = "2" and `tipo_contratto`="1"  then 1 
+			when `tipo_contr` = "2" and `tipo_contratto`="2"  then 2
+			when `tipo_contr` = "2" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 3
+			when `tipo_contr` = "1" and `tipo_contratto`="1"  then 4
+			when `tipo_contr` = "1" and `tipo_contratto`="2"  then 5
+			when `tipo_contr` = "1" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 6
+			else 7 end')
+		->orderBy('nominativo')	
+		->get();
+		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi)->with('zoom_tbl',$zoom_tbl)->with('servizi_custom',$servizi_custom)->with('lavoratori',$lavoratori);
 		
 	}	
 	
@@ -208,7 +225,9 @@ class Registro extends Controller
 
 
 	public function save_edit_giustificativi(Request $request) {
-
+		/*
+			N.B.:questa function può essere chiamata o da gestione giustificativi o dal registro servizi
+		*/
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		$lavoratori=$request->input("lavoratori");
@@ -223,6 +242,9 @@ class Registro extends Controller
 		$arr=explode(";",$tmp);
 		$descrizione=$request->input("descrizione");
 		$tipo_d=$request->input("tipo_d");
+		if (strlen($tipo_d)==0) {
+			$tipo_d=1; //tipo testuale: potrà essere digitato qualiasi cosa nel registro....ammesso che ore_gg sia <>0, altrimenti viene preso il corrispettivo acronimo
+		}
 		$alias_ref=$request->input("alias_ref");
 		$id_serv=$request->input("servizio_custom");
 		if (strlen($descrizione)!=0) {
@@ -233,7 +255,11 @@ class Registro extends Controller
 			$servizi_custom->save();
 			$id_serv=$servizi_custom->id;
 		}
-		
+		if (strlen($value_descr)==0 && strlen($ore_gg)==0 && strlen($id_serv)!=0) {
+			//in questo caso con id_servizio!=0 e ore_gg==0 verrà mostrato nel registro l'acronimo o alias del servizio (normale o custom)
+			$ore_gg=0;
+		}			
+			
 		if (is_array($lavoratori) && count($lavoratori)>0 && count($arr)>0) {
 
 			$d1=$arr[0];$d2=$arr[1];

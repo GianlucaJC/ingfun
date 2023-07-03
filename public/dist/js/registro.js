@@ -46,7 +46,43 @@ $(document).ready( function () {
 	setZoom(value)
 	$('body').addClass("sidebar-collapse");
 	$("#div_tb").show(150)
-
+	$('.select2').select2();
+	$('#range_date').daterangepicker({
+		"locale": {
+        "format": "DD/MM/YYYY",
+        "separator": " - ",
+        "applyLabel": "Applica",
+        "cancelLabel": "Annulla",
+        "fromLabel": "Da",
+        "toLabel": "A",
+        "customRangeLabel": "Custom",
+        "daysOfWeek": [
+            "Dom",
+            "Lun",
+            "Mar",
+            "Mer",
+            "Gio",
+            "Ven",
+            "Sab"
+        ],
+        "monthNames": [
+            "Gennaio",
+            "Febbraio",
+            "Marzo",
+            "Aprile",
+            "Maggio",
+            "Giugno",
+            "Luglio",
+            "Agosto",
+            "Settembre",
+            "Ottobre",
+            "Novembre",
+            "Dicembre"
+        ],
+        "firstDay": 1
+    }
+	})
+	$("#range_date").val('')
 	
 } );
 
@@ -57,6 +93,22 @@ function setZoom(value) {
 };
 
 
+function select_servizi(value) {
+	
+	$("#div_newserv").hide(150);
+
+	$("#descrizione").val('');$("#alias_ref").val('');
+	$('#descrizione').removeAttr('required');
+	$('#alias_ref').removeAttr('required');
+	$('#tipo_d').removeAttr('required');
+	if (value=="0") {
+		$("#div_newserv").show(150);
+		$('#descrizione').prop('required',true);
+		$('#alias_ref').prop('required',true);
+		$('#tipo_d').prop('required',true);
+	}
+
+}
 
 
 function save_value() {
