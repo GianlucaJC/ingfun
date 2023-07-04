@@ -318,6 +318,12 @@ use App\Models\User;
 						</a>
 					</li>	
 				  <li class="nav-item">
+					<a href="{{route('aliquote')}}" class="nav-link">
+					  <i class="far fa-circle nav-icon"></i>
+					  <p>Aliquote Iva</p>
+					</a>
+				  </li>	
+				  <li class="nav-item">
 					<a href="{{route('gestione_servizi')}}" class="nav-link">
 					  <i class="far fa-circle nav-icon"></i>
 					  <p>Gestione Servizi</p>

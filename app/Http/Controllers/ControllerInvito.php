@@ -12,6 +12,7 @@ use App\Models\candidati;
 use App\Models\servizi_ditte;
 use App\Models\servizi;
 
+
 use DB;
 use PDF;
 
@@ -22,6 +23,59 @@ public function __construct()
 		$this->middleware('auth')->except(['index']);
 	}		
 
+	public function save_edit_aliquote($request) {
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		$descr_contr=$request->input("descr_contr");
+		$aliquota=$request->input("aliquota");
+		
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+		
+		
+		$data=['dele'=>0, 'descrizione' => $descr_contr,'aliquota'=>$aliquota];
+		
+
+		//Creazione nuovo elemento
+		if (strlen($descr_contr)!=0 && $edit_elem==0) {
+			DB::table("aliquote_iva")->insert($data);
+		}
+		
+		//Modifica elemento
+		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
+			aliquote_iva::where('id', $edit_elem)			
+			  ->update($data);
+		}
+		if (strlen($dele_contr)!=0) {
+			aliquote_iva::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			aliquote_iva::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}
+
+	}
+	
+	public function aliquote(Request $request) {
+		$esito_saves=$this->save_edit_aliquote($request);
+		$view_dele=$request->input("view_dele");
+		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$aliquote=DB::table('aliquote_iva')
+		->select("*")
+		->when($view_dele=="0", function ($aliquote) {
+			return $aliquote->where('dele', "=","0");
+		})
+		->orderBy('aliquota')->get();
+
+		return view('all_views/invitofatt/aliquote')->with('aliquote', $aliquote)->with("view_dele",$view_dele)->with('esito_saves',$esito_saves);		
+	}
+	
+	
 	public function import_from_appalti() {
 		$request=request();
 		$app_sel=$request->input('app_sel');

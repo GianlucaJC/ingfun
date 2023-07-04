@@ -393,7 +393,7 @@ public function __construct()
 		})
 		->orderBy('descrizione')->get();
 
-		return view('all_views/gestioneservizi/gestione_servizi')->with('servizi', $servizi)->with("view_dele",$view_dele)->with('esito_saves',$esito_saves);
+		return view('all_views/invitofatt/aliquote')->with('servizi', $servizi)->with("view_dele",$view_dele)->with('esito_saves',$esito_saves);
 
 		
 	}
