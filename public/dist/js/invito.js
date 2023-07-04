@@ -17,6 +17,34 @@ $(document).on('submit','#needs-validation2a', function(){
 })	
 
 
+function refresh_aliquota() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_aliquota",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#aliquota")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#aliquota').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#aliquota').append('<option value="' + item.id + '|'+item.aliquota+'">' + item.aliquota+'% - '+item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
 function set_table() {
 
     var t1=$('#tbl_list_appalti').DataTable({

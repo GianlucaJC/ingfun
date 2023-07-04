@@ -69,6 +69,17 @@
 							</select>
 							
 							<label for="aliquota">Aliquota Iva</label>
+							
+							<small><a href="{{ route('aliquote') }}" class="link-primary mt-2" target='_blank' onclick="$('.up').hide();$('#div_up3').show()">
+								Definisci o modifica
+							</a></small>
+							<span id='div_up3' class='up' style='display:none'>
+								<a href='javascript:void(0)' class='ml-2' onclick='refresh_aliquota()'>
+									<font color='green'>
+										<i class="fas fa-sync-alt" title='refresh'></i>
+									</font>	
+								</a>	
+							</span>							
 							</div>
 						</div>	
 						<div class="col-md-3">

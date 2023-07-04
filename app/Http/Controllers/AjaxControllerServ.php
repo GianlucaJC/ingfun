@@ -9,6 +9,7 @@ use App\Models\lavoratori;
 use App\Models\societa;
 use App\Models\ditte;
 use App\Models\ref_doc_ditte;
+use App\Models\aliquote_iva;
 use App\Models\presenze;
 use App\Models\candidati;
 use App\Models\log_presenze;
@@ -19,6 +20,11 @@ use DB;
 class AjaxControllerServ extends Controller
 	{
 
+	public function refresh_aliquota(){
+		$aliquote = aliquote_iva::where('dele','=',0)->orderBy('aliquota')->get();
+        return json_encode($aliquote);
+	}
+	
 	public function update_doc_ditte() {
 		$filename=$_POST['filename'];
 		$id_ditta=$_POST['id_ditta'];
