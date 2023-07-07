@@ -44,6 +44,11 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('preventivo/{id?}', [ 'as' => 'preventivo', 'uses' => 'App\Http\Controllers\ControllerPreventivi@preventivo'])->middleware(['role:admin|coord']);
 
+	Route::get('lista_preventivi', [ 'as' => 'lista_preventivi', 'uses' => 'App\Http\Controllers\ControllerPreventivi@lista_preventivi'])->middleware(['role:admin|coord']);
+	
+	Route::post('lista_preventivi', [ 'as' => 'lista_preventivi', 'uses' => 'App\Http\Controllers\ControllerPreventivi@lista_preventivi'])->middleware(['role:admin|coord']);
+
+
 
 
 	Route::get('invoice/{id_doc?}', [ 'as' => 'invoice', 'uses' => 'App\Http\Controllers\ControllerInvito@invoice'])->middleware(['role:admin|coord']);

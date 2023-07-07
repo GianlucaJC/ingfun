@@ -98,7 +98,7 @@
 
         <hr>
 		<div class="row mb-3 mt-5">
-			<a href="{{ route('lista_inviti') }}">
+			<a href="{{ route('lista_preventivi') }}">
 				<button type="button"  id='back_appalti' class="btn btn-secondary btn-lg btn-block mt-3">VAI ALL'ELENCO PREVENTIVI</button> 
 			</a>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">

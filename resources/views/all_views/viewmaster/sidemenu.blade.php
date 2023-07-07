@@ -313,7 +313,7 @@ use App\Models\User;
 					</li>
 					
 					<li class="nav-item">
-						<a href="" class="nav-link">
+						<a href="{{route('lista_preventivi')}}" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>
 						  <p>Elenco Preventivi</p>
 						</a>

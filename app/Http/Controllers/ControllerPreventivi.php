@@ -412,6 +412,47 @@ public function __construct()
 		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi);
 	}
 
+	public function lista_preventivi(Request $request) {
+		if ($request->has("btn_change_state")) {
+			$btn_change_state=$request->input("btn_change_state");
+			if ($btn_change_state=="change") {
+				$id_prev_change=$request->input("id_prev_change");
+				$stato_prev=$request->input("stato_prev");
+				preventivi::where('id', $id_prev_change)
+				  ->update(['status' => $stato_prev]);			
+			}
+		}
+
+		$view_dele=$request->input("view_dele");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+		
+		if (strlen($dele_contr)!=0) {
+			preventivi::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			preventivi::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+
+		$preventivi=DB::table('preventivi as p')
+		->join('ditte as d','p.id_ditta','d.id')
+		->join('societa as s','d.id','s.id')
+		->select("p.status","p.id","p.dele",DB::raw("DATE_FORMAT(p.data_preventivo,'%d-%m-%Y') as data_preventivo"),"p.totale","d.denominazione","s.descrizione as sezionale")
+		->when($view_dele=="0", function ($preventivi) {
+			return $preventivi->where('p.dele', "=","0");
+		})
+		->groupBy('p.id')
+		->orderBy('p.id','desc')->get();		
+
+		return view('all_views/preventivi/lista_preventivi')->with("view_dele",$view_dele)->with('preventivi',$preventivi);
+
+		
+	}	
 
 
 }
