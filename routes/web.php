@@ -40,6 +40,12 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('invito/{id?}', [ 'as' => 'invito', 'uses' => 'App\Http\Controllers\ControllerInvito@invito'])->middleware(['role:admin|coord']);
 
+	Route::get('preventivo/{id?}', [ 'as' => 'preventivo', 'uses' => 'App\Http\Controllers\ControllerPreventivi@preventivo'])->middleware(['role:admin|coord']);
+	
+	Route::post('preventivo/{id?}', [ 'as' => 'preventivo', 'uses' => 'App\Http\Controllers\ControllerPreventivi@preventivo'])->middleware(['role:admin|coord']);
+
+
+
 	Route::get('invoice/{id_doc?}', [ 'as' => 'invoice', 'uses' => 'App\Http\Controllers\ControllerInvito@invoice'])->middleware(['role:admin|coord']);
 
 

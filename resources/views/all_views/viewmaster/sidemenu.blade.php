@@ -310,7 +310,24 @@ use App\Models\User;
 						  <i class="far fa-circle nav-icon"></i>
 						  <p>Anagrafica clienti</p>
 						</a>
-					 </li>					
+					</li>
+					
+					<li class="nav-item">
+						<a href="" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Elenco Preventivi</p>
+						</a>
+					</li>
+
+
+					<li class="nav-item">
+						<a href="{{route('preventivo')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Nuovo Preventivo</p>
+						</a>
+					</li>
+
+
 					<li class="nav-item">
 						<a href="{{route('servizi')}}" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>

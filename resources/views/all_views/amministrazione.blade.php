@@ -97,6 +97,33 @@ use App\Models\User;
 				</a>
 				</div>
 			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+				<a href="">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-list-alt" style='font-size:36px'></i><br>
+						ELENCO PREVENTIVI
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>
+
+			<div class="row">
+				<div class="col-md-12">
+				<a href="{{ route('preventivo') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-hand-holding-usd" style='font-size:36px'></i><br>
+						NUOVO PREVENTIVO
+					  </button>
+					</div>
+				</a>
+				</div>
+			</div>			
+
 			<div class="row">
 				<div class="col-md-12">
 				<a href="{{ route('servizi') }}">

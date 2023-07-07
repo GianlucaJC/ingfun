@@ -21,6 +21,8 @@ use App\Models\ref_doc;
 use App\Models\story_all;
 use App\Models\contatti;
 use App\Models\fatture;
+use App\Models\preventivi;
+
 use Mail;
 use setasign\Fpdi\Fpdi;
 use Spatie\PdfToText\Pdf;
@@ -79,7 +81,8 @@ class AjaxControllerCand extends Controller
 		if ($request->has('nome_file')) $nome_file = $request->input('nome_file');
 		$id_fattura="";
 		if ($request->has('id_fattura')) $id_fattura = $request->input('id_fattura');
-
+		$id_preventivo="";
+		if ($request->has('id_preventivo')) $id_preventivo = $request->input('id_preventivo');
 		$email = $request->input('email');
 
 
@@ -99,6 +102,13 @@ class AjaxControllerCand extends Controller
 				  ->update(['status' => 2]);					
 				$files = [
 					public_path("allegati/fatture/".$id_fattura.".pdf"),
+				];
+			}
+			if (strlen($id_preventivo)!=0) {
+				preventivi::where('id', $id_preventivo)
+				  ->update(['status' => 2]);					
+				$files = [
+					public_path("allegati/preventivi/".$id_preventivo.".pdf"),
 				];
 			}
 			Mail::send('emails.notifdoc', $data, function($message)use($data, $files) {
