@@ -10,9 +10,10 @@
 	</button>
 	<div class="dropdown-menu" role="menu">
 	  <a class="dropdown-item" href="#" onclick="metodo_ins(1)">a) Modalità di inserimento manuale</a>
-	  <a class="dropdown-item" href="javascript:void(0)" >b) Importazione da prodotti Magazzino</a>
-	  <a class="dropdown-item" href="javascript:void(0)" >b) Importazione da Servizi</a>
-	  
+
+	  <a class="dropdown-item" href="javascript:void(0)"  onclick="metodo_ins(3)" >b) Importazione da Servizi</a>
+
+	  <a class="dropdown-item" href="javascript:void(0)" >c) Importazione da prodotti Magazzino</a>	  
 	  <!--
 	  <a class="dropdown-item" href="#" onclick="metodo_ins(3)">c) Servizi associati alla ditta selezionata</a>
 	  !-->

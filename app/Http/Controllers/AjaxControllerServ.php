@@ -20,6 +20,18 @@ use DB;
 class AjaxControllerServ extends Controller
 	{
 
+
+	public function refresh_servizi(Request $request){
+		$ditta=$request->input('ditta');
+		$all_servizi=DB::table('servizi_ditte as sd')
+		->join('servizi as s','sd.id_servizio','s.id')
+		->join('aliquote_iva as a','sd.aliquota','a.id')
+		->select('s.descrizione','sd.id_servizio','sd.importo_ditta','sd.aliquota','a.aliquota as aliquota_v')
+		->where('sd.id_ditta','=',$ditta)
+		->groupBy('sd.id')
+		->get();
+		return json_encode($all_servizi);
+	}
 	public function refresh_aliquota(){
 		$aliquote = aliquote_iva::where('dele','=',0)->orderBy('aliquota')->get();
         return json_encode($aliquote);

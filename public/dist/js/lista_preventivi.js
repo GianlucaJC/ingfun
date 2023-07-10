@@ -48,6 +48,7 @@ function change_state(id_prev) {
 					<option value=''>Select...</option>
 						<option value='3'>Elaborato</option>
 						<option value='4'>Accettato</option>
+						<option value='5'>Fatturato</option>
 					</select>
 					<label for="stato_prev">Imposta stato preventivo*</label>
 				</div>

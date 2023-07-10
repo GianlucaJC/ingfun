@@ -90,6 +90,8 @@
 										<i>Elaborato</i>
 									@elseif($preventivo->status==4)
 										<i>Accettato</i>
+									@elseif($preventivo->status==5)
+										<i>Fatturato</i>
 									@endif	
 								</td>
 								<td>
@@ -229,6 +231,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/lista_preventivi.js?ver=1.161"></script>
+	<script src="{{ URL::asset('/') }}dist/js/lista_preventivi.js?ver=1.162"></script>
 
 @endsection

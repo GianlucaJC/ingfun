@@ -24,14 +24,20 @@ public function __construct()
 		$request=request();
 
 		$id_doc=$dati['id_doc'];
+		$note=$request->input('note');
+		$p = preventivi::find($id_doc);
+		$p->note=$note;
+		$p->save();
+		
 		$tipo_pagamento=$dati['tipo_pagamento'];
 		$elenco_pagamenti_presenti=$dati['elenco_pagamenti_presenti'];
 		
-		$load_prev=preventivi::select('id_ditta',DB::raw("DATE_FORMAT(data_preventivo,'%d-%m-%Y') as data_preventivo"))
+		$load_prev=preventivi::select('id_ditta',DB::raw("DATE_FORMAT(data_preventivo,'%d-%m-%Y') as data_preventivo"),'note')
 		->where('id','=',$id_doc)
 		->get();
 		$ditta=$load_prev[0]->id_ditta;
 		$data_preventivo=$load_prev[0]->data_preventivo;
+		$note=$load_prev[0]->note;
 
 		$info=DB::table('ditte as d')
 		->join('societa as s','d.id_azienda_prop','s.id')
@@ -67,6 +73,7 @@ public function __construct()
 		
 		$data['id_doc']=$id_doc;
 		$data['data_preventivo']=$data_preventivo;
+		$data['note']=$note;
 		$data['denominazione']=$denominazione;
 		$data['piva']=$piva;
 		$data['cf']=$cf;
@@ -128,13 +135,15 @@ public function __construct()
 		$id_doc=$request->input('id_doc');
 		$ditta=$request->input('ditta');
 		$data_preventivo=$request->input('data_preventivo');
+		$note="";
 		if ($id!=0) {
 			$id_doc=$id;
-			$load_preventivo=preventivi::select('id_ditta','data_preventivo')
+			$load_preventivo=preventivi::select('id_ditta','data_preventivo','note')
 			->where('id','=',$id_doc)
 			->get();
 			$ditta=$load_preventivo[0]->id_ditta;
 			$data_preventivo=$load_preventivo[0]->data_preventivo;
+			$note=$load_preventivo[0]->note;
 		}		
 		$ditte=DB::table('ditte as d')
 		->join('societa as s','d.id_azienda_prop','s.id')
@@ -158,8 +167,16 @@ public function __construct()
 		$edit_riga=$request->input('edit_riga');
 		if (strlen($edit_riga)!=0) $this->edit_riga($edit_riga);		
 		
+		
+
+		$dele_ele=$request->input('dele_ele');
+		if (strlen($dele_ele)!=0) {
+				$deleted = articoli_preventivo::where('id',$dele_ele)
+				->delete();
+		}		
+		
 		$articoli_preventivo=DB::table('articoli_preventivo as a')
-		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota')
+		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota','a.id_servizio')
 		->where('a.id_doc', "=",$id_doc)
 		->get();
 		
@@ -183,6 +200,13 @@ public function __construct()
 				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
 		}		
 
+		$all_servizi=DB::table('servizi_ditte as sd')
+		->join('servizi as s','sd.id_servizio','s.id')
+		->select('s.descrizione','sd.id_servizio','sd.importo_ditta','sd.aliquota')
+		->where('sd.id_ditta','=',$ditta)
+		->get();
+
+
 		$tipo_pagamento="";$elenco_pagamenti_presenti="";
 		$dati=array();
 		$dati['id_doc']=$id_doc;
@@ -191,7 +215,7 @@ public function __construct()
 		if ($preview_pdf=="preview") return $this->prev_view($dati);
 		if ($genera_pdf=="genera") $this->prev_view($dati);
 		
-		$data=['step_active'=>$step_active,'data_preventivo'=>$data_preventivo,'id_doc'=>$id_doc,'ditta'=>$ditta,'ditte'=>$ditte,'articoli_preventivo'=>$articoli_preventivo,'genera_pdf'=>$genera_pdf,'aliquote_iva'=>$aliquote_iva,'arr_aliquota'=>$arr_aliquota];
+		$data=['step_active'=>$step_active,'data_preventivo'=>$data_preventivo,'note'=>$note,'id_doc'=>$id_doc,'ditta'=>$ditta,'ditte'=>$ditte,'articoli_preventivo'=>$articoli_preventivo,'genera_pdf'=>$genera_pdf,'aliquote_iva'=>$aliquote_iva,'arr_aliquota'=>$arr_aliquota,'all_servizi'=>$all_servizi];
 		
 		return view('all_views/preventivi/preventivo')->with($data);
 	}
@@ -199,6 +223,8 @@ public function __construct()
 
 	public function edit_riga($id_row) {
 		$request=request();
+		$service=$request->input("service");
+			
 		$id_doc=$request->input('id_doc');
 		if ($id_row!=0)
 			$art = articoli_preventivo::find($id_row);
@@ -213,8 +239,14 @@ public function __construct()
 		$art->subtotale = $request->input('subtotale');
 		if ($id_row==0) $art->id_doc=$id_doc;
 		$art->aliquota = $request->input('aliquota');
+		if (strlen($service)==0)
+			$art->id_servizio=null;
+		else {
+			$info=explode("|",$service);
+			if (count($info)>2) $art->id_servizio=$info[0];
+		}
 		
-		
+
 		$art->save();
 	}
 

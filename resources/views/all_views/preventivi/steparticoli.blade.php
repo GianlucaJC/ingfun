@@ -32,6 +32,7 @@
 					@php ($tot_qta+=$articolo->quantita)
 					@php ($tot_prezzou+=$articolo->prezzo_unitario)
 					@php ($tot_subt+=$articolo->subtotale)
+					
 					<tr>
 						<td style='max-width:10px'>{{$articolo->ordine}}</td>
 						<td>{{$articolo->codice}}</td>
@@ -47,10 +48,10 @@
 						<td><?php echo number_format($articolo->subtotale,2)." €"?></td>
 						<td>
 							<!-- riga info per js !-->
-							<span id='inforow{{$articolo->id}}' data-ordine='{{ $articolo->ordine}}' data-codice='{{ $articolo->codice}}' data-descrizione='{{ $articolo->descrizione}}' data-quantita='{{ $articolo->quantita}}' data-um='{{ $articolo->um}}' data-prezzo_unitario='{{ $articolo->prezzo_unitario}}'  data-subtotale='{{ $articolo->subtotale}}' data-aliquota='{{ $articolo->aliquota}}|{{$arr_aliquota[$articolo->aliquota]}}' >
+							<span id='inforow{{$articolo->id}}' data-ordine='{{ $articolo->ordine}}' data-codice='{{ $articolo->codice}}' data-descrizione='{{ $articolo->descrizione}}' data-quantita='{{ $articolo->quantita}}' data-um='{{ $articolo->um}}' data-prezzo_unitario='{{ $articolo->prezzo_unitario}}'  data-subtotale='{{ $articolo->subtotale}}' data-aliquota='{{ $articolo->aliquota}}|{{$arr_aliquota[$articolo->aliquota]}}'  data-id_servizio='{{ $articolo->id_servizio}}'>
 							</span>	
 							
-							<a href='#' onclick="edit_product({{$articolo->id}},0)">
+							<a href='#' onclick="edit_product({{$articolo->id}},0,{{$articolo->id_servizio}})">
 								<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 							</a>
 							<a href='#' onclick="dele_product()">
@@ -75,11 +76,13 @@
 		</tfoot>
 				
 		</table>
+		<textarea class="form-control mt-2" id="note" name='note' placeholder="Eventuali note" rows="3">{{$note}}</textarea>
 	</div>	
+	
 	
 	<div class='mt-3' id='div_btn_articoli'>
 		<hr>
-		<button type="button" name='btn_new_row' id='btn_new_row' onclick='edit_product(0,{{$last_ordine}})' class="btn btn-primary btn-lg">Aggiungi Riga</button>
+		<button type="button" name='btn_new_row' id='btn_new_row' onclick='edit_product(0,{{$last_ordine}},0)' class="btn btn-primary btn-lg">Aggiungi Riga</button>
 		
 		<div class="float-sm-right">
 		<!--

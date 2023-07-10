@@ -179,5 +179,18 @@
             </td>
         </tr>
     </table>
+	
+	<?php 
+		if (strlen($note)!=0) {?>			
+			<div>
+				<p class='mt-2'><small>Note</small></p>
+				<i>{{$note}}</i>
+			</div>
+	<?php } ?>
+
+	<div style='text-align:right'>
+		<br>
+		<h3>Firma per accettazione</h3>
+	</div>
 </div>
 </html>
