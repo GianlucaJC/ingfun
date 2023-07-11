@@ -127,6 +127,28 @@ function set_table() {
 	
 }
 
+function set_service(value) {
+	info=value.split("|");
+	
+	if (info.length>2) {
+		id_servizio=info[0]
+		descrizione=info[1]
+		importo_ditta=info[2]
+		aliquota=info[3]
+		aliquota_v=info[4]
+		aliq=aliquota+"|"+aliquota_v
+		
+		$("#prodotto").val(descrizione)
+		$("#prezzo_unitario").val(importo_ditta)
+		$("#aliquota").val(aliq)
+	} else {
+		$("#prodotto").val('')
+		$("#prezzo_unitario").val('')
+		$("#aliquota").val('')
+	}
+	calcolo_riga()
+	
+}
 
 function calcolo_riga() {
 	quantita=$("#quantita").val()
@@ -349,9 +371,52 @@ function alertFunc() {
 	alert("Operazione effettuata!");
 }
 
+function refresh_servizi() {
+	base_path = $("#url").val();
+	ditta = $("#ditta").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_servizi",
+		data: {_token: CSRF_TOKEN,ditta:ditta},
+		success: function (data) {
+			$("#service")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#service').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+
+			js=`
+				<option value="`+item.id_servizio+`|`+item.descrizione+`|`+item.importo_ditta+`|`+item.aliquota+`|`+item.aliquota_v+`">`+item.descrizione +`</option>
+			`
+
+			$('#service').append(js);
+						
+			});
+		}
+	});		
+}
 
 function edit_product(id_riga,last_ordine,id_servizio) {
 	
+	$(".tipoins").hide()
+	$('#prodotto').attr('required', false); 
+	$('#service').attr('required', false); 
+	if (id_servizio=== undefined || id_servizio=="0") {
+		$('#prodotto').attr('required', true);
+		$("#div_product").show();
+	}
+	else {
+		$('#service').attr('required', true);
+		$("#div_service").show();
+	}	
 	save_art.id_riga=id_riga
 	$("#title_modal").html("Inserimento/Modifica dati riga fattura")
 	
@@ -508,7 +573,7 @@ function metodo_ins(value) {
 
 	
 	if (value=="2") $('#div_from_appalti').show(150)
-	else if (value=="3") edit_product(0,0,0)
+	else if (value=="3") edit_product(0,0,1)
 	else if (value=="4") import_prev()
 	else if (value=="5")
 		$("#div_lista_articoli").show(100)

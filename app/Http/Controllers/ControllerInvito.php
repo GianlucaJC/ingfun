@@ -398,16 +398,17 @@ public function __construct()
 		foreach($all as $single) {
 			$all_lav[$single->id]=$single->nominativo;
 		}
-		$all=DB::table('servizi_ditte as sd')
+		$all_s=DB::table('servizi_ditte as sd')
 		->join('servizi as s','sd.id_servizio','s.id')
-		->select('s.descrizione','sd.id_servizio','sd.importo_ditta')
+		->select('s.descrizione','sd.id_servizio','sd.importo_ditta','sd.aliquota')
 		->where('sd.id_ditta','=',$ditta)
 		->get();
 		$all_servizi=array();
-		foreach($all as $single) {
+		foreach($all_s as $single) {
 			$all_servizi[$single->id_servizio]['descrizione']=$single->descrizione;
 			$all_servizi[$single->id_servizio]['importo_ditta']=$single->importo_ditta;
-		}		
+		}	
+		
 		
 		$ditteinapp=DB::table('appalti as a')
 		->join("ditte as d","a.id_ditta","d.id")
@@ -533,7 +534,7 @@ public function __construct()
 		if ($preview_pdf=="preview") return $this->Invoice($dati);
 		if ($genera_pdf=="genera") $this->Invoice($dati);
 	
-		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi)->with('all_s',$all_s);
 	}
 
 	function lista_pagamenti() {
