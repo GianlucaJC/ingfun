@@ -1,3 +1,44 @@
+$(document).ready( function () {
+    $('#tbl_list_preventivi tfoot th').each(function () {
+        var title = $(this).text();
+		if (title.length!=0) {
+			style="";
+			if (title=="ID") style='style="max-width:30px;"'
+			if (title=="Data") style='style="max-width:120px;"'
+			$(this).html('<input '+style+' type="text" placeholder="' + title + '" />');
+		}
+    });	
+    var table=$('#tbl_list_preventivi').DataTable({
+		dom: 'Bfrtip',
+		buttons: [
+			'excel', 'pdf'
+		],		
+        initComplete: function () {
+            // Apply the search
+            this.api()
+                .columns()
+                .every(function () {
+                    var that = this;
+ 
+                    $('input', this.footer()).on('keyup change clear', function () {
+                        if (that.search() !== this.value) {
+                            that.search(this.value).draw();
+                        }
+                    });
+                });
+        },
+        language: {
+            lengthMenu: 'Visualizza _MENU_ records per pagina',
+            zeroRecords: 'Nessun preventivo trovato',
+            info: 'Pagina _PAGE_ di _PAGES_',
+            infoEmpty: 'Non sono presenti preventivi',
+            infoFiltered: '(Filtrati da _MAX_ preventivi totali)',
+        },
+
+		
+    });
+	
+} );
 // Example starter JavaScript for disabling form submissions if there are invalid fields
 $(document).ready( function () {
 	//$('body').addClass("sidebar-collapse");
@@ -309,7 +350,7 @@ function alertFunc() {
 }
 
 
-function edit_product(id_riga,last_ordine) {
+function edit_product(id_riga,last_ordine,id_servizio) {
 	
 	save_art.id_riga=id_riga
 	$("#title_modal").html("Inserimento/Modifica dati riga fattura")
@@ -452,25 +493,24 @@ function set_step(step_active) {
 	$('#btn_step_'+step_active).addClass('btn-primary');
 }
 
-
+function import_prev() {
+	$('#modal_prev').modal('toggle')
+}
 
 function metodo_ins(value) {
 		
 	$('.metodi').hide(150);
 	if (value==1) {
-		edit_product(0,)
+		edit_product(0,0,0)
 		$("#div_lista_articoli").show(100)
 		return false;
 	}
 
 	
 	if (value=="2") $('#div_from_appalti').show(150)
-	ditta=$("#ditta").val()
-	if (value=="3") {
-		popola_servizi(ditta)
-		$('#div_from_servizi').show(150)
-	}
-	if (value=="4")
+	else if (value=="3") edit_product(0,0,0)
+	else if (value=="4") import_prev()
+	else if (value=="5")
 		$("#div_lista_articoli").show(100)
 	else
 		$("#div_lista_articoli").hide(100)

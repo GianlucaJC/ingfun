@@ -8,6 +8,7 @@ use App\Models\articoli_fattura;
 use App\Models\aliquote_iva;
 use App\Models\pagamenti;
 use App\Models\fatture;
+use App\Models\preventivi;
 use App\Models\candidati;
 use App\Models\servizi_ditte;
 use App\Models\servizi;
@@ -309,6 +310,25 @@ public function __construct()
 		if ($preview_pdf=="preview") return $pdf->download('test.pdf');
     }
 
+
+	public function import_prev() {
+		$request=request();
+		$prev_sel=$request->input('prev_sel');
+		$id_doc=$request->input('id_doc');
+		
+		if (isset($prev_sel[0])) {
+			$id_prev=$prev_sel[0];
+			$select = DB::table('articoli_preventivo as ap')
+				->select(DB::raw("$id_doc as active"),'codice','descrizione','quantita','um','id_um','prezzo_unitario','sconto','subtotale','aliquota','id_aliquota')
+				->where('ap.id_doc', $id_prev);
+				
+			$rows_inserted = DB::table('articoli_fattura')
+				->insertUsing(['id_doc','codice','descrizione', 'quantita','um','id_um','prezzo_unitario','sconto','subtotale','aliquota','id_aliquota'], $select);
+				
+			preventivi::where('id', $id_prev)->update(['status'=>5]);
+		}
+	}
+	
 	public function invito($id=0) {		
 		$request=request();
 		
@@ -324,6 +344,10 @@ public function __construct()
 		$range_a = $request->input('range_a');
 
 		$btn_filtro=$request->input('btn_filtro');
+		$import_prev=$request->input('import_prev');
+		
+		if ($import_prev=="importa") $this->import_prev();
+		
 		$filtroa=false;
 		if ($btn_filtro=="filtro_appalti") $filtroa=true;
 
@@ -354,6 +378,17 @@ public function __construct()
 		$btn_pagamenti=$request->input('btn_pagamenti');
 		if ($btn_pagamenti=="btn_pagamenti") $this->pagamenti();
 
+
+
+		$preventivi=DB::table('preventivi as p')
+		->join('ditte as d','p.id_ditta','d.id')
+		->join('societa as s','d.id','s.id')
+		->select("p.status","p.id","p.dele",DB::raw("DATE_FORMAT(p.data_preventivo,'%d-%m-%Y') as data_preventivo"),"p.totale","d.denominazione","s.descrizione as sezionale")
+		->where('p.dele', "=","0")
+		->where('p.id_ditta','=',$ditta)
+		->where('p.status','<>',5)
+		->groupBy('p.id')
+		->orderBy('p.id','desc')->get();
 
 		$edit_riga=$request->input('edit_riga');
 		if (strlen($edit_riga)!=0) $this->edit_riga($edit_riga);
@@ -452,7 +487,7 @@ public function __construct()
 			->where('a.id_doc', "=",$id_doc)
 			->get();
 			$totale=$sum[0]->somma;
-			fatture::where('id', $id_doc)->update(['totale'=>$totale]);			
+			fatture::where('id', $id_doc)->update(['totale'=>$totale]);
 		}
 		//
 		
@@ -498,7 +533,7 @@ public function __construct()
 		if ($preview_pdf=="preview") return $this->Invoice($dati);
 		if ($genera_pdf=="genera") $this->Invoice($dati);
 	
-		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi);
 	}
 
 	function lista_pagamenti() {

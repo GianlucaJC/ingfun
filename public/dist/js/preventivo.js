@@ -366,6 +366,8 @@ function alertFunc() {
 
 
 function edit_product(id_riga,last_ordine,id_servizio) {
+	from_prev=false
+	if (edit_product.from_prev=== undefined) from_prev=edit_product.from_prev
 	$(".tipoins").hide()
 	$('#prodotto').attr('required', false); 
 	$('#service').attr('required', false); 

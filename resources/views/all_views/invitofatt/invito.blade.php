@@ -60,7 +60,7 @@
 			</div>	
 			
 		  </div>
-		 
+
 			<div id='div_alert' class='container-fluid mt-2'></div>
 			
 			<form class="needs-validation2" id='needs-validation2' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
@@ -119,7 +119,7 @@
 		
         <!-- /.row -->
 		<form id='frm_modal' class="needs-validation4" id='needs-validation4' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
-					<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 			<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 			<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
@@ -131,6 +131,21 @@
 			<input type='hidden' id='edit_riga' name='edit_riga'>
 					
 			@include('all_views.invitofatt.editmodal')
+		</form>	
+
+		<form id='frm_modal' class="needs-validation5" id='needs-validation5' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
+			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+
+			<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
+			<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
+		
+			<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
+			
+			<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
+					
+			<input type='hidden' id='edit_riga' name='edit_riga'>
+					
+			@include('all_views.invitofatt.modalprev')
 		</form>	
 
       </div><!-- /.container-fluid -->
@@ -179,7 +194,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.184"></script>
+	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.196"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 
