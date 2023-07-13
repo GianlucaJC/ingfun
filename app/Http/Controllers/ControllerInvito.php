@@ -340,6 +340,8 @@ public function __construct()
 		if (strlen($step_active)==0) $step_active=0;
 		$ditta=$request->input('ditta');
 		$data_invito = $request->input('data_invito');
+		
+		if (!$request->has('data_invito')) $data_invito=date("Y-m-d");
 		$range_da = $request->input('range_da');
 		$range_a = $request->input('range_a');
 

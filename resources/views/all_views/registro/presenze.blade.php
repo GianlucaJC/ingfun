@@ -199,7 +199,7 @@
 									echo $view_main['view'];
 									$somma_lav+=$view_main['somma'];
 								?>	
-								@if ($inc==count($servizi))
+								@if ($inc>=count($servizi)-1)
 									<td>
 										@if ($somma_lav>0) 
 										<center>	

@@ -585,9 +585,11 @@ function popola_servizi(id_ditta) {
 				$('#servizi').append('<option value="' + item.id_servizio + '">' + item.descrizione + '</option>');
 				ent=true
 			});
+			/*
 			if (ent==false) {
 				alert("Non risultano servizi associati a questa ditta!")
 			}
+			*/
 
 		}
 	});

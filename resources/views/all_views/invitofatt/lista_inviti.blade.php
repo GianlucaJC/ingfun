@@ -101,10 +101,10 @@
 								</td>
 								<td>
 									<?php
-										echo number_format($fattura->totale,2)." €";
+										echo number_format($fattura->totale,2);
 									?>
 								</td>
-								<td style='width:200px'>
+								<td style='width:200px' class='sum'>
 									
 									@if ($fattura->dele=="0") 
 										<a href="{{ route('invito',['id'=>$fattura->id]) }}">
@@ -136,9 +136,9 @@
 								</td>	
 							</tr>
 						@endforeach
-						
 					</tbody>
 					<tfoot>
+
 						<tr>
 							
 							<th>ID</th>
@@ -149,8 +149,20 @@
 							<th>Totale</th>
 							<th style='width:200px'></th>
 						</tr>
+						
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td id='status'>Totali</td>
+							<td></td>
+						</tr>						
 					</tfoot>					
 				</table>
+				
+
 				<input type='hidden' id='dele_contr' name='dele_contr'>
 				<input type='hidden' id='restore_contr' name='restore_contr'>
 			
@@ -236,6 +248,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.159"></script>
+	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.182"></script>
 
 @endsection

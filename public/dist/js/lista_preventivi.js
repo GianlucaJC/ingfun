@@ -5,6 +5,28 @@ $(document).ready( function () {
 			$(this).html('<input type="text" placeholder="Search ' + title + '" />');
     });	
     var table=$('#tbl_list_preventivi').DataTable({
+		"fnDrawCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+  
+            // Remove the formatting to get integer data for summation
+            var intVal = function ( i ) {
+                return typeof i === 'string' ?
+                    i.replace(/[\$,]/g, '')*1 :
+                    typeof i === 'number' ?
+                        i : 0;
+            };
+  
+            // Total over all pages
+            total = api
+                .column( 5, { search: 'applied' } )
+                .data()
+                .reduce( function (a, b) {
+                    return intVal(a) + intVal(b);
+                }, 0 );
+  
+            // Update status DIV
+            $('#status').html('<b>TOTALE :</b> <u>€ '+ total + '</u>');
+        },		
 		dom: 'Bfrtip',
 		buttons: [
 			'excel', 'pdf'

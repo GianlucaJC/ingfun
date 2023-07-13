@@ -135,6 +135,7 @@ public function __construct()
 		$id_doc=$request->input('id_doc');
 		$ditta=$request->input('ditta');
 		$data_preventivo=$request->input('data_preventivo');
+		if (!$request->has('data_preventivo')) $data_preventivo=date("Y-m-d");
 		$note="";
 		if ($id!=0) {
 			$id_doc=$id;

@@ -96,7 +96,7 @@
 								</td>
 								<td>
 									<?php
-										echo number_format($preventivo->totale,2)." €";
+										echo number_format($preventivo->totale,2);
 									?>
 								</td>
 								<td style='width:200px'>
@@ -144,6 +144,15 @@
 							<th>Totale</th>
 							<th style='width:200px'></th>
 						</tr>
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td id='status'>Totali</td>
+							<td></td>
+						</tr>							
 					</tfoot>					
 				</table>
 				<input type='hidden' id='dele_contr' name='dele_contr'>
@@ -231,6 +240,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/lista_preventivi.js?ver=1.162"></script>
+	<script src="{{ URL::asset('/') }}dist/js/lista_preventivi.js?ver=1.163"></script>
 
 @endsection
