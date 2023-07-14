@@ -59,8 +59,8 @@
 			$corsi = new Collection;
 
 			$voci=array();
-			array_push($voci,"NOME");
 			array_push($voci,"COGNOME");
+			array_push($voci,"NOME");
 			array_push($voci,"SESSO");
 			array_push($voci,"IDEONEITA' SANITARIA");
 			array_push($voci,"SCADENZA");
@@ -210,8 +210,8 @@
 				if (isset($arr_tipoc[$tipoc])) $tipo_contr=$arr_tipoc[$tipoc];
 
 				$voci=array();
-				array_push($voci,$nome);
 				array_push($voci,$cognome);
+				array_push($voci,$nome);
 				array_push($voci,$sesso);
 				
 				if (isset($ido_sanitaria[$id_cand])) {
@@ -265,8 +265,9 @@
 				$corsicand=array();
 				//tutti i corsi di sicurezza del candidato in corso
 				if (isset($doc_cand[$id_cand])) $corsicand=$doc_cand[$id_cand];
-				$fl_e=false;
+				
 				for ($s=0;$s<=count($id_corsi)-1;$s++) {
+					$fl_e=false;
 					$id_corso=$id_corsi[$s];
 					
 					for ($sca=0;$sca<=count($corsicand)-1;$sca++) {
@@ -278,15 +279,17 @@
 							$scad="";
 							if ($scadenza!=null) $scad=substr($scadenza,8,2)."-".substr($scadenza,5,2)."-".substr($scadenza,0,4);					
 							array_push($voci,$scad);
-						}
-						
+						} 
+					}
+
+					if ($fl_e==false) {
+						array_push($voci,"0");
+						array_push($voci,"");
 					}
 					
 				}
-				if ($fl_e==false) {
-					array_push($voci,"0");
-					array_push($voci,"");
-				}
+				
+				
 					
 				
 				
