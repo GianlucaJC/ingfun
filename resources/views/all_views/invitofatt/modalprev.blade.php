@@ -18,7 +18,7 @@
 							<th style='max-width:30px;text-align:center'>Sel</th>
 							<th style='max-width:30px;text-align:center'>ID</th>
 							<th style='max-width:120px;'>Data</th>
-							<th>Sezionale</th>
+							
 							<th>Cliente</th>
 							<th>Stato</th>
 							<th>Totale</th>
@@ -40,9 +40,7 @@
 								<td style='max-width:120px;'>
 									{{$preventivo->data_preventivo}}
 								</td>
-								<td>
-									{{$preventivo->sezionale}}
-								</td>
+
 								
 								
 								<td>
@@ -112,7 +110,7 @@
 							<th style='max-width:30px;'></th>
 							<th style='max-width:30px;'>ID</th>
 							<th style='max-width:120px;'>Data</th>
-							<th>Sezionale</th>
+
 							<th>Cliente</th>
 							<th>Stato</th>
 							<th></th>

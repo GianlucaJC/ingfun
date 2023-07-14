@@ -67,7 +67,6 @@
 						<tr>
 							
 							<th>Denominazione</th>
-							<th>Azienda di proprietà di riferimento</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -84,9 +83,6 @@
 								 @if ($ditta->dele=="1") 
 									 </del></font>
 								 @endif	
-								</td>
-								<td>
-									{{ $ditta->azienda_prop }}
 								</td>
 								<td>
 
@@ -121,7 +117,6 @@
 						<tr>
 							
 							<th>Denominazione</th>
-							<th>Azienda di proprietà di riferimento</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -189,6 +184,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2075"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2076"></script>
 
 @endsection

@@ -7,27 +7,36 @@
 
 		?>		
 		<div class="row mb-3">
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control" id="data_invito" name='data_invito' type="date" required  value="{{$data_invito}}" />
 					<label for="data_invito">Data invito a fatturare*</label>
 				</div>
 			</div>		
-			<div class="col-md-8">
+			<div class="col-md-4">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" name="sezionale" id="sezionale"  required>
+					<option value=''>Select...</option>
+						@foreach ($sezionali as $sez) 
+							<option value='{{$sez->id}}'
+							<?php
+								if ($sez->id==$sezionale) echo " selected ";
+								
+							?>
+							>{{$sez->descrizione}}</option>
+						@endforeach
+					</select>
+					<label for="sezionale">Sezionale*</label>
+				</div>
+			</div>	
+
+			<div class="col-md-5">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
 					<option value=''>Select...</option>
 					<?php
-						$old_az="?";
+						
 						foreach ($ditte as $ditta_ref) {
-							$id_azienda=$ditta_ref->id_azienda;
-							$azienda=$ditta_ref->azienda;
-							if ($old_az!=$id_azienda) {
-								$old_az=$id_azienda;
-								if ($old_az!="?")echo "</optgroup>";
-								echo "<optgroup label='$azienda'>";
-							}	
-							$azienda=$ditta_ref->azienda;
 							$id_ditta=$ditta_ref->id;
 							$denominazione=$ditta_ref->denominazione;
 							echo "<option value='".$id_ditta."' ";
@@ -36,14 +45,11 @@
 						}
 					?>						
 					</select>
-					<label for="ditta">Scelta Cliente/Ditta da fatturare*</label>
+					<label for="ditta">Scelta Cliente da fatturare*</label>
 
-				<a href="{{ route('ditte') }}" class="link-primary" target='_blank' onclick="window.open(this.href, 
-                         'newwindow', 
-                         'width=1024,height=800,left=200'); 
-						 $('.up').hide();$('#div_up').show();
-						 return false;">
-					Definisci nuova o modifica esistente
+				<a href="{{ route('ditte') }}" class="link-primary" target='_blank' onclick="
+						 $('.up').hide();$('#div_up').show();">
+					Definisci nuovo o modifica esistente
 				</a>	
 				
 				<span id='div_up' class='up' style='display:none'>

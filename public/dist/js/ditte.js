@@ -131,7 +131,6 @@ function edit_elem(id_ditta) {
 		success: function (data) {
 			
 			info=JSON.parse(data)
-			$("#azienda_prop").val(info[0].id_azienda_prop)
 			$("#descr_contr").val(info[0].denominazione)
 			$("#comune").val(info[0].comune)
 			$("#cap").val(info[0].cap)

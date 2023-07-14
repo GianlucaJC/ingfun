@@ -101,13 +101,14 @@ public function __construct()
 				$deleted = articoli_fattura::where('id_appalto', $id_app)
 				->where('id_doc',$id_doc)
 				->delete();
-				
+		
 				$appalti=DB::table('appalti as a')
 				->join("serviziapp as s","a.id","s.id_appalto")
-				->select("a.id_ditta","s.id_servizio")
+				->select("a.id_ditta",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"),"s.id_servizio")
 				->where('a.id', "=",$id_app)	
 				->get();
 				foreach ($appalti as $appalto) {
+					$data_ref=$appalto->data_ref;
 					$id_ditta=$appalto->id_ditta;
 					$id_servizio=$appalto->id_servizio;
 					
@@ -120,6 +121,7 @@ public function __construct()
 					foreach ($servizi_ditte as $servizio) {
 						$importo_ditta=$servizio->importo_ditta;
 						$aliquota=$servizio->aliquota;
+						$descr=$servizio->descrizione."($data_ref)";
 						$subtotale=$importo_ditta;
 						if (isset($arr_aliquota[$aliquota])) 
 							$subtotale=$importo_ditta*(($arr_aliquota[$aliquota]/100)+1);
@@ -127,7 +129,7 @@ public function __construct()
 						DB::table('articoli_fattura')->insert([
 							'id_appalto' => $id_app,
 							'id_doc' => $id_doc,
-							'descrizione' =>$servizio->descrizione,
+							'descrizione' =>$descr,
 							'quantita' => 1,
 							'prezzo_unitario' =>$importo_ditta,
 							'aliquota' =>$aliquota,
@@ -211,7 +213,8 @@ public function __construct()
 			$fattura = fatture::find($id_doc);
 
 		$fattura->id_ditta = $request->input('ditta');
-		$fattura->data_invito = $request->input('data_invito');		
+		$fattura->data_invito = $request->input('data_invito');
+		$fattura->id_sezionale = $request->input('sezionale');
 		$fattura->save();
 		$id_doc=$fattura->id;
 		$resp=array();
@@ -238,22 +241,30 @@ public function __construct()
 		$tipo_pagamento=$dati['tipo_pagamento'];
 		$elenco_pagamenti_presenti=$dati['elenco_pagamenti_presenti'];
 		
-		$load_fattura=fatture::select('id_ditta',DB::raw("DATE_FORMAT(data_invito,'%d-%m-%Y') as data_invito"))
+		$load_fattura=fatture::select('id_ditta',DB::raw("DATE_FORMAT(data_invito,'%d-%m-%Y') as data_invito"),"id_sezionale")
 		->where('id','=',$id_doc)
 		->get();
 		$ditta=$load_fattura[0]->id_ditta;
 		$data_invito=$load_fattura[0]->data_invito;
+		$sezionale=$load_fattura[0]->id_sezionale;
+
+		$info=DB::table('societa')
+		->select('descrizione')
+		->where("id","=",$sezionale)
+		->get();
+		
+		$azienda_prop="";
+		if (isset($info[0])) $azienda_prop=$info[0]->descrizione;
+
 
 		$info=DB::table('ditte as d')
-		->join('societa as s','d.id_azienda_prop','s.id')
-		->select('s.descrizione','d.denominazione','d.piva','d.cf','d.cap','d.comune','d.provincia')
+		->select('d.denominazione','d.piva','d.cf','d.cap','d.comune','d.provincia')
 		->where("d.id","=",$ditta)
 		->get();
-		$denominazione="";$azienda_prop="";$piva="";$cf="";
+		$denominazione="";$piva="";$cf="";
 		$cap="";$comune="";$provincia="";
 		if (isset($info[0])) {
 			$denominazione=$info[0]->denominazione;
-			$azienda_prop=$info[0]->descrizione;
 			$piva=$info[0]->piva;
 			$cf=$info[0]->cf;
 			$cap=$info[0]->cap;
@@ -340,6 +351,7 @@ public function __construct()
 		if (strlen($step_active)==0) $step_active=0;
 		$ditta=$request->input('ditta');
 		$data_invito = $request->input('data_invito');
+		$sezionale = $request->input('sezionale');
 		
 		if (!$request->has('data_invito')) $data_invito=date("Y-m-d");
 		$range_da = $request->input('range_da');
@@ -356,11 +368,12 @@ public function __construct()
 		$id_doc=$request->input('id_doc');
 		if ($id!=0) {
 			$id_doc=$id;
-			$load_fattura=fatture::select('id_ditta','data_invito')
+			$load_fattura=fatture::select('id_ditta','data_invito','id_sezionale')
 			->where('id','=',$id_doc)
 			->get();
 			$ditta=$load_fattura[0]->id_ditta;
 			$data_invito=$load_fattura[0]->data_invito;
+			$sezionale=$load_fattura[0]->id_sezionale;
 			
 		}	
 		
@@ -384,8 +397,7 @@ public function __construct()
 
 		$preventivi=DB::table('preventivi as p')
 		->join('ditte as d','p.id_ditta','d.id')
-		->join('societa as s','d.id','s.id')
-		->select("p.status","p.id","p.dele",DB::raw("DATE_FORMAT(p.data_preventivo,'%d-%m-%Y') as data_preventivo"),"p.totale","d.denominazione","s.descrizione as sezionale")
+		->select("p.status","p.id","p.dele",DB::raw("DATE_FORMAT(p.data_preventivo,'%d-%m-%Y') as data_preventivo"),"p.totale","d.denominazione")
 		->where('p.dele', "=","0")
 		->where('p.id_ditta','=',$ditta)
 		->where('p.status','<>',5)
@@ -447,16 +459,23 @@ public function __construct()
 
 
 		$ditte=DB::table('ditte as d')
-		->join('societa as s','d.id_azienda_prop','s.id')
-		->select('d.id','d.denominazione','s.id as id_azienda','s.descrizione as azienda')
+		->select('d.id','d.denominazione')
+		->where('d.dele','=',0)
 		->orderBy('d.denominazione')	
 		->get();				
 
-		$info=DB::table('ditte as d')
-		->join('societa as s','d.id_azienda_prop','s.id')
-		->select('s.info_iban')
-		->where("d.id","=",$ditta)
+
+		$sezionali=DB::table('societa as s')
+		->select('s.id','s.descrizione','s.info_iban')
+		->where('s.dele','=',0)
+		->orderBy('s.descrizione')	
 		->get();
+		
+		$info=DB::table('societa as s')
+		->select('s.info_iban')
+		->where('s.id','=',$sezionale)
+		->get();
+
 		$info_iban="";
 		if (isset($info[0])) $info_iban=$info[0]->info_iban;
 		
@@ -536,7 +555,7 @@ public function __construct()
 		if ($preview_pdf=="preview") return $this->Invoice($dati);
 		if ($genera_pdf=="genera") $this->Invoice($dati);
 	
-		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi)->with('all_s',$all_s);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi)->with('all_s',$all_s)->with('sezionali',$sezionali)->with('sezionale',$sezionale);
 	}
 
 	function lista_pagamenti() {
@@ -709,7 +728,7 @@ public function __construct()
 		
 		$fatture=DB::table('fatture as f')
 		->join('ditte as d','f.id_ditta','d.id')
-		->join('societa as s','d.id','s.id')
+		->join('societa as s','f.id_sezionale','s.id')
 		->select("f.status","f.id","f.dele",DB::raw("DATE_FORMAT(f.data_invito,'%d-%m-%Y') as data_invito"),"f.totale","d.denominazione","s.descrizione as sezionale")
 		->when($view_dele=="0", function ($fatture) {
 			return $fatture->where('f.dele', "=","0");

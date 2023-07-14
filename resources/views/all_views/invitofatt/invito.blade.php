@@ -69,7 +69,7 @@
 				
 				<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
 				<!-- nel primo step 
-					i due campi [ditta] e [data_invito] vengono valorizzati all'interno della view stepditte, per gli altri form (view) vengono passati in POST in modalità hidden
+					i campi [ditta] [data_invito] [sezionale] vengono valorizzati all'interno della view stepditte, per gli altri form (view) vengono passati in POST in modalità hidden
 				!-->
 				
 				@include('all_views.invitofatt.stepditte')
@@ -82,6 +82,8 @@
 				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 				<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
 
+
+				<input type='hidden' name='sezionale' id='sezionale' value='{{$sezionale}}'>
 				<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
 				<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
 			
@@ -95,6 +97,7 @@
 				<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 				<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
 				
+				<input type='hidden' name='sezionale' id='sezionale' value='{{$sezionale}}'>
 				<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
 
 				<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
@@ -123,7 +126,8 @@
 
 			<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 			<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
-		
+
+			<input type='hidden' name='sezionale' id='sezionale' value='{{$sezionale}}'>		
 			<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
 			
 			<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
@@ -138,7 +142,8 @@
 
 			<input type='hidden' name='step_active' id='step_active' value='{{$step_active}}' class='step'>
 			<input type='hidden' name='id_doc' id='id_doc' value='{{$id_doc}}'>
-		
+			
+			<input type='hidden' name='sezionale' id='sezionale' value='{{$sezionale}}'>		
 			<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
 			
 			<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
@@ -194,7 +199,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.198"></script>
+	<script src="{{ URL::asset('/') }}dist/js/invito.js?ver=1.199"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 

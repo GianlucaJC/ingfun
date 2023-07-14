@@ -93,8 +93,7 @@ class AjaxControllerServ extends Controller
 	public function getditta(Request $request){		
 		$id_ditta = $request->input('id_ditta');
 		$infoditta=DB::table('ditte as d')
-		->join('societa as s','d.id_azienda_prop','s.id')
-		->select('d.*','s.descrizione as azienda_prop')
+		->select('d.*')
 		->where('d.id', '=', $id_ditta)
 		->get();
         return json_encode($infoditta);

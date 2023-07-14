@@ -91,7 +91,7 @@ public function __construct()
 	public function save_edit(Request $request) {
 		$edit_elem=0;
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
-		$azienda_prop=$request->input("azienda_prop");
+		
 		$descr_contr=$request->input("descr_contr");
 		$cap=$request->input("cap");
 		$comune=$request->input("comune");
@@ -118,7 +118,7 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['id_azienda_prop'=>$azienda_prop,'dele'=>0, 'denominazione' => $descr_contr,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
+		$data=['dele'=>0, 'denominazione' => $descr_contr,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
 
 		//Creazione nuovo elemento
 		if (strlen($descr_contr)!=0 && $edit_elem==0) {
@@ -148,12 +148,7 @@ public function __construct()
 		$refr=$request->input("refr");
 		$view_dele=$request->input("view_dele");
 		$all_comuni = italy_cities::orderBy('comune')->get();
-		
-		$aziende_prop=DB::table('societa as s')
-		->select('s.id','s.descrizione as azienda_prop')
-		->where('s.dele','=',0)
-		->orderBy('s.descrizione')
-		->get();
+
 		
 		$lista_pagamenti=$this->lista_pagamenti();
 
@@ -161,15 +156,14 @@ public function __construct()
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		$ditte=DB::table('ditte as d')
-		->join('societa as s','d.id_azienda_prop','s.id')
-		->select("d.id","d.dele","d.denominazione","s.descrizione as azienda_prop")
+		->select("d.id","d.dele","d.denominazione")
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('d.dele', "=","0");
 		})
 		->orderBy('denominazione')->get();
 
 
-		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('aziende_prop',$aziende_prop)->with('lista_pagamenti',$lista_pagamenti)->with('refr',$refr);		
+		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('lista_pagamenti',$lista_pagamenti)->with('refr',$refr);		
 	}	
 
 
