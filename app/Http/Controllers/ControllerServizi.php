@@ -93,6 +93,8 @@ public function __construct()
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		
 		$descr_contr=$request->input("descr_contr");
+		$cognome=$request->input("cognome");
+		$nome=$request->input("nome");
 		$cap=$request->input("cap");
 		$comune=$request->input("comune");
 		$provincia=$request->input("provincia");
@@ -110,6 +112,7 @@ public function __construct()
 
 		
 		$descr_contr=strtoupper($descr_contr);
+		$descr_contr=strtoupper($descr_contr);
 		$cap=strtoupper($cap);
 		$cf=strtoupper($cf);
 		$comune=strtoupper($comune);
@@ -118,16 +121,16 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['dele'=>0, 'denominazione' => $descr_contr,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
+		$data=['dele'=>0, 'denominazione' => $descr_contr,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
 
+		
 		//Creazione nuovo elemento
-		if (strlen($descr_contr)!=0 && $edit_elem==0) {
-			$descr_contr=strtoupper($descr_contr);
+		if ((strlen($descr_contr)!=0 || $cognome!=0) && $edit_elem==0) {
 			DB::table("ditte")->insert($data);
 		}
 		
 		//Modifica elemento
-		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
+		if ((strlen($descr_contr)!=0 || $cognome!=0) && $edit_elem!=0) {
 			ditte::where('id', $edit_elem)			
 			  ->update($data);
 		}
@@ -138,13 +141,13 @@ public function __construct()
 		if (strlen($restore_contr)!=0) {
 			ditte::where('id', $restore_contr)
 			  ->update(['dele' => 0]);			
-		}		
-	
+		}
 	}
 
 	public function ditte(Request $request){
 		//check save/edit
 		$this->save_edit($request);
+			
 		$refr=$request->input("refr");
 		$view_dele=$request->input("view_dele");
 		$all_comuni = italy_cities::orderBy('comune')->get();
@@ -156,7 +159,7 @@ public function __construct()
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		$ditte=DB::table('ditte as d')
-		->select("d.id","d.dele","d.denominazione")
+		->select("d.id","d.dele","d.denominazione","d.cognome","d.nome")
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('d.dele', "=","0");
 		})

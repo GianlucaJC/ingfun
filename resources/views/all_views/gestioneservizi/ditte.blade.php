@@ -67,6 +67,7 @@
 						<tr>
 							
 							<th>Denominazione</th>
+							<th>Nominativo</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -83,6 +84,10 @@
 								 @if ($ditta->dele=="1") 
 									 </del></font>
 								 @endif	
+								</td>
+								<td>
+									{{ $ditta->cognome }} 
+									{{ $ditta->nome }}
 								</td>
 								<td>
 
@@ -117,6 +122,7 @@
 						<tr>
 							
 							<th>Denominazione</th>
+							<th>Nominativo</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -184,6 +190,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2076"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2086"></script>
 
 @endsection

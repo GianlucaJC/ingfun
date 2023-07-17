@@ -80,6 +80,28 @@ function set_sezione() {
 	})
 }
 
+function check_save() {
+	r2=$("#r2").prop("checked");
+
+	if (r2==true) {
+		$('#descr_contr').attr('required', true);
+		$('#piva').attr('required', true);
+		$('#cognome').attr('required', false);
+		$('#nome').attr('required', false);
+		pec=$("#pec").val()
+		sdi=$("#sdi").val()
+		if (pec.length==0 && sdi.length==0) {
+			event.preventDefault(); 
+			alert("Attenzione!\nTrattandosi di Partita IVA è necessario valorizzare anche PEC o SDI");
+		}
+	} else {
+		$('#descr_contr').attr('required', false);
+		$('#piva').attr('required', false);
+		$('#cognome').attr('required', true);
+		$('#nome').attr('required', true);
+	}
+}
+
 function new_ditta() {
 	$("#div_doc").html('')
 	$("#div_allega").hide()
@@ -123,6 +145,7 @@ function edit_elem(id_ditta) {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
+	piva=""
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
@@ -131,6 +154,12 @@ function edit_elem(id_ditta) {
 		success: function (data) {
 			
 			info=JSON.parse(data)
+			pf_pi=info[0].pf_pi
+			piva=info[0].piva
+			if (pf_pi==0) $("#r2").prop("checked",true);
+			else $("#r1").prop("checked",true);
+			$("#cognome").val(info[0].cognome)
+			$("#nome").val(info[0].nome)
 			$("#descr_contr").val(info[0].denominazione)
 			$("#comune").val(info[0].comune)
 			$("#cap").val(info[0].cap)
@@ -205,6 +234,13 @@ function edit_elem(id_ditta) {
 				</div>
 			</div>`
 			if (num_elem==0) html="";
+			if (num_elem==0 && piva.length>0) {
+				html=`
+					<div class="alert alert-warning" role="alert">
+						<b>Attenzione!</b> Trattandosi di una partita iva è obbligatorio allegare un documento
+					</div>			
+				`		
+			}
 			else html="<hr>"+html
 			$("#div_doc").html(html)
 		}
