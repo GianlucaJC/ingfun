@@ -92,6 +92,7 @@ public function __construct()
 		$edit_elem=0;
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		
+		$pf_pi=$request->input("pf_pi");
 		$descr_contr=$request->input("descr_contr");
 		$cognome=$request->input("cognome");
 		$nome=$request->input("nome");
@@ -121,18 +122,20 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['dele'=>0, 'denominazione' => $descr_contr,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
+		$data=['dele'=>0,'pf_pi'=>$pf_pi, 'denominazione' => $descr_contr,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
 
-		
+		$id_ref=0;
 		//Creazione nuovo elemento
 		if ((strlen($descr_contr)!=0 || $cognome!=0) && $edit_elem==0) {
-			DB::table("ditte")->insert($data);
+			ditte::insert($data);
+			$id_ref = DB::getPdo()->lastInsertId();
 		}
 		
 		//Modifica elemento
 		if ((strlen($descr_contr)!=0 || $cognome!=0) && $edit_elem!=0) {
 			ditte::where('id', $edit_elem)			
 			  ->update($data);
+			 $id_ref=$edit_elem;
 		}
 		if (strlen($dele_contr)!=0) {
 			ditte::where('id', $dele_contr)
@@ -142,13 +145,16 @@ public function __construct()
 			ditte::where('id', $restore_contr)
 			  ->update(['dele' => 0]);			
 		}
+		return $id_ref;
 	}
 
 	public function ditte(Request $request){
 		//check save/edit
-		$this->save_edit($request);
+		$id_ref=$this->save_edit($request);
 			
 		$refr=$request->input("refr");
+		if ($id_ref!=0) $refr=$id_ref;
+		
 		$view_dele=$request->input("view_dele");
 		$all_comuni = italy_cities::orderBy('comune')->get();
 

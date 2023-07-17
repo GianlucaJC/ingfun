@@ -145,7 +145,7 @@ function edit_elem(id_ditta) {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
-	piva=""
+	piva="";pf_pi=1
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
@@ -233,7 +233,7 @@ function edit_elem(id_ditta) {
 						</div>
 					</div>`
 					if (num_elem==0) html="";
-					if (num_elem==0 && piva.length>0) {
+					if (num_elem==0 && pf_pi==0) {
 						html=`
 							<div class="alert alert-warning" role="alert">
 								<b>Attenzione!</b> Trattandosi di una partita iva è obbligatorio allegare un documento
