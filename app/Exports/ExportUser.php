@@ -32,7 +32,7 @@
 			
 			
 
-
+			//voci_doc=sotto_tipo_doc
 			$corsi_sic = DB::table('voci_doc as v')
 			->select('v.id','v.descrizione','v.alias')
 			->where('v.id_corso',"=",4)
@@ -269,7 +269,8 @@
 				for ($s=0;$s<=count($id_corsi)-1;$s++) {
 					$fl_e=false;
 					$id_corso=$id_corsi[$s];
-					
+
+
 					for ($sca=0;$sca<=count($corsicand)-1;$sca++) {
 						$id_sotto_tipo=$corsicand[$sca]['id_sotto_tipo'];
 						if ($id_sotto_tipo==$id_corso) {
@@ -322,6 +323,7 @@
 		
 		public function doc_cand() {
 			//tutti i corsi di sicurezza (id 4) frequentati dai candidati
+			/*
 			$ref_doc = DB::table('ref_doc as r')
 			->join('tipo_doc as d', 'r.id_tipo_doc', '=', 'd.id')
 			->leftJoin('voci_doc as v', 'r.id_sotto_tipo', '=', 'v.id')
@@ -330,7 +332,14 @@
 			->groupBy('r.id')
 			->orderByDesc('r.id')
 			->get();		
-			
+			*/
+
+			$ref_doc = DB::table('ref_doc as r')
+			->select('r.id','r.id_tipo_doc','r.id_sotto_tipo','r.id_cand','r.scadenza')
+			->where('r.id_tipo_doc',"=",4)
+			->groupBy('r.id')
+			->orderByDesc('r.id_cand')
+			->get();			
 			
 			
 			$resp=array();
@@ -341,12 +350,12 @@
 				else $indice++;
 				$old=$id_cand;
 				$id_sotto_tipo=$rec->id_sotto_tipo;
-				$alias_t=$rec->alias_t;
-				$alias_st=$rec->alias_st;
+				//$alias_t=$rec->alias_t;
+				//alias_st=$rec->alias_st;
 				$scadenza=$rec->scadenza;
 				$resp[$id_cand][$indice]['id_sotto_tipo']=$id_sotto_tipo;
-				$resp[$id_cand][$indice]['alias_t']=$alias_t;
-				$resp[$id_cand][$indice]['alias_st']=$alias_st;
+				//$resp[$id_cand][$indice]['alias_t']=$alias_t;
+				//$resp[$id_cand][$indice]['alias_st']=$alias_st;
 				$resp[$id_cand][$indice]['scadenza']=$scadenza;
 			}
 			return $resp;
