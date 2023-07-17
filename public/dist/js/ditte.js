@@ -181,70 +181,73 @@ function edit_elem(id_ditta) {
 
 			$("#edit_elem").val(id_ditta)
 			$('#div_definition').show(150)
+			
+
+			$("#div_doc").html("Verifica documenti associati in corso...")
+			$.ajax({
+				
+				type: 'POST',
+				url: base_path+"/get_doc_ditta",
+				data: {_token: CSRF_TOKEN, id_ditta:id_ditta},
+				success: function (data) {
+				
+					html="";
+					num_elem=0
+					html+=`<div class="row mb-3">
+							<div class="col-md-12">
+							<table class='table' id='tb_doc'>
+								<thead>
+									<tr>
+										
+										<th>Nome documento</th>
+										<th>Azioni</th>
+									</tr>
+								</thead>
+								<tbody>`
+							
+								$.each(JSON.parse(data), function (i, item) {
+									num_elem++
+									id_doc=item.id
+									nomefile=item.nomefile
+									descr_file=item.descr_file
+									html+=`
+										<tr id='doc`+id_doc+`'>
+											<td>
+												<a href="allegati/ditte/`+id_ditta+`/`+nomefile+`" target='_blank'>`+
+												descr_file+`</a>
+											</td>
+												
+											<td>
+
+
+												<a href="javascript:void(0)" onclick="remove_doc_ditta('`+nomefile+`',`+id_ditta+`,`+id_doc+`)">
+													<button type='button' class='btn btn-warning btn-sm' ><i class='fas fa-trash' title='rimuovi allegato'></i></button>
+												</a>
+											</td>
+
+										</tr>
+										`
+								})
+						html+=`</tbody>
+							</table>				
+						</div>
+					</div>`
+					if (num_elem==0) html="";
+					if (num_elem==0 && piva.length>0) {
+						html=`
+							<div class="alert alert-warning" role="alert">
+								<b>Attenzione!</b> Trattandosi di una partita iva è obbligatorio allegare un documento
+							</div>			
+						`		
+					}
+					else html="<hr>"+html
+					$("#div_doc").html(html)
+				}
+			})			
 
 		}
 	});	
-	$("#div_doc").html("Verifica documenti associati in corso...")
-	$.ajax({
-		
-		type: 'POST',
-		url: base_path+"/get_doc_ditta",
-		data: {_token: CSRF_TOKEN, id_ditta:id_ditta},
-		success: function (data) {
-		
-			html="";
-			num_elem=0
-			html+=`<div class="row mb-3">
-					<div class="col-md-12">
-					<table class='table' id='tb_doc'>
-						<thead>
-							<tr>
-								
-								<th>Nome documento</th>
-								<th>Azioni</th>
-							</tr>
-						</thead>
-						<tbody>`
-					
-						$.each(JSON.parse(data), function (i, item) {
-							num_elem++
-							id_doc=item.id
-							nomefile=item.nomefile
-							descr_file=item.descr_file
-							html+=`
-								<tr id='doc`+id_doc+`'>
-									<td>
-										<a href="allegati/ditte/`+id_ditta+`/`+nomefile+`" target='_blank'>`+
-										descr_file+`</a>
-									</td>
-										
-									<td>
 
-
-										<a href="javascript:void(0)" onclick="remove_doc_ditta('`+nomefile+`',`+id_ditta+`,`+id_doc+`)">
-											<button type='button' class='btn btn-warning btn-sm' ><i class='fas fa-trash' title='rimuovi allegato'></i></button>
-										</a>
-									</td>
-
-								</tr>
-								`
-						})
-				html+=`</tbody>
-					</table>				
-				</div>
-			</div>`
-			if (num_elem==0) html="";
-			if (num_elem==0 && piva.length>0) {
-				html=`
-					<div class="alert alert-warning" role="alert">
-						<b>Attenzione!</b> Trattandosi di una partita iva è obbligatorio allegare un documento
-					</div>			
-				`		
-			}
-			else html="<hr>"+html
-			$("#div_doc").html(html)
-		}
-	})
 			
 
 	

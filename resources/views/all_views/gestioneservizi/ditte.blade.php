@@ -190,6 +190,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2086"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2087"></script>
 
 @endsection
