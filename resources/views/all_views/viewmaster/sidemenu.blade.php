@@ -417,6 +417,59 @@ use App\Models\User;
 						</a>
 					  </li>
 					</ul>
+				 </li>	
+
+				 <li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="nav-icon fas fa-car"></i>
+					  <p>Parco Auto
+						<i class="right fas fa-angle-left"></i>
+					  </p>
+					</a>
+					<ul class="nav nav-treeview">
+			
+					  <li class="nav-item">
+						<a href="{{route('scheda_mezzo')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Nuovo mezzo</p>
+						</a>
+					  </li>
+
+					  <li class="nav-item">
+						<a href="" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Elenco mezzi</p>
+						</a>
+					  </li>
+					
+					
+					
+					
+					
+					 <li class="nav-item menu">
+						<a href="#" class="nav-link">
+						  <i class="fas fa-cogs"></i>
+						  <p>Archivi
+							<i class="right fas fa-angle-left"></i>
+						  </p>
+						</a>
+						<ul class="nav nav-treeview">
+						  <li class="nav-item">
+							<a href="{{ route('marca') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Marca mezzi</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('modello') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Modello mezzi</p>
+							</a>
+						  </li>
+
+						</ul>
+					</li>	
+					</ul>
 				 </li>				 
 				 
 				</ul>

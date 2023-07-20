@@ -33,8 +33,22 @@ Route::get('cliditte', [ 'as' => 'cliditte', 'uses' => 'App\Http\Controllers\Mai
 
 
 Route::group(['only_log' => ['auth']], function () {
-	Route::post('load_contatti_soc', 'App\Http\Controllers\AjaxControllerServ@load_contatti_soc');
+	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin']);
 	
+	Route::get('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin']);
+	
+	Route::post('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin']);
+
+
+	
+	Route::get('marca', [ 'as' => 'marca', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@marca'])->middleware(['role:admin']);
+	
+	Route::post('marca', [ 'as' => 'marca', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@marca'])->middleware(['role:admin']);
+	
+
+	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin']);	
+	
+	Route::post('load_contatti_soc', 'App\Http\Controllers\AjaxControllerServ@load_contatti_soc');
 	
 	Route::get('invito/{id?}', [ 'as' => 'invito', 'uses' => 'App\Http\Controllers\ControllerInvito@invito'])->middleware(['role:admin|coord']);
 	
@@ -226,6 +240,13 @@ Route::group(['only_log' => ['auth']], function () {
 
 //routing Ajax
 Route::group(['only_log' => ['auth']], function () {
+
+	//chiamate ajax parco auto
+	Route::post('popola_modelli', 'App\Http\Controllers\AjaxControllerParco@popola_modelli');
+
+	Route::post('refresh_marca', 'App\Http\Controllers\AjaxControllerParco@refresh_marca');
+
+
 	Route::post('popola_servizi', 'App\Http\Controllers\AjaxControllerServ@popola_servizi');
 	
 	Route::post('lavoratori_sezionali', 'App\Http\Controllers\AjaxControllerServ@lavoratori_sezionali');
@@ -257,6 +278,8 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('refresh_tipologia_contr', 'App\Http\Controllers\AjaxControllerCand@refresh_tipologia_contr');
 	Route::post('refresh_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_tipo_doc');
 	Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
+
+
 
 	Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
 	
