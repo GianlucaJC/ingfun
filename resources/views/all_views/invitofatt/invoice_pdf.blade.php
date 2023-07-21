@@ -110,6 +110,18 @@
                     <p><b>{{$denominazione}}</b></p>
 					<p>P.iva {{$piva}} CF {{$cf}}</p>
 					<p>{{$cap}} {{$comune}} {{$provincia}}</p>
+					 <?php
+						$altro="";
+						if(strlen($sdi)!=0) 
+							$altro="SDI $sdi";
+						if(strlen($pec)!=0) 
+							$altro=" PEC $pec";
+
+					 ?>	
+					<?php
+					if (strlen($sdi)!=0 || strlen($pec)!=0) {?>
+						<p>{{$altro}}</p>
+					<?php } ?>
                 </div>
             </td>
         </tr>

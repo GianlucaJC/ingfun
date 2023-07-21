@@ -256,20 +256,37 @@ public function __construct()
 		$azienda_prop="";
 		if (isset($info[0])) $azienda_prop=$info[0]->descrizione;
 
+		$comuni=DB::table('italy_cities as c')
+		->select('c.cap','c.provincia','c.comune')
+		->get();
+		$arr_comuni=array();
+		foreach ($comuni as $com) {
+			$cap=$com->cap;
+			$pro=$com->provincia;
+			$comune=$com->comune;
+			$ref="$cap|$pro";
+			$arr_comuni[$ref]=$comune;
+		}
 
 		$info=DB::table('ditte as d')
-		->select('d.denominazione','d.piva','d.cf','d.cap','d.comune','d.provincia')
+		->select('d.denominazione','d.piva','d.cf','d.cap','d.comune','d.provincia','d.pec','d.sdi')
 		->where("d.id","=",$ditta)
 		->get();
 		$denominazione="";$piva="";$cf="";
 		$cap="";$comune="";$provincia="";
+		$sdi="";$pec="";
 		if (isset($info[0])) {
 			$denominazione=$info[0]->denominazione;
 			$piva=$info[0]->piva;
 			$cf=$info[0]->cf;
 			$cap=$info[0]->cap;
-			$comune=$info[0]->comune;
 			$provincia=$info[0]->provincia;
+			$sdi=$info[0]->sdi;
+			$pec=$info[0]->pec;
+			$comune="";
+			$ref="$cap|$provincia";
+			if (isset($arr_comuni[$ref])) $comune=$arr_comuni[$ref];
+			
 		}	
 		
 		$articoli_fattura=DB::table('articoli_fattura as a')
@@ -299,6 +316,8 @@ public function __construct()
 		$data['articoli_fattura']=$articoli_fattura;
 		$data['arr_aliquota']=$arr_aliquota;
 		$data['tipo_pagamento']=$tipo_pagamento;
+		$data['sdi']=$sdi;
+		$data['pec']=$pec;
 		$data['elenco_pagamenti_presenti']=$elenco_pagamenti_presenti;
 		
 
