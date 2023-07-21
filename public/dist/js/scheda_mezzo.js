@@ -105,6 +105,107 @@ function refresh_marca() {
 	});		
 }
 
+function refresh_carta() {
+	$("#carta_carburante")
+	.find('option')
+	.remove()
+	.end();	
+	
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_carta",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up_carta").hide(150)
+			$("#carta_carburante")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#carta_carburante').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#carta_carburante').append('<option value="' + item.id + '">' + item.id_carta + '</option>');
+						
+			});
+		}
+	});		
+}
+
+function refresh_badge() {
+	$("#badge_cisterna")
+	.find('option')
+	.remove()
+	.end();	
+	
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_badge",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up_badge").hide(150)
+			$("#badge_cisterna")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#badge_cisterna').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#badge_cisterna').append('<option value="' + item.id + '">' + item.id_badge + '</option>');
+						
+			});
+		}
+	});		
+}
+
+function refresh_telepass() {
+	$("#telepass")
+	.find('option')
+	.remove()
+	.end();	
+	
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_telepass",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up_telepass").hide(150)
+			$("#telepass")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#telepass').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#telepass').append('<option value="' + item.id + '">' + item.id_telepass + '</option>');
+						
+			});
+		}
+	});		
+}
 function refresh_modello() {
 	$("#marca").trigger("change");
 	$("#div_up_modello").hide(150)

@@ -229,15 +229,48 @@
 					?>	
 					</select>
 					<label for="carta_carburante">Carta carburante</label>
+					<a href="{{ route('cartac') }}" class="link-primary" target='_blank' onclick="
+							 $('.up').hide();$('#div_up_carta').show()">
+						Definisci/modifica
+					</a>					
+					<span id='div_up_carta' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick='refresh_carta()'>
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>						
 				</div>
 			</div>	
 
 			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="badge_cisterna" id="badge_cisterna" >
-
+					<option value="">Select...</option>
+					<?php
+						
+						foreach ($badges as $badge) {
+							$id_ref=$badge->id;
+							$id_badge=$badge->id_badge;
+							echo "<option value='".$id_ref."' ";
+							//if ($id_ditta==$id_ditta_db) echo " selected ";
+							echo ">".$id_badge."</option>";
+						}
+						
+					?>	
 					</select>
 					<label for="carta_carburante">Badge cisterna</label>
+					<a href="{{ route('badge') }}" class="link-primary" target='_blank' onclick="
+							 $('.up').hide();$('#div_up_badge').show()">
+						Definisci/modifica
+					</a>					
+					<span id='div_up_badge' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick='refresh_badge()'>
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>						
 				</div>
 			</div>	
 			
@@ -247,11 +280,31 @@
 		<div class='row mb-3'>
 			<div class="col-md-4">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" name="Telepass" id="telepass" >
+					<select class="form-select" name="telepass" id="telepass" >
 					<option value="">Select...</option>
-
+					<?php
+						
+						foreach ($teles as $telep) {
+							$id_ref=$telep->id;
+							$id_telepass=$telep->id_telepass;
+							echo "<option value='".$id_ref."' ";
+							//if ($id_ditta==$id_ditta_db) echo " selected ";
+							echo ">".$id_telepass."</option>";
+						}
+						
+					?>	
 					</select>
 					<label for="telepass">Telepass</label>
+					<a href="{{ route('telepass') }}" class="link-primary" target='_blank' onclick="$('.up').hide();$('#div_up_telepass').show()">
+						Definisci/modifica
+					</a>					
+					<span id='div_up_telepass' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick='refresh_telepass()'>
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>						
 				</div>
 			</div>	
 			<div class="col-md-4">
@@ -444,7 +497,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.191"></script>
+	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.194"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

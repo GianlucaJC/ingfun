@@ -466,7 +466,24 @@ use App\Models\User;
 							  <p>Modello mezzi</p>
 							</a>
 						  </li>
-
+						  <li class="nav-item">
+							<a href="{{ route('cartac') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Carta carburante</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('badge') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Badge cisterna</p>
+							</a>
+						  </li>
+						  <li class="nav-item">
+							<a href="{{ route('telepass') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Telepass</p>
+							</a>
+						  </li>						  
 						</ul>
 					</li>	
 					</ul>

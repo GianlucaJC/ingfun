@@ -45,6 +45,17 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('marca', [ 'as' => 'marca', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@marca'])->middleware(['role:admin']);
 	
+	Route::get('badge', [ 'as' => 'badge', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@badge'])->middleware(['role:admin']);
+	
+	Route::post('badge', [ 'as' => 'badge', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@badge'])->middleware(['role:admin']);
+	
+	Route::get('cartac', [ 'as' => 'cartac', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@cartac'])->middleware(['role:admin']);
+	
+	Route::post('cartac', [ 'as' => 'cartac', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@cartac'])->middleware(['role:admin']);
+
+	Route::get('telepass', [ 'as' => 'telepass', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@telepass'])->middleware(['role:admin']);
+	
+	Route::post('telepass', [ 'as' => 'telepass', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@telepass'])->middleware(['role:admin']);
 
 	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin']);	
 	
@@ -245,6 +256,12 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('popola_modelli', 'App\Http\Controllers\AjaxControllerParco@popola_modelli');
 
 	Route::post('refresh_marca', 'App\Http\Controllers\AjaxControllerParco@refresh_marca');
+
+	Route::post('refresh_carta', 'App\Http\Controllers\AjaxControllerParco@refresh_carta');
+
+	Route::post('refresh_badge', 'App\Http\Controllers\AjaxControllerParco@refresh_badge');
+
+	Route::post('refresh_telepass', 'App\Http\Controllers\AjaxControllerParco@refresh_telepass');
 
 
 	Route::post('popola_servizi', 'App\Http\Controllers\AjaxControllerServ@popola_servizi');

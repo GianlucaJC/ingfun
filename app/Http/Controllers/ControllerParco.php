@@ -8,6 +8,8 @@ use App\Models\mezzi;
 use App\Models\parco_carta_carburante;
 use App\Models\parco_marca_mezzo;
 use App\Models\parco_modello_mezzo;
+use App\Models\parco_badge_cisterna;
+use App\Models\parco_telepass;
 use DB;
 
 class ControllerParco extends Controller
@@ -27,8 +29,17 @@ class ControllerParco extends Controller
 		$carta_carburante=parco_carta_carburante::select('id','id_carta')
 		->orderBy('id_carta')
 		->get();
+
+
+		$badges=parco_badge_cisterna::select('id','id_badge')
+		->orderBy('id_badge')
+		->get();
+
+		$teles=parco_telepass::select('id','id_telepass')
+		->orderBy('id_telepass')
+		->get();
 		
-		$data=array("carte_c"=>$carta_carburante,"tipomezzo"=>$tipomezzo,"marche"=>$marche);
+		$data=array("carte_c"=>$carta_carburante,"tipomezzo"=>$tipomezzo,"marche"=>$marche,"badges"=>$badges,"teles"=>$teles);
 		
 		
 		return view('all_views/parco/scheda_mezzo')->with($data);
