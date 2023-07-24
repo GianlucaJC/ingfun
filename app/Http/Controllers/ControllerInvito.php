@@ -12,6 +12,7 @@ use App\Models\preventivi;
 use App\Models\candidati;
 use App\Models\servizi_ditte;
 use App\Models\servizi;
+use App\Models\appalti;
 
 
 use DB;
@@ -107,6 +108,9 @@ public function __construct()
 				->select("a.id_ditta",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"),"s.id_servizio")
 				->where('a.id', "=",$id_app)	
 				->get();
+
+				appalti::where('id', $id_app)->update(['status' => 1]);					
+				
 				foreach ($appalti as $appalto) {
 					$data_ref=$appalto->data_ref;
 					$id_ditta=$appalto->id_ditta;
@@ -452,10 +456,16 @@ public function __construct()
 			$query->where('a.id_ditta', "=",$ditta);	
 		})
 		->where('a.dele','=',0)
-		->where('a.data_ref','>=',"$range_da")
-		->where('a.data_ref','<=',"$range_a")
+		->where('a.status','<>',1)
+		->when(strlen($range_da)!=0, function ($ditteinapp) use($range_da) {
+			return $ditteinapp->where('a.data_ref','>=',"$range_da");
+		})
+		->when(strlen($range_a)!=0, function ($ditteinapp) use($range_a) {
+			return $ditteinapp->where('a.data_ref','<=',"$range_a");
+		})
 		->orderBy('a.id')
 		->get();
+	
 
 		$id_servizi=array();$ids_lav=array();
 		foreach($ditteinapp as $appalto) {

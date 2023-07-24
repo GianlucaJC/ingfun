@@ -283,7 +283,7 @@ public function __construct()
 		}
 
 
-		$gestione=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
+		$gestione=appalti::select('appalti.id','appalti.status','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->when($view_dele=="0", function ($gestione) {
 			return $gestione->where('appalti.dele', "=","0");

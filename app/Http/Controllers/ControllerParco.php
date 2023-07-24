@@ -10,6 +10,7 @@ use App\Models\parco_marca_mezzo;
 use App\Models\parco_modello_mezzo;
 use App\Models\parco_badge_cisterna;
 use App\Models\parco_telepass;
+use App\Models\parco_scheda_mezzo;
 use DB;
 
 class ControllerParco extends Controller
@@ -18,19 +19,76 @@ class ControllerParco extends Controller
 		$this->middleware('auth')->except(['index']);
 	}
 	
+	public function save_mezzo($request) {
+		$id_mezzo=$request->input('id_mezzo');
+		if ($id_mezzo!=0) 
+			$psm = parco_scheda_mezzo::find($id_mezzo);
+		else 
+			$psm = new parco_scheda_mezzo;
+		$psm->targa = strtoupper($request->input('targa'));
+		$psm->numero_interno = $request->input('numero_interno');
+		$psm->tipologia = $request->input('tipologia');
+		$psm->marca = $request->input('marca');
+		$psm->modello = $request->input('modello');
+		$psm->telaio = $request->input('telaio');
+		$psm->alimentazione = $request->input('alimentazione');
+		$psm->proprieta = $request->input('proprieta');
+		$psm->posti = $request->input('posti');
+		$psm->chilometraggio = $request->input('chilometraggio');
+		$psm->catene = $request->input('catene');
+		$psm->carta_carburante = $request->input('carta_carburante');
+		$psm->badge_cisterna = $request->input('badge_cisterna');
+		$psm->telepass = $request->input('telepass');
+		$psm->data_immatricolazione = $request->input('data_immatricolazione');
+		$psm->ultima_revisione = $request->input('ultima_revisione');
+		$psm->scadenza_assicurazione = $request->input('scadenza_assicurazione');
+		$psm->scadenza_bollo = $request->input('scadenza_bollo');
+		$psm->prossimo_tagliando = $request->input('prossimo_tagliando');
+		$psm->marca_modello_pneumatico = $request->input('marca_modello_pneumatico');
+		$psm->misura_pneumatico = $request->input('misura_pneumatico');
+		$psm->primo_equipaggiamento = $request->input('primo_equipaggiamento');
+		$psm->km_installazione = $request->input('km_installazione');
+		$psm->officina_installazione = $request->input('officina_installazione');
+		$psm->anomalia_note = $request->input('anomalia_note');
+		$psm->mezzo_marciante = $request->input('mezzo_marciante');
+		$psm->mezzo_manutenzione = $request->input('mezzo_manutenzione');
+		$psm->save();
+		
+	}
 	
 	public function scheda_mezzo($id_mezzo=0) {
+		$request=request();
+		$btn_save_mezzo=$request->input("btn_save_mezzo");
+		if ($btn_save_mezzo=="save") 
+			$save_mezzo=$this->save_mezzo($request);
+		
+		
 		$tipomezzo=$this->tipomezzi();
 
 		$marche=parco_marca_mezzo::select('id','marca')
 		->orderBy('marca')
-		->get();		
+		->get();
+		
+		
+		$info_mezzo=array();
+		$modello="";
+	
+		if ($id_mezzo!=0) {
+			$info_mezzo=DB::table('parco_scheda_mezzo as s')
+			->select('s.*')
+			->where('id', "=", $id_mezzo)
+			->get();
+			$marca=$info_mezzo[0]->marca;
+			$modello=parco_modello_mezzo::select('id','modello')
+			->where("id_marca","=",$marca)
+			->get();		
+		}
+
 
 		$carta_carburante=parco_carta_carburante::select('id','id_carta')
 		->orderBy('id_carta')
 		->get();
-
-
+	
 		$badges=parco_badge_cisterna::select('id','id_badge')
 		->orderBy('id_badge')
 		->get();
@@ -38,13 +96,65 @@ class ControllerParco extends Controller
 		$teles=parco_telepass::select('id','id_telepass')
 		->orderBy('id_telepass')
 		->get();
+
 		
-		$data=array("carte_c"=>$carta_carburante,"tipomezzo"=>$tipomezzo,"marche"=>$marche,"badges"=>$badges,"teles"=>$teles);
+
+
+		$data=array("carte_c"=>$carta_carburante,"tipomezzo"=>$tipomezzo,"marche"=>$marche,"badges"=>$badges,"teles"=>$teles,"info_mezzo"=>$info_mezzo,"id_mezzo"=>$id_mezzo,"modello"=>$modello);
+
 		
+		if ($request->has("btn_save_mezzo")) {
+			$id_mezzo=$request->input('id_mezzo');
+			return redirect()->route("scheda_mezzo",['id'=>$id_mezzo]);
+		}
+		else
 		
-		return view('all_views/parco/scheda_mezzo')->with($data);
+			return view('all_views/parco/scheda_mezzo')->with($data);
 		
 	}
+	
+	public function inventario_flotta(Request $request){
+
+		$view_dele=$request->input("view_dele");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+		$marche_db=parco_marca_mezzo::select('id','marca')->get();
+		$marche=array();
+		foreach($marche_db as $mx) {
+			$marche[$mx->id]=$mx->marca;
+		}
+		$modelli_db=parco_modello_mezzo::select('id','modello')->get();		
+		$modelli=array();
+		foreach($modelli_db as $mx) {
+			$modelli[$mx->id]=$mx->modello;
+		}
+		
+		if (strlen($dele_contr)!=0) {
+			parco_scheda_mezzo::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			parco_scheda_mezzo::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$inventario=DB::table('parco_scheda_mezzo')
+		->when($view_dele=="0", function ($inventario) {
+			return $inventario->where('dele', "=","0");
+		})
+		->orderBy('targa')->get();
+
+		return view('all_views/parco/inventario_flotta')->with('inventario', $inventario)->with("view_dele",$view_dele)->with('marche',$marche)->with('modelli',$modelli);
+
+	}	
+	
+	
+	
+	
 	
 	public function tipomezzi() {
 		$mezzi=array();

@@ -25,14 +25,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">Badge cisterna</h1>
+            <h1 class="m-0">INVENTARIO FLOTTA</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-			  <li class="breadcrumb-item active">Amministrazione</li>
-			  <li class="breadcrumb-item active">Parco Auto</li>
-              <li class="breadcrumb-item active">Badge cisterna</li>
+			  <li class="breadcrumb-item">Amministrazione</li>
+			  <li class="breadcrumb-item">Parco Auto</li>
+              <li class="breadcrumb-item active">Inventario_flotta</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -44,50 +44,65 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-		<!-- form new voce attestato !-->	
-		@include('all_views.parco.newbadge')
 
-		<form method='post' action="{{ route('badge') }}" id='frm_badge' name='frm_badge' autocomplete="off">
+		<form method='post' action="{{ route('inventario_flotta') }}" id='frm_inventario' name='frm_inventario' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 
         <div class="row">
           <div class="col-md-12">
 		  
-				<table id='tbl_list_badge' class="display">
+				<table id='tbl_inventario' class="display">
 					<thead>
 						<tr>
-							<th>ID</th>
-							<th>Badge cisterna</th>
+							<th>Targa</th>
+							<th>Marca</th>
+							<th>Modello</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($badges as $badge)
+						@foreach($inventario as $flotta)
 							<tr>
-								<td>{{ $badge->id }}</td>	
 								<td>
-								 @if ($badge->dele=="1") 
+								 @if ($flotta->dele=="1") 
 									<font color='red'><del> 
 								 @endif
-									<span id='id_descr{{$badge->id}}' data-descr='{{ $badge->id_badge }}'>
-										{{ $badge->id_badge }}
+									<span id='id_descr{{$flotta->id}}' data-descr=''>
+										{{ $flotta->targa }}
 									</span>	
-								 @if ($badge->dele=="1") 
+								 @if ($flotta->dele=="1") 
 									 </del></font>
 								 @endif	
 								</td>	
+								
 								<td>
-									@if ($badge->dele=="0") 
-										<a href='#' onclick="edit_elem({{$badge->id}})">
+								<?php
+
+									if (isset($marche[$flotta->marca]))
+										echo $marche[$flotta->marca];
+								?>
+								</td>
+								
+								<td>
+								<?php
+
+									if (isset($modelli[$flotta->modello]))
+										echo $modelli[$flotta->modello];
+								?>
+								</td>
+								
+								<td>
+									@if ($flotta->dele=="0") 
+										<a href="{{ route('scheda_mezzo',['id'=>$flotta->id]) }}" >
 											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 										</a>
-										<a href='#' onclick="dele_element({{$badge->id}})">
+										<a href='#' onclick="dele_element({{$flotta->id}})">
 											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
 										</a>
 									@endif
-									@if ($badge->dele=="1") 
-										<a href='#'onclick="restore_element({{$badge->id}})" >
+									@if ($flotta->dele=="1") 
+										<a href='#'onclick="restore_element({{$flotta->id}})" >
 											<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
 										</a>
 									@endif
@@ -100,8 +115,9 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th>ID</th>
-							<th>Numero Carta</th>
+							<th>Targa</th>
+							<th>Marca</th>
+							<th>Modello</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -119,12 +135,14 @@
 		?>
 			<div class="row">
 			    <div class="col-lg-12">
-					<button type="button" class="btn btn-primary" onclick="$('#edit_elem').val('');$('#descr_contr').val('');$('#div_definition').show(150)">
-						<i class="fa fa-plus-circle"></i> Nuovo Badge
-					</button>
+					<a href="{{ route('scheda_mezzo') }}">
+						<button type="button" class="btn btn-primary">
+							<i class="fa fa-plus-circle"></i> Nuovo Mezzo
+						</button>
+					</a>
 					<div class="form-check form-switch mt-3 ml-3">
-					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_badge').submit()" {{ $check }}>
-					  <label class="form-check-label" for="view_dele">Mostra anche Badge eliminati</label>
+					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_inventario').submit()" {{ $check }}>
+					  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
 					</div>
 				</div>
 			</div>	
@@ -162,6 +180,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/badge.js?ver=1.20"></script>
+	<script src="{{ URL::asset('/') }}dist/js/inventario_flotta.js?ver=1.49"></script>
 
 @endsection

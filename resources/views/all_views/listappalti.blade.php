@@ -81,6 +81,7 @@
 					<thead>
 						<tr>
 							<th>Operazioni</th>
+							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
@@ -122,7 +123,16 @@
 								</a>
 
 								
-							</td>									
+							</td>	
+							<td style='max-width:60px'>
+								@if ($gest->status==0)
+									<i>Aperto</i>
+								@endif
+								@if ($gest->status==1)
+									<i>Fatturato</i>
+								@endif
+								
+							</td>
 
 							<td  style='max-width:40px'>
 								@if ($gest->dele=="1") 
@@ -212,7 +222,8 @@
 					<tfoot>
 						<tr>
 							<th></th>
-							<th style='max-width:40px'>Descrizione Appalto</th>
+							<th style='max-width:60px'>Stato</th>
+							<th style='max-width:40px'>ID</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
@@ -282,6 +293,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.02"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.05"></script>
 
 @endsection

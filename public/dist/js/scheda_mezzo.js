@@ -14,6 +14,7 @@
           event.preventDefault()
           event.stopPropagation()
         }
+		$("#targa").prop("disabled",false);
 		/*
 		var cf=$("#codfisc").val()
 		var valida=validaCodiceFiscale(cf);

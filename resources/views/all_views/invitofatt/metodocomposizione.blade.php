@@ -72,6 +72,7 @@
 		foreach($ditteinapp as $ditta_def) {
 			$ditta_ref=$ditta_def->denominazione;
 		}
+
 		if ($ditta_ref!="?") {
 			echo "<div class='alert alert-info' role='alert'>";
 				echo "Ditta selezionata: <b>$ditta_ref</b>";
@@ -87,13 +88,13 @@
 			<div class="row mb-3">
 				<div class="col-md-4">
 					<div class="form-floating">
-						<input class="form-control" id="range_da" name='range_da' type="date" required  value="{{$range_da}}" />
+						<input class="form-control" id="range_da" name='range_da' type="date"  value="{{$range_da}}" />
 						<label for="range_da">Da data</label>
 					</div>
 				</div>
 				<div class="col-md-4">
 					<div class="form-floating">
-						<input class="form-control" id="range_a" name='range_a' type="date" required  value="{{$range_a}}" />
+						<input class="form-control" id="range_a" name='range_a' type="date"  value="{{$range_a}}" />
 						<label for="range_a">A data</label>
 					</div>
 				</div>

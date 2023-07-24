@@ -22,6 +22,8 @@
 <form method='post' action="{{ route('scheda_mezzo') }}" id='frm_mezzo' name='frm_mezzo' autocomplete="off" class="needs-validation" novalidate>
 
 <input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+
+
   <!-- Content Wrapper. Contains page content -->
    <div class="content-wrapper">
     <!-- Content Header (Page header) -->
@@ -46,19 +48,23 @@
 
     <!-- Main content -->
     <div class="content">
+	<input type='hidden' name='id_mezzo' id='id_mezzo' value='{{$id_mezzo}}'>
       <div class="container-fluid">
 		<div class="row mb-3">
-			
+			<?php
+				$dis="";
+				if ($id_mezzo!="0") $dis="disabled";
+			?>
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" disabled id="targa" type="text" placeholder="ID"  value="" />
-					<label for="targa">TARGA</label>
+					<input class="form-control"  id="targa" name="targa" type="text" placeholder="ID"  value="{{$info_mezzo[0]->targa ?? ''}}" required maxlength=30 {{$dis}}  />
+					<label for="targa">TARGA*</label>
 				</div>
 			</div>			
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" id="numero_interno" name='numero_interno' type="text" required value="" />
-					<label for="data_app">Numero interno*</label>
+					<input class="form-control" id="numero_interno" name='numero_interno' type="text" required value="{{$info_mezzo[0]->numero_interno ?? ''}}" maxlength=50 />
+					<label for="numero_interno">Numero interno*</label>
 				</div>
 			</div>			
 		</div>
@@ -66,7 +72,7 @@
 		<div class='row mb-3'>
 			<div class="col-md-4">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" name="tipo_mezzo" id="tipo_mezzo"  required >
+					<select class="form-select" name="tipologia" id="tipologia"  required >
 					<option value=''>Select...</option>
 					<?php
 						
@@ -75,13 +81,15 @@
 							$descr_mezzo=$tipomezzo[$sca]['descrizione'];
 							
 							echo "<option value='".$id_tipo."' ";
-							//if ($id_ditta==$id_ditta_db) echo " selected ";
+							if (isset($info_mezzo[0])) {
+								if ($id_tipo==$info_mezzo[0]->tipologia) echo " selected ";
+							}
 							echo ">".$descr_mezzo."</option>";
 						}
 						
 					?>						
 					</select>
-					<label for="tipo_mezzo">Tipologia*</label>
+					<label for="tipologia">Tipologia*</label>
 				</div>
 			</div>	
 
@@ -96,7 +104,10 @@
 							$id_marca=$marca_m->id;
 							$descrizione=$marca_m->marca;
 							echo "<option value='".$id_marca."' ";
-							//if ($id_ditta==$id_ditta_db) echo " selected ";
+							
+							if (isset($info_mezzo[0])) {
+								if ($id_marca==$info_mezzo[0]->marca) echo " selected ";
+							}	
 							echo ">".$descrizione."</option>";
 						}
 						
@@ -122,6 +133,19 @@
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="modello" id="modello"  required >
 						<option value=''>Select...</option>
+						<?php
+							if ($id_mezzo!=0 && strlen($id_mezzo)!=0) {
+								
+								foreach($modello as $mod) {
+									$id_modello=$mod->id;
+									$modello_view=$mod->modello;
+									echo "<option value=$id_modello";
+									if ($id_modello==$info_mezzo[0]->modello) echo " selected ";
+									echo ">$modello_view</option>";
+								}
+								
+							}
+						?>
 					</select>
 					<label for="ditta">Modello*</label>
 				</div>
@@ -146,8 +170,8 @@
 		<div class='row mb-3'>
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="telaio" name='telaio' type="text"  />
-					<label for="data_app">Telaio</label>
+					<input class="form-control" id="telaio" name='telaio' type="text"  maxlength=100 value="{{$info_mezzo[0]->telaio ?? ''}}" />
+					<label for="telaio">Telaio</label>
 				</div>
 			</div>		
 
@@ -157,8 +181,15 @@
 					<select class="form-select" name="alimentazione" id="alimentazione"  required >
 					<option value=''>Select...</option>
 						<option value='1'
+						<?php if (isset($info_mezzo[0]->alimentazione) 
+							&& $info_mezzo[0]->alimentazione==1) echo " selected ";
+						?>
 						>Benzina</option>
 						<option value='2'
+						<?php if (isset($info_mezzo[0]->alimentazione) 
+							&& $info_mezzo[0]->alimentazione==2) echo " selected ";
+						
+						?>
 						>Diesel</option>
 					</select>
 					<label for="alimentazione">Alimentazione*</label>
@@ -170,10 +201,23 @@
 					<select class="form-select" name="proprieta" id="proprieta"  required >
 					<option value=''>Select...</option>
 						<option value='1'
+						<?php if (isset($info_mezzo[0]->proprieta) 
+							&& $info_mezzo[0]->proprieta==1) echo " selected ";
+						
+						?>						
 						>Noleggio</option>
 						<option value='2'
+						<?php if (isset($info_mezzo[0]->proprieta) 
+							&& $info_mezzo[0]->proprieta==2) echo " selected ";
+						
+						?>						
 						>Proprietà</option>
 						<option value='3'
+						<?php if (isset($info_mezzo[0]->proprieta) 
+							&& $info_mezzo[0]->proprieta==3) echo " selected ";
+						
+
+						?>						
 						>Leasing</option>
 					</select>
 					<label for="proprieta">Proprietà*</label>
@@ -186,13 +230,13 @@
 		<div class='row mb-3'>
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="posti" name='posti' type="text"  />
+					<input class="form-control" id="posti" name='posti' type="text" maxlength=50  value="{{$info_mezzo[0]->posti ?? ''}}" />
 					<label for="posti">Posti</label>
 				</div>
 			</div>		
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="chilometraggio" name='chilometraggio' type="text"  />
+					<input class="form-control" id="chilometraggio" name='chilometraggio' type="text" maxlength=50 value="{{$info_mezzo[0]->chilometraggio ?? ''}}" />
 					<label for="chilometraggio">Chilometraggio</label>
 				</div>
 			</div>
@@ -200,12 +244,22 @@
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="catene" id="catene"  required >
 					<option value=''>Select...</option>
-						<option value='S'
+						<option value=1
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->catene==1) echo " selected ";
+								
+						}?>
 						>SI</option>
-						<option value='N'
+						<option value=2
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->catene==2) echo " selected ";
+								
+						}?>
 						>NO</option>
 					</select>
-					<label for="alimentazione">Catene*</label>
+					<label for="catene">Catene*</label>
 				</div>
 			</div>				
 		</div>
@@ -222,7 +276,9 @@
 							$id_ref=$carta_c->id;
 							$id_carta=$carta_c->id_carta;
 							echo "<option value='".$id_ref."' ";
-							//if ($id_ditta==$id_ditta_db) echo " selected ";
+							if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->carta_carburante==$id_ref) echo " selected ";
+							}
 							echo ">".$id_carta."</option>";
 						}
 						
@@ -253,13 +309,15 @@
 							$id_ref=$badge->id;
 							$id_badge=$badge->id_badge;
 							echo "<option value='".$id_ref."' ";
-							//if ($id_ditta==$id_ditta_db) echo " selected ";
+							if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->badge_cisterna==$id_ref) echo " selected ";
+							}
 							echo ">".$id_badge."</option>";
 						}
 						
 					?>	
 					</select>
-					<label for="carta_carburante">Badge cisterna</label>
+					<label for="badge_cisterna">Badge cisterna</label>
 					<a href="{{ route('badge') }}" class="link-primary" target='_blank' onclick="
 							 $('.up').hide();$('#div_up_badge').show()">
 						Definisci/modifica
@@ -288,7 +346,9 @@
 							$id_ref=$telep->id;
 							$id_telepass=$telep->id_telepass;
 							echo "<option value='".$id_ref."' ";
-							//if ($id_ditta==$id_ditta_db) echo " selected ";
+							if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->telepass==$id_ref) echo " selected ";
+							}
 							echo ">".$id_telepass."</option>";
 						}
 						
@@ -309,14 +369,14 @@
 			</div>	
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="immatricolato" name='immatricolato' type="date" required />
-					<label for="immatricolato">Immatricolato*</label>
+					<input class="form-control" id="data_immatricolazione" name='data_immatricolazione' type="date" required value="{{$info_mezzo[0]->data_immatricolazione ?? ''}}"/>
+					<label for="data_immatricolazione">Data immatricolazione*</label>
 				</div>
 			</div>	
 			
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="ultima_revisione" name='ultima_revisione' type="date" required />
+					<input class="form-control" id="ultima_revisione" name='ultima_revisione' type="date" value="{{$info_mezzo[0]->ultima_revisione ?? ''}}"  required />
 					<label for="ultima_revisione">Ultima revisione</label>
 				</div>
 			</div>			
@@ -327,7 +387,7 @@
 
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="scadenza_assicurazione" name='scadenza_assicurazione' type="date" />
+					<input class="form-control" id="scadenza_assicurazione" name='scadenza_assicurazione' type="date" value="{{$info_mezzo[0]->scadenza_assicurazione ?? ''}}" />
 					<label for="scadenza_assicurazione">Scadenza Assicurazione</label>
 				</div>
 			</div>	
@@ -335,14 +395,14 @@
 
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="scadenza_bollo" name='scadenza_bollo' type="date" />
-					<label for="immatricolato">Scadenza Bollo</label>
+					<input class="form-control" id="scadenza_bollo" name='scadenza_bollo' type="date" value="{{$info_mezzo[0]->scadenza_bollo ?? ''}}" />
+					<label for="scadenza_bollo">Scadenza Bollo</label>
 				</div>
 			</div>	
 			
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="prossimo_tagliando" name='prossimo_tagliando' type="text" />
+					<input class="form-control" id="prossimo_tagliando" name='prossimo_tagliando' type="text" maxlength=50 value="{{$info_mezzo[0]->prossimo_tagliando ?? ''}}"/>
 					<label for="prossimo_tagliando">Prossimo tagliando</label>
 				</div>
 			</div>			
@@ -352,8 +412,8 @@
 
 			<div class="col-md-12">
 				<div class="form-floating">
-					<input class="form-control" id="marca_modello_penumatico" name='marca_modello_penumatico' type="text" />
-					<label for="prossimo_tagliando">Marca e modello pneumatico</label>
+					<input class="form-control" id="marca_modello_pneumatico" name='marca_modello_pneumatico' type="text" maxlength=80 value="{{$info_mezzo[0]->marca_modello_pneumatico ?? ''}}" />
+					<label for="marca_modello_pneumatico">Marca e modello pneumatico</label>
 				</div>
 			</div>			
 		</div>
@@ -362,7 +422,7 @@
 
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="misura_pneumatico" name='misura_pneumatico' type="text" />
+					<input class="form-control" id="misura_pneumatico" name='misura_pneumatico' type="text" maxlength=50 value="{{$info_mezzo[0]->misura_pneumatico ?? ''}}" />
 					<label for="misura_pneumatico">Misura pneumatico</label>
 				</div>
 			</div>	
@@ -370,9 +430,17 @@
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="primo_equipaggiamento" id="primo_equipaggiamento" >
 					<option value=''>Select...</option>
-						<option value='S'
+						<option value=1
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->primo_equipaggiamento==1) echo " selected ";
+						}?>						
 						>SI</option>
-						<option value='N'
+						<option value=2
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->primo_equipaggiamento==2) echo " selected ";
+						}?>								
 						>NO</option>
 					</select>
 					<label for="primo_equipaggiamento">Primo equipaggiamento</label>
@@ -380,7 +448,7 @@
 			</div>		
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="km_installazione" name='km_installazione' type="text" />
+					<input class="form-control" id="km_installazione" name='km_installazione' type="text" maxlength=30 value="{{$info_mezzo[0]->km_installazione ?? ''}}"/>
 					<label for="km_installazione">Km installazione</label>
 				</div>
 			</div>				
@@ -390,7 +458,7 @@
 
 			<div class="col-md-12">
 				<div class="form-floating">
-					<input class="form-control" id="officina_installazione" name='officina_installazione' type="text" />
+					<input class="form-control" id="officina_installazione" name='officina_installazione' type="text" maxlength=80 value="{{$info_mezzo[0]->officina_installazione ?? ''}}" />
 					<label for="officina_installazione">Officina installazione</label>
 				</div>
 			</div>			
@@ -400,7 +468,7 @@
 
 			<div class="col-md-12">
 				<div class="form-floating">
-					<textarea class="form-control" id="anomalia_note" rows="3"></textarea>
+					<textarea class="form-control" id="anomalia_note" name="anomalia_note" rows="3">{{$info_mezzo[0]->anomalia_note ?? ''}}</textarea>
 					<label for="anomalia_note">Anomalie e note</label>
 				</div>
 			</div>			
@@ -412,9 +480,17 @@
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="mezzo_marciante" id="mezzo_marciante" >
 					<option value=''>Select...</option>
-						<option value='S'
+						<option value=1
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->mezzo_marciante==1) echo " selected ";
+						}?>						
 						>SI</option>
-						<option value='N'
+						<option value=2
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->mezzo_marciante==2) echo " selected ";
+						}?>						
 						>NO</option>
 					</select>
 					<label for="mezzo_marciante">Mezzo marciante</label>
@@ -425,9 +501,17 @@
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="mezzo_manutenzione" id="mezzo_manutenzione" >
 					<option value=''>Select...</option>
-						<option value='S'
+						<option value=1
+						<?php
+						if (isset($info_mezzo[0])) {
+							if ($info_mezzo[0]->mezzo_manutenzione==1) echo " selected ";
+						}?>								
 						>SI</option>
-						<option value='N'
+						<option value=2
+						<?php
+						if (isset($info_mezzo[0])) {
+							if ($info_mezzo[0]->mezzo_manutenzione==2) echo " selected ";
+						}?>								
 						>NO</option>
 					</select>
 					<label for="mezzo_manutenzione">Mezzo in manutenzione</label>
@@ -437,9 +521,9 @@
 
         <div class="row">
 
-			<button type="submit" name='btn_save_mezzo' id='btn_save_mezzo'  class="btn btn-success btn-lg btn-block">SALVA</button>  
+			<button type="submit" name='btn_save_mezzo' id='btn_save_mezzo' value="save" class="btn btn-success btn-lg btn-block">SALVA</button>  
 			
-			<a href="">
+			<a href="{{ route('inventario_flotta') }}">
 				<button type="button"  id='back_appalti' class="btn btn-info btn-lg btn-block mt-3">ELENCO MEZZI</button> 
 			</a>
 
@@ -497,7 +581,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.194"></script>
+	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.195"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

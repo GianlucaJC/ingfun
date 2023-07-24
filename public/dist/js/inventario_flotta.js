@@ -1,19 +1,11 @@
 $(document).ready( function () {
-    $('#tbl_list_pers tfoot th').each(function () {
+    $('#tbl_inventario tfoot th').each(function () {
         var title = $(this).text();
-		if (title.length!=0) {
-			w="200px"
-			if (title=="Stato") w="60px"
-			if (title=="ID") w="40px"
-			$(this).html('<input style="width:'+w+'" type="text" placeholder="' + title + '" />');
-		}	
-    });		
-    $('#tbl_list_pers').DataTable({
-		pageLength: 10,
-		lengthMenu: [10, 15, 20, 50, 100, 200, 500],
-
-		pagingType: 'full_numbers',
-		//dom: 'Bfrtip',
+		if (title.length!=0)
+			$(this).html('<input type="text" placeholder="Search ' + title + '" />');
+    });	
+    var table=$('#tbl_inventario').DataTable({
+		dom: 'Bfrtip',
 		buttons: [
 			'excel', 'pdf'
 		],		
@@ -30,15 +22,17 @@ $(document).ready( function () {
                         }
                     });
                 });
-        },		
+        },
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',
-            zeroRecords: 'Nessun appalto trovato',
+            zeroRecords: 'Nessun mezzo trovato',
             info: 'Pagina _PAGE_ di _PAGES_',
-            infoEmpty: 'Non sono disponibili appalti',
-            infoFiltered: '(Filtrati da _MAX_ appalti totali)',
+            infoEmpty: 'Non sono presenti mezzi',
+            infoFiltered: '(Filtrati da _MAX_ mezzi totali)',
         },
-    });	
+
+		
+    });
 	
 } );
 
@@ -47,19 +41,12 @@ function dele_element(value) {
 	if(!confirm('Sicuri di eliminare l\'elemento?')) 
 		event.preventDefault() 
 	else 
-		$('#dele_cand').val(value)	
+		$('#dele_contr').val(value)	
 }
 
 function restore_element(value) {
 	if(!confirm('Sicuri di ripristinare l\'elemento?')) 
 		event.preventDefault() 
 	else 
-		$('#restore_cand').val(value)	
-}
-
-function push_appalti(value) {
-	if(!confirm("Sicuri di sollecitare tutti i lavoratori dell'appalto (che non hanno risposto)?")) 
-		event.preventDefault() 
-	else 
-		$('#push_appalti').val(value)	
+		$('#restore_contr').val(value)	
 }

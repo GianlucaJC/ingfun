@@ -418,7 +418,7 @@ use App\Models\User;
 					  </li>
 					</ul>
 				 </li>	
-
+				@if ($user->hasRole('admin'))
 				 <li class="nav-item menu">
 					<a href="#" class="nav-link">
 					  <i class="nav-icon fas fa-car"></i>
@@ -436,9 +436,9 @@ use App\Models\User;
 					  </li>
 
 					  <li class="nav-item">
-						<a href="" class="nav-link">
+						<a href="{{route('inventario_flotta')}}" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>
-						  <p>Elenco mezzi</p>
+						  <p>Inventario della flotta</p>
 						</a>
 					  </li>
 					
@@ -488,7 +488,7 @@ use App\Models\User;
 					</li>	
 					</ul>
 				 </li>				 
-				 
+				@endif 
 				</ul>
 			  </li>
 			@endif  
