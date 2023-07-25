@@ -10,6 +10,7 @@ use App\Models\parco_modello_mezzo;
 use App\Models\parco_carta_carburante;
 use App\Models\parco_badge_cisterna;
 use App\Models\parco_telepass;
+use App\Models\parco_servizi_noleggio;
 use Mail;
 use DB;
 
@@ -17,6 +18,12 @@ use DB;
 class AjaxControllerParco extends Controller
 	{
 
+	public function refresh_servizi_noleggio(Request $request){
+		$marche=parco_servizi_noleggio::select('id','descrizione')
+		->orderBy('descrizione')
+		->get();
+		return json_encode($marche);
+	}
 	public function refresh_carta(Request $request){
 		$marche=parco_carta_carburante::select('id','id_carta')
 		->orderBy('id_carta')

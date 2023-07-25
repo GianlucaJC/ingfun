@@ -198,7 +198,7 @@
 
 			<div class="col-md-4">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" name="proprieta" id="proprieta"  required >
+					<select class="form-select" name="proprieta" id="proprieta"  required  onchange="check_noleggio(this.value)">
 					<option value=''>Select...</option>
 						<option value='1'
 						<?php if (isset($info_mezzo[0]->proprieta) 
@@ -224,6 +224,90 @@
 				</div>
 			</div>
 			
+		</div>
+		
+		<?php 
+			$disp="display:none";
+			if (isset($info_mezzo[0]->proprieta) && $info_mezzo[0]->proprieta==1) $disp="";
+		?>				
+
+		<div class='container-fluid border border-primary p-2 mb-3' id='div_noleggio' style='{{$disp}}' >
+			<div class='row'>
+				
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="da_data_n" name='da_data_n' type="date" value="{{$info_mezzo[0]->da_data_n ?? ''}}"/>
+						<label for="da_data_n">Da data noleggio*</label>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="a_data_n" name='a_data_n' type="date" value="{{$info_mezzo[0]->a_data_n ?? ''}}"/>
+						<label for="da_data_n">A data noleggio*</label>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="km_noleggio" name='km_noleggio' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->km_noleggio ?? ''}}" />
+						<label for="km_noleggio">Km in dotazione noleggio</label>
+					</div>
+				</div>		
+				
+			</div>
+			<div class='row mt-2'>
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="importo_noleggio" name='importo_noleggio' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->importo_noleggio ?? ''}}" />
+						<label for="importo_noleggio">Importo noleggio*</label>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="km_alert_mail" name='km_alert_mail' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->km_alert_mail ?? ''}}" />
+						<label for="km_alert_mail">Soglia Km alert mail</label>
+					</div>
+				</div>	
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="gg_alert_mail" name='gg_alert_mail' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->gg_alert_mail ?? ''}}" />
+						<label for="gg_alert_mail">N° Giorni alert mail</label>
+					</div>
+				</div>
+
+				
+			</div>	
+			<div class='row mt-2'>
+				<div class="col-md-12">
+					<div class="mb-3 mb-md-0">
+						<label for="servizi_noleggio">Servizi offerti nel noleggio</label>
+						<a href="{{ route('servizi_noleggio') }}" class="ml-3 link-primary" target='_blank' onclick="		 $('.up').hide();$('#div_up_servizi').show()">
+							Definisci/modifica
+						</a>					
+						<span id='div_up_servizi' class='up' style='display:none'>
+							<a href='javascript:void(0)' class='ml-2' onclick='refresh_servizi_noleggio()'>
+								<font color='green'>
+									<i class="fas fa-sync-alt"></i>
+								</font>	
+							</a>	
+						</span>							
+						<select class="form-select select2" name="servizi_noleggio[]" id="servizi_noleggio"  multiple >
+						
+							@foreach($servizi_noleggio as $servizi)
+								<option value='{{$servizi->id}}'
+								<?php
+								if (isset($info_mezzo[0]->servizi_noleggio)) {
+									$arr=explode(";",$info_mezzo[0]->servizi_noleggio);
+									if (in_array($servizi->id,$arr))
+										echo " selected ";
+								}
+								?>									
+								>{{$servizi->descrizione}}</option>
+							@endforeach
+						</select>
+					</div>
+				</div>	
+			</div>
+				
 		</div>
 			
 
@@ -478,6 +562,57 @@
 		<div class='row mb-3'>
 			<div class="col-md-3">
 				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" name="mezzo_riparazione" id="mezzo_riparazione" >
+					<option value=''>Select...</option>
+						<option value=1
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->mezzo_riparazione==1) echo " selected ";
+						
+						}?>						
+						>SI</option>
+						<option value=2
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->mezzo_riparazione==2) echo " selected ";
+						}?>						
+						>NO</option>
+					</select>
+					<label for="mezzo_riparazione">Mezzo in riparazione</label>
+				</div>
+			</div>
+			<div class="col-md-9">
+				<div class="form-floating">
+					<input class="form-control" id="officina_riferimento" name='officina_riferimento' type="text" maxlength=80 value="{{$info_mezzo[0]->officina_riferimento ?? ''}}" />
+					<label for="officina_installazione">Officina riferimento</label>
+				</div>
+			</div>
+		</div>
+		<div class='row mb-3'>
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control" id="data_consegna_riparazione" name='data_consegna_riparazione' type="date" value="{{$info_mezzo[0]->data_consegna_riparazione ?? ''}}"/>
+					<label for="da_data_n">Data consegna riparazione</label>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control" id="importo_preventivo" name='importo_preventivo' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->importo_preventivo ?? ''}}" />
+					<label for="importo_preventivo">Importo preventivo</label>
+				</div>
+			</div>
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control" id="importo_fattura" name='importo_fattura' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->importo_fattura ?? ''}}" />
+					<label for="importo_fattura">Importo fattura</label>
+				</div>
+			</div>			
+		</div>	
+
+
+		<div class='row mb-3'>
+			<div class="col-md-3">
+				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="mezzo_marciante" id="mezzo_marciante" >
 					<option value=''>Select...</option>
 						<option value=1
@@ -581,7 +716,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.195"></script>
+	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.212"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

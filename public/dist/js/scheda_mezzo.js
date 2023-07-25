@@ -36,6 +36,21 @@ $(document).ready( function () {
 
 
 
+function check_noleggio(value) {
+	$("#div_noleggio").hide();
+	$('#da_data_n').attr('required', false); 
+	$('#a_data_n').attr('required', false); 
+	$('#importo_noleggio').attr('required', false); 
+	$('#km_noleggio').attr('required', false); 
+	if (value==1) {
+		$("#div_noleggio").show(150);
+		$('#da_data_n').attr('required', true); 
+		$('#a_data_n').attr('required', true); 
+		$('#km_noleggio').attr('required', true); 
+		$('#importo_noleggio').attr('required', true); 
+	}	
+}
+
 function popola_modelli(id_marca) {
 	$("#modello")
 	.find('option')
@@ -69,6 +84,42 @@ function popola_modelli(id_marca) {
 
 		}
 	});
+}
+
+function refresh_servizi_noleggio() {
+	old_value=$("#servizi_noleggio").val();
+	$("#servizi_noleggio")
+	.find('option')
+	.remove()
+	.end();	
+	
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_servizi_noleggio",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up_servizi").hide(150)
+			$("#servizi_noleggio")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#servizi_noleggio').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#servizi_noleggio').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+			$("#servizi_noleggio").val(old_value)
+		}
+	});		
 }
 
 

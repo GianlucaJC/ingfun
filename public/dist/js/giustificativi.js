@@ -71,6 +71,7 @@ $('#range_date').daterangepicker({
         "firstDay": 1
     }
 })
+
 	
 	/*
 	$('form#frm_giust1').submit(function(e) {		

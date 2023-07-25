@@ -484,7 +484,12 @@ use App\Models\User;
 							  <p>Telepass</p>
 							</a>
 						  </li>						  
-						</ul>
+						  <li class="nav-item">
+							<a href="{{ route('servizi_noleggio') }}" class="nav-link">
+							  <i class="far fa-circle nav-icon"></i>
+							  <p>Servizi noleggio</p>
+							</a>
+						  </li>							</ul>
 					</li>	
 					</ul>
 				 </li>				 

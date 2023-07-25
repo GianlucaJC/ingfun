@@ -25,14 +25,14 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">INVENTARIO FLOTTA</h1>
+            <h1 class="m-0">Servizi Noleggio</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-			  <li class="breadcrumb-item">Amministrazione</li>
-			  <li class="breadcrumb-item">Parco Auto</li>
-              <li class="breadcrumb-item active">Inventario_flotta</li>
+			  <li class="breadcrumb-item active">Amministrazione</li>
+			  <li class="breadcrumb-item active">Parco Auto</li>
+              <li class="breadcrumb-item active">Servizi Noleggio</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -44,65 +44,50 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		<!-- form new voce attestato !-->	
+		@include('all_views.parco.new_servizinoleggio')
 
-		<form method='post' action="{{ route('inventario_flotta') }}" id='frm_inventario' name='frm_inventario' autocomplete="off">
+		<form method='post' action="{{ route('servizi_noleggio') }}" id='frm_noleggio' name='frm_noleggio' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 
         <div class="row">
           <div class="col-md-12">
 		  
-				<table id='tbl_inventario' class="display">
+				<table id='tbl_list_servizi' class="display">
 					<thead>
 						<tr>
-							<th>Targa</th>
-							<th>Marca</th>
-							<th>Modello</th>
+
+							<th>Servizio</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($inventario as $flotta)
+						@foreach($elenco_servizi as $noleggio)
 							<tr>
+
 								<td>
-								 @if ($flotta->dele=="1") 
+								 @if ($noleggio->dele=="1") 
 									<font color='red'><del> 
 								 @endif
-									<span id='id_descr{{$flotta->id}}' data-descr=''>
-										{{ $flotta->targa }}
+									<span id='id_descr{{$noleggio->id}}' data-descr='{{ $noleggio->descrizione }}'>
+										{{ $noleggio->descrizione }}
 									</span>	
-								 @if ($flotta->dele=="1") 
+								 @if ($noleggio->dele=="1") 
 									 </del></font>
 								 @endif	
 								</td>	
-								
 								<td>
-								<?php
-
-									if (isset($marche[$flotta->marca]))
-										echo $marche[$flotta->marca];
-								?>
-								</td>
-								
-								<td>
-								<?php
-
-									if (isset($modelli[$flotta->modello]))
-										echo $modelli[$flotta->modello];
-								?>
-								</td>
-								
-								<td>
-									@if ($flotta->dele=="0") 
-										<a href="{{ route('scheda_mezzo',['id'=>$flotta->id]) }}" >
+									@if ($noleggio->dele=="0") 
+										<a href='#' onclick="edit_elem({{$noleggio->id}})">
 											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 										</a>
-										<a href='#' onclick="dele_element({{$flotta->id}})">
+										<a href='#' onclick="dele_element({{$noleggio->id}})">
 											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
 										</a>
 									@endif
-									@if ($flotta->dele=="1") 
-										<a href='#'onclick="restore_element({{$flotta->id}})" >
+									@if ($noleggio->dele=="1") 
+										<a href='#'onclick="restore_element({{$noleggio->id}})" >
 											<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
 										</a>
 									@endif
@@ -115,9 +100,7 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th>Targa</th>
-							<th>Marca</th>
-							<th>Modello</th>
+							<th>Servizio</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -133,24 +116,15 @@
 			$check="";
 			if ($view_dele=="1") $check="checked";
 		?>
-		
-
 			<div class="row">
 			    <div class="col-lg-12">
-					<a href="{{ route('scheda_mezzo') }}">
-						<button type="button" class="btn btn-primary">
-							<i class="fa fa-plus-circle"></i> Nuovo Mezzo
-						</button>
-					</a>
-					<a href="{{ route('export-parco') }}" class=" ml-2">
-						<button type="button" class="btn btn-success">
-						<i class="fas fa-file-excel"></i> Esporta tutti i dati</button>
-					</a>	
+					<button type="button" class="btn btn-primary" onclick="$('#edit_elem').val('');$('#descr_contr').val('');$('#div_definition').show(150)">
+						<i class="fa fa-plus-circle"></i> Nuovo Servizio
+					</button>
 					<div class="form-check form-switch mt-3 ml-3">
-					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_inventario').submit()" {{ $check }}>
-					  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
+					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_noleggio').submit()" {{ $check }}>
+					  <label class="form-check-label" for="view_dele">Mostra anche Servizi eliminati</label>
 					</div>
-				
 				</div>
 			</div>	
 		</form>
@@ -187,6 +161,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/inventario_flotta.js?ver=1.49"></script>
+	<script src="{{ URL::asset('/') }}dist/js/servizi_noleggio.js?ver=1.22"></script>
 
 @endsection

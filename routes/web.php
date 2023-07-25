@@ -33,10 +33,17 @@ Route::get('cliditte', [ 'as' => 'cliditte', 'uses' => 'App\Http\Controllers\Mai
 
 
 Route::group(['only_log' => ['auth']], function () {
+
+	Route::get('export-parco', [ 'as' => 'export-parco', 'uses' => 'App\Http\Controllers\MainController@exportParco'])->middleware(['role:admin']);
+	
 	Route::get('inventario_flotta', [ 'as' => 'inventario_flotta', 'uses' => 'App\Http\Controllers\ControllerParco@inventario_flotta'])->middleware(['role:admin']);
 	
 	Route::post('inventario_flotta', [ 'as' => 'inventario_flotta', 'uses' => 'App\Http\Controllers\ControllerParco@inventario_flotta'])->middleware(['role:admin']);
 
+
+	Route::get('servizi_noleggio', [ 'as' => 'servizi_noleggio', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@servizi_noleggio'])->middleware(['role:admin']);
+	
+	Route::post('servizi_noleggio', [ 'as' => 'servizi_noleggio', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@servizi_noleggio'])->middleware(['role:admin']);
 
 	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin']);
 
@@ -260,6 +267,8 @@ Route::group(['only_log' => ['auth']], function () {
 Route::group(['only_log' => ['auth']], function () {
 
 	//chiamate ajax parco auto
+	Route::post('refresh_servizi_noleggio', 'App\Http\Controllers\AjaxControllerParco@refresh_servizi_noleggio');
+
 	Route::post('popola_modelli', 'App\Http\Controllers\AjaxControllerParco@popola_modelli');
 
 	Route::post('refresh_marca', 'App\Http\Controllers\AjaxControllerParco@refresh_marca');

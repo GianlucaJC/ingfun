@@ -11,6 +11,8 @@ use App\Models\parco_modello_mezzo;
 use App\Models\parco_badge_cisterna;
 use App\Models\parco_telepass;
 use App\Models\parco_scheda_mezzo;
+use App\Models\parco_servizi_noleggio;
+
 use DB;
 
 class ControllerParco extends Controller
@@ -33,6 +35,20 @@ class ControllerParco extends Controller
 		$psm->telaio = $request->input('telaio');
 		$psm->alimentazione = $request->input('alimentazione');
 		$psm->proprieta = $request->input('proprieta');
+		$psm->da_data_n = $request->input('da_data_n');
+		$psm->a_data_n = $request->input('a_data_n');
+		
+		$psm->importo_noleggio = $request->input('importo_noleggio');
+		$psm->km_alert_mail = $request->input('km_alert_mail');
+		$psm->gg_alert_mail = $request->input('gg_alert_mail');
+		$arr_servizi=$request->input('servizi_noleggio');
+		if (is_array($arr_servizi))
+			$servizi_noleggio=implode(";",$arr_servizi);
+		else 
+			$servizi_noleggio=null;
+		$psm->servizi_noleggio = $servizi_noleggio;
+				
+		$psm->km_noleggio = $request->input('km_noleggio');
 		$psm->posti = $request->input('posti');
 		$psm->chilometraggio = $request->input('chilometraggio');
 		$psm->catene = $request->input('catene');
@@ -52,6 +68,12 @@ class ControllerParco extends Controller
 		$psm->anomalia_note = $request->input('anomalia_note');
 		$psm->mezzo_marciante = $request->input('mezzo_marciante');
 		$psm->mezzo_manutenzione = $request->input('mezzo_manutenzione');
+		$psm->mezzo_riparazione = $request->input('mezzo_riparazione');
+		$psm->officina_riferimento = $request->input('officina_riferimento');
+		$psm->data_consegna_riparazione = $request->input('data_consegna_riparazione');
+		$psm->importo_preventivo = $request->input('importo_preventivo');
+		$psm->importo_fattura = $request->input('importo_fattura');
+
 		$psm->save();
 		
 	}
@@ -97,10 +119,14 @@ class ControllerParco extends Controller
 		->orderBy('id_telepass')
 		->get();
 
+		$servizi_noleggio=parco_servizi_noleggio::select('id','descrizione')
+		->orderBy('descrizione')
+		->get();
+
 		
 
 
-		$data=array("carte_c"=>$carta_carburante,"tipomezzo"=>$tipomezzo,"marche"=>$marche,"badges"=>$badges,"teles"=>$teles,"info_mezzo"=>$info_mezzo,"id_mezzo"=>$id_mezzo,"modello"=>$modello);
+		$data=array("carte_c"=>$carta_carburante,"tipomezzo"=>$tipomezzo,"marche"=>$marche,"badges"=>$badges,"teles"=>$teles,"info_mezzo"=>$info_mezzo,"id_mezzo"=>$id_mezzo,"modello"=>$modello,"servizi_noleggio"=>$servizi_noleggio);
 
 		
 		if ($request->has("btn_save_mezzo")) {

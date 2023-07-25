@@ -25,6 +25,7 @@ use App\Models\story_all;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportUser;
+use App\Exports\ExportParco;
 
 use DB;
 use Mail;
@@ -41,6 +42,11 @@ public function __construct()
 	{
 		$this->middleware('auth')->except(['index']);
 	}	
+
+    public function exportParco(Request $request){
+		//la classe è in app/exports/
+        return Excel::download(new ExportParco, 'parco.xlsx');
+    }
 
     public function exportUsers(Request $request){
 		//la classe è in app/exports/
