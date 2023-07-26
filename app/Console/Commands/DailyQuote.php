@@ -36,7 +36,7 @@ class DailyQuote extends Command
 		 
 			$list_push=appalti::select('l.id_lav_ref')
 			->join("lavoratoriapp as l","appalti.id","l.id_appalto")
-			->where('status','=',0)
+			->where('l.status','=',0)
 			->groupby('l.id_lav_ref')
 			->get();
 			$num_send=0;
