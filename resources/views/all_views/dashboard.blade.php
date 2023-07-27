@@ -7,6 +7,33 @@ use App\Models\User;
 
 @section('title', 'IngFUN')
 
+@section('operazioni')
+<!-- Pannello gestione utenza !-->
+	<div class="p-3">
+		<h5>Impostazioni globali</h5>
+		<p>
+			<form method='post' action="{{ route('dashboard') }}" id='frm_global' name='frm_global' autocomplete="off" class="needs-validation" autocomplete="off">
+				<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+			
+				<div class="form-group">
+					<label for="email_parco">Email parco auto</label>
+					<input type="email" class="form-control" id="email_parco" name="email_parco" aria-describedby="email_parco" placeholder="E-mail"  maxlength=150 onkeyup="this.value = this.value.toLowerCase();" value="{{$email_parco ?? ''}}" >
+				</div>
+				<div class="form-group">
+					<label for="email_acquisti">Email ufficio acquisti</label>
+					<input type="email" class="form-control" id="email_acquisti" name="email_acquisti" aria-describedby="email_acquisti" placeholder="E-mail"  maxlength=150 onkeyup="this.value = this.value.toLowerCase();" value="{{$email_acquisti ?? ''}}" >
+				</div>
+
+			<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary">Salva impostazioni</button>
+				
+			</form>	
+		</p>
+    </div>
+	
+	
+@endsection
+
+
 @section('notifiche') 
 
 	@if (1==2)

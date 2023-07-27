@@ -22,10 +22,12 @@ use App\Models\tipo_doc;
 use App\Models\ref_doc;
 use App\Models\stati;
 use App\Models\story_all;
+use App\Models\set_global;
 
 use Maatwebsite\Excel\Facades\Excel;
 use App\Exports\ExportUser;
 use App\Exports\ExportParco;
+
 
 use DB;
 use Mail;
@@ -42,6 +44,7 @@ public function __construct()
 	{
 		$this->middleware('auth')->except(['index']);
 	}	
+	
 
     public function exportParco(Request $request){
 		//la classe è in app/exports/
@@ -137,17 +140,31 @@ public function __construct()
 		return view('all_views/newpassuser')->with('esito',$esito);		
 	}
 	
-	public function dashboard() {
+	public function dashboard(Request $request) {
 		//$this->test_mail();
-		$name="";
-		//controllo se ci sono contratti in scadenza ed invio eventuali notifiche
-		//valutare se spostare su un processo esterno all'applicativo
-		$scadenze=$this->check_scadenze_contratti();
-		$descr_num="nuovi Contratti";		
-		
-		if (count($scadenze)==1) $descr_num="nuovo Contratto";
+		if ($request->has("btn_save")) {
+			$mail_parco=$request->input('mail_parco');
+			
+			$count=DB::table('set_global')->where('id','=',1)->count();
+			if ($count==0)
+				$set_global = new set_global;
+			else
+				$set_global = set_global::find(1);
+					
+			$set_global->email_parco = $request->input('email_parco');
+			$set_global->email_acquisti = $request->input('email_acquisti');
+			$set_global->save();
+		}
 
-		return view('all_views/dashboard')->with('name', $name)->with('scadenze',$scadenze)->with('descr_num',$descr_num);
+		$set_global=set_global::where('id', "=", 1)->get();
+		$email_parco="";$email_acquisti="";
+		if (isset($set_global[0]['email_parco'])) {
+			$email_parco=$set_global[0]['email_parco'];
+			$email_acquisti=$set_global[0]['email_acquisti'];
+		}	
+		
+		return view('all_views/dashboard')->with('email_parco',$email_parco)->with('email_acquisti',$email_acquisti);
+		
 	}
 
 
