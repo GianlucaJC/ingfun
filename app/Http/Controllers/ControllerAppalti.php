@@ -12,6 +12,7 @@ use App\Models\candidati;
 use App\Models\user;
 use App\Models\societa;
 use App\Models\mezzi;
+use App\Models\parco_scheda_mezzo;
 use OneSignal;
 
 use DB;
@@ -34,7 +35,7 @@ public function __construct()
 		}	
 		$id_ditta=$request->input('ditta');
 
-		$appalti->descrizione_appalto = $request->input('descrizione_appalto');
+		//$appalti->descrizione_appalto = $request->input('descrizione_appalto');
 		$appalti->id_azienda_proprieta = $request->input('azienda_proprieta');
 		$appalti->data_ref = $request->input('data_app');
 		$appalti->orario_ref = $request->input('ora_app');
@@ -42,9 +43,15 @@ public function __construct()
 		$appalti->targa = $request->input('mezzo');
 		$appalti->note = $request->input('note');
 		$appalti->variazione = $request->input('variazione');
+		$appalti->responsabile_mezzo=$request->input('responsabile_mezzo');
 		$appalti->save();
 		if ($id_app==0) $id_app=$appalti->id;
-
+		
+		$appalti = appalti::find($id_app);
+		$appalti->descrizione_appalto =$id_app;
+		$appalti->save();
+		
+		
 		$deleted = serviziapp::where('id_appalto', $id_app)->delete();
 		$servizi=$request->input('servizi');
 		for ($sca=0;$sca<=count($servizi)-1;$sca++) {
@@ -177,10 +184,16 @@ public function __construct()
 		->orderBy('nominativo')	
 		->get();
 		
-		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
-		->orderBy('marca')
-		->orderBy('targa')
+		
+		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as sm')
+		->select('sm.id','mm.marca','mom.modello','sm.targa')
+		->join('parco_marca_mezzo as mm','sm.marca','mm.id')
+		->join('parco_modello_mezzo as mom','sm.modello','mom.id')
+		->orderBy('mm.marca')
+		->orderBy('sm.targa')
+		->groupBy('sm.id')
 		->get();
+		
 
 		if ($id!=0) {
 			$view_dele="1";

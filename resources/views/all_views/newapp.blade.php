@@ -175,135 +175,152 @@
 
 
 		
-			<div id='div_ditta'>
-				<div class="row mb-3">
-					<div class="col-md-12">
-						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-select" name="azienda_proprieta" id="azienda_proprieta"  required onchange='lista_lavoratori(this.value)'>
-							<option value=''>Select...</option>
+		<div id='div_ditta'>
+			<div class="row mb-3">
+				<div class="col-md-12">
+					<div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" name="azienda_proprieta" id="azienda_proprieta"  required onchange='lista_lavoratori(this.value)'>
+						<option value=''>Select...</option>
+						<?php
+							$azienda_db="";
+							if (isset($appalti[0]->id_azienda_proprieta))  $azienda_db=$appalti[0]->id_azienda_proprieta;
+							foreach ($sezionali as $sezionale) {
+								echo "<option value='".$sezionale->id."' ";
+								if ($azienda_db==$sezionale->id) echo " selected ";
+								echo ">".$sezionale->descrizione."</option>";
+							}
+						?>						
+						</select>
+						<label for="azienda_proprieta">Azienda di Proprietà*</label>
+					</div>
+				</div>					
+			</div>
+			
+			<?php
+				$id_lav="";
+				foreach ($ids_lav as $id_l=>$v) {
+					if (strlen($id_lav)!=0) $id_lav.=";";
+					$id_lav.=$id_l;
+				}
+			?>
+			<input type='hidden' name='lavoratori' id='lavoratori' value='{{$id_lav}}'>
+			
+
+			<div class='mb-3' id='div_lavoratori'>
+				
+			</div>
+		
+		
+			<div class="row mb-3" id='div_lav_sel'>
+				<div class="col-md-12">
+					<div class="form-floating mb-3 mb-md-0">
+						<select class="form-select select2" id="lavoratoria" disabled aria-label="Lavoratori"  multiple="multiple" required>
+							@php ($old_t="?")
+							@foreach ($lavoratori as $lavoratore)
+							
 							<?php
-								$azienda_db="";
-								if (isset($appalti[0]->id_azienda_proprieta))  $azienda_db=$appalti[0]->id_azienda_proprieta;
-								foreach ($sezionali as $sezionale) {
-									echo "<option value='".$sezionale->id."' ";
-									if ($azienda_db==$sezionale->id) echo " selected ";
-									echo ">".$sezionale->descrizione."</option>";
-								}
-							?>						
-							</select>
-							<label for="azienda_proprieta">Azienda di Proprietà*</label>
-						</div>
-					</div>					
-				</div>
-				
-				<?php
-					$id_lav="";
-					foreach ($ids_lav as $id_l=>$v) {
-						if (strlen($id_lav)!=0) $id_lav.=";";
-						$id_lav.=$id_l;
-					}
-				?>
-				<input type='hidden' name='lavoratori' id='lavoratori' value='{{$id_lav}}'>
-				
-
-				<div class='mb-3' id='div_lavoratori'>
-					
-				</div>
-			
-			
-				<div class="row mb-3" id='div_lav_sel'>
-					<div class="col-md-12">
-						<div class="form-floating mb-3 mb-md-0">
-							<select class="form-select select2" id="lavoratoria" disabled aria-label="Lavoratori"  multiple="multiple" required>
-								@php ($old_t="?")
-								@foreach ($lavoratori as $lavoratore)
 								
+
+							$tipo_contr=$lavoratore->tipo_contr;
+							$tipo_contratto=$lavoratore->tipo_contratto;
+							$ref_tipo=$tipo_contr.$tipo_contratto;
+							$descr_t="";
+
+								
+							if ($tipo_contr==2 && $tipo_contratto==1)
+								$descr_t="Indeterminati - Full Time";
+							elseif ($tipo_contr==2 && $tipo_contratto==2)
+								$descr_t="Indeterminati - Part Time";
+							elseif ($tipo_contr==2 && ($tipo_contratto>2))
+								$descr_t="Indeterminati - Altro";
+							if ($tipo_contr==1 && $tipo_contratto==1)
+								$descr_t="Determinati - Full Time";
+							elseif ($tipo_contr==1 && $tipo_contratto==2)
+								$descr_t="Determinati - Part Time";
+							elseif ($tipo_contr==1 && ($tipo_contratto>2))
+								$descr_t="Determinati - Altro";
+							
+
+									
+							if ($old_t!=$ref_tipo) {
+								if ($old_t!="?") echo "</optgroup>";
+								echo "<optgroup label='$descr_t'>"; 
+							}
+							$old_t=$ref_tipo;
+								
+							?>
+							
+								<option value='{{$lavoratore->id}}'
 								<?php
-									
-
-								$tipo_contr=$lavoratore->tipo_contr;
-								$tipo_contratto=$lavoratore->tipo_contratto;
-								$ref_tipo=$tipo_contr.$tipo_contratto;
-								$descr_t="";
-
-									
-								if ($tipo_contr==2 && $tipo_contratto==1)
-									$descr_t="Indeterminati - Full Time";
-								elseif ($tipo_contr==2 && $tipo_contratto==2)
-									$descr_t="Indeterminati - Part Time";
-								elseif ($tipo_contr==2 && ($tipo_contratto>2))
-									$descr_t="Indeterminati - Altro";
-								if ($tipo_contr==1 && $tipo_contratto==1)
-									$descr_t="Determinati - Full Time";
-								elseif ($tipo_contr==1 && $tipo_contratto==2)
-									$descr_t="Determinati - Part Time";
-								elseif ($tipo_contr==1 && ($tipo_contratto>2))
-									$descr_t="Determinati - Altro";
-								
-
-										
-								if ($old_t!=$ref_tipo) {
-									if ($old_t!="?") echo "</optgroup>";
-									echo "<optgroup label='$descr_t'>"; 
-								}
-								$old_t=$ref_tipo;
+									$status=0;
+									if (array_key_exists($lavoratore->id,$ids_lav)) {
+										echo " selected ";
+										$status=$ids_lav[$lavoratore->id];
+									}
 									
 								?>
-								
-									<option value='{{$lavoratore->id}}'
-									<?php
-										$status=0;
-										if (array_key_exists($lavoratore->id,$ids_lav)) {
-											echo " selected ";
-											$status=$ids_lav[$lavoratore->id];
-										}
-										
-									?>
-									> 
-									{{$lavoratore->nominativo}}
-									@if ($status==1) (Accettato) @endif
-									@if ($status==2) (Rifiutato) @endif
-									</option>
-								@endforeach
-								</optgroup>
-							</select>
-							<b>Squadra</b>
-						</div>
-					</div>				
-
-				</div>	
-				
+								> 
+								{{$lavoratore->nominativo}}
+								@if ($status==1) (Accettato) @endif
+								@if ($status==2) (Rifiutato) @endif
+								</option>
+							@endforeach
+							</optgroup>
+						</select>
+						<b>Squadra</b>
+					</div>
+				</div>				
+			</div>	
 			
+		
+			<div class="row mb-3">
+
+				<div class="col-md-4">
+					<div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" name="responsabile_mezzo" id="responsabile_mezzo"  required >
+						<option value=''>Select...</option>
+						<?php
+							foreach ($lavoratori as $lavoratore) {
+								if (array_key_exists($lavoratore->id,$ids_lav)) {
+									echo "<option value=".$lavoratore->id;
+									if (isset($appalti[0]->responsabile_mezzo) && $appalti[0]->responsabile_mezzo==$lavoratore->id ) echo " selected ";
+									echo ">".$lavoratore->nominativo."</option>";
+								}								
+							}
+						?>						
+						</select>
+						<label for="responsabile_mezzo">Responsabile del mezzo*</label>
+					</div>
+				</div>					
+				<div class="col-md-8">
+					<div class="form-floating">					  
+						
+						<textarea class="form-control" name='note' id="note" rows="4">{{$appalti[0]->note ?? ''}}</textarea>
+						<label for="note">Note</label>
+					</div>
+				</div>	
+			</div>
+			
+			<?php 
+				$flag_variazione="0";
+				if (strlen($id_app)!=0 && $id_app!=0) {
+					$only="";
+					if (strlen($appalti[0]->variazione)!=0) 
+						$only="readonly";
+					else $flag_variazione="1";
+					?>
 				<div class="row mb-3">
 					<div class="col-md-12">
-						<div class="form-floating">					  
-							
-							<textarea class="form-control" name='note' id="note" rows="4">{{$appalti[0]->note ?? ''}}</textarea>
-							<label for="note">Note</label>
+						<div class="form-floating">
+							<textarea class="form-control" name='variazione' id="variazione" rows="4" {{$only}}>{{$appalti[0]->variazione ?? ''}}</textarea>
+							<label for="variazione">Variazione (max una) </label>
 						</div>
 					</div>	
-				</div>
-				
-				<?php 
-					$flag_variazione="0";
-					if (strlen($id_app)!=0 && $id_app!=0) {
-						$only="";
-						if (strlen($appalti[0]->variazione)!=0) 
-							$only="readonly";
-						else $flag_variazione="1";
-						?>
-					<div class="row mb-3">
-						<div class="col-md-12">
-							<div class="form-floating">
-								<textarea class="form-control" name='variazione' id="variazione" rows="4" {{$only}}>{{$appalti[0]->variazione ?? ''}}</textarea>
-								<label for="variazione">Variazione (max una) </label>
-							</div>
-						</div>	
-					</div>				
-				<?php }	?>
-				<input type='hidden' name='flag_variazione' id='flag_variazione' value='{{$flag_variazione}}'>
-				<hr>
-			</div>
+				</div>				
+			<?php }	?>
+			<input type='hidden' name='flag_variazione' id='flag_variazione' value='{{$flag_variazione}}'>
+			<hr>
+		</div>
 			
 		
 
@@ -371,7 +388,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.182"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.189"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

@@ -11,6 +11,7 @@ use App\Models\lavoratoriapp;
 use App\Models\mezzi;
 use App\Models\rifornimenti;
 use App\Models\reperibilita;
+use App\Models\parco_scheda_mezzo;
 use DB;
 use Image;
 use Mail;
@@ -38,10 +39,22 @@ class ApiController extends Controller
 		->where('users.email',"=",$utente);
 		$count=$check->count();
 		
+		/*
 		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
 		->orderBy('marca')
 		->orderBy('modello')
 		->get();
+		*/
+		
+		
+		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as sm')
+		->select('sm.id','mm.marca','mom.modello','sm.targa')
+		->join('parco_marca_mezzo as mm','sm.marca','mm.id')
+		->join('parco_modello_mezzo as mom','sm.modello','mom.id')
+		->orderBy('mm.marca')
+		->orderBy('sm.targa')
+		->groupBy('sm.id')
+		->get();		
 		
 		$resp=array();
 		if ($count>0) {

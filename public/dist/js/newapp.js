@@ -143,7 +143,7 @@ function btnlav(curr) {
 	html+=
 	`	
 		<div class="col-sm-3">
-			<button style='height:80px;' type="button" class="btn btn-lg btn-block btn-outline-info btn_lav" data-id_lav="`+btnlav.id_lav+`">
+			<button style='height:80px;' type="button" class="btn btn-lg btn-block btn-outline-info btn_lav" data-id_lav="`+btnlav.id_lav+`" data-lavoratore="`+btnlav.lavoratore+`">
 				`+btnlav.lavoratore+`
 			</button>
 		</div>
@@ -248,13 +248,32 @@ function lista_lavoratori(id_sezionale) {
 					$( this ).removeClass('btn-outline-info').addClass('btn-info').addClass('sele')
 				else 
 					$( this ).removeClass('sele').removeClass('btn-info').addClass('btn-outline-info')
-
+				
+				update_list()
 
 			});
 
 		}
 	});	
 	
+}
+
+function update_list() {
+	$("#responsabile_mezzo")
+	.find('option')
+	.remove()
+	.end();		
+	lav=""
+	$('#responsabile_mezzo').append('<option value="">Select...</option>');
+
+	$('.btn_lav').each(function () {
+		if ($( this ).hasClass('sele')) {
+			if (lav.length!=0) lav+=";"
+			lav=$(this).attr('data-id_lav');
+			nome=$(this).attr('data-lavoratore');
+			$('#responsabile_mezzo').append('<option value='+lav+'>' + nome + '</option>');
+		}
+	});
 }
 
 
