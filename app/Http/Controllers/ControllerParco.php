@@ -75,12 +75,14 @@ class ControllerParco extends Controller
 		$psm->importo_fattura = $request->input('importo_fattura');
 
 		$psm->save();
-		
+		$id_mezzo=$psm->id;
+		return $id_mezzo;
 	}
 	
 	public function scheda_mezzo($id_mezzo=0) {
 		$request=request();
 		$btn_save_mezzo=$request->input("btn_save_mezzo");
+		$save_mezzo=0;
 		if ($btn_save_mezzo=="save") 
 			$save_mezzo=$this->save_mezzo($request);
 		
@@ -131,6 +133,7 @@ class ControllerParco extends Controller
 		
 		if ($request->has("btn_save_mezzo")) {
 			$id_mezzo=$request->input('id_mezzo');
+			if ($save_mezzo!=0) $id_mezzo=$save_mezzo;
 			return redirect()->route("scheda_mezzo",['id'=>$id_mezzo]);
 		}
 		else
