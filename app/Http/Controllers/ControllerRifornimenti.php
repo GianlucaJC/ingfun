@@ -12,6 +12,7 @@ use App\Models\candidati;
 use App\Models\user;
 use App\Models\mezzi;
 use App\Models\rifornimenti;
+use App\Models\parco_scheda_mezzo;
 
 use DB;
 
@@ -30,14 +31,33 @@ class ControllerRifornimenti extends Controller
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 
-		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
-		->orderBy('marca')
-		->orderBy('targa')
+		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as sm')
+		->select('sm.id','mm.marca','mom.modello','sm.targa')
+		->join('parco_marca_mezzo as mm','sm.marca','mm.id')
+		->join('parco_modello_mezzo as mom','sm.modello','mom.id')
+		->orderBy('mm.marca')
+		->orderBy('sm.targa')
+		->groupBy('sm.id')
 		->get();
+		
+		$lavoratori=candidati::from('candidatis as c')
+		->join('societa as s','c.soc_ass','s.id')
+		->select('c.id','c.nominativo','s.descrizione as societa')
+		->get();
+		$all_lav=array();
+		foreach ($lavoratori as $lavoratore) {
+			$all_lav[$lavoratore->id]['nominativo']=$lavoratore->nominativo;
+			$all_lav[$lavoratore->id]['societa']=$lavoratore->societa;
+		}
+		
+		
 		$targhe=array();
 		foreach($mezzi as $mezzo) {
 			$targhe[$mezzo->targa]=$mezzo->marca." - ".$mezzo->modello." - ".$mezzo->targa;
 		}			
+
+
+
 
 		if (strlen($dele_contr)!=0) {
 			rifornimenti::where('id', $dele_contr)
@@ -49,7 +69,7 @@ class ControllerRifornimenti extends Controller
 		}		
 		
 		$rifornimenti=DB::table('rifornimenti as r')
-		->select("r.*",DB::raw("DATE_FORMAT(r.data,'%d-%m-%Y') as data_it"), 'c.nominativo','a.descrizione_appalto')
+		->select("r.*",DB::raw("DATE_FORMAT(r.data,'%d-%m-%Y') as data_it"), 'c.nominativo','a.descrizione_appalto','a.responsabile_mezzo')
 		->join("candidatis as c","r.id_user","c.id")
 		->join("appalti as a","r.id_appalto","a.id")
 		->when($id_rif!="0", function ($rifornimenti) use($id_rif) {
@@ -61,7 +81,7 @@ class ControllerRifornimenti extends Controller
 		->where("a.dele","=",0)
 		->orderBy('r.id','desc')
 		->get();
-		return view('all_views/rifornimenti/rifornimenti')->with('rifornimenti', $rifornimenti)->with('targhe',$targhe)->with('view_dele',$view_dele);
+		return view('all_views/rifornimenti/rifornimenti')->with('rifornimenti', $rifornimenti)->with('targhe',$targhe)->with('view_dele',$view_dele)->with('all_lav',$all_lav);
 		
 	}
 }

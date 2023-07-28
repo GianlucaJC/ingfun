@@ -65,6 +65,8 @@
 							<th>Importo</th>
 							<th>Km</th>
 							<th>Mezzo</th>
+							<th>Responsabile mezzo</th>
+							<th>Società appartenenza</th>
 							<th>Note</th>
 							<th>Foto</th>
 							<th>Operazioni</th>
@@ -111,7 +113,21 @@
 											echo $targhe[$rif->targa];
 									?>
 								</td>
+								
+								<td>
+									<?php
+										if (isset($all_lav[$rif->responsabile_mezzo]))
+											echo $all_lav[$rif->responsabile_mezzo]['nominativo'];
+									?>
 
+								</td>
+								<td>
+									<?php
+										if (isset($all_lav[$rif->responsabile_mezzo]))
+											echo $all_lav[$rif->responsabile_mezzo]['societa'];
+									?>
+
+								</td>
 								<td>							
 									{{ $rif->note }}
 								</td>
@@ -157,6 +173,8 @@
 							<th>Importo</th>
 							<th>Km</th>
 							<th>Mezzo</th>
+							<th>Responsabile mezzo</th>
+							<th>Società appartenenza</th>
 							<th>Note</th>
 							<th></th>
 							<th></th>

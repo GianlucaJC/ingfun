@@ -361,6 +361,16 @@ class ApiController extends Controller
 			if ($ent==false) $info[$sc]['status']=-1;
 			$info[$sc]['lavoratori']=$lav;
 			
+			$r_mezzo=appalti::from('appalti as a')
+			->select('c.nominativo','c.id')
+			->join('candidatis as c','a.responsabile_mezzo','c.id')
+			->where('a.id', "=",$id_appalto)
+			->get()->first();
+			$responsabile_mezzo="";
+			if (isset($r_mezzo->nominativo)) 
+				$responsabile_mezzo=$r_mezzo[0]->nominativo;
+		
+			$info[$sc]['responsabile_mezzo']=$responsabile_mezzo;
 			$info[$sc]['id_appalto']=$id_appalto;
 		
 			
