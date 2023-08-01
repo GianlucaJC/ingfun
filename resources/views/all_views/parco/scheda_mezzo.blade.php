@@ -232,45 +232,105 @@
 		?>				
 
 		<div class='container-fluid border border-primary p-2 mb-3' id='div_noleggio' style='{{$disp}}' >
+
+		 <div id='div_sub_noleggio' >
+
 			<div class='row'>
-				
-				<div class="col-md-4">
+				<div class="col-md-3">
 					<div class="form-floating">
 						<input class="form-control" id="da_data_n" name='da_data_n' type="date" value="{{$info_mezzo[0]->da_data_n ?? ''}}"/>
 						<label for="da_data_n">Da data noleggio*</label>
 					</div>
 				</div>
-				<div class="col-md-4">
+
+				<div class="col-md-3" style='display:none'>
 					<div class="form-floating">
 						<input class="form-control" id="a_data_n" name='a_data_n' type="date" value="{{$info_mezzo[0]->a_data_n ?? ''}}"/>
 						<label for="da_data_n">A data noleggio*</label>
 					</div>
+				</div>				
+				
+				<div class="col-md-3">
+					<div class="form-floating">
+						<select class="form-select" name="tipo_durata_noleggio" id="tipo_durata_noleggio">
+						<option value=''>Select...</option>
+						
+							<option value='g'
+							<?php if (isset($info_mezzo[0]->tipo_durata_noleggio) && $info_mezzo[0]->tipo_durata_noleggio=="g") echo " selected ";?>
+							>Giorni</option>
+							<option value='m'
+							<?php if (isset($info_mezzo[0]->tipo_durata_noleggio) && $info_mezzo[0]->tipo_durata_noleggio=="m") echo " selected ";?>
+							>Mesi</option>
+							<option value='a'
+							<?php if (isset($info_mezzo[0]->tipo_durata_noleggio) && $info_mezzo[0]->tipo_durata_noleggio=="a") echo " selected ";?>
+							>Anni</option>
+							
+						</select>						
+						<label for="tipo_durata_noleggio">Tipo durata noleggio*</label>
+					</div>
 				</div>
-				<div class="col-md-4">
+
+				<div class="col-md-3">
+					<div class="form-floating">
+						<input class="form-control" id="durata_noleggio" name='durata_noleggio' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{$info_mezzo[0]->durata_noleggio ?? ''}}"/>
+						<label for="durata_noleggio">Durata noleggio*</label>
+					</div>
+				</div>
+
+				
+				<div class="col-md-3">
 					<div class="form-floating">
 						<input class="form-control" id="km_noleggio" name='km_noleggio' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->km_noleggio ?? ''}}" />
 						<label for="km_noleggio">Km in dotazione noleggio</label>
 					</div>
-				</div>		
+				</div>					
+
+	
 				
 			</div>
 			<div class='row mt-2'>
-				<div class="col-md-4">
+				<div class="col-md-2">
+					<div class="form-floating">
+						<input class="form-control" id="km_noleggio_remote" name='km_noleggio_remote' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->km_noleggio_remote ?? ''}}" />
+						<label for="km_noleggio_remote">Km attuali noleggio (via APP)*</label>
+					</div>
+				</div>
+
+				<div class="col-md-2">
 					<div class="form-floating">
 						<input class="form-control" id="importo_noleggio" name='importo_noleggio' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->importo_noleggio ?? ''}}" />
 						<label for="importo_noleggio">Importo noleggio*</label>
 					</div>
 				</div>
-				<div class="col-md-4">
+				<div class="col-md-2">
 					<div class="form-floating">
 						<input class="form-control" id="km_alert_mail" name='km_alert_mail' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->km_alert_mail ?? ''}}" />
 						<label for="km_alert_mail">Soglia Km alert mail</label>
 					</div>
-				</div>	
-				<div class="col-md-4">
+				</div>
+				<div class="col-md-3">
 					<div class="form-floating">
-						<input class="form-control" id="gg_alert_mail" name='gg_alert_mail' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->gg_alert_mail ?? ''}}" />
-						<label for="gg_alert_mail">N° Giorni alert mail</label>
+						<select class="form-select" name="tipo_alert_noleggio" id="tipo_alert_noleggio">
+						<option value=''>Select...</option>
+						
+							<option value='g'
+							<?php if (isset($info_mezzo[0]->tipo_alert_noleggio) && $info_mezzo[0]->tipo_alert_noleggio=="g") echo " selected ";?>
+							>Giorni</option>
+							<option value='m'
+							<?php if (isset($info_mezzo[0]->tipo_alert_noleggio) && $info_mezzo[0]->tipo_alert_noleggio=="m") echo " selected ";?>
+							>Mesi</option>
+							<option value='a'
+							<?php if (isset($info_mezzo[0]->tipo_alert_noleggio) && $info_mezzo[0]->tipo_alert_noleggio=="a") echo " selected ";?>
+							>Anni</option>
+							
+						</select>						
+						<label for="tipo_alert_noleggio">Tipo alert durata noleggio*</label>
+					</div>
+				</div>				
+				<div class="col-md-3">
+					<div class="form-floating">
+						<input class="form-control" id="alert_mail" name='alert_mail' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"  value="{{$info_mezzo[0]->alert_mail ?? ''}}" />
+						<label for="alert_mail">Alert mail</label>
 					</div>
 				</div>
 
@@ -307,7 +367,10 @@
 					</div>
 				</div>	
 			</div>
-				
+		  </div>
+			<hr>
+			<button type="button" class="btn btn-primary">Nuovo Noleggio</button>
+			<button type="button" class="btn btn-success">Modifica noleggio</button>	
 		</div>
 			
 
@@ -716,7 +779,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.212"></script>
+	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.221"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

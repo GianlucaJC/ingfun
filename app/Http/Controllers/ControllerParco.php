@@ -35,12 +35,45 @@ class ControllerParco extends Controller
 		$psm->telaio = $request->input('telaio');
 		$psm->alimentazione = $request->input('alimentazione');
 		$psm->proprieta = $request->input('proprieta');
+		
+		$tdn=$request->input('tipo_durata_noleggio');
+		$dn=$request->input('durata_noleggio');
+		$psm->tipo_durata_noleggio = $tdn;
+		$psm->durata_noleggio = $dn;
+		$dn_gg=0;
+		if ($tdn=="g") $dn_gg=$dn;
+		elseif ($tdn=="m") $dn_gg=$dn*30;
+		elseif ($tdn=="a") $dn_gg=$dn*365;
+		if ($dn_gg!=0) $psm->durata_noleggio_gg = $dn_gg;
+		if (strlen($dn)==0) $psm->durata_noleggio_gg = null;
+		
 		$psm->da_data_n = $request->input('da_data_n');
-		$psm->a_data_n = $request->input('a_data_n');
+		
+		if (strlen($dn)==0) $psm->a_data_n = null;
+		else {
+			$da_data_n=$request->input('da_data_n');
+			$a_data_n=date('Y-m-d', strtotime($da_data_n. " + $dn_gg days"));
+			$psm->a_data_n=$a_data_n;
+		}
+		
+		$tan=$request->input('tipo_alert_noleggio');
+		$psm->tipo_alert_noleggio = $tan;
+		$am=$request->input('alert_mail');
+		$psm->alert_mail = $am;
+		$dna_gg=0;
+		if ($tan=="g") $dna_gg=$am;
+		elseif ($tan=="m") $dna_gg=$am*30;
+		elseif ($tan=="a") $dna_gg=$am*365;
+		
+		if ($dna_gg!=0) $psm->gg_alert_mail = $dna_gg;
+		if (strlen($am)==0) $psm->gg_alert_mail = null;
+
 		
 		$psm->importo_noleggio = $request->input('importo_noleggio');
 		$psm->km_alert_mail = $request->input('km_alert_mail');
-		$psm->gg_alert_mail = $request->input('gg_alert_mail');
+		
+		$psm->km_noleggio_remote=$request->input('km_noleggio_remote');
+		
 		$arr_servizi=$request->input('servizi_noleggio');
 		if (is_array($arr_servizi))
 			$servizi_noleggio=implode(";",$arr_servizi);

@@ -10,11 +10,18 @@
   Array.prototype.slice.call(forms)
     .forEach(function (form) {
       form.addEventListener('submit', function (event) {
-        if (!form.checkValidity()) {
-          event.preventDefault()
-          event.stopPropagation()
-        }
 		$("#targa").prop("disabled",false);
+		id_mezzo=$("#id_mezzo").val()
+		$("#div_sub_noleggio :input").attr("disabled", false);
+
+        if (!form.checkValidity()) {
+			event.preventDefault()
+			event.stopPropagation()
+			if (id_mezzo!="0" && id_mezzo.length>0) {
+				$("#targa").prop("disabled",true);
+				$("#div_sub_noleggio :input").attr("disabled", true);
+			}
+		}
 		/*
 		var cf=$("#codfisc").val()
 		var valida=validaCodiceFiscale(cf);
@@ -32,20 +39,29 @@
 $(document).ready( function () {
 	$('body').addClass("sidebar-collapse");
 	$('.select2').select2()
+	proprieta=$("#proprieta").val()
+	check_noleggio(proprieta)
+	id_mezzo=$("#id_mezzo").val()
+	if (id_mezzo!="0" && id_mezzo.length>0) 
+		$("#div_sub_noleggio :input").attr("disabled", true);
 } );
+
 
 
 
 function check_noleggio(value) {
 	$("#div_noleggio").hide();
 	$('#da_data_n').attr('required', false); 
-	$('#a_data_n').attr('required', false); 
+	$('#tipo_durata_noleggio').attr('required', false);
+	$('#durata_noleggio').attr('required', false);
+	
 	$('#importo_noleggio').attr('required', false); 
 	$('#km_noleggio').attr('required', false); 
 	if (value==1) {
 		$("#div_noleggio").show(150);
-		$('#da_data_n').attr('required', true); 
-		$('#a_data_n').attr('required', true); 
+		$('#tipo_durata_noleggio').attr('required', true); 
+		$('#durata_noleggio').attr('required', true);
+		
 		$('#km_noleggio').attr('required', true); 
 		$('#importo_noleggio').attr('required', true); 
 	}	

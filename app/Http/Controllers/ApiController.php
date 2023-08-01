@@ -157,6 +157,23 @@ class ApiController extends Controller
 				$rifornimenti->save();
 				$risp['header']="OK";
 				$risp['message']="File e dati riversati sul server";
+				
+				
+				//aggiornamenti per eventuale noleggio
+				$info_id=parco_scheda_mezzo::select('id')
+				->where('targa', "=",$targa)
+				->where('proprieta','=',1)
+				->get()->first();
+				
+				$id_mezzo=$info_id->id;
+				if ($id_mezzo!=null && strlen($id_mezzo)!=0) {
+					$psm=parco_scheda_mezzo::find($id_mezzo);
+					$psm->km_noleggio_remote=$km;
+					$psm->save();
+				}
+				///
+				
+				
 				echo json_encode($risp);
 				exit;
 			}
