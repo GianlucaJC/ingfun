@@ -26,6 +26,8 @@ Route::get('menuhr', [ 'as' => 'menuhr', 'uses' => 'App\Http\Controllers\MainCon
 
 Route::get('amministrazione', [ 'as' => 'amministrazione', 'uses' => 'App\Http\Controllers\MainController@amministrazione'])->middleware(['role:admin|coord|resp']);
 
+Route::get('menuparco', [ 'as' => 'menuparco', 'uses' => 'App\Http\Controllers\MainController@menuparco'])->middleware(['role:admin']);
+
 Route::get('appalti', [ 'as' => 'appalti', 'uses' => 'App\Http\Controllers\MainController@appalti'])->middleware(['role:admin|coord|resp']);
 
 Route::get('menuaziende', [ 'as' => 'menuaziende', 'uses' => 'App\Http\Controllers\MainController@menuaziende'])->middleware(['role:admin|coord']);

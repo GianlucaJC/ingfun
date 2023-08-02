@@ -186,7 +186,21 @@ use App\Models\User;
 				</a>
 				</div>
 			</div>				
-
+			
+			@if ($user->hasRole('admin'))
+				<div class="row mb-3">
+					<div class="col-md-12">
+					<a href="{{ route('menuparco') }}">
+						<div class="d-grid gap-2 mt-2">
+						  <button class="btn btn-info" type="button">
+						  <i class="nav-icon fas fa-car" style='font-size:36px'></i><br>
+							 PARCO AUTO
+						  </button>
+						</div>
+					</a>
+					</div>
+				</div>
+			@endif
 			
 
 

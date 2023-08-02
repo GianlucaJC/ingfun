@@ -195,6 +195,12 @@ public function __construct()
 		return view('all_views/menuhr')->with('scadenze',$scadenze)->with('descr_num',$descr_num);
 	}
 
+
+
+	public function menuparco() {
+		return view('all_views/menuparco');
+	}
+
 	public function init_newcand() {
 		$candidati=array();
 		$candidati[0]['cognome']=null;

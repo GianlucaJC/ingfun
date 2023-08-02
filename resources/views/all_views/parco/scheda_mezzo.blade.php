@@ -372,7 +372,7 @@
 			@if (strlen($id_mezzo)!=0 && $id_mezzo!=0)
 				<div id='div_new_edit_noleggio'>
 				<hr>
-					<button type="button" class="btn btn-primary" onclick='new_noleggio()'>Rinnovo Noleggio</button>
+					<button type="button" class="btn btn-primary" onclick='new_noleggio()'>Rinnovo/Nuovo Noleggio</button>
 					<button type="button" class="btn btn-success" onclick='edit_noleggio()'>Modifica noleggio</button>
 				</div>
 			@endif	
