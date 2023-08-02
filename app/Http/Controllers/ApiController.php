@@ -12,6 +12,7 @@ use App\Models\mezzi;
 use App\Models\rifornimenti;
 use App\Models\reperibilita;
 use App\Models\parco_scheda_mezzo;
+use App\Models\set_global;
 use DB;
 use Image;
 use Mail;
@@ -160,7 +161,7 @@ class ApiController extends Controller
 				
 				
 				//aggiornamenti per eventuale noleggio
-				$info_id=parco_scheda_mezzo::select('id')
+				$info_id=parco_scheda_mezzo::select('id','km_alert_mail','notifica_alert_noleggio')
 				->where('targa', "=",$targa)
 				->where('proprieta','=',1)
 				->get()->first();
@@ -170,6 +171,17 @@ class ApiController extends Controller
 					$psm=parco_scheda_mezzo::find($id_mezzo);
 					$psm->km_noleggio_remote=$km;
 					$psm->save();
+					
+					$notifica_alert_noleggio=$info_id->notifica_alert_noleggio;
+					if ($notifica_alert_noleggio==NULL) {
+						$km_alert_mail=$info_id->km_alert_mail;
+						if ($km>=$km_alert_mail) {
+							/*
+								Notifica mail parco macchine per km alert superati durante il noleggio
+							*/
+							$this->send_mail_parco($id_mezzo,$targa,$km);
+						}
+					}
 				}
 				///
 				
@@ -183,6 +195,49 @@ class ApiController extends Controller
 		echo json_encode($risp);
 		
    }
+
+	function send_mail_parco($id_mezzo,$targa,$km) {
+		$status=array();
+		
+		$set_global=set_global::where('id', "=", 1)->get();
+		$email=array();
+		if (isset($set_global[0]['email_parco']))
+			$email[]=$set_global[0]['email_parco'];		
+		if (isset($set_global[0]['email_acquisti'])) {
+			$email[]=$set_global[0]['email_acquisti'];
+		}	
+		if (count($email)>0) {
+			$msg="Il mezzo targato <b>$targa</b> attualmento in noleggio ha superato la soglia prevista di $km Km";
+			try {
+				$data["email"] = $email;					
+				$data["title"] = "Alert Noleggio";
+				
+				$data["body"]=$msg;
+				
+
+				Mail::send('emails.alert_noleggio', $data, function($message)use($data) {
+					$message->to($data["email"], $data["email"])
+					->subject($data["title"]);
+
+				});
+				
+				parco_scheda_mezzo::where('id', $id_mezzo)->update(['notifica_alert_noleggio' => 1]);
+		
+				$status['status']="OK";
+				$status['message']="Mail inviata con successo";
+				
+				
+				
+			} catch (Throwable $e) {
+				$status['status']="KO";
+				$status['message']="Errore occorso durante l'invio! $e";
+			}
+		} else {
+			$status['status']="KO";
+			$status['message']="Non risultato definite mail parco auto e ufficio acquisti";			
+		}
+		return $status;
+	}
 
 
 	public function createThumbnail($path, $width, $height)
@@ -385,7 +440,7 @@ class ApiController extends Controller
 			->get()->first();
 			$responsabile_mezzo="";
 			if (isset($r_mezzo->nominativo)) 
-				$responsabile_mezzo=$r_mezzo[0]->nominativo;
+				$responsabile_mezzo=$r_mezzo->nominativo;
 		
 			$info[$sc]['responsabile_mezzo']=$responsabile_mezzo;
 			$info[$sc]['id_appalto']=$id_appalto;

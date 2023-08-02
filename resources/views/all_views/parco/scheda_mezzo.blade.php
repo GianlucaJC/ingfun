@@ -324,13 +324,13 @@
 							>Anni</option>
 							
 						</select>						
-						<label for="tipo_alert_noleggio">Tipo alert durata noleggio*</label>
+						<label for="tipo_alert_noleggio">Tipo alert mail durata noleggio*</label>
 					</div>
 				</div>				
 				<div class="col-md-3">
 					<div class="form-floating">
 						<input class="form-control" id="alert_mail" name='alert_mail' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');"  value="{{$info_mezzo[0]->alert_mail ?? ''}}" />
-						<label for="alert_mail">Alert mail</label>
+						<label for="alert_mail">Alert mail (da inizio noleggio)</label>
 					</div>
 				</div>
 
@@ -368,9 +368,14 @@
 				</div>	
 			</div>
 		  </div>
-			<hr>
-			<button type="button" class="btn btn-primary">Nuovo Noleggio</button>
-			<button type="button" class="btn btn-success">Modifica noleggio</button>	
+		  <input type='hidden' name='notifica_alert_noleggio' id='notifica_alert_noleggio'>
+			@if (strlen($id_mezzo)!=0 && $id_mezzo!=0)
+				<div id='div_new_edit_noleggio'>
+				<hr>
+					<button type="button" class="btn btn-primary" onclick='new_noleggio()'>Rinnovo Noleggio</button>
+					<button type="button" class="btn btn-success" onclick='edit_noleggio()'>Modifica noleggio</button>
+				</div>
+			@endif	
 		</div>
 			
 
@@ -779,7 +784,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.221"></script>
+	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.229"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

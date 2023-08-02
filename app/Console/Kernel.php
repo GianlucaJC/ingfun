@@ -16,6 +16,7 @@ class Kernel extends ConsoleKernel
     protected $commands = [
         Commands\DailyQuote::class,
 		Commands\ScadenzaBollo::class,
+		Commands\ScadenzaNoleggio::class,
     ];	 
     protected function schedule(Schedule $schedule)
     {
@@ -24,7 +25,9 @@ class Kernel extends ConsoleKernel
         ->everyMinute();		
         $schedule->command('scadenza:bollo')
         ->everyMinute();	
-    }
+        $schedule->command('scadenza:noleggio')
+        ->everyMinute();
+	}
 
     /**
      * Register the commands for the application.

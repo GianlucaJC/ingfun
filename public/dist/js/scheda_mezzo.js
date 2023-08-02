@@ -47,7 +47,18 @@ $(document).ready( function () {
 } );
 
 
+function new_noleggio() {
+	
+	$("#div_new_edit_noleggio").hide()
+	$("#notifica_alert_noleggio").val(0)
+	$("#div_sub_noleggio :input").attr("disabled", false);
+	$('#div_sub_noleggio :input').not(':button, :submit, :reset, :hidden').removeAttr('checked').removeAttr('selected').not(':checkbox').val('').removeAttr('value');
 
+}
+function edit_noleggio() {
+	$("#div_new_edit_noleggio").hide()
+	$("#div_sub_noleggio :input").attr("disabled", false);
+}
 
 function check_noleggio(value) {
 	$("#div_noleggio").hide();

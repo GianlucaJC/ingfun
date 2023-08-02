@@ -35,11 +35,16 @@ class ControllerParco extends Controller
 		$psm->telaio = $request->input('telaio');
 		$psm->alimentazione = $request->input('alimentazione');
 		$psm->proprieta = $request->input('proprieta');
+		$notifica_alert_noleggio=$request->input('notifica_alert_noleggio');
+		if ($notifica_alert_noleggio=="0") 
+			$psm->notifica_alert_noleggio =0;
+		
 		
 		$tdn=$request->input('tipo_durata_noleggio');
 		$dn=$request->input('durata_noleggio');
 		$psm->tipo_durata_noleggio = $tdn;
 		$psm->durata_noleggio = $dn;
+		
 		$dn_gg=0;
 		if ($tdn=="g") $dn_gg=$dn;
 		elseif ($tdn=="m") $dn_gg=$dn*30;
