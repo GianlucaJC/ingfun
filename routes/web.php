@@ -53,6 +53,10 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin']);	
 	
+
+	Route::post('scheda_fornitore', [ 'as' => 'scheda_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@scheda_fornitore'])->middleware(['role:admin']);
+
+	Route::get('scheda_fornitore/{id?}', [ 'as' => 'scheda_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@scheda_fornitore'])->middleware(['role:admin']);	
 	
 	Route::get('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin']);
 	

@@ -505,7 +505,7 @@ use App\Models\User;
 					<ul class="nav nav-treeview">
 			
 					  <li class="nav-item">
-						<a href="" class="nav-link">
+						<a href="{{route('scheda_fornitore')}}" class="nav-link">
 						  <i class="far fa-circle nav-icon"></i>
 						  <p>Nuovo fornitore</p>
 						</a>
