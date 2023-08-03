@@ -46,6 +46,7 @@ class ScadenzaNoleggio extends Command
 		$info_mezzo=DB::table('parco_scheda_mezzo as s')
 		->select('s.id','s.targa', DB::raw("DATE_FORMAT(s.a_data_n,'%d-%m-%Y') as scadenza"),'s.da_data_n','gg_alert_mail')
 		->where('notifica_alert_noleggio',"<>",2)
+		->orWhereNull('notifica_alert_noleggio')
 		->get();
 
 		$today=date("Y-m-d");

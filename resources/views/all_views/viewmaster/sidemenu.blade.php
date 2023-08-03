@@ -492,7 +492,32 @@ use App\Models\User;
 						  </li>							</ul>
 					</li>	
 					</ul>
-				 </li>				 
+				 </li>	
+
+
+				<li class="nav-item menu">
+					<a href="#" class="nav-link">
+					  <i class="fas fa-shopping-cart"></i>
+					  <p>Ufficio Acquisti
+						<i class="right fas fa-angle-left"></i>
+					  </p>
+					</a>
+					<ul class="nav nav-treeview">
+			
+					  <li class="nav-item">
+						<a href="" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Nuovo fornitore</p>
+						</a>
+					  </li>
+
+					  <li class="nav-item">
+						<a href="" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Elenco fornitori</p>
+						</a>
+					  </li>
+				</li>  
 				@endif 
 				</ul>
 			  </li>
