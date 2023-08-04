@@ -20,7 +20,6 @@
 
 @section('content_main')
 <form method='post' action="{{ route('scheda_fornitore') }}" id='frm_fornitore' name='frm_fornitore' autocomplete="off" class="needs-validation" novalidate>
-
 <input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 
@@ -54,7 +53,7 @@
 
 			<div class="col-md-12">
 				<div class="form-floating">
-					<input class="form-control"  id="ragione_sociale" name="ragione_sociale" type="text" placeholder="Ragione sociale"  value="{{$ragione_sociale[0]->ragione_sociale ?? ''}}" required maxlength=60  />
+					<input class="form-control"  id="ragione_sociale" name="ragione_sociale" type="text" placeholder="Ragione sociale"  value="{{$info_fornitore[0]->ragione_sociale ?? ''}}" required maxlength=60  />
 					<label for="targa">RAGIONE SOCIALE*</label>
 				</div>
 			</div>
@@ -103,7 +102,7 @@
 							$comune=$comuni->comune;
 							$value=$cap."|".$prov;
 							echo "<option value='$value' ";
-							//if ($candidati[0]['comune']==$value) echo " selected ";
+							if (isset($info_fornitore[0]->comune) && $info_fornitore[0]->comune==$value) echo " selected ";
 							echo ">".$comune."</option>";
 						}
 						?>
@@ -116,14 +115,14 @@
 
 			<div class="col-md-3">
 				<div class="form-floating">
-					<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P."   maxlength=5 value=""  />
+					<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P." value="{{$info_fornitore[0]->cap ?? ''}}"   maxlength=5 value=""  />
 					<label for="cap">Cap</label>
 				</div>
 			</div>
 			
 			<div class="col-md-3">
 				<div class="form-floating">
-					<input class="form-control" id="provincia" name='provincia' type="text" placeholder="Provincia"   maxlength=10 value=""  />
+					<input class="form-control" id="provincia" name='provincia' type="text" value="{{$info_fornitore[0]->provincia ?? ''}}" placeholder="Provincia"   maxlength=10 value=""  />
 					<label for="provincia">Provincia</label>
 				</div>
 			</div>
@@ -136,7 +135,7 @@
 				  <div class="input-group-prepend">
 					<span class="input-group-text" id="basic-addon4">@ PEC</span>
 				  </div>
-				  <input type="email" class="form-control" placeholder="Pec" id="pec" name='pec' maxlength=150>
+				  <input type="email" class="form-control" placeholder="Pec" id="pec" name='pec' value="{{$info_fornitore[0]->pec ?? ''}}" maxlength=150>
 				</div>			
 			</div>
 			
@@ -145,7 +144,7 @@
 				  <div class="input-group-prepend">
 					<span class="input-group-text" id="basic-addon5">Telefono</span>
 				  </div>
-				  <input type="text" class="form-control" placeholder="Telefono" id="telefono" name='telefono' maxlength=50>
+				  <input type="text" class="form-control" placeholder="Telefono" id="telefono" name='telefono' maxlength=50 value="{{$info_fornitore[0]->telefono ?? ''}}">
 				</div>			
 			</div>
 
@@ -154,7 +153,7 @@
 				  <div class="input-group-prepend">
 					<span class="input-group-text" id="basic-addon6">SDI</span>
 				  </div>
-				  <input type="text" class="form-control" placeholder="sdi" id="sdi" name='sdi' maxlength=10>
+				  <input type="text" class="form-control" placeholder="sdi" id="sdi" name='sdi' maxlength=10 value="{{$info_fornitore[0]->sdi ?? ''}}">
 				</div>			
 			</div>
 			<div class="col-md-3">
@@ -162,7 +161,7 @@
 				  <div class="input-group-prepend">
 					<span class="input-group-text" id="basic-addon6">IBAN</span>
 				  </div>
-				  <input type="text" class="form-control" placeholder="iban" id="iban" name='iban' maxlength=10>
+				  <input type="text" class="form-control" placeholder="iban" id="iban" name='iban' maxlength=10 value="{{$info_fornitore[0]->iban ?? ''}}">
 				</div>			
 			</div>
 		</div>
@@ -173,7 +172,16 @@
 					<select class="form-select select2" style='height:auto' name="tipo_pagamento[]" id="tipo_pagamento" multiple>
 						<?php
 						for ($sca=0;$sca<=count($lista_pagamenti)-1;$sca++) {?>
-							<option value="{{$lista_pagamenti[$sca]['id']}}">{{$lista_pagamenti[$sca]['descrizione']}}
+							<option value="{{$lista_pagamenti[$sca]['id']}}"
+							<?php
+								if (isset($info_fornitore[0]->tipo_pagamento)) {
+									$arr_p=explode(";",$info_fornitore[0]->tipo_pagamento);
+									if (in_array($lista_pagamenti[$sca]['id'],$arr_p)) echo " selected ";
+								}
+								
+								
+							?>
+							>{{$lista_pagamenti[$sca]['descrizione']}}
 							</option>
 						<?php } ?>
 					</select>
@@ -189,13 +197,13 @@
 		<div class="row mb-3">	
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="cognome" name='cognome' type="text" value="{{$info_fornitore[0]->cognome ?? ''}}" maxlength=40 />
+					<input class="form-control" id="cognome_referente" name='cognome_referente' type="text" value="{{$info_fornitore[0]->cognome_referente ?? ''}}" maxlength=40 />
 					<label for="cognome">Cognome</label>
 				</div>
 			</div>			
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="nome" name='nome' type="text" value="{{$info_fornitore[0]->nome ?? ''}}" maxlength=40  />
+					<input class="form-control" id="nome_referente" name='nome_referente' type="text" value="{{$info_fornitore[0]->nome_referente ?? ''}}" maxlength=40  />
 					<label for="nome">Nome</label>
 				</div>
 			</div>			
@@ -211,7 +219,7 @@
 
 			<div class="row mb-3 mt-5">
 				<div class="col-md-4">
-					<button type="submit" class="btn btn-success">Crea/Modifica Ditta</button>
+					<button type="submit" name="btn_save_fornitore" value="save" class="btn btn-success">Crea/Modifica Ditta</button>
 					<a href="{{ route('scheda_fornitore') }}">
 						<button type="button" class="btn btn-secondary" >
 						Elenco fornitori
