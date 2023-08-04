@@ -522,9 +522,9 @@ use App\Models\User;
 				</ul>
 			  </li>
 			@endif  
-          
 
-	  
+		  
+        </ul>
 		  <li class="nav-item">
 				<form method="POST" action="{{ route('logout') }}">
 					@csrf
@@ -537,8 +537,6 @@ use App\Models\User;
 
 				</form>	
           </li>
-		  
-        </ul>
       </nav>
       <!-- /.sidebar-menu -->
     </div>
