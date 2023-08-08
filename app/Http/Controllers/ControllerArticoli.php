@@ -4,13 +4,13 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\user;
-use App\Models\italy_cities;
+
 use App\Models\fornitori;
-use App\Models\ordini_fornitore;
+use App\Models\aliquote_iva;
 
 use DB;
 
-class ControllerAcquisti extends Controller
+class ControllerArticoli extends Controller
 {
 	public function __construct() {
 		$this->middleware('auth')->except(['index']);
@@ -55,85 +55,47 @@ class ControllerAcquisti extends Controller
 		return $id_fornitore;
 	}
 	
-	public function scheda_fornitore($id_fornitore=0) {
+	public function definizione_articolo($id_articolo=0) {
 		$request=request();
 		$btn_save_fornitore=$request->input("btn_save_fornitore");
 		$save_fornitore=0;
 		if ($btn_save_fornitore=="save") 
 			$save_fornitore=$this->save_fornitore();
 
-		$info_fornitore=array();
+		$info_articolo=array();
 
-		if ($id_fornitore!=0) {
-			$info_fornitore=fornitori::from('fornitori as f')
+		if ($id_articolo!=0) {
+			/*
+			$info_articolo=fornitori::from('fornitori as f')
 			->select('f.*')
 			->where('id', "=", $id_fornitore)
 			->get();
+			*/
 		}
 		
-		$lista_pagamenti=$this->lista_pagamenti();
 
-		$all_comuni = italy_cities::orderBy('comune')->get();		
+		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		->get();
+		
+		$arr_aliquota=array();
+		foreach ($aliquote_iva as $aliquota) {
+			if (isset($aliquota->id))
+				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
+		}		
 
-		$data=array("id_fornitore"=>$id_fornitore,'info_fornitore'=>$info_fornitore,'all_comuni'=>$all_comuni,'lista_pagamenti'=>$lista_pagamenti);
+		$data=array("info_articolo"=>$info_articolo,"aliquote_iva"=>$aliquote_iva,"arr_aliquota"=>$arr_aliquota);
 
 		
 		if ($request->has("btn_save_fornitore")) {
-			if ($save_fornitore!=0) $id_fornitore=$save_fornitore;
-			return redirect()->route("scheda_fornitore",['id'=>$id_fornitore]);
-		}
-		else
-		
-			return view('all_views/fornitori/scheda_fornitore')->with($data);
-		
-	}
-	
-
-	public function ordini_fornitore($id_ordine=0) {
-		$request=request();
-		$btn_save_ordine=$request->input("btn_save_ordine");
-
-		$info_ordine=array();
-
-$id_fornitore=1;
-	
-		if ($id_ordine!=0) {
-			$info_ordine=ordini_fornitore::from('fornitori as o')
-			->join('fornitori as f','o.id_fornitore','f.id')
-			->select('o.*','f.ragione_sociale')
-			->where('id', "=", $id_ordine)
-			->get();
-		} else {
-			$info_ordine=fornitori::from('fornitori as f')
-			->select('f.ragione_sociale')
-			->where('f.id','=',$id_fornitore)
-			->get();
-		}
-
-		$data=array("id_fornitore"=>$id_fornitore,"id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine);
-
-		
-		if ($request->has("btn_save_ordine")) {
 			/*
 			if ($save_fornitore!=0) $id_fornitore=$save_fornitore;
 			return redirect()->route("scheda_fornitore",['id'=>$id_fornitore]);
 			*/
 		}
 		else
-			return view('all_views/fornitori/ordini_fornitore')->with($data);
 		
-	}	
-	
-	function lista_pagamenti() {
-		$lista=array();
-		$lista[0]['id']=1;
-		$lista[0]['descrizione']="Bonifico";
-		$lista[1]['id']=2;
-		$lista[1]['descrizione']="Ri.ba";
-		$lista[2]['id']=3;
-		$lista[2]['descrizione']="Assegno";
-		return $lista;
-	}	
-	
+			return view('all_views/articoli/definizione_articolo')->with($data);
+		
+	}
 }
 

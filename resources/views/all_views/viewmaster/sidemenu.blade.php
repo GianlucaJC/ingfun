@@ -278,15 +278,13 @@ use App\Models\User;
 			@if ($user->hasRole('admin') || $user->hasRole('coord'))
 				
 			 <li class="nav-item menu">
-				<a href="#" class="nav-link">
-				  <i class="nav-icon fas fa-cubes"></i>
-				  <p>Amministrazione
-					<i class="right fas fa-angle-left"></i>
-				  </p>
-				</a>
-				<ul class="nav nav-treeview">
-
-				
+			 <a href="#" class="nav-link">
+			   <i class="nav-icon fas fa-cubes"></i>
+			   <p>Amministrazione
+				<i class="right fas fa-angle-left"></i>
+			   </p>
+			 </a>
+			 <ul class="nav nav-treeview">
 					 <li class="nav-item menu">
 						<a href="#" class="nav-link">
 						  <i class="nav-icon fas fa-industry"></i>
@@ -489,42 +487,86 @@ use App\Models\User;
 							  <i class="far fa-circle nav-icon"></i>
 							  <p>Servizi noleggio</p>
 							</a>
-						  </li>							</ul>
+						  </li>							
+						</ul>
 					</li>	
 					</ul>
 				 </li>	
 
 
-				<li class="nav-item menu">
+
+				 <li class="nav-item menu">
 					<a href="#" class="nav-link">
-					  <i class="fas fa-shopping-cart"></i>
-					  <p>Ufficio Acquisti
+					  <i class="nav-icon fas fa-euro-sign"></i>
+					  <p>Ufficio acquisti
 						<i class="right fas fa-angle-left"></i>
 					  </p>
 					</a>
 					<ul class="nav nav-treeview">
-			
-					  <li class="nav-item">
-						<a href="{{route('scheda_fornitore')}}" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Nuovo fornitore</p>
-						</a>
-					  </li>
 
-					  <li class="nav-item">
-						<a href="" class="nav-link">
-						  <i class="far fa-circle nav-icon"></i>
-						  <p>Elenco fornitori</p>
-						</a>
-					  </li>
-				</li>  
+					
+						 <li class="nav-item menu">
+							<a href="#" class="nav-link">
+							  <i class="nav-icon fas fa-file-alt"></i>
+							  <p>Gestione prodotti
+								<i class="right fas fa-angle-left"></i>
+							  </p>
+							</a>
+							<ul class="nav nav-treeview">
+
+							  <li class="nav-item">
+								<a href="{{route('definizione_articolo')}}" class="nav-link">
+								  <i class="far fa-circle nav-icon"></i>
+								  <p>Nuovo prodotto</p>
+								</a>
+							  </li>	
+							  
+							</ul>
+						</li>
+						
+						<li class="nav-item menu">
+							<a href="#" class="nav-link">
+							  <i class="nav-icon fas fa-address-book"></i>
+							  <p>Gestione fornitori
+								<i class="right fas fa-angle-left"></i>
+							  </p>
+							</a>
+							<ul class="nav nav-treeview">
+							  <li class="nav-item">
+								<a href="{{route('scheda_fornitore')}}" class="nav-link">
+								  <i class="far fa-circle nav-icon"></i>
+								  <p>Nuovo fornitore</p>
+								</a>
+							  </li>
+							</ul>  
+							<ul class="nav nav-treeview">
+							  <li class="nav-item">
+								<a href="#" class="nav-link">
+								  <i class="far fa-circle nav-icon"></i>
+								  <p>Elenco fornitori</p>
+								</a>
+							  </li>
+							</ul>  
+							
+							<ul class="nav nav-treeview">
+							  <li class="nav-item">
+								<a href="{{route('ordini_fornitore')}}" class="nav-link">
+								  <i class="far fa-circle nav-icon"></i>
+								  <p>Ordini fornitore</p>
+								</a>
+							  </li>
+							</ul> 		
+						</li>
+					</ul>
+				 </li>	
+ 
 				@endif 
 				</ul>
-			  </li>
-			@endif  
+			   </li>
+			  @endif  
 
 		  
-        </ul>
+			 
 		  <li class="nav-item">
 				<form method="POST" action="{{ route('logout') }}">
 					@csrf
@@ -537,6 +579,7 @@ use App\Models\User;
 
 				</form>	
           </li>
+		</ul>  
       </nav>
       <!-- /.sidebar-menu -->
     </div>

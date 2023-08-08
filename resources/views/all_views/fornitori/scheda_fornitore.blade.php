@@ -54,7 +54,7 @@
 			<div class="col-md-12">
 				<div class="form-floating">
 					<input class="form-control"  id="ragione_sociale" name="ragione_sociale" type="text" placeholder="Ragione sociale"  value="{{$info_fornitore[0]->ragione_sociale ?? ''}}" required maxlength=60  />
-					<label for="targa">RAGIONE SOCIALE*</label>
+					<label for="ragione_sociale">RAGIONE SOCIALE*</label>
 				</div>
 			</div>
 		</div>	

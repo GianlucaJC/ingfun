@@ -57,6 +57,15 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('scheda_fornitore', [ 'as' => 'scheda_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@scheda_fornitore'])->middleware(['role:admin']);
 
 	Route::get('scheda_fornitore/{id?}', [ 'as' => 'scheda_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@scheda_fornitore'])->middleware(['role:admin']);	
+
+	Route::post('ordini_fornitore', [ 'as' => 'ordini_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@ordini_fornitore'])->middleware(['role:admin']);
+
+	Route::get('ordini_fornitore/{id?}', [ 'as' => 'ordini_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@ordini_fornitore'])->middleware(['role:admin']);	
+
+	Route::post('definizione_articolo', [ 'as' => 'definizione_articolo', 'uses' => 'App\Http\Controllers\ControllerArticoli@definizione_articolo'])->middleware(['role:admin']);
+
+	Route::get('definizione_articolo/{id?}', [ 'as' => 'definizione_articolo', 'uses' => 'App\Http\Controllers\ControllerArticoli@definizione_articolo'])->middleware(['role:admin']);	
+
 	
 	Route::get('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin']);
 	
