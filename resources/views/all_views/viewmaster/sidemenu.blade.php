@@ -416,7 +416,7 @@ use App\Models\User;
 					  </li>
 					</ul>
 				 </li>	
-				@if ($user->hasRole('admin'))
+				@if ($user->hasRole('admin') || $user->hasRole('coord') || $user->hasRole('resp'))
 				 <li class="nav-item menu">
 					<a href="#" class="nav-link">
 					  <i class="nav-icon fas fa-car"></i>

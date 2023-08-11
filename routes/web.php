@@ -26,7 +26,7 @@ Route::get('menuhr', [ 'as' => 'menuhr', 'uses' => 'App\Http\Controllers\MainCon
 
 Route::get('amministrazione', [ 'as' => 'amministrazione', 'uses' => 'App\Http\Controllers\MainController@amministrazione'])->middleware(['role:admin|coord|resp']);
 
-Route::get('menuparco', [ 'as' => 'menuparco', 'uses' => 'App\Http\Controllers\MainController@menuparco'])->middleware(['role:admin']);
+Route::get('menuparco', [ 'as' => 'menuparco', 'uses' => 'App\Http\Controllers\MainController@menuparco'])->middleware(['role:admin|coord|resp']);
 
 Route::get('appalti', [ 'as' => 'appalti', 'uses' => 'App\Http\Controllers\MainController@appalti'])->middleware(['role:admin|coord|resp']);
 
@@ -38,20 +38,20 @@ Route::get('cliditte', [ 'as' => 'cliditte', 'uses' => 'App\Http\Controllers\Mai
 
 Route::group(['only_log' => ['auth']], function () {
 
-	Route::get('export-parco', [ 'as' => 'export-parco', 'uses' => 'App\Http\Controllers\MainController@exportParco'])->middleware(['role:admin']);
+	Route::get('export-parco', [ 'as' => 'export-parco', 'uses' => 'App\Http\Controllers\MainController@exportParco'])->middleware(['role:admin|coord|resp']);
 	
-	Route::get('inventario_flotta', [ 'as' => 'inventario_flotta', 'uses' => 'App\Http\Controllers\ControllerParco@inventario_flotta'])->middleware(['role:admin']);
+	Route::get('inventario_flotta', [ 'as' => 'inventario_flotta', 'uses' => 'App\Http\Controllers\ControllerParco@inventario_flotta'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('inventario_flotta', [ 'as' => 'inventario_flotta', 'uses' => 'App\Http\Controllers\ControllerParco@inventario_flotta'])->middleware(['role:admin']);
+	Route::post('inventario_flotta', [ 'as' => 'inventario_flotta', 'uses' => 'App\Http\Controllers\ControllerParco@inventario_flotta'])->middleware(['role:admin|coord|resp']);
 
 
-	Route::get('servizi_noleggio', [ 'as' => 'servizi_noleggio', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@servizi_noleggio'])->middleware(['role:admin']);
+	Route::get('servizi_noleggio', [ 'as' => 'servizi_noleggio', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@servizi_noleggio'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('servizi_noleggio', [ 'as' => 'servizi_noleggio', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@servizi_noleggio'])->middleware(['role:admin']);
+	Route::post('servizi_noleggio', [ 'as' => 'servizi_noleggio', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@servizi_noleggio'])->middleware(['role:admin|coord|resp']);
 
-	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin']);
+	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin|coord|resp']);
 
-	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin']);	
+	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin|coord|resp']);	
 	
 
 	Route::post('scheda_fornitore', [ 'as' => 'scheda_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@scheda_fornitore'])->middleware(['role:admin']);
@@ -67,27 +67,27 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('definizione_articolo/{id?}', [ 'as' => 'definizione_articolo', 'uses' => 'App\Http\Controllers\ControllerArticoli@definizione_articolo'])->middleware(['role:admin']);	
 
 	
-	Route::get('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin']);
+	Route::get('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin']);
+	Route::post('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin|coord|resp']);
 
 
 	
-	Route::get('marca', [ 'as' => 'marca', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@marca'])->middleware(['role:admin']);
+	Route::get('marca', [ 'as' => 'marca', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@marca'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('marca', [ 'as' => 'marca', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@marca'])->middleware(['role:admin']);
+	Route::post('marca', [ 'as' => 'marca', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@marca'])->middleware(['role:admin|coord|resp']);
 	
-	Route::get('badge', [ 'as' => 'badge', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@badge'])->middleware(['role:admin']);
+	Route::get('badge', [ 'as' => 'badge', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@badge'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('badge', [ 'as' => 'badge', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@badge'])->middleware(['role:admin']);
+	Route::post('badge', [ 'as' => 'badge', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@badge'])->middleware(['role:admin|coord|resp']);
 	
-	Route::get('cartac', [ 'as' => 'cartac', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@cartac'])->middleware(['role:admin']);
+	Route::get('cartac', [ 'as' => 'cartac', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@cartac'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('cartac', [ 'as' => 'cartac', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@cartac'])->middleware(['role:admin']);
+	Route::post('cartac', [ 'as' => 'cartac', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@cartac'])->middleware(['role:admin|coord|resp']);
 
-	Route::get('telepass', [ 'as' => 'telepass', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@telepass'])->middleware(['role:admin']);
+	Route::get('telepass', [ 'as' => 'telepass', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@telepass'])->middleware(['role:admin|coord|resp']);
 	
-	Route::post('telepass', [ 'as' => 'telepass', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@telepass'])->middleware(['role:admin']);
+	Route::post('telepass', [ 'as' => 'telepass', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@telepass'])->middleware(['role:admin|coord|resp']);
 
 	
 	Route::post('load_contatti_soc', 'App\Http\Controllers\AjaxControllerServ@load_contatti_soc');
