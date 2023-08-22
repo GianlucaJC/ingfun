@@ -149,6 +149,7 @@ class Registro extends Controller
 		->where("p.data",">=",$per_da)
 		->where("p.data","<=",$per_a)
 		->orWhere("s1.pre_load","=", "S")
+		->orderByRaw( "FIELD(s1.descrizione, 'NOTE')" )
 		->groupBy('s1.id')
 		->get();
 		//->orderBy('s1.descrizione')

@@ -144,17 +144,19 @@
 				</thead>
 				<tbody>
 					@php ($old_lav="?")
-					
+					@php ($old_index=-1)
 					
 					@foreach ($lav_all as $lavoratore)
 						@php ($somma_lav=0)
 						<?php
+						
 							if (!isset($lav_lista[$lavoratore->id_lav])) 	continue;
 						?>
-						@php ($inc=0)	
-						@foreach($servizi as $servizio)
+						
+						@foreach($servizi as $index=>$servizio)
 						
 							<?php
+								
 								$js="";
 								$js.="ins_value.periodo='$periodo';";
 								$js.="ins_value.giorni=$giorni;";
@@ -166,13 +168,21 @@
 								
 									?>						
 						
+							
+							
 							<?php
+							
 								$view_main=view_main($giorni,$lav_lista,$lavoratore,$servizio,$js);	
-								
+							
 								$js.="ins_value(0)";
+								
 								if (($view_main['presenza'])==false) continue;
+
+								
 							?>
-							@php($inc++)
+							
+
+							
 							<tr>
 								<?php
 									if ($old_lav!=$lavoratore->id_lav)
@@ -193,13 +203,15 @@
 									<a href='#' class="link-primary" onclick="{{$js}}">
 										{{$servizio['descrizione']}}
 									</a>
+
+
 								</td>
 								
 								<?php
 									echo $view_main['view'];
 									$somma_lav+=$view_main['somma'];
-								?>	
-								@if ($inc==count($servizi))
+								?>
+								@if ($servizio['descrizione']=="NOTE")
 									<td>
 										@if ($somma_lav>0) 
 										<center>	
@@ -215,6 +227,7 @@
 
 							</tr>
 							@php($old_lav=$lavoratore->id_lav)
+							@php ($old_index=$index)
 						@endforeach
 
 	
@@ -288,12 +301,13 @@
 function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 	
 	$view="";$somma=0;$presenza=false;
-	
+	$id_servizio=$servizio['id'];
+
 	for ($sca=1;$sca<=$giorni;$sca++) {
 		$value="";
 		$view.="<td>";
 			
-			$id_servizio=$servizio['id'];
+			
 			
 
 			if (isset($lav_lista[$lavoratore->id_lav]['service'])) {
@@ -312,6 +326,7 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 				
 			}
 			
+			
 			//eventuale override
 			if (isset($lav_lista[$lavoratore->id_lav]['presenze'])) {
 				$obj=$lav_lista[$lavoratore->id_lav]['presenze'];
@@ -319,14 +334,17 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 					if ($obj[$ser]->id_servizio==$id_servizio) {
 						$d_ref=$obj[$ser]->data;
 						if (strlen($d_ref)>8) {
-							if (intval(substr($d_ref,8,2))==$sca)
+							if (intval(substr($d_ref,8,2))==$sca) {
 								if ($servizio['tipo_dato']==0)
 									$value=$obj[$ser]->importo;
 								else
 									$value=$obj[$ser]->note;
+							}	
 
-								if ($value==0 || strlen($value)>0) $presenza=true;
+							if ($value==0 || strlen($value)>0) 	
+							$presenza=true;
 						}
+						
 					}
 				}
 			}	
@@ -346,10 +364,19 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 					$view.="</span>";
 				$view.="</div>";
 			$view.="</a>";
+			
+			//esempio di debug
+			/*
+			if ($lavoratore->id_lav==7) {
+				echo "giorno $sca - lavoratore_id: ".$lavoratore->id_lav." - lavoratore: ".$lavoratore->nominativo." servizio ".$servizio['id']." somma $somma<hr>";
+			}
+			*/
 			$somma+=intval($value);
+			
+			
 		$view.="</td>";
 	}
-	
+
 	$info['view']=$view;
 	$info['somma']=$somma;
 	if ($servizio['pre_load']=="S") $presenza=true;
