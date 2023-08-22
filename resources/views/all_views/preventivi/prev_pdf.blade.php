@@ -77,6 +77,14 @@
     }
 </style>
 <body>
+<?php 
+if (file_exists("allegati/sezionali/".$sezionale.".jpg")) {?>
+	<div>
+		<center>
+			<img src='allegati/sezionali/{{$sezionale}}.jpg' width=300px>
+		</center>
+	</div>
+<?php } ?>
 <div class="head-title">
     <h1 class="text-center m-0 p-0">Preventivo</h1>
 </div>

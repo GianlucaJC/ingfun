@@ -309,6 +309,7 @@ public function __construct()
 		}		
 		
 		$data['id_doc']=$id_doc;
+		$data['sezionale']=$sezionale;
 		$data['data_invito']=$data_invito;
 		$data['denominazione']=$denominazione;
 		$data['piva']=$piva;

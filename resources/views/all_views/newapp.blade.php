@@ -144,6 +144,18 @@
 					
 				</div>
 				<label for="servizi">Servizi*</label>
+				<a id='a_serv' href="{{ route('servizi',['id_ref'=>$id_ditta_db]) }}" class="link-primary ml-3" target='_blank' onclick="
+						 $('.up').hide();$('#div_up_servizi').show()">
+					Definisci/modifica
+				</a>					
+				<span id='div_up_servizi' class='up' style='display:none'>
+					<a href='javascript:void(0)' class='ml-2' onclick='refresh_servizi()'>
+						<font color='green'>
+							<i class="fas fa-sync-alt"></i>
+						</font>	
+					</a>	
+				</span>	
+				
 			</div>	
 		</div>		
 
@@ -388,7 +400,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.189"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.196"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

@@ -32,6 +32,17 @@ class AjaxControllerServ extends Controller
 		->get();
 		return json_encode($all_servizi);
 	}
+	
+	public function refresh_servizi_ditte(Request $request) {
+		$id_ditta=$request->input('id_ditta');
+		$servizi=DB::table('servizi as s')
+		->join('servizi_ditte as d','s.id','d.id_servizio')
+		->select('s.descrizione','d.id_servizio','d.importo_ditta','d.aliquota','d.importo_lavoratore')
+		->where('d.id_ditta', '=', $id_ditta)
+		->get();
+		return json_encode($servizi);
+	}
+	
 	public function refresh_aliquota(){
 		$aliquote = aliquote_iva::where('dele','=',0)->orderBy('aliquota')->get();
         return json_encode($aliquote);

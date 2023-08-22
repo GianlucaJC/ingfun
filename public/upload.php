@@ -39,11 +39,32 @@ try {
 	//$from=="doc" -> da archivi->Area documenti
 	//$from=="cedolini" ->dalla dashboard->upload cedolini
 	//$from="ditte' ->da view ditte
+	//$from="sezionali' ->da view sezionali
 	if ($from=="ditte") {
 		//id_cand=id_ditte
 		$sub="allegati/ditte/$id_cand";
 		@mkdir($sub);
 	}	
+
+	if ($from=="sezionali") {
+		$sub="allegati/sezionali";
+		$filename=$id_cand.".".$extension;
+		@mkdir($sub);
+	}	
+	if ($from=="preventivi_firmati") {
+		//cancello i preventivi precedenti
+		$path = 'allegati/preventivi_firmati/*';
+		foreach (glob($path) as $filename) {
+			$info=explode(".",$filename);
+			$ff=$info[0];
+			$ff=str_replace("allegati/preventivi_firmati/","",$ff);
+			if ($ff==$id_cand) 
+				@unlink($filename);
+		}	
+		$sub="allegati/preventivi_firmati";
+		$filename=$id_cand.".".$extension;
+		@mkdir($sub);
+	}
 
 	if ($from=="2" || $from=="doc") {
 		$sub="allegati/doc/$id_cand";

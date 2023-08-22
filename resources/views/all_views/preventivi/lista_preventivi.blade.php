@@ -99,7 +99,7 @@
 										echo number_format($preventivo->totale,2);
 									?>
 								</td>
-								<td style='width:200px'>
+								<td style='width:300px'>
 									
 									@if ($preventivo->dele=="0") 
 										<a href="{{ route('preventivo',['id'=>$preventivo->id]) }}">
@@ -117,10 +117,30 @@
 
 										
 										@endif
+
+									<?php					
+									$path = 'allegati/preventivi_firmati/*';
+									foreach (glob($path) as $filename) {
+										$info=explode(".",$filename);
+										$ff=$info[0];
+										$ff=str_replace("allegati/preventivi_firmati/","",$ff);
+										if ($ff==$preventivo->id) {
+											
+										?>
+
+										<a href='{{$filename}}' target='_blank' >
+											<button type="button" class="btn btn-success" alt='Preventivo firmato'><i class="fas fa-stamp" title='apri preventivo firmato'></i></button>
+										</a>											
+									<?php 
+										}	
+									}
+									?>										
+										
 										<a href='#' onclick="dele_element({{$preventivo->id}})">
 											<button type="submit" name='dele_ele' class="btn btn-danger" title='Elimina preventivo'><i class="fas fa-trash"></i></button>	
 										</a>
 									@endif
+									
 									@if ($preventivo->dele=="1") 
 										<a href='#'onclick="restore_element({{$preventivo->id}})" >
 											<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>

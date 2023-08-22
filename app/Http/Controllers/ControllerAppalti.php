@@ -295,8 +295,17 @@ public function __construct()
 			
 		}
 
+		$sezionali=societa::select('id','descrizione')
+		->orderBy('descrizione')
+		->get();
 
-		$gestione=appalti::select('appalti.id','appalti.status','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
+		$aziende_proprieta=array();
+		foreach($sezionali as $sezionale) {
+			$azienda_proprieta[$sezionale->id]=$sezionale->descrizione;
+		}
+
+
+		$gestione=appalti::select('appalti.id','appalti.id_azienda_proprieta','appalti.status','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->when($view_dele=="0", function ($gestione) {
 			return $gestione->where('appalti.dele', "=","0");
@@ -308,7 +317,7 @@ public function __construct()
 		->get();		
 		
 
-		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('targhe',$targhe);
+		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta);
 
 	}
 

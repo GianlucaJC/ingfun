@@ -354,6 +354,9 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::post('refresh_servizi', 'App\Http\Controllers\AjaxControllerServ@refresh_servizi');
 
+	Route::post('refresh_servizi_ditte', 'App\Http\Controllers\AjaxControllerServ@refresh_servizi_ditte');
+
+
 	Route::post('get_doc_ditta', 'App\Http\Controllers\AjaxControllerServ@get_doc_ditta');
 	
 	Route::post('remove_doc_ditta', 'App\Http\Controllers\AjaxControllerServ@remove_doc_ditta');	

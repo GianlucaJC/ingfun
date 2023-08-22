@@ -77,6 +77,15 @@
     }
 </style>
 <body>
+
+<?php 
+if (file_exists("allegati/sezionali/".$sezionale.".jpg")) {?>
+	<div>
+		<center>
+			<img src='allegati/sezionali/{{$sezionale}}.jpg' width=300px>
+		</center>
+	</div>
+<?php } ?>
 <div class="head-title">
     <h1 class="text-center m-0 p-0">Invito a fatturare</h1>
 </div>
@@ -139,6 +148,7 @@
 		<?php
 		
 			$id_group=0;
+
 			for ($sca=0;$sca<=count($elenco_pagamenti_presenti)-1;$sca++) {
 
 
@@ -156,11 +166,16 @@
 			<tr>
 				<td class='w-100'>
 					<b>{{$descr}}</b><br>
-					Importo: <?php echo number_format($elenco_pagamenti_presenti[$sca]['importo'],2)." €"?></b> - 
+					Importo: <?php 
+						if (strlen($elenco_pagamenti_presenti[$sca]['importo'])!=0)
+							echo number_format($elenco_pagamenti_presenti[$sca]['importo'],2)." €"
+						?></b> - 
 					Data Scadenza:
 					<?php
-						$date=date_create($elenco_pagamenti_presenti[$sca]['data_scadenza']);
-						echo date_format($date,"d/m/Y");
+						if (strlen($elenco_pagamenti_presenti[$sca]['data_scadenza'])!=0) {
+							$date=date_create($elenco_pagamenti_presenti[$sca]['data_scadenza']);
+							echo date_format($date,"d/m/Y");
+						} 	
 						
 						if ($tipo=="1") {
 							echo "<br>";

@@ -642,7 +642,7 @@ function add_pagamento(tipo) {
 	btn_dele+="</a>";
 	color="";
 	disp1="display:none";disp2="display:none";
-	req1="";req2="";
+	req1="";req2="required";
 	if (tipo=="1") {
 		disp1="";
 		req1="required";
@@ -658,7 +658,7 @@ function add_pagamento(tipo) {
 		color="info";
 	}
 	if (tipo=="4") {
-		req2="required";
+		req2="";
 		disp2="";
 		descr="Bonifico"
 		color="warning";
@@ -676,16 +676,16 @@ function add_pagamento(tipo) {
 					
 					<div class="form-floating">
 						<input class="form-control dp" 
-						name="data_scadenza[]" type="date" required />
-						<label for="data_pagamento">Data scadenza*</label>
+						name="data_scadenza[]" type="date" `+req2+`/>
+						<label for="data_pagamento">Data scadenza</label>
 					</div>
 					
 				</div>
 
 				<div class="col-md-4">
 					<div class="form-floating">
-						<input class="form-control importi" name="importo[]" type="text" placeholder="Importo" required />
-						<label for="importo" >Importo*</label>
+						<input class="form-control importi" name="importo[]" type="text" placeholder="Importo" `+req2+` />
+						<label for="importo" >Importo</label>
 					</div>		
 				</div>
 		
@@ -693,14 +693,14 @@ function add_pagamento(tipo) {
 			<div class="col-md-4" style='`+disp1+`'>
 				<div class="form-floating">
 					<input class="form-control" name="persona[]" type="text" placeholder="" `+req1+` />
-					<label for="persona" >Persona che riscuote*</label>
+					<label for="persona" >Persona che riscuote</label>
 				</div>		
 			</div>
 		
 			<div class="col-md-4" style='`+disp2+`'>
 				<div class="form-floating">
-					<input class="form-control" name="coordinate[]" type="text" placeholder="" `+req2+` />
-					<label for="Coordinate" >Coordinate bancarie*</label>
+					<input class="form-control" name="coordinate[]" type="text" placeholder="" />
+					<label for="Coordinate" >Coordinate bancarie</label>
 				</div>		
 			</div>
 		

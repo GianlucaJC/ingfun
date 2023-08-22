@@ -7,6 +7,11 @@
   <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
 <!-- x button export -->
 
+<!-- per upload -->
+<link href="{{ URL::asset('/') }}dist/css/upload/jquery.dm-uploader.min.css" rel="stylesheet">
+ <link href="{{ URL::asset('/') }}dist/css/upload/styles.css?ver=1.1" rel="stylesheet">  
+<!-- per upload --> 
+
 <link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
 <!-- -->
 @endsection
@@ -81,7 +86,11 @@
 								 @if ($sezionale->dele=="1") 
 									 </del></font>
 								 @endif	
-									<span style='display:none' id='id_descr{{$sezionale->id}}' data-descr='{{ $sezionale->descrizione }}' data-mail_scadenze='{{ $sezionale->mail_scadenze }}' data-mail_fatture='{{ $sezionale->mail_fatture }}'>
+									<span style='display:none' id='id_descr{{$sezionale->id}}' data-descr='{{ $sezionale->descrizione }}' data-mail_scadenze='{{ $sezionale->mail_scadenze }}' data-mail_fatture='{{ $sezionale->mail_fatture }}'
+									data-mail_azienda='{{ $sezionale->mail_azienda }}'
+									data-mail_pec='{{ $sezionale->mail_pec }}'
+									data-telefono='{{ $sezionale->telefono }}'
+									>
 									
 										{{ $sezionale->descrizione }}
 									</span>									 
@@ -170,6 +179,12 @@
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 
 	
+	<!-- per upload -->
+	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.25"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.375"></script>
+	<!-- fine upload -->
+	
 	<!-- inclusione standard
 		per personalizzare le dipendenze DataTables in funzione delle opzioni da aggiungere: https://datatables.net/download/
 	!-->
@@ -184,6 +199,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/sezionali.js?ver=1.002"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sezionali.js?ver=1.010"></script>
 
 @endsection

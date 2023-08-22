@@ -83,6 +83,7 @@
 							<th>Operazioni</th>
 							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
+							<th>Azienda di proprietà</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
@@ -143,6 +144,15 @@
 									</del></font>
 								@endif											
 							</td>
+							
+							<td>
+								<?php
+									if (isset($azienda_proprieta[$gest->id_azienda_proprieta])) {
+										echo $azienda_proprieta[$gest->id_azienda_proprieta];
+									}
+								?>
+							</td>
+
 							<td>
 								{{ $gest->denominazione }}
 							</td>
@@ -293,6 +303,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.05"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.06"></script>
 
 @endsection

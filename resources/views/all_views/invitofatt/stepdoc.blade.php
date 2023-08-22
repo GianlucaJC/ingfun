@@ -42,7 +42,7 @@
 
 					$color="";$descr="";
 					$disp1="display:none";$disp2="display:none";
-					$req1="";$req2="";
+					$req1="";$req2="required";
 					
 					
 					$tipo=$elenco_pagamenti_presenti[$sca]['tipo_pagamento'];
@@ -62,7 +62,7 @@
 						$color="info";
 					}
 					if ($tipo=="4") {
-						$req2="required";
+						$req2="";
 						$disp2="";
 						$descr="Bonifico";
 						$color="warning";
@@ -81,16 +81,16 @@
 							
 							<div class="form-floating">
 								<input class="form-control dp" 
-								name="data_scadenza[]" type="date" required  value="{{$elenco_pagamenti_presenti[$sca]['data_scadenza']}}" />
-								<label for="data_pagamento">Data scadenza*</label>
+								name="data_scadenza[]" type="date" {{$req2}} value="{{$elenco_pagamenti_presenti[$sca]['data_scadenza']}}" />
+								<label for="data_pagamento">Data scadenza</label>
 							</div>
 							
 						</div>
 
 						<div class="col-md-4">
 							<div class="form-floating">
-								<input class="form-control importi" name="importo[]" type="text" placeholder="Importo" required value="{{$elenco_pagamenti_presenti[$sca]['importo']}}"/>
-								<label for="importo" >Importo*</label>
+								<input class="form-control importi" name="importo[]" type="text" placeholder="Importo" {{$req2}} value="{{$elenco_pagamenti_presenti[$sca]['importo']}}"/>
+								<label for="importo" >Importo</label>
 							</div>		
 						</div>
 				
@@ -98,14 +98,14 @@
 					<div class="col-md-4" style='{{$disp1}}'>
 						<div class="form-floating">
 							<input class="form-control" name="persona[]" type="text" placeholder="" {{$req1}} value="{{$elenco_pagamenti_presenti[$sca]['persona']}}" />
-							<label for="persona" >Persona che riscuote*</label>
+							<label for="persona" >Persona che riscuote</label>
 						</div>		
 					</div>
 				
 					<div class="col-md-4" style='{{$disp2}}'>
 						<div class="form-floating">
-							<input class="form-control" name="coordinate[]" type="text" placeholder="" {{$req2}} value="{{$elenco_pagamenti_presenti[$sca]['coordinate']}}" />
-							<label for="Coordinate" >Coordinate bancarie*</label>
+							<input class="form-control" name="coordinate[]" type="text" placeholder="" value="{{$elenco_pagamenti_presenti[$sca]['coordinate']}}" />
+							<label for="Coordinate" >Coordinate bancarie</label>
 						</div>		
 					</div>
 				

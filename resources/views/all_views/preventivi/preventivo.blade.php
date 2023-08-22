@@ -71,6 +71,7 @@
 					i due campi [ditta] e [data_preventivo] vengono valorizzati all'interno della view stepditte, per gli altri form (view) vengono passati in POST in modalità hidden
 				!-->
 				
+			
 				@include('all_views.preventivi.stepditte')
 				
 			</form>
@@ -169,14 +170,14 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/preventivo.js?ver=1.201"></script>
+	<script src="{{ URL::asset('/') }}dist/js/preventivo.js?ver=1.202"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 
 	<!-- per upload -->
-	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.24"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.356"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload_prev/jquery.dm-uploader.min.js"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload_prev/demo-ui.js?ver=1.24"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload_prev/demo-config.js?ver=2.356"></script>
 	<!-- fine upload -->		
 	
 

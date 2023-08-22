@@ -17,6 +17,36 @@ $(document).on('submit','#needs-validation2a', function(){
 })	
 
 
+function set_sezione(id_doc) {
+
+
+	base_path = $("#url").val();
+	
+	
+	fetch(base_path+'/class_allegati.php', {
+		method: 'post',
+		//cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached		
+		headers: {
+		  "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+		},
+		body: 'operazione=refresh_tipo'
+	})
+	.then(response => {
+		if (response.ok) {
+		   return response.text();
+		}
+		
+	})
+	.then(resp=>{
+		$("#div_allegati").html(resp);
+		set_class_allegati(id_doc); //in js/upload_prev/demo-config.js
+	})
+	.catch(status, err => {
+		
+		return console.log(status, err);
+	})
+}
+
 function refresh_servizi() {
 	base_path = $("#url").val();
 	ditta = $("#ditta").val();

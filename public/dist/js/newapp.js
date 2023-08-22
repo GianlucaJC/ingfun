@@ -76,6 +76,36 @@ function check_save() {
 	
 }
 
+function refresh_servizi() {
+	$("#servizi")
+	.find('option')
+	.remove()
+	.end();	
+	
+	id_ditta=$("#ditta").val();
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_servizi_ditte",
+		data: {_token: CSRF_TOKEN,id_ditta:id_ditta},
+		success: function (data) {
+			$("#div_up_servizi").hide(150)
+
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#servizi').append('<option value="' + item.id_servizio + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
 function popola_servizi(id_ditta) {
 	$("#servizi")
 	.find('option')
@@ -107,6 +137,9 @@ function popola_servizi(id_ditta) {
 
 		}
 	});
+	base_path = $("#url").val();
+	href=base_path+"/servizi/"+id_ditta;
+	$("#a_serv").attr('href', href)	
 }
 
 function btnlav(curr) {

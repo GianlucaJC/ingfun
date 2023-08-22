@@ -32,6 +32,9 @@ public function __construct()
 		$descr_contr=$request->input("descr_contr");
 		$mail_scadenze=$request->input("mail_scadenze");
 		$mail_fatture=$request->input("mail_fatture");
+		$mail_pec=$request->input("mail_pec");
+		$mail_azienda=$request->input("mail_azienda");
+		$telefono=$request->input("telefono");
 		$mail_scadenze=strtolower($mail_scadenze);
 		$mail_fatture=strtolower($mail_fatture);
 		
@@ -41,7 +44,7 @@ public function __construct()
 		$restore_contr=$request->input("restore_contr");
 		
 		
-		$data=['dele'=>0, 'descrizione' => $descr_contr,'mail_scadenze'=>$mail_scadenze,'mail_fatture'=>$mail_fatture];
+		$data=['dele'=>0, 'descrizione' => $descr_contr,'mail_scadenze'=>$mail_scadenze,'mail_fatture'=>$mail_fatture,'mail_pec'=>$mail_pec,'mail_azienda'=>$mail_azienda,'telefono'=>$telefono];
 		
 
 		//Creazione nuovo elemento
@@ -75,7 +78,7 @@ public function __construct()
 		if ($view_dele=="on") $view_dele=1;
 		
 		$sezionali=DB::table('societa as s')
-		->select('s.dele','s.id','s.descrizione','s.mail_scadenze','s.mail_fatture')
+		->select('s.dele','s.id','s.descrizione','s.mail_scadenze','s.mail_fatture','s.mail_azienda','s.mail_pec','s.telefono')
 		->when($view_dele=="0", function ($sezionali) {
 			return $sezionali->where('s.dele', "=","0");
 		})
@@ -225,6 +228,9 @@ public function __construct()
 		if (request()->has("id_ref")) {
 			$ditta_ref[0]=request()->input("id_ref");
 		}	
+		if ($id_ref!=0) {
+			$ditta_ref[0]=$id_ref;
+		}
 		
 		$ditta_from_frm1=$request->input("ditta_from_frm1");
 		if (strlen($ditta_from_frm1)!=0) {

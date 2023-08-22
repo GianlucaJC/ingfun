@@ -17,10 +17,13 @@ function set_class_allegati(from,id_cand) {
  
   base_path = $("#url").val();
   tipo_doc="";scadenza=""
+  extFilter= ["pdf","doc","docx","jpg","png"]
   if (from=="2") {
 	  tipo_doc=$("#tipo_doc").val();
 	  scadenza=$("#scadenza").val()
   }
+  if (from=="sezionali") extFilter= ["jpg"]
+  
   
   $('#drag-and-drop-zone').dmUploader({ //
     url: base_path+'/upload.php',
@@ -30,7 +33,7 @@ function set_class_allegati(from,id_cand) {
 	  "id_cand":id_cand
 	},
 	
-	extFilter: ["pdf","doc","docx","jpg","png"],
+	extFilter: extFilter,
 	
     maxFileSize: 80000000, // 8 Megs 
     onDragEnter: function(){

@@ -34,13 +34,13 @@ public function __construct()
 		
 		$load_prev=DB::table('preventivi as p')
 		->leftJoin('societa as s','p.id_sezionale','s.id')
-		->select('p.id_ditta',DB::raw("DATE_FORMAT(p.data_preventivo,'%d-%m-%Y') as data_preventivo"),'p.note',"s.descrizione")
+		->select('p.id_ditta',DB::raw("DATE_FORMAT(p.data_preventivo,'%d-%m-%Y') as data_preventivo"),'p.note',"s.descrizione","s.id as sezionale")
 		->where('p.id','=',$id_doc)
 		->get();
 		$ditta=$load_prev[0]->id_ditta;
 		$data_preventivo=$load_prev[0]->data_preventivo;
 		$azienda_prop=$load_prev[0]->descrizione;
-		
+		$sezionale=$load_prev[0]->sezionale;
 		
 		$note=$load_prev[0]->note;
 
@@ -101,6 +101,7 @@ public function __construct()
 		$data['cap']=$cap;
 		$data['comune']=$comune;
 		$data['provincia']=$provincia;
+		$data['sezionale']=$sezionale;
 		$data['azienda_prop']=$azienda_prop;
 		$data['articoli_preventivo']=$articoli_preventivo;
 		$data['arr_aliquota']=$arr_aliquota;
@@ -155,8 +156,21 @@ public function __construct()
 		$request=request();
 		$preview_pdf=$request->input('preview_pdf');
 		$genera_pdf=$request->input('genera_pdf');
-		
+		$btn_dele_prev=$request->input('btn_dele_prev');
 		$id_doc=$request->input('id_doc');
+
+		if ($btn_dele_prev=="dele_prev") {
+			$path = 'allegati/preventivi_firmati/*';
+			foreach (glob($path) as $filename) {
+				$info=explode(".",$filename);
+				$ff=$info[0];
+				$ff=str_replace("allegati/preventivi_firmati/","",$ff);
+				if ($ff==$id_doc) 
+					@unlink($filename);
+			}			
+		}		
+		
+		
 		$ditta=$request->input('ditta');
 		$data_preventivo=$request->input('data_preventivo');
 		$sezionale=$request->input('sezionale');

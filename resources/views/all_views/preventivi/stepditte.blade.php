@@ -57,8 +57,33 @@
 				</div>
 			</div>			
 		</div>				
+
+		
+		<div class="float-sm-left">		
+			<?php 
+			if ($id_doc!=0) {
+				echo "<button class='btn btn-primary' type='button' onclick='set_sezione($id_doc)'>Allega preventivo firmato</button>";
+			}
+			
+			$path = 'allegati/preventivi_firmati/*';
+			$num=0;
+			foreach (glob($path) as $filename) {
+				//echo "$filename size " . filesize($filename) . "\n";
+				$num++;
+			}
+			if ($num>0) {
+				echo "<button class='btn btn-secondary ml-2' type='submit' name='btn_dele_prev' value='dele_prev'>Elimina preventivi firmati inviati</button>";				
+			}
+
+
+			?>	
+		</div>		
+		
 		<div class="float-sm-right">		
 			<button type="submit" name='btn_ditta' id='btn_ditta' onclick="$('.step').val('1')" value='btn_ditta' class="btn btn-success btn-lg">Salva e vai avanti</button>
 		</div>
+
+		<div id='div_allegati'></div>
+		
 	</div>
 </div> 
