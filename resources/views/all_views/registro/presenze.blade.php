@@ -372,7 +372,8 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 				echo "giorno $sca - lavoratore_id: ".$lavoratore->id_lav." - lavoratore: ".$lavoratore->nominativo." servizio ".$servizio['id']." somma $somma<hr>";
 			}
 			*/
-			$somma+=intval($value);
+			if ($value>0)
+				$somma+=intval($value);
 			
 			
 		$view.="</td>";
