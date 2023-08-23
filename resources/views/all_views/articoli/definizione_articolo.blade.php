@@ -21,7 +21,7 @@
 @section('content_main')
 <form method='post' action="{{ route('definizione_articolo') }}" id='frm_fornitore' name='frm_fornitore' autocomplete="off" class="needs-validation" novalidate>
 <input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
-
+<input type="hidden" value="{{url('/')}}" id="url" name="url">
 
   <!-- Content Wrapper. Contains page content -->
    <div class="content-wrapper">
@@ -54,10 +54,15 @@
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control"  id="codice" name="codice" type="text" placeholder="Codice prodotto"  value="{{$info_articolo[0]->codice ?? ''}}" required maxlength=60 />
-					<label for="codice">CODICE PRODOTTO*</label>
+					<input class="form-control"  id="id_prodotto" name="codice" type="text" placeholder="ID prodotto"  value="{{$info_articolo[0]->id ?? ''}}" disabled  />
+					<label for="codice">ID</label>
 				</div>
 			</div>
+
+
+		</div>
+		
+		<div class="row mb-3">
 
 			<div class="col-md-6">
 				<div class="form-floating">
@@ -66,13 +71,73 @@
 				</div>
 			</div>
 
+
+			<div class="col-md-3">
+				<div class="form-floating">
+					<input class="form-control"  id="unita_conf" name="unita_conf" type="text" placeholder="Confezionamento"  />
+					<label for="giacenza">U.M./Confez.</label>
+				</div>
+
+			</div>
+			
+			<div class="col-md-3">
+				<div class="form-floating">
+					<input class="form-control"  id="um" name="um" type="text" placeholder="Unità di misura"  />
+					<label for="um">Unità di misura</label>
+				</div>
+			</div>
+
+
 		</div>
+		
+
+		<div class="row mb-3">
+
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control"  id="in_arrivo" name="in_arrivo" type="text" placeholder="In arrivo"  value="{{$info_articolo[0]->descrizione ?? ''}}"  disabled />
+					<label for="in_arrivo">In arrivo</label>
+				</div>
+			</div>
+
+
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control"  id="data_stimata_arrivo" name="data_stimata_arrivo" type="text" placeholder="Confezionamento" disabled />
+					<label for="data_stimata_arrivo">Data stimata arrivo</label>
+				</div>
+
+			</div>
+			
+			<div class="col-md-4">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-control" name="da_riordinare" id="da_riordinare" aria-label="da riordinare" >
+						<option value=''>Select...</option>
+							<option value='S'>
+								SI
+							</option>	
+							<option value='N'>
+								NO
+							</option>
+					</select>
+					<label for="da_riordinare">Da riordinare</label>
+				</div>
+			</div>
+
+
+		</div>
+		
 
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-control" name="id_categoria" id="id_categoria" aria-label="Categoria" required >
+					<select class="form-control" name="id_categoria" id="id_categoria" aria-label="Categoria" required onchange='load_sc(this.value)'>
 						<option value=''>Select...</option>
+						@foreach ($categorie as $categoria) 
+							<option value='{{$categoria->id}}'>
+								 {{$categoria->descrizione}}
+							</option>	
+						@endforeach
 					</select>
 					<label for="categoria">Categoria*</label>
 				</div>	
@@ -91,44 +156,25 @@
 		
 
 		<div class="row mb-3">
-			<div class="col-md-3">
-				<div class="form-floating">
-					<input class="form-control"  id="prezzo_acquisto" name="prezzo_acquisto" type="text" placeholder="Prezzo acquisto"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{$info_articolo[0]->prezzo_acquisto ?? ''}}" required maxlength=11 />
-					<label for="prezzo_acquisto">Prezzo acquisto*</label>
-				</div>
-			</div>
 
-			<div class="col-md-3">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-control" name="aliquota_iva" id="aliquota_iva" aria-label="Aliquota iva" required >
-						<option value=''>Select...</option>
-						@foreach ($aliquote_iva as $aliquota) 
-							<option value='{{$aliquota->id}}|{{$aliquota->aliquota}}'>
-								{{$aliquota->aliquota}}% - {{$aliquota->descrizione}}
-							</option>	
-						@endforeach						
-					</select>
-					<label for="categoria">Aliquota iva*</label>
-				</div>	
-			</div>
-			
-			<div class="col-md-3">
+			<!--
+				l'elenco dei magazzini di riferimento sarà caricato dinamicamente
+				in funzione dell'evasione dell'ordine e quindi dell'assegnazione ai vari magazzini
+			!-->
+			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control"  id="giacenza" name="giacenza" type="text" placeholder="Giacenza"  oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" value="{{$info_articolo[0]->giacenza ?? ''}}" required maxlength=11 />
-					<label for="giacenza">Giacenza*</label>
+					<input class="form-control"  id="magazzino_ref1" name="magazzino_ref1" type="text" placeholder="Magazzino di riferimento" disabled  />
+					<label for="giacenza">Magazzino di riferimento</label>
 				</div>
-			</div>			
-			
-			<div class="col-md-3">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-control" name="id_magazzino" id="id_magazzino" aria-label="Magazzino di riferimento" required >
-						<option value=''>Select...</option>
-					</select>
-					<label for="id_magazzino">Magazzino di riferimento*</label>
-				</div>	
+
 			</div>
 			
-			
+			<div class="col-md-6">
+				<div class="form-floating">
+					<input class="form-control"  id="qta_magazzino" name="giacenza" type="text" placeholder="Giacenza in magazzino" disabled  />
+					<label for="giacenza">Qta magazzino</label>
+				</div>
+			</div>
 
 
 		</div>		
@@ -174,7 +220,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/definizione_articolo.js?ver=1.238"></script>
+	<script src="{{ URL::asset('/') }}dist/js/definizione_articolo.js?ver=1.240"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

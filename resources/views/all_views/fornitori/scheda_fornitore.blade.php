@@ -61,7 +61,7 @@
 		<div class="row mb-3">	
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" id="partita_iva" name='partita_iva' type="text" required value="{{$info_fornitore[0]->partita_iva ?? ''}}" maxlength=16 oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" />
+					<input class="form-control" id="partita_iva" name='partita_iva' type="text" required value="{{$info_fornitore[0]->partita_iva ?? ''}}" maxlength=16  />
 					<label for="partita_iva">Partita iva*</label>
 				</div>
 			</div>			

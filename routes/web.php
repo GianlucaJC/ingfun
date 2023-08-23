@@ -283,6 +283,10 @@ Route::group(['only_log' => ['auth']], function () {
 //routing Ajax
 Route::group(['only_log' => ['auth']], function () {
 
+	//chiamate ajax prodotti
+	Route::post('elenco_sottocategorie', 'App\Http\Controllers\AjaxControllerAcquisti@elenco_sottocategorie');
+	//
+	
 	//chiamate ajax parco auto
 	Route::post('refresh_servizi_noleggio', 'App\Http\Controllers\AjaxControllerParco@refresh_servizi_noleggio');
 
@@ -295,7 +299,7 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('refresh_badge', 'App\Http\Controllers\AjaxControllerParco@refresh_badge');
 
 	Route::post('refresh_telepass', 'App\Http\Controllers\AjaxControllerParco@refresh_telepass');
-
+	///
 
 	Route::post('popola_servizi', 'App\Http\Controllers\AjaxControllerServ@popola_servizi');
 	

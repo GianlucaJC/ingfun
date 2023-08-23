@@ -66,3 +66,32 @@ $(document).ready( function () {
     });
 	
 } );
+
+function load_sc(id_categoria) {
+
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/elenco_sottocategorie",
+		data: {_token: CSRF_TOKEN,id_categoria:id_categoria},
+		success: function (data) {
+			$("#id_sotto_categoria")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#id_sotto_categoria').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				$('#id_sotto_categoria').append('<option value="' + item.id_sc+'">' + item.descr_sc + '</option>');
+						
+			});
+		}
+	});		
+
+}

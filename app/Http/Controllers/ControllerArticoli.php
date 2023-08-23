@@ -7,6 +7,8 @@ use App\Models\user;
 
 use App\Models\fornitori;
 use App\Models\aliquote_iva;
+use App\Models\prod_categorie;
+use App\Models\prod_sottocategorie;
 
 use DB;
 
@@ -73,17 +75,11 @@ class ControllerArticoli extends Controller
 			*/
 		}
 		
-
-		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		$categorie=prod_categorie::select('id','descrizione')
 		->get();
-		
-		$arr_aliquota=array();
-		foreach ($aliquote_iva as $aliquota) {
-			if (isset($aliquota->id))
-				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
-		}		
 
-		$data=array("info_articolo"=>$info_articolo,"aliquote_iva"=>$aliquote_iva,"arr_aliquota"=>$arr_aliquota);
+
+		$data=array("info_articolo"=>$info_articolo,"categorie"=>$categorie);
 
 		
 		if ($request->has("btn_save_fornitore")) {

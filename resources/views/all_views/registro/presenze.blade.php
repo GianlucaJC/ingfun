@@ -358,9 +358,10 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 						if ($value==0) 
 							if (isset($servizio['acronimo'])) $view.=$servizio['acronimo'];
 							elseif (isset($servizio['alias_ref'])) $view.=$servizio['alias_ref'];
-							else $view.=$value;
-						else 
-							$view.=$value;
+							else {
+								if ($value!="-1") $view.=$value;
+							}	
+						else if ($value!="-1") $view.=$value;
 					$view.="</span>";
 				$view.="</div>";
 			$view.="</a>";
