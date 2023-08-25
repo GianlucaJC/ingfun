@@ -19,9 +19,10 @@
 
 
 @section('content_main')
-<form method='post' action="{{ route('definizione_articolo') }}" id='frm_fornitore' name='frm_fornitore' autocomplete="off" class="needs-validation" novalidate>
+<form method='post' action="{{ route('definizione_articolo') }}" id='frm_articolo' name='frm_articolo' autocomplete="off" class="needs-validation" novalidate>
 <input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 <input type="hidden" value="{{url('/')}}" id="url" name="url">
+<input type='hidden' name='id_articolo' id='id_articolo' value='{{$id_articolo}}'>
 
   <!-- Content Wrapper. Contains page content -->
    <div class="content-wrapper">
@@ -74,7 +75,7 @@
 
 			<div class="col-md-3">
 				<div class="form-floating">
-					<input class="form-control"  id="unita_conf" name="unita_conf" type="text" placeholder="Confezionamento"  />
+					<input class="form-control"  id="um_conf" name="um_conf" type="text" placeholder="Confezionamento"  value="{{$info_articolo[0]->um_conf ?? ''}}" />
 					<label for="giacenza">U.M./Confez.</label>
 				</div>
 
@@ -82,7 +83,7 @@
 			
 			<div class="col-md-3">
 				<div class="form-floating">
-					<input class="form-control"  id="um" name="um" type="text" placeholder="Unità di misura"  />
+					<input class="form-control"  id="um" name="um" type="text" placeholder="Unità di misura" value="{{$info_articolo[0]->um ?? ''}}" />
 					<label for="um">Unità di misura</label>
 				</div>
 			</div>
@@ -95,7 +96,7 @@
 
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control"  id="in_arrivo" name="in_arrivo" type="text" placeholder="In arrivo"  value="{{$info_articolo[0]->descrizione ?? ''}}"  disabled />
+					<input class="form-control"  id="in_arrivo" name="in_arrivo" type="text" placeholder="In arrivo"  disabled />
 					<label for="in_arrivo">In arrivo</label>
 				</div>
 			</div>
@@ -113,12 +114,21 @@
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-control" name="da_riordinare" id="da_riordinare" aria-label="da riordinare" >
 						<option value=''>Select...</option>
-							<option value='S'>
-								SI
-							</option>	
-							<option value='N'>
-								NO
-							</option>
+							<option value='S'
+							<?php
+								if (isset($info_articolo[0]->da_riordinare) && $info_articolo[0]->da_riordinare=="S") echo " selected ";
+							?>
+							>SI</option>
+							
+							<option value='N'
+							<?php
+								if (isset($info_articolo[0]->da_riordinare) && $info_articolo[0]->da_riordinare=="N") echo " selected ";
+							?>
+							>NO</option>	
+							
+
+
+							
 					</select>
 					<label for="da_riordinare">Da riordinare</label>
 				</div>
@@ -128,14 +138,16 @@
 		</div>
 		
 
-		<div class="row mb-3">
+		<dmoreomreiv class="row mb-3">
 			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-control" name="id_categoria" id="id_categoria" aria-label="Categoria" required onchange='load_sc(this.value)'>
 						<option value=''>Select...</option>
 						@foreach ($categorie as $categoria) 
-							<option value='{{$categoria->id}}'>
-								 {{$categoria->descrizione}}
+							<option value='{{$categoria->id}}'
+							 @if(isset($info_articolo[0]->id_categoria) && $categoria->id==$info_articolo[0]->id_categoria)  selected
+							 @endif
+							>{{$categoria->descrizione}}
 							</option>	
 						@endforeach
 					</select>
@@ -147,6 +159,13 @@
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-control" name="id_sotto_categoria" id="id_sotto_categoria" aria-label="Categoria" required >
 						<option value=''>Select...</option>
+						@foreach ($sotto_categorie as $sottocategoria) 
+							<option value='{{$sottocategoria->id}}'
+							 @if(isset($info_articolo[0]->id_sottocategoria) && $sottocategoria->id==$info_articolo[0]->id_sottocategoria)  selected
+							 @endif
+							>{{$sottocategoria->descrizione}}
+							</option>	
+						@endforeach						
 					</select>
 					<label for="categoria">Sotto Categoria*</label>
 				</div>	

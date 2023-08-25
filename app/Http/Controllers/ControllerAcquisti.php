@@ -7,6 +7,11 @@ use App\Models\user;
 use App\Models\italy_cities;
 use App\Models\fornitori;
 use App\Models\ordini_fornitore;
+use App\Models\prod_magazzini;
+use App\Models\prod_prodotti;
+use App\Models\prodotti_ordini;
+use App\Models\aliquote_iva;
+
 
 use DB;
 
@@ -71,9 +76,12 @@ class ControllerAcquisti extends Controller
 			->get();
 		}
 		
+
 		$lista_pagamenti=$this->lista_pagamenti();
 
 		$all_comuni = italy_cities::orderBy('comune')->get();		
+
+		
 
 		$data=array("id_fornitore"=>$id_fornitore,'info_fornitore'=>$info_fornitore,'all_comuni'=>$all_comuni,'lista_pagamenti'=>$lista_pagamenti);
 
@@ -88,39 +96,103 @@ class ControllerAcquisti extends Controller
 		
 	}
 	
-
-	public function ordini_fornitore($id_ordine=0) {
+	public function save_ordine($id_ordine) {
 		$request=request();
-		$btn_save_ordine=$request->input("btn_save_ordine");
-
-		$info_ordine=array();
-
-$id_fornitore=1;
 	
-		if ($id_ordine!=0) {
-			$info_ordine=ordini_fornitore::from('fornitori as o')
-			->join('fornitori as f','o.id_fornitore','f.id')
-			->select('o.*','f.ragione_sociale')
-			->where('id', "=", $id_ordine)
-			->get();
-		} else {
-			$info_ordine=fornitori::from('fornitori as f')
-			->select('f.ragione_sociale')
-			->where('f.id','=',$id_fornitore)
-			->get();
-		}
-
-		$data=array("id_fornitore"=>$id_fornitore,"id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine);
+		if ($id_ordine!=0) 
+			$ordine = ordini_fornitore::find($id_ordine);
+		else 
+			$ordine = new ordini_fornitore;
+		
+		$ordine->id_fornitore = $request->input('id_fornitore');
+		$ordine->data_ordine = $request->input('data_ordine');
+		$ordine->data_presunta_arrivo_merce = $request->input('data_presunta_arrivo_merce');
+		$ordine->stato_ordine = $request->input('stato_ordine');
+		$ordine->id_sede_consegna = $request->input('id_sede_consegna');
 
 		
-		if ($request->has("btn_save_ordine")) {
-			/*
-			if ($save_fornitore!=0) $id_fornitore=$save_fornitore;
-			return redirect()->route("scheda_fornitore",['id'=>$id_fornitore]);
-			*/
+		$ordine->save();
+		$id_ordine=$ordine->id;
+
+		
+		return $id_ordine;
+	}
+
+	public function save_art($id_ordine,$id_riga) {
+		$request=request();
+
+		if ($id_riga!=0) 
+			$po = prodotti_ordini::find($id_riga);
+		else 
+			$po = new prodotti_ordini;
+		
+		$po->id_ordine = $id_ordine;
+		$po->id_magazzino = 0; ///da valorizzare correttamente!
+		$po->codice_articolo = $request->input('codice');
+		$po->quantita = $request->input('quantita');
+		$po->prezzo_unitario = $request->input('prezzo_unitario');
+		$po->aliquota = $request->input('aliquota');
+		$po->subtotale = $request->input('subtotale');
+
+		$po->save();
+	}
+
+	public function ordini_fornitore($id_ordine_init=0) {
+		$request=request();
+		$btn_save_ordine=$request->input("btn_save_ordine");
+		$btn_save_art=$request->input("btn_save_art");
+		$id_ordine=$request->input("id_ordine");
+		if (strlen($id_ordine)==0) $id_ordine=$id_ordine_init;
+		
+		if ($btn_save_ordine=="save") {
+			$id_ref=$this->save_ordine($id_ordine);
+			return redirect()->route("ordini_fornitore",['id'=>$id_ref]);
+		}	
+		if ($btn_save_art=="save") {
+			$id_ordine_modal=$request->input("id_ordine_modal");
+			$this->save_art($id_ordine_modal,0);
+			return redirect()->route("ordini_fornitore",['id'=>$id_ordine_modal]);
+		}	
+		$info_ordine=array();
+
+	
+		if ($id_ordine!=0) {
+			$info_ordine=ordini_fornitore::from('ordini_fornitore as o')
+			->join('fornitori as f','o.id_fornitore','f.id')
+			->select('o.*','f.ragione_sociale')
+			->where('o.id', "=", $id_ordine)
+			->get();
 		}
-		else
-			return view('all_views/fornitori/ordini_fornitore')->with($data);
+		$fornitori=fornitori::select('*')
+		->orderBy('ragione_sociale')
+		->where('dele','=',0)
+		->get();
+		$magazzini = prod_magazzini::orderBy('descrizione')->get();
+
+		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		->get();
+
+		$prodotti=prod_prodotti::from('prod_prodotti as p')
+		->select('p.*')
+		->orderBy('descrizione')
+		->get();
+
+		$prodotti_ordini=prod_prodotti::from('prodotti_ordini as p')
+		->select('p.*')
+		->where('p.id_ordine','=',$id_ordine)
+		->get();
+		
+		
+		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"aliquote_iva"=>$aliquote_iva,"prodotti_ordini"=>$prodotti_ordini);
+
+
+		
+		/*
+		if ($save_fornitore!=0) $id_fornitore=$save_fornitore;
+		return redirect()->route("scheda_fornitore",['id'=>$id_fornitore]);
+		*/
+
+		return view('all_views/fornitori/ordini_fornitore')->with($data);
 		
 	}	
 	

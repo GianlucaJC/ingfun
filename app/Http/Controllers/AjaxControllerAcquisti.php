@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\prod_categorie;
 use App\Models\prod_sottocategorie;
+use App\Models\prod_prodotti;
 
 use Mail;
 use DB;
@@ -25,5 +26,14 @@ class AjaxControllerAcquisti extends Controller
 		->get();
         return json_encode($sottoc);
 	}	
+
+	public function refresh_prodotti(Request $request){		
+		
+		$prodotti=prod_prodotti::from('prod_prodotti as p')
+		->select('p.*')
+		->orderBy('descrizione')
+		->get();
+        return json_encode($prodotti);
+	}
 
 }

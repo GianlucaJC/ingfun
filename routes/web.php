@@ -285,6 +285,8 @@ Route::group(['only_log' => ['auth']], function () {
 
 	//chiamate ajax prodotti
 	Route::post('elenco_sottocategorie', 'App\Http\Controllers\AjaxControllerAcquisti@elenco_sottocategorie');
+
+	Route::post('refresh_prodotti', 'App\Http\Controllers\AjaxControllerAcquisti@refresh_prodotti');
 	//
 	
 	//chiamate ajax parco auto

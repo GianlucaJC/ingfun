@@ -24,9 +24,34 @@
         form.classList.add('was-validated')
       }, false)
     })
+	
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation1')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })	
+	
+	
+	
+	
 })()
 $(document).ready( function () {
-    $('#tbl_list_preventivi tfoot th').each(function () {
+	$('.select2').select2({
+		dropdownParent: $('#modal_story')
+	})
+
+    /*
+	$('.tfoot1 th').each(function () {
         var title = $(this).text();
 		if (title.length!=0) {
 			style="";
@@ -35,7 +60,8 @@ $(document).ready( function () {
 			$(this).html('<input '+style+' type="text" placeholder="' + title + '" />');
 		}
     });	
-    var table=$('#tbl_list_preventivi').DataTable({
+	*/
+    var table=$('#tbl_prodotti_ordine').DataTable({
 		dom: 'Bfrtip',
 		buttons: [
 			'excel', 'pdf'
@@ -56,10 +82,10 @@ $(document).ready( function () {
         },
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',
-            zeroRecords: 'Nessun preventivo trovato',
+            zeroRecords: 'Nessun articolo trovato',
             info: 'Pagina _PAGE_ di _PAGES_',
-            infoEmpty: 'Non sono presenti preventivi',
-            infoFiltered: '(Filtrati da _MAX_ preventivi totali)',
+            infoEmpty: 'Non sono presenti articoli in questo ordine',
+            infoFiltered: '(Filtrati da _MAX_ articoli totali)',
         },
 
 		
@@ -98,4 +124,77 @@ function edit_product() {
 	
 	$("#ordine").val(ordine)
 
+}
+
+
+function refresh_prodotti() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_prodotti",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#codice")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#codice').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#codice').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});	
+}
+
+function refresh_aliquota() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_aliquota",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#aliquota")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#aliquota').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#aliquota').append('<option value="' + item.id + '|'+item.aliquota+'">' + item.aliquota+'% - '+item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+}
+
+function calcolo_riga() {
+	quantita=$("#quantita").val()
+	prezzo_unitario=$("#prezzo_unitario").val()
+	infoaliquota=$("#aliquota").val()
+	aliquota=infoaliquota.split("|")[1]/100
+	if (quantita && prezzo_unitario) {
+		subtotale=quantita*prezzo_unitario
+		if (aliquota && aliquota!=0) {
+			aliquota=aliquota+1
+			subtotale=subtotale*aliquota
+		}
+		subtotale=subtotale.toFixed(2)
+		$("#subtotale").val(subtotale)
+	}
 }
