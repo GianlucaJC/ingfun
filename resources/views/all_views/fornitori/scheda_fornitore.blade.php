@@ -220,7 +220,7 @@
 			<div class="row mb-3 mt-5">
 				<div class="col-md-4">
 					<button type="submit" name="btn_save_fornitore" value="save" class="btn btn-success">Crea/Modifica Ditta</button>
-					<a href="{{ route('scheda_fornitore') }}">
+					<a href="{{ route('elenco_fornitori') }}">
 						<button type="button" class="btn btn-secondary" >
 						Elenco fornitori
 						</button>

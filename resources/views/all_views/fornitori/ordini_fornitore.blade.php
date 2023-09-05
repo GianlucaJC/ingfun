@@ -51,6 +51,7 @@
 	<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
 	<input type="hidden" value="{{url('/')}}" id="url" name="url">
 	<input type='hidden' name='id_ordine' id='id_ordine' value='{{$id_ordine}}'>
+	<input type='hidden' name='dele_riga' id='dele_riga'>
 
       <div class="container-fluid">
 		<div class="row mb-3">
@@ -67,6 +68,18 @@
 						@endforeach
 					</select>
 					<label for="id_fornitore">FORNITORE*</label>
+					
+					<a href="{{ route('elenco_fornitori') }}" class="link-primary" target='_blank' onclick="
+							 $('.up').hide();$('#div_up_forn').show()">
+						Definisci/modifica
+					</a>					
+					<span id='div_up_forn' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick='refresh_forn()'>
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>						
 				</div>
 			</div>
 			<div class="col-md-4">
@@ -140,6 +153,7 @@
 						<th style='text-align:right'>Imponibile</th>
 						<th style='text-align:right'>Iva</th>
 						<th style='text-align:right'>Subtotale</th>
+						<th style='width:200px'>Operazioni</th>
 					</tr>
 				</thead>
 				<body>
@@ -158,6 +172,22 @@
 
 						<td style='text-align:right'>{{number_format($prodotto->subtotale-($prodotto->prezzo_unitario*$prodotto->quantita),2)}}€</td>
 						<td style='text-align:right'>{{number_format($prodotto->subtotale,2)}}€</td>
+						
+						<td style='width:200px'>
+
+							<!-- riga info per js !-->
+							<span id='inforow{{$prodotto->id}}'  data-codice='{{ $prodotto->codice_articolo}}' data-prezzo_unitario='{{$prodotto->prezzo_unitario}}' data-quantita='{{$prodotto->quantita}}' 
+							data-subtotale='{{$prodotto->subtotale}}' data-aliquota='{{ $prodotto->aliquota}}|{{$arr_aliquota[$prodotto->aliquota]}}' >
+							</span>							
+							<a href="javascript:void(0)" onclick="edit_product({{$prodotto->id}})" >
+								<button type="button" class="btn btn-info" alt='Edit' title='Modifica riga'><i class="fas fa-edit"></i></button>
+							</a>
+
+							<a href='#' onclick="dele_element({{$prodotto->id}})">
+								<button type="submit" name='dele_ele' class="btn btn-danger" title='Elimina riga ordine'><i class="fas fa-trash"></i></button>	
+							</a>
+							
+						</td>						
 					</tr>
 					@endforeach
 				</body>
@@ -169,7 +199,8 @@
 						<th></th>
 						<th style='text-align:right'>{{number_format($imponibile,2)}}€</th>
 						<th style='text-align:right'>{{number_format($s_iva,2)}}€</th>
-						<th style='text-align:right'>{{number_format($s_totale,2)}}€</th>					
+						<th style='text-align:right'>{{number_format($s_totale,2)}}€</th>
+						<th style='width:200px'></th>
 					</tr>
 				</tfoot>
 				
@@ -198,11 +229,11 @@
 					<button type="submit" name="btn_save_ordine" value="save" class="btn btn-success">Crea/Modifica Ordine</button>
 					
 					@if ($id_ordine!=0)
-						<button type="button" name="btn_add_articolo" value="save" onclick="edit_product()"  class="btn btn-primary">Aggiungi articolo</button>
+						<button type="button" name="btn_add_articolo" value="save" onclick="edit_product(0)"  class="btn btn-primary">Aggiungi articolo</button>
 					@endif
 					
 					
-					<a href="#">
+					<a href="{{route('elenco_ordini_fornitori')}}">
 						<button type="button" class="btn btn-secondary" >
 						Elenco Ordini
 						</button>
@@ -246,7 +277,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.252"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.282"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

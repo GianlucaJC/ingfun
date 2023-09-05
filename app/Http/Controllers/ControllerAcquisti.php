@@ -121,7 +121,7 @@ class ControllerAcquisti extends Controller
 	public function save_art($id_ordine,$id_riga) {
 		$request=request();
 
-		if ($id_riga!=0) 
+		if (strlen($id_riga)!=0 && $id_riga!="0")
 			$po = prodotti_ordini::find($id_riga);
 		else 
 			$po = new prodotti_ordini;
@@ -150,10 +150,12 @@ class ControllerAcquisti extends Controller
 		}	
 		if ($btn_save_art=="save") {
 			$id_ordine_modal=$request->input("id_ordine_modal");
-			$this->save_art($id_ordine_modal,0);
+			$id_riga=$request->input("id_riga");
+			$this->save_art($id_ordine_modal,$id_riga);
 			return redirect()->route("ordini_fornitore",['id'=>$id_ordine_modal]);
 		}	
 		$info_ordine=array();
+
 
 	
 		if ($id_ordine!=0) {
@@ -171,19 +173,33 @@ class ControllerAcquisti extends Controller
 
 		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
 		->get();
+		
 
 		$prodotti=prod_prodotti::from('prod_prodotti as p')
 		->select('p.*')
 		->orderBy('descrizione')
 		->get();
 
-		$prodotti_ordini=prod_prodotti::from('prodotti_ordini as p')
+
+		$dele_riga=$request->input("dele_riga");
+		if (strlen($dele_riga)!=0) 
+			prodotti_ordini::where('id', $dele_riga)->delete();
+
+		$prodotti_ordini=prodotti_ordini::from('prodotti_ordini as p')
 		->select('p.*')
 		->where('p.id_ordine','=',$id_ordine)
 		->get();
+
+		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		->get();
 		
+		$arr_aliquota=array();
+		foreach ($aliquote_iva as $aliquota) {
+			if (isset($aliquota->id))
+				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
+		}	
 		
-		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"aliquote_iva"=>$aliquote_iva,"prodotti_ordini"=>$prodotti_ordini);
+		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"aliquote_iva"=>$aliquote_iva,"prodotti_ordini"=>$prodotti_ordini,'arr_aliquota'=>$arr_aliquota);
 
 
 		
@@ -195,6 +211,67 @@ class ControllerAcquisti extends Controller
 		return view('all_views/fornitori/ordini_fornitore')->with($data);
 		
 	}	
+	
+	
+	public function elenco_ordini_fornitori(Request $request){
+
+		$view_dele=$request->input("view_dele");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+		if (strlen($dele_contr)!=0) {
+			ordini_fornitore::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			ordini_fornitore::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$elenco_ordini=DB::table('ordini_fornitore as o')
+		->join('fornitori as f','o.id_fornitore','f.id')
+		->select('o.*',DB::raw("DATE_FORMAT(o.data_ordine,'%d-%m-%Y') as data_ordine_it"),'f.ragione_sociale')
+		->when($view_dele=="0", function ($elenco_ordini) {
+			return $elenco_ordini->where('o.dele', "=","0");
+		})
+		->orderBy('o.id','desc')->get();
+
+		return view('all_views/fornitori/elenco_ordini_fornitori')->with("view_dele",$view_dele)->with("elenco_ordini",$elenco_ordini);
+
+	}	
+
+
+	public function elenco_fornitori(Request $request){
+
+		$view_dele=$request->input("view_dele");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+		if (strlen($dele_contr)!=0) {
+			fornitori::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			fornitori::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$elenco_fornitori=DB::table('fornitori')
+		->when($view_dele=="0", function ($elenco_fornitori) {
+			return $elenco_fornitori->where('dele', "=","0");
+		})
+		->orderBy('id','desc')->get();
+
+		return view('all_views/fornitori/elenco_fornitori')->with("view_dele",$view_dele)->with("elenco_fornitori",$elenco_fornitori);
+
+	}		
+		
 	
 	function lista_pagamenti() {
 		$lista=array();

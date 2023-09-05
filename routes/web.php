@@ -58,6 +58,17 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::get('scheda_fornitore/{id?}', [ 'as' => 'scheda_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@scheda_fornitore'])->middleware(['role:admin']);	
 
+
+	Route::get('elenco_fornitori', [ 'as' => 'elenco_fornitori', 'uses' => 'App\Http\Controllers\ControllerAcquisti@elenco_fornitori'])->middleware(['role:admin|coord|resp']);
+	
+	Route::post('elenco_fornitori', [ 'as' => 'elenco_fornitori', 'uses' => 'App\Http\Controllers\ControllerAcquisti@elenco_fornitori'])->middleware(['role:admin|coord|resp']);
+
+
+	Route::get('elenco_ordini_fornitori', [ 'as' => 'elenco_ordini_fornitori', 'uses' => 'App\Http\Controllers\ControllerAcquisti@elenco_ordini_fornitori'])->middleware(['role:admin|coord|resp']);
+	
+	Route::post('elenco_ordini_fornitori', [ 'as' => 'elenco_ordini_fornitori', 'uses' => 'App\Http\Controllers\ControllerAcquisti@elenco_ordini_fornitori'])->middleware(['role:admin|coord|resp']);
+
+
 	Route::post('ordini_fornitore', [ 'as' => 'ordini_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@ordini_fornitore'])->middleware(['role:admin']);
 
 	Route::get('ordini_fornitore/{id?}', [ 'as' => 'ordini_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@ordini_fornitore'])->middleware(['role:admin']);	
@@ -65,6 +76,10 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('definizione_articolo', [ 'as' => 'definizione_articolo', 'uses' => 'App\Http\Controllers\ControllerArticoli@definizione_articolo'])->middleware(['role:admin']);
 
 	Route::get('definizione_articolo/{id?}', [ 'as' => 'definizione_articolo', 'uses' => 'App\Http\Controllers\ControllerArticoli@definizione_articolo'])->middleware(['role:admin']);	
+
+	Route::post('elenco_articoli', [ 'as' => 'elenco_articoli', 'uses' => 'App\Http\Controllers\ControllerArticoli@elenco_articoli'])->middleware(['role:admin']);
+
+	Route::get('elenco_articoli', [ 'as' => 'elenco_articoli', 'uses' => 'App\Http\Controllers\ControllerArticoli@elenco_articoli'])->middleware(['role:admin']);
 
 	
 	Route::get('modello', [ 'as' => 'modello', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@modello'])->middleware(['role:admin|coord|resp']);
@@ -302,6 +317,11 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::post('refresh_telepass', 'App\Http\Controllers\AjaxControllerParco@refresh_telepass');
 	///
+
+
+
+	Route::post('refresh_forn', 'App\Http\Controllers\AjaxControllerAcquisti@refresh_forn');
+
 
 	Route::post('popola_servizi', 'App\Http\Controllers\AjaxControllerServ@popola_servizi');
 	

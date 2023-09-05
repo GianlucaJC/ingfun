@@ -92,37 +92,76 @@ $(document).ready( function () {
     });
 	
 } );
-function edit_product() {
+
+function refresh_forn() {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/refresh_forn",
+		data: {_token: CSRF_TOKEN},
+		success: function (data) {
+			$("#div_up_forn").hide(150)
+			$("#id_fornitore")
+			.find('option')
+			.remove()
+			.end();	
+			
+			$('#id_fornitore').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#id_fornitore').append('<option value="' + item.id + '">' + item.ragione_sociale + '</option>');
+						
+			});
+		}
+	});		
+}
+
+function dele_element(id_dele) {
+	if (!confirm("Sicuri di cancellare la riga?")) {
+		event.preventDefault();
+		return false
+	}
+	$("#dele_riga").val(id_dele)
+}
+
+function edit_product(id_riga) {
 	$("#title_modal").html("Inserimento/Modifica articolo")
 	$('#modal_story').modal('toggle')
 	//$("#body_modal").html("Caricamento informazioni in corso...")		
 
 	if (id_riga!=0) {
 		codice=$("#inforow"+id_riga).data("codice")
-		descrizione=$("#inforow"+id_riga).data("descrizione")
+		
 		quantita=$("#inforow"+id_riga).data("quantita")
-		um=$("#inforow"+id_riga).data("um")
 		prezzo_unitario=$("#inforow"+id_riga).data("prezzo_unitario")
 		prezzo_unitario=prezzo_unitario.toFixed(2)
 		
 		subtotale=$("#inforow"+id_riga).data("subtotale")
 		subtotale=subtotale.toFixed(2)
+		
 		aliquota=$("#inforow"+id_riga).data("aliquota")
-
-		$("#codice").val(codice)
-		$("#prodotto").val(descrizione)
+	
 		$("#quantita").val(quantita)
-		$("#um").val(um)
+		
 		$("#prezzo_unitario").val(prezzo_unitario)
 		$("#subtotale").val(subtotale)
 		$("#aliquota").val(aliquota)
-		
-		
+		$("#codice").val(codice).trigger('change');
+		$("#id_riga").val(id_riga)
+
 	}
-	else
-		$("#frm_modal")[0].reset()
+	else {
+		$("#frm_ordini1")[0].reset()
+		$("#codice").val('').trigger('change');
+	}	
 	
-	$("#ordine").val(ordine)
+	
 
 }
 
@@ -188,6 +227,8 @@ function calcolo_riga() {
 	prezzo_unitario=$("#prezzo_unitario").val()
 	infoaliquota=$("#aliquota").val()
 	aliquota=infoaliquota.split("|")[1]/100
+
+
 	if (quantita && prezzo_unitario) {
 		subtotale=quantita*prezzo_unitario
 		if (aliquota && aliquota!=0) {

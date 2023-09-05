@@ -8,6 +8,7 @@ use Illuminate\Http\Request;
 use App\Models\prod_categorie;
 use App\Models\prod_sottocategorie;
 use App\Models\prod_prodotti;
+use App\Models\fornitori;
 
 use Mail;
 use DB;
@@ -34,6 +35,15 @@ class AjaxControllerAcquisti extends Controller
 		->orderBy('descrizione')
 		->get();
         return json_encode($prodotti);
+	}
+
+	public function refresh_forn(Request $request){		
+		
+		$fornitori=fornitori::from('fornitori as f')
+		->select('f.*')
+		->orderBy('ragione_sociale')
+		->get();
+        return json_encode($fornitori);
 	}
 
 }

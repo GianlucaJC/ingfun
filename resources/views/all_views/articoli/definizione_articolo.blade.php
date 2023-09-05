@@ -202,7 +202,7 @@
 			<div class="col-md-4">
 				<button type="submit" name="btn_save_articolo" value="save" class="btn btn-success">Crea/Modifica Articolo</button>
 
-				<a href="#">
+				<a href="{{ route('elenco_articoli') }}">
 					<button type="button" class="btn btn-secondary" >
 					Elenco Articoli
 					</button>

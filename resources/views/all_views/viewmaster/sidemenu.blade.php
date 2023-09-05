@@ -515,21 +515,12 @@ use App\Models\User;
 							<ul class="nav nav-treeview">
 
 							  <li class="nav-item">
-								<a href="{{route('definizione_articolo')}}" class="nav-link">
-								  <i class="far fa-circle nav-icon"></i>
-								  <p>Nuovo prodotto</p>
-								</a>
-							  </li>	
-							  
-							</ul>
-							<ul class="nav nav-treeview">
-							  <li class="nav-item">
-								<a href="#" class="nav-link">
+								<a href="{{route('elenco_articoli')}}" class="nav-link">
 								  <i class="far fa-circle nav-icon"></i>
 								  <p>Elenco prodotti</p>
 								</a>
-							  </li>
-							</ul>							
+							  </li>	
+						
 						</li>
 						
 						<li class="nav-item menu">
@@ -541,26 +532,19 @@ use App\Models\User;
 							</a>
 							<ul class="nav nav-treeview">
 							  <li class="nav-item">
-								<a href="{{route('scheda_fornitore')}}" class="nav-link">
-								  <i class="far fa-circle nav-icon"></i>
-								  <p>Nuovo fornitore</p>
-								</a>
-							  </li>
-							</ul>  
-							<ul class="nav nav-treeview">
-							  <li class="nav-item">
-								<a href="#" class="nav-link">
+								<a href="{{route('elenco_fornitori')}}" class="nav-link">
 								  <i class="far fa-circle nav-icon"></i>
 								  <p>Elenco fornitori</p>
 								</a>
 							  </li>
 							</ul>  
+
 							
 							<ul class="nav nav-treeview">
 							  <li class="nav-item">
-								<a href="{{route('ordini_fornitore')}}" class="nav-link">
+								<a href="{{route('elenco_ordini_fornitori')}}" class="nav-link">
 								  <i class="far fa-circle nav-icon"></i>
-								  <p>Ordini fornitore</p>
+								  <p>Ordini fornitori</p>
 								</a>
 							  </li>
 							</ul> 		

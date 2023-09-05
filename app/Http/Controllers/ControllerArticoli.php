@@ -41,13 +41,16 @@ class ControllerArticoli extends Controller
 		return $id_articolo;
 	}
 	
-	public function definizione_articolo($id_articolo=0) {
+	public function definizione_articolo($id_articolo_init=0) {
 		$request=request();
 		$btn_save_articolo=$request->input("btn_save_articolo");
 		$save_articolo=0;
 		if ($btn_save_articolo=="save") 
 			$save_articolo=$this->save_articolo();
 
+		$id_articolo=$request->input("id_articolo");
+		if (strlen($id_articolo)==0) $id_articolo=$id_articolo_init;
+		
 		$info_articolo=array();
 		$sotto_categorie=array();
 		$sc=null;
@@ -72,17 +75,37 @@ class ControllerArticoli extends Controller
 
 		$data=array("info_articolo"=>$info_articolo,"categorie"=>$categorie,"id_articolo"=>$id_articolo,"sotto_categorie"=>$sotto_categorie);
 
-		
-		if ($request->has("btn_save_fornitore")) {
-			/*
-			if ($save_fornitore!=0) $id_fornitore=$save_fornitore;
-			return redirect()->route("scheda_fornitore",['id'=>$id_fornitore]);
-			*/
-		}
-		else
-		
-			return view('all_views/articoli/definizione_articolo')->with($data);
+		return view('all_views/articoli/definizione_articolo')->with($data);
 		
 	}
+	
+	public function elenco_articoli(Request $request){
+
+		$view_dele=$request->input("view_dele");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+		if (strlen($dele_contr)!=0) {
+			prod_prodotti::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			prod_prodotti::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$elenco_articoli=DB::table('prod_prodotti')
+		->when($view_dele=="0", function ($elenco_articoli) {
+			return $elenco_articoli->where('dele', "=","0");
+		})
+		->orderBy('id','desc')->get();
+
+		return view('all_views/articoli/elenco_articoli')->with("view_dele",$view_dele)->with("elenco_articoli",$elenco_articoli);
+
+	}	
+	
 }
 

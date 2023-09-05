@@ -24,6 +24,7 @@
 			<!-- <div class="col-md-6"> !-->
 			<div class="row mb-3">
 
+				<input type='hidden' name='id_riga' id='id_riga'>
 				<div class="col-md-4">
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select select2" id="codice" aria-label="codice prodotto" name='codice' onchange="calcolo_riga()" required>
