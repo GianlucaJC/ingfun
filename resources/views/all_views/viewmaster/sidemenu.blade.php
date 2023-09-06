@@ -520,6 +520,7 @@ use App\Models\User;
 								  <p>Elenco prodotti</p>
 								</a>
 							  </li>	
+							</ul>  
 						
 						</li>
 						

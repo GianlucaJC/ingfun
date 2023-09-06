@@ -83,13 +83,11 @@
 								</td>
 								
 								<td>
-									
-
+									{{ $articolo->categoria }}
 								</td>
 
 								<td>
-									
-
+									{{ $articolo->sottocategoria }}
 								</td>
 
 

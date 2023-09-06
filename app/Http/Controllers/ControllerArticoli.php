@@ -97,10 +97,14 @@ class ControllerArticoli extends Controller
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		
-		$elenco_articoli=DB::table('prod_prodotti')
+		$elenco_articoli=DB::table('prod_prodotti as p')
+		->select('p.*','c.descrizione as categoria','sc.descrizione as sottocategoria')
+		->join('prod_categorie as c','p.id_categoria','c.id')
+		->join('prod_sottocategorie as sc','p.id_sottocategoria','sc.id_categoria')
 		->when($view_dele=="0", function ($elenco_articoli) {
 			return $elenco_articoli->where('dele', "=","0");
 		})
+		->groupBy('p.id')
 		->orderBy('id','desc')->get();
 
 		return view('all_views/articoli/elenco_articoli')->with("view_dele",$view_dele)->with("elenco_articoli",$elenco_articoli);
