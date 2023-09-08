@@ -138,7 +138,7 @@
 		</div>
 		
 
-		<dmoreomreiv class="row mb-3">
+		<div class="row mb-3">
 			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-control" name="id_categoria" id="id_categoria" aria-label="Categoria" required onchange='load_sc(this.value)'>
@@ -152,6 +152,18 @@
 						@endforeach
 					</select>
 					<label for="categoria">Categoria*</label>
+					
+					<a href="{{ route('categorie_prodotti') }}" class="link-primary" target='_blank' onclick="
+							 $('.up').hide();$('#div_up_cat').show()">
+						Definisci/modifica
+					</a>					
+					<span id='div_up_cat' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick='refresh_cat()'>
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>						
 				</div>	
 			</div>
 
@@ -168,35 +180,46 @@
 						@endforeach						
 					</select>
 					<label for="categoria">Sotto Categoria*</label>
+					
+					<a href="{{ route('sottocategorie_prodotti') }}" class="link-primary" target='_blank' onclick='$("#id_sotto_categoria").find("option").remove().end();$(".up").hide();$("#div_up_scat").show()'>
+						Definisci/modifica
+					</a>
+					<span id='div_up_scat' class='up' style='display:none'>
+						<a href='javascript:void(0)' class='ml-2' onclick="$('#id_categoria').attr('selected', 'selected').trigger('change')">
+							<font color='green'>
+								<i class="fas fa-sync-alt"></i>
+							</font>	
+						</a>	
+					</span>						
 				</div>	
 			</div>
 
 		</div>
 		
 
-		<div class="row mb-3">
+		@foreach($info_giacenze as $id_m=>$value_m)
+			<div class="row mb-3">
+				<div class="col-md-6">
+					<div class="form-floating">
+					<?php
+						$maga="";
+						if (isset($info_mag[$id_m]))	
+							$maga=$info_mag[$id_m];
+					?>
+						<input class="form-control"  id="magazzino_ref1" name="magazzino_ref1" type="text" placeholder="Magazzino di riferimento" disabled value="{{$maga}}" />
+						<label for="giacenza">Magazzino di riferimento</label>
+					</div>
 
-			<!--
-				l'elenco dei magazzini di riferimento sarà caricato dinamicamente
-				in funzione dell'evasione dell'ordine e quindi dell'assegnazione ai vari magazzini
-			!-->
-			<div class="col-md-6">
-				<div class="form-floating">
-					<input class="form-control"  id="magazzino_ref1" name="magazzino_ref1" type="text" placeholder="Magazzino di riferimento" disabled  />
-					<label for="giacenza">Magazzino di riferimento</label>
 				</div>
-
-			</div>
-			
-			<div class="col-md-6">
-				<div class="form-floating">
-					<input class="form-control"  id="qta_magazzino" name="giacenza" type="text" placeholder="Giacenza in magazzino" disabled  />
-					<label for="giacenza">Qta magazzino</label>
+				
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input class="form-control"  id="qta_magazzino" name="giacenza" type="text" placeholder="Giacenza in magazzino" disabled value="{{$value_m}}" >
+						<label for="giacenza">Qta magazzino</label>
+					</div>
 				</div>
 			</div>
-
-
-		</div>		
+		@endforeach
 			
 		<div class="row mb-3">
 			<div class="col-md-4">
@@ -239,7 +262,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/definizione_articolo.js?ver=1.240"></script>
+	<script src="{{ URL::asset('/') }}dist/js/definizione_articolo.js?ver=1.241"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

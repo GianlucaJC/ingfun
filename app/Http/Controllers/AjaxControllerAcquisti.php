@@ -17,6 +17,13 @@ use DB;
 class AjaxControllerAcquisti extends Controller
 	{
 
+	public function elenco_categorie(Request $request){		
+		$categ=DB::table('prod_categorie as c')
+		->select('c.id','c.descrizione')
+		->orderBy('c.descrizione')
+		->get();
+        return json_encode($categ);
+	}
 
 	public function elenco_sottocategorie(Request $request){		
 		$id_categoria = $request->input('id_categoria');

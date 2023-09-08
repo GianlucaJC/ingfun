@@ -25,15 +25,16 @@
       <div class="container-fluid">
         <div class="row mb-2">
           <div class="col-sm-6">
-            <h1 class="m-0">EVASIONE ORDINI FORNITORI</h1>
+            <h1 class="m-0">SOTTO CATEGORIE DI PRODOTTO</h1>
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
               <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
-			  <li class="breadcrumb-item">Amministrazione</li>
-			  <li class="breadcrumb-item">Ufficio Acquisti</li>
-			  <li class="breadcrumb-item">Gestioni Fornitori</li>
-              <li class="breadcrumb-item active">Ordini Fornitori</li>
+
+			  <li class="breadcrumb-item active">Amministrazione</li>
+			  <li class="breadcrumb-item active">Archivi</li>
+
+              <li class="breadcrumb-item active">Sotto Categorie di prodotto</li>
             </ol>
           </div><!-- /.col -->
         </div><!-- /.row -->
@@ -45,82 +46,54 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		<!-- form new categoria !-->	
+		@include ('all_views.articoli.newsottocategoria')
 
-		<form method='post' action="{{ route('elenco_ordini_fornitori') }}" id='frm_ordine' name='frm_ordine' autocomplete="off">
+		<form method='post' action="{{ route('sottocategorie_prodotti') }}" id='frm_sottocategorie' name='frm_sottocategorie' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 
         <div class="row">
           <div class="col-md-12">
 		  
-				<table id='tbl_ordine' class="display">
+				<table id='tbl_sottocategorie' class="display">
 					<thead>
 						<tr>
 							<th>ID</th>
-							<th>Data ordine</th>
-							<th>Magazzino</th>
-							<th>Fornitore</th>
-							<th>Stato</th>
+							<th>Categoria</th>
+							<th>Sotto Categoria</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
 					<tbody>
-						@foreach($elenco_ordini as $ordine)
+						@foreach($sottocategorie_prodotti as $categoria)
 							<tr>
+								<td>{{ $categoria->id }}</td>	
+								<td>{{ $categoria->categoria }}</td>
 								<td>
-								 @if ($ordine->dele=="1") 
+								 @if ($categoria->dele=="1") 
 									<font color='red'><del> 
 								 @endif
-									<span id='id_descr{{$ordine->id}}' data-id_ordine=''>
-										{{ $ordine->id }}
+									<span id='id_descr{{$categoria->id}}'
+									data-categ='{{ $categoria->id_categoria}}'		
+									data-descr='{{ $categoria->descrizione }}'>
+										{{ $categoria->descrizione }}
 									</span>	
-								 @if ($ordine->dele=="1") 
+								 @if ($categoria->dele=="1") 
 									 </del></font>
 								 @endif	
 								</td>	
-								
 								<td>
-									{{ $ordine->data_ordine_it }}
-								</td>
-								
-								<td>
-									<?php
-										if (isset($magazzini[$ordine->id_sede_consegna]))
-											echo $magazzini[$ordine->id_sede_consegna];
-									?>
-								</td>
-								<td>
-									{{ $ordine->ragione_sociale }}
-
-								</td>
-
-								<td>
-									<?php
-									$stato_ordine=$ordine->stato_ordine;
-									$stato="Bozza";
-									if ($stato_ordine==1) $stato="Ordinato";
-									?>
-									{{ $stato }}
-
-								</td>
-								
-								<td>
-									@if ($ordine->dele=="0") 
-										<a href="{{ route('ordini_fornitore',['id'=>$ordine->id]) }}" >
-											<button title="Modifica ordine fornitore" type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+									@if ($categoria->dele=="0") 
+										<a href='#' onclick="edit_elem({{$categoria->id}})">
+											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 										</a>
-										
-										<a href="{{ route('evasione_ordini',['id'=>$ordine->id]) }}" >
-											<button title="Procedura evasione ordine" type="button" class="btn btn-success" alt='Evasione'><i class="fas fa-tasks"></i></button>
-										</a>
-										
-
-										<a href='#' onclick="dele_element({{$ordine->id}})">
-											<button title="Elimina ordine fornitore" type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+										<a href='#' onclick="dele_element({{$categoria->id}})">
+											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
 										</a>
 									@endif
-									@if ($ordine->dele=="1") 
-										<a href='#'onclick="restore_element({{$ordine->id}})" >
+									@if ($categoria->dele=="1") 
+										<a href='#'onclick="restore_element({{$categoria->id}})" >
 											<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
 										</a>
 									@endif
@@ -134,10 +107,8 @@
 					<tfoot>
 						<tr>
 							<th>ID</th>
-							<th>Data ordine</th>
-							<th>Magazzino</th>
-							<th>Fornitore</th>
-							<th>Stato</th>
+							<th>Categoria</th>
+							<th>Sotto Categoria</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -153,21 +124,15 @@
 			$check="";
 			if ($view_dele=="1") $check="checked";
 		?>
-		
-
 			<div class="row">
 			    <div class="col-lg-12">
-					<a href="{{ route('ordini_fornitore') }}">
-						<button type="button" class="btn btn-primary">
-							<i class="fa fa-plus-circle"></i> Nuovo ordine fornitore
-						</button>
-					</a>
-
+					<button type="button" class="btn btn-primary" onclick="$('#edit_elem').val('');$('#id_categoria').val('');$('#descr_contr').val('');$('#div_definition').show(150)">
+						<i class="fa fa-plus-circle"></i> Nuova Sotto Categoria
+					</button>
 					<div class="form-check form-switch mt-3 ml-3">
-					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_ordine').submit()" {{ $check }}>
-					  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>
+					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_sottocategorie').submit()" {{ $check }}>
+					  <label class="form-check-label" for="view_dele">Mostra anche Sotto Categorie eliminate</label>
 					</div>
-				
 				</div>
 			</div>	
 		</form>
@@ -204,6 +169,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/elenco_ordini_fornitori.js?ver=1.01"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sottocategorie_prodotti.js?ver=1.04"></script>
 
 @endsection

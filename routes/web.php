@@ -73,6 +73,24 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::get('ordini_fornitore/{id?}', [ 'as' => 'ordini_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@ordini_fornitore'])->middleware(['role:admin']);	
 
+
+	Route::post('evasione_ordini', [ 'as' => 'evasione_ordini', 'uses' => 'App\Http\Controllers\ControllerAcquisti@evasione_ordini'])->middleware(['role:admin']);
+
+	Route::get('evasione_ordini/{id?}', [ 'as' => 'evasione_ordini', 'uses' => 'App\Http\Controllers\ControllerAcquisti@evasione_ordini'])->middleware(['role:admin']);	
+
+
+
+	Route::get('categorie_prodotti', [ 'as' => 'categorie_prodotti', 'uses' => 'App\Http\Controllers\ControllerArticoli@categorie_prodotti'])->middleware(['role:admin']);
+	
+	Route::post('categorie_prodotti', [ 'as' => 'categorie_prodotti', 'uses' => 'App\Http\Controllers\ControllerArticoli@categorie_prodotti'])->middleware(['role:admin']);
+
+
+	Route::get('sottocategorie_prodotti', [ 'as' => 'sottocategorie_prodotti', 'uses' => 'App\Http\Controllers\ControllerArticoli@sottocategorie_prodotti'])->middleware(['role:admin']);
+	
+	Route::post('sottocategorie_prodotti', [ 'as' => 'sottocategorie_prodotti', 'uses' => 'App\Http\Controllers\ControllerArticoli@sottocategorie_prodotti'])->middleware(['role:admin']);
+
+
+
 	Route::post('definizione_articolo', [ 'as' => 'definizione_articolo', 'uses' => 'App\Http\Controllers\ControllerArticoli@definizione_articolo'])->middleware(['role:admin']);
 
 	Route::get('definizione_articolo/{id?}', [ 'as' => 'definizione_articolo', 'uses' => 'App\Http\Controllers\ControllerArticoli@definizione_articolo'])->middleware(['role:admin']);	
@@ -299,6 +317,9 @@ Route::group(['only_log' => ['auth']], function () {
 Route::group(['only_log' => ['auth']], function () {
 
 	//chiamate ajax prodotti
+
+	Route::post('elenco_categorie', 'App\Http\Controllers\AjaxControllerAcquisti@elenco_categorie');
+	
 	Route::post('elenco_sottocategorie', 'App\Http\Controllers\AjaxControllerAcquisti@elenco_sottocategorie');
 
 	Route::post('refresh_prodotti', 'App\Http\Controllers\AjaxControllerAcquisti@refresh_prodotti');

@@ -24,9 +24,34 @@
         form.classList.add('was-validated')
       }, false)
     })
+	
+
+  // Fetch all the forms we want to apply custom Bootstrap validation styles to
+  var forms = document.querySelectorAll('.needs-validation1')
+
+  // Loop over them and prevent submission
+  Array.prototype.slice.call(forms)
+    .forEach(function (form) {
+      form.addEventListener('submit', function (event) {
+        if (!form.checkValidity()) {
+          event.preventDefault()
+          event.stopPropagation()
+        }
+        form.classList.add('was-validated')
+      }, false)
+    })	
+	
+	
+	
+	
 })()
 $(document).ready( function () {
-    $('#tbl_list_preventivi tfoot th').each(function () {
+	$('.select2').select2({
+		dropdownParent: $('#modal_story')
+	})
+
+    /*
+	$('.tfoot1 th').each(function () {
         var title = $(this).text();
 		if (title.length!=0) {
 			style="";
@@ -35,7 +60,9 @@ $(document).ready( function () {
 			$(this).html('<input '+style+' type="text" placeholder="' + title + '" />');
 		}
     });	
-    var table=$('#tbl_list_preventivi').DataTable({
+	*/
+    var table=$('#tbl_prodotti_ordine').DataTable({
+		pageLength: 100,
 		dom: 'Bfrtip',
 		buttons: [
 			'excel', 'pdf'
@@ -56,71 +83,13 @@ $(document).ready( function () {
         },
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',
-            zeroRecords: 'Nessun preventivo trovato',
+            zeroRecords: 'Nessun articolo trovato',
             info: 'Pagina _PAGE_ di _PAGES_',
-            infoEmpty: 'Non sono presenti preventivi',
-            infoFiltered: '(Filtrati da _MAX_ preventivi totali)',
+            infoEmpty: 'Non sono presenti articoli in questo ordine',
+            infoFiltered: '(Filtrati da _MAX_ articoli totali)',
         },
 
 		
     });
 	
 } );
-
-function load_sc(id_categoria) {
-
-	base_path = $("#url").val();
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
-	let CSRF_TOKEN = $("#token_csrf").val();
-	$.ajax({
-		type: 'POST',
-		url: base_path+"/elenco_sottocategorie",
-		data: {_token: CSRF_TOKEN,id_categoria:id_categoria},
-		success: function (data) {
-			$("#id_sotto_categoria")
-			.find('option')
-			.remove()
-			.end();	
-			
-			$('#id_sotto_categoria').append("<option value=''>Select...</option>");
-			$.each(JSON.parse(data), function (i, item) {
-				$('#id_sotto_categoria').append('<option value="' + item.id_sc+'">' + item.descr_sc + '</option>');
-						
-			});
-		}
-	});		
-
-}
-
-function refresh_cat() {
-	base_path = $("#url").val();
-	$.ajaxSetup({
-		headers: {
-			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
-		}
-	});
-	let CSRF_TOKEN = $("#token_csrf").val();
-	$.ajax({
-		type: 'POST',
-		url: base_path+"/elenco_categorie",
-		data: {_token: CSRF_TOKEN},
-		success: function (data) {
-			$("#div_up_cat").hide(150)
-			$("#id_categoria")
-			.find('option')
-			.remove()
-			.end();	
-			
-			$('#id_categoria').append("<option value=''>Select...</option>");
-			$.each(JSON.parse(data), function (i, item) {
-				
-				$('#id_categoria').append('<option value="' + item.id + '">' + item.descrizione + '</option>');
-						
-			});
-		}
-	});		
-}

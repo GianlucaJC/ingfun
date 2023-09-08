@@ -545,7 +545,7 @@ use App\Models\User;
 							  <li class="nav-item">
 								<a href="{{route('elenco_ordini_fornitori')}}" class="nav-link">
 								  <i class="far fa-circle nav-icon"></i>
-								  <p>Ordini fornitori</p>
+								  <p>Evasione Ordini fornitori</p>
 								</a>
 							  </li>
 							</ul> 		

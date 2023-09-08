@@ -11,6 +11,8 @@ use App\Models\prod_magazzini;
 use App\Models\prod_prodotti;
 use App\Models\prodotti_ordini;
 use App\Models\aliquote_iva;
+use App\Models\movimenti_carico;
+use App\Models\prod_giacenze;
 
 
 use DB;
@@ -213,6 +215,9 @@ class ControllerAcquisti extends Controller
 	}	
 	
 	
+	
+
+	
 	public function elenco_ordini_fornitori(Request $request){
 
 		$view_dele=$request->input("view_dele");
@@ -230,6 +235,16 @@ class ControllerAcquisti extends Controller
 		}		
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
+
+		$prod_magazzini=prod_magazzini::from('prod_magazzini as p')
+		->select('p.*')
+		->get();
+		$magazzini=array();
+		foreach ($prod_magazzini as $mg) {
+			$id_m=$mg->id;
+			$mag=$mg->descrizione;
+			$magazzini[$id_m]=$mag;
+		}
 		
 		$elenco_ordini=DB::table('ordini_fornitore as o')
 		->join('fornitori as f','o.id_fornitore','f.id')
@@ -239,7 +254,7 @@ class ControllerAcquisti extends Controller
 		})
 		->orderBy('o.id','desc')->get();
 
-		return view('all_views/fornitori/elenco_ordini_fornitori')->with("view_dele",$view_dele)->with("elenco_ordini",$elenco_ordini);
+		return view('all_views/fornitori/elenco_ordini_fornitori')->with("view_dele",$view_dele)->with("elenco_ordini",$elenco_ordini)->with('magazzini',$magazzini);
 
 	}	
 
@@ -272,7 +287,127 @@ class ControllerAcquisti extends Controller
 
 	}		
 		
-	
+
+	public function evasione_ordini($id_ordine_init=0) {
+		$request=request();
+		$btn_save_qta=$request->input("btn_save_qta");
+		
+		$id_ordine=$request->input("id_ordine");
+		if (strlen($id_ordine)==0) $id_ordine=$id_ordine_init;
+		
+		if ($btn_save_qta=="save") {
+			
+			if (strlen($id_ordine)!=0 && $id_ordine>0) {
+				$id_magazzino=$request->input("id_magazzino");
+				if (strlen($id_magazzino)!=0) {
+					$id_prod=$request->input("id_prod");
+					$qta_evasa=$request->input("qta_evasa");
+					
+					
+					for ($sca=0;$sca<=count($id_prod)-1;$sca++) {
+						$id_prodotto=$id_prod[$sca];
+						$qta=$qta_evasa[$sca];
+						if (strlen($qta)>0) {
+							//creazione dei movimenti nel DB
+							$movimenti_carico = new movimenti_carico;
+							$movimenti_carico->id_ordine = $id_ordine;
+							$movimenti_carico->id_prodotto = $id_prodotto;
+							$movimenti_carico->qta = $qta;
+							$movimenti_carico->id_magazzino = $id_magazzino;
+							$movimenti_carico->save();
+							
+							//aggiornamento giacenze
+							
+							$giacenze=prod_giacenze::select('id')
+							->where('id_prodotto','=',$id_prodotto)
+							->where('id_magazzino','=',$id_magazzino);
+							
+							if ($giacenze->count()>0) {
+								$id_ref = $giacenze->get()->first()->id;
+								$prod_giacenze = prod_giacenze::find($id_ref);
+							}
+							else
+								$prod_giacenze = new prod_giacenze;
+							
+
+							$prod_giacenze->id_prodotto=$id_prodotto;
+							$prod_giacenze->id_magazzino=$id_magazzino;
+
+							$prod_giacenze->giacenza = $prod_giacenze->giacenza+$qta;
+							$prod_giacenze->save();
+						}
+					}
+					
+					
+					
+					return redirect()->route("evasione_ordini",['id'=>$id_ordine])->with('evasione_ok', 'Le quantità sono state correttamente evase');					
+				}
+			}
+		}	
+
+		$info_ordine=array();
+
+
+		$info_movimenti=array();
+		if ($id_ordine!=0) {
+			$info_ordine=ordini_fornitore::from('ordini_fornitore as o')
+			->join('fornitori as f','o.id_fornitore','f.id')
+			->select('o.*','f.ragione_sociale')
+			->where('o.id', "=", $id_ordine)
+			->get();
+			
+			$info_m = movimenti_carico::
+			select("id_prodotto",DB::raw("SUM(qta) as totale"))
+			->where("id_ordine","=",$id_ordine)
+			->groupBy("id_prodotto")
+			->get();
+			foreach($info_m as $mov) {
+				$info_movimenti[$mov->id_prodotto]=$mov->totale;
+			}
+		}
+		$fornitori=fornitori::select('*')
+		->orderBy('ragione_sociale')
+		->where('dele','=',0)
+		->get();
+		$magazzini = prod_magazzini::orderBy('descrizione')->get();
+
+
+		$prodotti=prod_prodotti::from('prod_prodotti as p')
+		->select('p.*')
+		->orderBy('descrizione')
+		->get();
+		
+		$arr_prod=array();
+		foreach ($prodotti as $prodotto) {
+			$arr_prod[$prodotto->id]=$prodotto->descrizione;
+		}
+
+
+		$dele_riga=$request->input("dele_riga");
+		if (strlen($dele_riga)!=0) 
+			prodotti_ordini::where('id', $dele_riga)->delete();
+
+		$prodotti_ordini=prodotti_ordini::from('prodotti_ordini as p')
+		->select('p.*')
+		->where('p.id_ordine','=',$id_ordine)
+		->get();
+
+		
+		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"prodotti_ordini"=>$prodotti_ordini,"arr_prod"=>$arr_prod,"info_movimenti"=>$info_movimenti);
+
+
+		
+		/*
+		if ($save_fornitore!=0) $id_fornitore=$save_fornitore;
+		return redirect()->route("scheda_fornitore",['id'=>$id_fornitore]);
+		*/
+		//
+
+		return view('all_views/fornitori/evasione_ordini')->with($data);
+		
+	}
+		
+		
 	function lista_pagamenti() {
 		$lista=array();
 		$lista[0]['id']=1;

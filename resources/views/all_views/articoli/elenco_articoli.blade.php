@@ -60,6 +60,14 @@
 							<th>Descrizione prodotto</th>
 							<th>Categoria</th>
 							<th>Sotto Categoria</th>
+							@foreach ($magazzini as $magazzino)
+								<th>
+									Qta 
+									{{$magazzino->descrizione}}
+								</th>
+							@endforeach
+							
+							
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -89,6 +97,17 @@
 								<td>
 									{{ $articolo->sottocategoria }}
 								</td>
+
+								@foreach ($magazzini as $magazzino)
+									<td>
+										<?php
+											if (isset($info_giacenze[$articolo->id][$magazzino->id])) {
+												echo $info_giacenze[$articolo->id][$magazzino->id];
+											}
+										?>
+									</td>
+								@endforeach
+
 
 
 
@@ -120,6 +139,12 @@
 							<th>Descrizione prodotto</th>
 							<th>Categoria</th>
 							<th>Sotto Categoria</th>
+							@foreach ($magazzini as $magazzino)
+								<th>
+									
+								</th>
+							@endforeach
+							
 							<th></th>
 						</tr>
 					</tfoot>					
