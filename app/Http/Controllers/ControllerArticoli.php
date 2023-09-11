@@ -12,6 +12,7 @@ use App\Models\prod_categorie;
 use App\Models\prod_sottocategorie;
 use App\Models\prod_magazzini;
 use App\Models\prod_giacenze;
+use App\Models\prod_spostamenti;
 
 use DB;
 
@@ -43,12 +44,64 @@ class ControllerArticoli extends Controller
 		return $id_articolo;
 	}
 	
+	public function sposta() {
+		$request=request();
+		$id_articolo=$request->input('id_articolo');
+		$btn_sposta=$request->input('btn_sposta');
+		$mag_orig=$btn_sposta[0];
+		$mag_dest=$request->input('mag_dest'.$mag_orig);
+		$qta_sposta=$request->input('qta_sposta'.$mag_orig);
+
+		//salvataggio movimento del db tracciamento spostamenti
+		$sposta = new prod_spostamenti;
+		
+		$sposta->id_prodotto = $id_articolo;		
+		$sposta->id_magazzino_orig = $mag_orig;
+		$sposta->id_magazzino_dest = $mag_dest;
+		$sposta->qta_spostata = $qta_sposta;
+		$sposta->save();
+		
+		//aggiornamento giacenze nei relativi magazzini
+		
+		$giacenze=prod_giacenze::select('id')
+		->where('id_prodotto','=',$id_articolo)
+		->where('id_magazzino','=',$mag_orig);
+		
+		$id_ref = $giacenze->get()->first()->id;
+		$up_orig = prod_giacenze::find($id_ref);
+		$up_orig->giacenza=$up_orig->giacenza-$qta_sposta;
+		$up_orig->save();
+	
+		
+		$giacenze=prod_giacenze::select('id')
+		->where('id_prodotto','=',$id_articolo)
+		->where('id_magazzino','=',$mag_dest);
+		
+		if ($giacenze->count()>0) {
+			$id_ref = $giacenze->get()->first()->id;
+			$up_dest = prod_giacenze::find($id_ref);
+		} else {
+			$up_dest= new prod_giacenze;
+			$up_dest->id_prodotto=$id_articolo;
+			$up_dest->id_magazzino=$mag_dest;
+		}	
+	
+		$up_dest->giacenza=$up_dest->giacenza+$qta_sposta;
+		$up_dest->save();
+		
+
+		return redirect()->route("definizione_articolo",['id_articolo'=>$id_articolo]);
+		
+	}
 	public function definizione_articolo($id_articolo_init=0) {
 		$request=request();
 		$btn_save_articolo=$request->input("btn_save_articolo");
 		$save_articolo=0;
 		if ($btn_save_articolo=="save") 
 			$save_articolo=$this->save_articolo();
+
+		$btn_sposta=$request->input("btn_sposta");
+		if (is_array($btn_sposta)) $sposta=$this->sposta();
 
 		$id_articolo=$request->input("id_articolo");
 		if (strlen($id_articolo)==0) $id_articolo=$id_articolo_init;
@@ -89,7 +142,7 @@ class ControllerArticoli extends Controller
 			$info_mag[$mag->id]=$mag->descrizione;
 		}				
 
-		$data=array("info_articolo"=>$info_articolo,"categorie"=>$categorie,"id_articolo"=>$id_articolo,"sotto_categorie"=>$sotto_categorie,"info_giacenze"=>$info_giacenze,"info_mag"=>$info_mag);
+		$data=array("info_articolo"=>$info_articolo,"categorie"=>$categorie,"id_articolo"=>$id_articolo,"sotto_categorie"=>$sotto_categorie,"info_giacenze"=>$info_giacenze,"info_mag"=>$info_mag,"magazzini"=>$magazzini);
 
 		return view('all_views/articoli/definizione_articolo')->with($data);
 		
@@ -232,6 +285,53 @@ class ControllerArticoli extends Controller
 		->orderBy('descrizione')->get();
 
 		return view('all_views/articoli/sottocategorie')->with('categorie',$categorie)->with('sottocategorie_prodotti',$sottocategorie_prodotti)->with("view_dele",$view_dele);
+		
+	}	
+	
+
+	public function magazzini(Request $request){
+		$edit_elem=0;
+		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
+		$view_dele=$request->input("view_dele");
+		$descr_contr=$request->input("descr_contr");
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+
+		//Creazione nuovo elemento
+		if (strlen($descr_contr)!=0 && $edit_elem==0) {
+			$descr_contr=$descr_contr;
+			$arr=array();
+			$arr['dele']=0;
+			$arr['descrizione']=$descr_contr;
+			DB::table("prod_magazzini")->insert($arr);
+		}
+		
+		//Modifica elemento
+		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
+			$descr_contr=$descr_contr;
+			prod_magazzini::where('id', $edit_elem)
+			  ->update(['descrizione' => $descr_contr]);
+		}
+		if (strlen($dele_contr)!=0) {
+			prod_magazzini::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			prod_magazzini::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		
+		$magazzini=DB::table('prod_magazzini')
+		->when($view_dele=="0", function ($magazzini) {
+			return $magazzini->where('dele', "=","0");
+		})
+		->orderBy('descrizione')->get();
+
+		return view('all_views/articoli/magazzini')->with('magazzini',$magazzini)->with("view_dele",$view_dele);
 		
 	}	
 	

@@ -80,6 +80,11 @@ Route::group(['only_log' => ['auth']], function () {
 
 
 
+	Route::get('magazzini', [ 'as' => 'magazzini', 'uses' => 'App\Http\Controllers\ControllerArticoli@magazzini'])->middleware(['role:admin']);
+	
+	Route::post('magazzini', [ 'as' => 'magazzini', 'uses' => 'App\Http\Controllers\ControllerArticoli@magazzini'])->middleware(['role:admin']);
+
+
 	Route::get('categorie_prodotti', [ 'as' => 'categorie_prodotti', 'uses' => 'App\Http\Controllers\ControllerArticoli@categorie_prodotti'])->middleware(['role:admin']);
 	
 	Route::post('categorie_prodotti', [ 'as' => 'categorie_prodotti', 'uses' => 'App\Http\Controllers\ControllerArticoli@categorie_prodotti'])->middleware(['role:admin']);

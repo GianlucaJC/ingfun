@@ -522,7 +522,16 @@ use App\Models\User;
 							  </li>	
 							</ul>  
 						
+							<ul class="nav nav-treeview">
+							  <li class="nav-item">
+								<a href="{{route('magazzini')}}" class="nav-link">
+								  <i class="far fa-circle nav-icon"></i>
+								  <p>Magazzini</p>
+								</a>
+							  </li>	
+							</ul>  
 						</li>
+
 						
 						<li class="nav-item menu">
 							<a href="#" class="nav-link">

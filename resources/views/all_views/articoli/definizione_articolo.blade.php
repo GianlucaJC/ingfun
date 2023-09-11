@@ -19,10 +19,7 @@
 
 
 @section('content_main')
-<form method='post' action="{{ route('definizione_articolo') }}" id='frm_articolo' name='frm_articolo' autocomplete="off" class="needs-validation" novalidate>
-<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
-<input type="hidden" value="{{url('/')}}" id="url" name="url">
-<input type='hidden' name='id_articolo' id='id_articolo' value='{{$id_articolo}}'>
+
 
   <!-- Content Wrapper. Contains page content -->
    <div class="content-wrapper">
@@ -52,6 +49,11 @@
 
 
       <div class="container-fluid">
+	  
+		<form method='post' action="{{ route('definizione_articolo') }}" id='frm_articolo' name='frm_articolo' autocomplete="off" class="needs-validation" novalidate>
+		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+		<input type="hidden" value="{{url('/')}}" id="url" name="url">
+		<input type='hidden' name='id_articolo' id='id_articolo' value='{{$id_articolo}}'>	  
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<div class="form-floating">
@@ -195,9 +197,10 @@
 			</div>
 
 		</div>
-		
+
 
 		@foreach($info_giacenze as $id_m=>$value_m)
+			<?php if ($value_m==0) continue; ?>	
 			<div class="row mb-3">
 				<div class="col-md-6">
 					<div class="form-floating">
@@ -207,20 +210,20 @@
 							$maga=$info_mag[$id_m];
 					?>
 						<input class="form-control"  id="magazzino_ref1" name="magazzino_ref1" type="text" placeholder="Magazzino di riferimento" disabled value="{{$maga}}" />
-						<label for="giacenza">Magazzino di riferimento</label>
+						<label for="magazzino_ref1">Magazzino di riferimento</label>
 					</div>
 
 				</div>
 				
 				<div class="col-md-6">
 					<div class="form-floating">
-						<input class="form-control"  id="qta_magazzino" name="giacenza" type="text" placeholder="Giacenza in magazzino" disabled value="{{$value_m}}" >
+						<input class="form-control"  id="giacenza" name="giacenza" type="text" placeholder="Giacenza in magazzino" disabled value="{{$value_m}}" >
 						<label for="giacenza">Qta magazzino</label>
 					</div>
 				</div>
 			</div>
 		@endforeach
-			
+
 		<div class="row mb-3">
 			<div class="col-md-4">
 				<button type="submit" name="btn_save_articolo" value="save" class="btn btn-success">Crea/Modifica Articolo</button>
@@ -230,11 +233,97 @@
 					Elenco Articoli
 					</button>
 				</a>
-				
+				@if (strlen($id_articolo)!=0 && $id_articolo>0)
+				<a href="javascript:void(0)" onclick="$('#div_change').toggle(150)">
+					<button type="button" class="btn btn-info" >
+					Sposta merce
+					</button>
+				</a>
+				@endif
 			</div>	
 		</div>
 
 
+		</form> 
+		
+ 
+  
+
+		<div id='div_change' style='display:none'>
+			@foreach($info_giacenze as $id_m=>$value_m)
+				<?php if ($value_m==0) continue; ?>
+				<form method='post' action="{{ route('definizione_articolo') }}" id='frm_sposta{{$id_m}}' name='frm_sposta{{$id_m}}' autocomplete="off" class="needs-validation" novalidate>
+				<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+				<input type="hidden" value="{{url('/')}}" id="url" name="url">
+				<input type='hidden' name='id_articolo' id='id_articolo' value='{{$id_articolo}}'>	
+				
+				<div class="row mb-3">
+					<div class="col-md-3">
+						<div class="form-floating">
+						<?php
+							$maga="";
+							if (isset($info_mag[$id_m]))	
+								$maga=$info_mag[$id_m];
+						?>
+							<input class="form-control"  id="mag_ref" name="mag_ref" type="text" placeholder="Magazzino di riferimento" disabled value="{{$maga}}" />
+							<label for="mag_ref">Magazzino di riferimento</label>
+						</div>
+
+					</div>
+					
+					<div class="col-md-2">
+						<div class="form-floating">
+							<input class="form-control"  id="qta_mag" name="qta_mag" type="text" placeholder="Giacenza in magazzino" disabled value="{{$value_m}}" >
+							<label for="qta_mag">Qta magazzino</label>
+						</div>
+					</div>
+					
+					<div class="col-md-3">
+						<div class="form-floating mb-3 mb-md-0">
+							<select class="form-control" name="mag_dest{{$id_m}}" id="mag_dest{{$id_m}}" aria-label="Sposta merce su" required>
+								<option value=''>Select...</option>
+								@foreach ($magazzini as $magazzino) 
+									@if ($magazzino->id!=$id_m)
+									<option value='{{$magazzino->id}}'
+									>{{$magazzino->descrizione}}
+									</option>
+									@endif
+								@endforeach						
+							</select>
+							<label for="mag_dest{{$id_m}}">Sposta merce su</label>
+						</div>
+					</div>
+					<div class="col-md-2">
+						<div class="form-floating mb-3 mb-md-0">
+							
+							<select class="form-control" name="qta_sposta{{$id_m}}" id="qta_sposta{{$id_m}}" aria-label="Qta da spostare" required>
+								<option value=''>Select...</option>
+								<?php
+									for ($sca=1;$sca<=$value_m;$sca++) {?>
+									<option value='{{$sca}}'>
+										{{$sca}}
+									</option>	
+								<?php } ?>
+							</select>
+							<label for="qta_sposta{{$id_m}}">Qta da spostare*</label>
+							
+							
+						</div>
+					
+					</div>
+					
+					<div class="col-md-2">
+						
+						<button type="submit" name="btn_sposta[]" value="{{$id_m}}" class="btn btn-success btn-lg btn-block h-100">Sposta</button>
+						
+					</div>	
+					
+				</div>	
+				</form>
+				@endforeach
+		</div>
+		
+			
 		
         <!-- /.row -->
       </div><!-- /.container-fluid -->
@@ -245,7 +334,7 @@
 
 
   <!-- /.content-wrapper -->
-</form>  
+ 
   
   
 
