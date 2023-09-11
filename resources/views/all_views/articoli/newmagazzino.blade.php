@@ -14,7 +14,7 @@
 						  <div class="input-group-prepend">
 							<span class="input-group-text" id="basic-addon1">Descrizione</span>
 						  </div>
-						  <input type="text" class="form-control" placeholder="Descrizione Categoria" aria-label="Descrizione categoria" name="descr_contr" id="descr_contr" required>
+						  <input type="text" class="form-control" placeholder="Descrizione Magazzino" aria-label="Descrizione magazzino" name="descr_contr" id="descr_contr" required>
 						</div>			
 					</div>
 					<div class="col-md-6">

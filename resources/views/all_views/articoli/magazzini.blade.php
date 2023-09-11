@@ -46,7 +46,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-		<!-- form new categoria !-->	
+		<!-- form new !-->	
 		@include('all_views.articoli.newmagazzino')
 
 		<form method='post' action="{{ route('magazzini') }}" id='frm_magazzini' name='frm_magazzini' autocomplete="off">
