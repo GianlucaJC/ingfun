@@ -169,7 +169,7 @@ class ControllerArticoli extends Controller
 		$elenco_articoli=DB::table('prod_prodotti as p')
 		->select('p.*','c.descrizione as categoria','sc.descrizione as sottocategoria')
 		->join('prod_categorie as c','p.id_categoria','c.id')
-		->join('prod_sottocategorie as sc','p.id_sottocategoria','sc.id_categoria')
+		->join('prod_sottocategorie as sc','p.id_sottocategoria','sc.id')
 		->when($view_dele=="0", function ($elenco_articoli) {
 			return $elenco_articoli->where('p.dele', "=","0");
 		})
