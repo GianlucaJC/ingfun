@@ -193,6 +193,7 @@
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select" name="azienda_proprieta" id="azienda_proprieta"  required onchange='lista_lavoratori(this.value)'>
 						<option value=''>Select...</option>
+						<option value='all'>[[Tutte]]</option>
 						<?php
 							$azienda_db="";
 							if (isset($appalti[0]->id_azienda_proprieta))  $azienda_db=$appalti[0]->id_azienda_proprieta;
@@ -400,7 +401,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.196"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.200"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

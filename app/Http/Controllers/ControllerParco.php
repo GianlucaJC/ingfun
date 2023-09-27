@@ -12,6 +12,7 @@ use App\Models\parco_badge_cisterna;
 use App\Models\parco_telepass;
 use App\Models\parco_scheda_mezzo;
 use App\Models\parco_servizi_noleggio;
+use App\Models\parco_riparazioni;
 
 use DB;
 
@@ -219,8 +220,85 @@ class ControllerParco extends Controller
 
 	}	
 	
+	public function riparazioni($id_mezzo=0){
+		$request=request();
+		$view_dele=$request->input("view_dele");
+		
+		$dele_contr=$request->input("dele_contr");
+		$restore_contr=$request->input("restore_contr");
+
+		$marche_db=parco_marca_mezzo::select('id','marca')->get();
+		$marche=array();
+		foreach($marche_db as $mx) {
+			$marche[$mx->id]=$mx->marca;
+		}
+		$modelli_db=parco_modello_mezzo::select('id','modello')->get();		
+		$modelli=array();
+		foreach($modelli_db as $mx) {
+			$modelli[$mx->id]=$mx->modello;
+		}
+		
+		if (strlen($dele_contr)!=0) {
+			parco_riparazioni::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			parco_riparazioni::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}		
+		if (strlen($view_dele)==0) $view_dele=0;
+		if ($view_dele=="on") $view_dele=1;
+		
+		$riparazioni=DB::table('parco_riparazioni as r')
+		->select('r.*','m.targa')
+		->join('parco_scheda_mezzo as m','r.id_mezzo','m.id')
+		->when($view_dele=="0", function ($riparazioni) {
+			return $riparazioni->where('r.dele', "=","0");
+		})
+		->when($id_mezzo!="0", function ($riparazioni) use($id_mezzo) {
+			return $riparazioni->where('r.id_mezzo', "=",$id_mezzo);
+		})
+		->get();
+
+		return view('all_views/parco/riparazioni')->with('riparazioni', $riparazioni)->with("view_dele",$view_dele)->with('marche',$marche)->with('modelli',$modelli)->with('id_mezzo',$id_mezzo);
+
+	}		
+
+
+	public function riparazione($id_mezzo=0) {
+		$request=request();
+		$btn_save_mezzo=$request->input("btn_save_mezzo");
+		$save_mezzo=0;
+		if ($btn_save_mezzo=="save") 
+			$save_mezzo=$this->save_mezzo($request);
+
+		$info_mezzo=array();
+		$modello="";
 	
-	
+		if ($id_mezzo!=0) {
+			$info_mezzo=DB::table('parco_scheda_mezzo as s')
+			->select('s.*')
+			->where('id', "=", $id_mezzo)
+			->get();
+			$marca=$info_mezzo[0]->marca;
+			$modello=parco_modello_mezzo::select('id','modello')
+			->where("id_marca","=",$marca)
+			->get();		
+		}
+
+		$data=array("info_mezzo"=>$info_mezzo,"id_mezzo"=>$id_mezzo,"modello"=>$modello);
+
+		
+		if ($request->has("btn_save_mezzo")) {
+			$id_mezzo=$request->input('id_mezzo');
+			if ($save_mezzo!=0) $id_mezzo=$save_mezzo;
+			return redirect()->route("riparazione",['id_mezzo'=>$id_mezzo]);
+		}
+		else
+		
+			return view('all_views/parco/riparazione')->with($data);
+		
+	}	
 	
 	
 	public function tipomezzi() {

@@ -78,6 +78,18 @@ use App\Models\User;
 					</div>
 				</a>
 				</div>
+
+				<div class="col-md-12">
+				<a href="{{ route('riparazioni') }}">
+					<div class="d-grid gap-2 mt-2">
+					  <button class="btn btn-primary" type="button">
+					  <i class="fas fa-car-crash" style='font-size:36px'></i><br>
+						RIPARAZIONE MEZZI
+					  </button>
+					</div>
+				</a>
+				</div>
+
 			</div>
 
 

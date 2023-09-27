@@ -85,7 +85,9 @@ class AjaxControllerServ extends Controller
 		
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('status_candidatura','=',3)
-		->where('soc_ass','=',$id_sezionale)
+		->when($id_sezionale!="all", function ($lavoratori) use ($id_sezionale) {
+			return $lavoratori->where('soc_ass','=',$id_sezionale);
+		})
 		->orderByRaw('case 
 			when `tipo_contr` = "2" and `tipo_contratto`="1"  then 1 
 			when `tipo_contr` = "2" and `tipo_contratto`="2"  then 2

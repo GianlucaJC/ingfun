@@ -440,7 +440,12 @@ use App\Models\User;
 						</a>
 					  </li>
 					
-					
+					  <li class="nav-item">
+						<a href="{{route('riparazioni')}}" class="nav-link">
+						  <i class="far fa-circle nav-icon"></i>
+						  <p>Riparazione mezzi</p>
+						</a>
+					  </li>					
 					
 					
 					

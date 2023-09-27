@@ -292,14 +292,14 @@
 				<div class="col-md-2">
 					<div class="form-floating">
 						<input class="form-control" id="km_noleggio_remote" name='km_noleggio_remote' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->km_noleggio_remote ?? ''}}" />
-						<label for="km_noleggio_remote">Km attuali noleggio (via APP)*</label>
+						<label for="km_noleggio_remote">Km attuali noleggio (via APP)</label>
 					</div>
 				</div>
 
 				<div class="col-md-2">
 					<div class="form-floating">
 						<input class="form-control" id="importo_noleggio" name='importo_noleggio' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->importo_noleggio ?? ''}}" />
-						<label for="importo_noleggio">Importo noleggio*</label>
+						<label for="importo_noleggio">Importo noleggio mese*</label>
 					</div>
 				</div>
 				<div class="col-md-2">
@@ -324,7 +324,7 @@
 							>Anni</option>
 							
 						</select>						
-						<label for="tipo_alert_noleggio">Tipo alert mail durata noleggio*</label>
+						<label for="tipo_alert_noleggio">Tipo alert mail durata noleggio</label>
 					</div>
 				</div>				
 				<div class="col-md-3">
@@ -784,7 +784,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.229"></script>
+	<script src="{{ URL::asset('/') }}dist/js/scheda_mezzo.js?ver=1.235"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

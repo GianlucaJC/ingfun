@@ -62,8 +62,6 @@
 			array_push($voci,"COGNOME");
 			array_push($voci,"NOME");
 			array_push($voci,"SESSO");
-			array_push($voci,"IDEONEITA' SANITARIA");
-			array_push($voci,"SCADENZA");
 			array_push($voci,"SOCIETÀ");
 			array_push($voci,"MANSIONE");
 			array_push($voci,"AREA DI IMPIEGO");
@@ -101,7 +99,8 @@
 			array_push($voci,"TUTOR");
 			array_push($voci,"NUMERO SCARPE");
 			array_push($voci,"TAGLIA");
-
+			array_push($voci,"IDEONEITA' SANITARIA");
+			array_push($voci,"SCADENZA");
 
 			$id_corsi=array();
 			foreach ($corsi_sic as $corso) {
@@ -213,16 +212,6 @@
 				array_push($voci,$cognome);
 				array_push($voci,$nome);
 				array_push($voci,$sesso);
-				
-				if (isset($ido_sanitaria[$id_cand])) {
-					array_push($voci,"1");
-					$scadenza=$ido_sanitaria[$id_cand];$scad="";
-					if ($scadenza!=null) $scad=substr($scadenza,8,2)."-".substr($scadenza,5,2)."-".substr($scadenza,0,4);
-					array_push($voci,$scad);
-				} else {
-					array_push($voci,"0");
-					array_push($voci,"");
-				}					
 				array_push($voci,$societa);
 				array_push($voci,$mansione);
 				array_push($voci,$area_impiego);
@@ -260,6 +249,16 @@
 				array_push($voci,$affiancamento);
 				array_push($voci,$n_scarpe);
 				array_push($voci,$taglia);
+				
+				if (isset($ido_sanitaria[$id_cand])) {
+					array_push($voci,"1");
+					$scadenza=$ido_sanitaria[$id_cand];$scad="";
+					if ($scadenza!=null) $scad=substr($scadenza,8,2)."-".substr($scadenza,5,2)."-".substr($scadenza,0,4);
+					array_push($voci,$scad);
+				} else {
+					array_push($voci,"0");
+					array_push($voci,"");
+				}
 
 				
 				$corsicand=array();

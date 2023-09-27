@@ -52,7 +52,16 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin|coord|resp']);
 
 	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo'])->middleware(['role:admin|coord|resp']);	
-	
+
+
+	Route::post('riparazioni', [ 'as' => 'riparazioni', 'uses' => 'App\Http\Controllers\ControllerParco@riparazioni'])->middleware(['role:admin|coord|resp']);
+
+	Route::get('riparazioni/{id_mezzo?}', [ 'as' => 'riparazioni', 'uses' => 'App\Http\Controllers\ControllerParco@riparazioni'])->middleware(['role:admin|coord|resp']);	
+
+
+	Route::post('riparazione', [ 'as' => 'riparazione', 'uses' => 'App\Http\Controllers\ControllerParco@riparazione'])->middleware(['role:admin|coord|resp']);
+
+	Route::get('riparazione/{id_mezzo?}', [ 'as' => 'riparazione', 'uses' => 'App\Http\Controllers\ControllerParco@riparazione'])->middleware(['role:admin|coord|resp']);
 
 	Route::post('scheda_fornitore', [ 'as' => 'scheda_fornitore', 'uses' => 'App\Http\Controllers\ControllerAcquisti@scheda_fornitore'])->middleware(['role:admin']);
 

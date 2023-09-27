@@ -82,10 +82,16 @@
 					</span>						
 				</div>
 			</div>
+			<?php 
+				if (isset($info_ordine[0])) 
+					$data_ordine=$info_ordine[0]->data_ordine;
+				else 
+					$data_ordine=date("Y-m-d");
+			?>
 			<div class="col-md-4">
 				<div class="form-floating">
 					<input class="form-control dp" 
-					name="data_ordine" id="data_ordine" type="date" required  value="{{$info_ordine[0]->data_ordine ?? ''}}" />
+					name="data_ordine" id="data_ordine" type="date" required  value="{{$data_ordine}}" />
 					<label for="data_ordine">Data ordine*</label>
 				</div>
 			</div>
