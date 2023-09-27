@@ -10,9 +10,6 @@
   Array.prototype.slice.call(forms)
     .forEach(function (form) {
       form.addEventListener('submit', function (event) {
-		//riattivo per il submit i campi altrimenti non vengono inviati
-		$("#targa").prop("disabled",false);
-		id_mezzo=$("#id_mezzo").val()		
 		
         if (!form.checkValidity()) {
 			event.preventDefault()

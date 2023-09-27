@@ -649,13 +649,17 @@
 					<label for="mezzo_riparazione">Mezzo in riparazione</label>
 				</div>
 			</div>
+			<!--
 			<div class="col-md-9">
 				<div class="form-floating">
 					<input class="form-control" id="officina_riferimento" name='officina_riferimento' type="text" maxlength=80 value="{{$info_mezzo[0]->officina_riferimento ?? ''}}" />
 					<label for="officina_installazione">Officina riferimento</label>
 				</div>
 			</div>
+			!-->
 		</div>
+		
+		@if (1==2)
 		<div class='row mb-3'>
 			<div class="col-md-4">
 				<div class="form-floating">
@@ -720,7 +724,8 @@
 					<label for="mezzo_manutenzione">Mezzo in manutenzione</label>
 				</div>
 			</div>
-		</div>			
+		</div>
+		@endif		
 
         <div class="row">
 

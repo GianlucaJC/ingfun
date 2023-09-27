@@ -90,12 +90,15 @@
 								</td>
 								
 								<td>
-									
-									{{ date('d-m-Y', strtotime($riparazione->data_consegna_prevista)) }}
+									@if ($riparazione->data_consegna_prevista)
+										{{ date('d-m-Y', strtotime($riparazione->data_consegna_prevista)) }}
+									@endif
 								</td>
 								
 								<td>
-									{{ date('d-m-Y', strtotime($riparazione->data_consegna_riparazione)) }}
+									@if($riparazione->data_consegna_riparazione)
+										{{ date('d-m-Y', strtotime($riparazione->data_consegna_riparazione)) }}
+									@endif
 								</td>
 								<td>
 									{{ number_format($riparazione->importo_preventivo,2) }}
@@ -105,7 +108,7 @@
 								</td>																
 								
 								<td>
-									@if ($riparazione->dele=="3") 
+									@if ($riparazione->dele=="0") 
 
 										
 										<a href="{{ route('riparazione',['id_mezzo'=>$riparazione->id_mezzo]) }}" >
@@ -158,7 +161,7 @@
 
 			<div class="row">
 			    <div class="col-lg-12">
-					<a href="">
+					<a href="{{route('riparazione')}}">
 						<button type="button" class="btn btn-primary">
 							<i class="fa fa-plus-circle"></i> Nuova Riparazione
 						</button>

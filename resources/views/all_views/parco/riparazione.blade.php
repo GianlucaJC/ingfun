@@ -51,17 +51,27 @@
 	<input type='hidden' name='id_mezzo' id='id_mezzo' value='{{$id_mezzo}}'>
       <div class="container-fluid">
 		<div class="row mb-3">
-			<?php
-				$dis="";
-				if ($id_mezzo!="0") $dis="disabled";
-			?>
-			<div class="col-md-6">
-				<div class="form-floating">
-					<input class="form-control"  id="targa" name="targa" type="text" placeholder="ID"  value="{{$info_mezzo[0]->targa ?? ''}}" required maxlength=30 {{$dis}}  />
-					<label for="targa">TARGA*</label>
+			@if ($id_mezzo!="0")
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input class="form-control"  id="targa" name="targa" type="text" placeholder="ID"  value="{{$info_mezzo[0]->targa ?? ''}}" disabled  />
+						<label for="targa">TARGA</label>
+					</div>
 				</div>
-			</div>			
-			
+			@else	
+				<div class="col-md-6">
+					<div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" name="targa" id="targa" required >
+							<option value=''>Select...</option>
+							@foreach($mezzi as $mezzo)
+								<option value="{{$mezzo->id}}"
+								>{{$mezzo->targa}}</option>
+							@endforeach
+						</select>
+						<label for="targa">Identificativo mezzo*</label>
+					</div>
+				</div>
+			@endif
 		</div>
 
 	
@@ -70,28 +80,8 @@
 
 
 		<div class='row mb-3'>
-			<div class="col-md-3">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" name="mezzo_riparazione" id="mezzo_riparazione" required >
-					<option value=''>Select...</option>
-						<option value=1
-						<?php
-						if (isset($info_mezzo[0])) {
-								if ($info_mezzo[0]->mezzo_riparazione==1) echo " selected ";
-						
-						}?>						
-						>SI</option>
-						<option value=2
-						<?php
-						if (isset($info_mezzo[0])) {
-								if ($info_mezzo[0]->mezzo_riparazione==2) echo " selected ";
-						}?>						
-						>NO</option>
-					</select>
-					<label for="mezzo_riparazione">Mezzo in riparazione*</label>
-				</div>
-			</div>
-			<div class="col-md-9">
+
+			<div class="col-md-12">
 				<div class="form-floating">
 					<input class="form-control" id="officina_riferimento" name='officina_riferimento' type="text" maxlength=80 value="{{$info_mezzo[0]->officina_riferimento ?? ''}}" />
 					<label for="officina_installazione">Officina riferimento</label>
@@ -99,19 +89,25 @@
 			</div>
 		</div>
 		<div class='row mb-3'>
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="form-floating">
-					<input class="form-control" id="data_consegna_riparazione" name='data_consegna_riparazione' type="date" value="{{$info_mezzo[0]->data_consegna_riparazione ?? ''}}"/>
-					<label for="da_data_n">Data consegna riparazione</label>
+					<input class="form-control" id="data_consegna_prevista" name='data_consegna_prevista' type="date" value="{{$info_mezzo[0]->data_consegna_prevista ?? ''}}"/>
+					<label for="data_consegna_prevista">Data consegna prevista</label>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-3">
+				<div class="form-floating">
+					<input class="form-control" id="data_consegna_riparazione" name='data_consegna_riparazione' type="date" value="{{$info_mezzo[0]->data_consegna_riparazione ?? ''}}"/>
+					<label for="data_consegna_riparazione">Data consegna riparazione</label>
+				</div>
+			</div>
+			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control" id="importo_preventivo" name='importo_preventivo' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->importo_preventivo ?? ''}}" />
 					<label for="importo_preventivo">Importo preventivo</label>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control" id="importo_fattura" name='importo_fattura' type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" maxlength=11 value="{{$info_mezzo[0]->importo_fattura ?? ''}}" />
 					<label for="importo_fattura">Importo fattura</label>
@@ -168,8 +164,8 @@
 
 			<button type="submit" name='btn_save_mezzo' id='btn_save_mezzo' value="save" class="btn btn-success btn-lg btn-block">SALVA</button>  
 			
-			<a href="{{ route('inventario_flotta') }}">
-				<button type="button"  id='back_appalti' class="btn btn-info btn-lg btn-block mt-3">ELENCO MEZZI</button> 
+			<a href="{{ route('riparazioni') }}">
+				<button type="button"  id='back_appalti' class="btn btn-info btn-lg btn-block mt-3">ELENCO RIPARAZIONI</button> 
 			</a>
 
 
@@ -226,7 +222,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/riparazione.js?ver=1.236"></script>
+	<script src="{{ URL::asset('/') }}dist/js/riparazione.js?ver=1.237"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

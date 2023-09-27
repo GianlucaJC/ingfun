@@ -60,27 +60,19 @@
 		<div class="row mb-3">
 			<div class="col-md-3">
 				<div class="form-floating">
+					<input class="form-control" id='id_azienda_proprieta'
+					type="text" disabled  value="{{$info_ordine[0]->azienda_proprieta ?? ''}}"/>
+					<label for="id_azienda_proprieta">Azienda di proprietà</label>
+				</div>
+			</div>	
+			<div class="col-md-3">
+				<div class="form-floating">
 					<input class="form-control" id='id_ord'
 					type="text" disabled  value="{{$id_ordine}}" />
 					<label for="id_ord">ID Ordine</label>
 				</div>
 			</div>		
-			<div class="col-md-3">
-				<div class="form-floating">
-					<select class="form-control" name="id_fornitore" id="id_fornitore" aria-label="Fornitore" disabled>
-					<option value=''>Select...</option>
-						@foreach ($fornitori as $fornitore)
-							<option value='{{$fornitore->id}}'
-							<?php
-							if (isset($info_ordine[0]->id_fornitore) && $info_ordine[0]->id_fornitore==$fornitore->id) echo " selected ";
-						    ?>
-							>{{$fornitore->ragione_sociale}}</option>
-						@endforeach
-					</select>
-					<label for="id_fornitore">FORNITORE</label>
-					
-				</div>
-			</div>
+
 			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control dp" 
@@ -164,10 +156,11 @@
 
 		<div class="row" style='{{$disp_view}}'>
 		  <div class="col-lg-12">
-			<table id='tbl_prodotti_ordine' class="display" style='width:50%'>
+			<table id='tbl_prodotti_ordine' class="display" style='width:60%'>
 				<thead>
 					<tr>
 						<th>Codice</th>
+						<th>Fornitore</th>
 						<th>Prodotto</th>
 						<th style='text-align:right'>Qta Ordinata</th>
 						<th style='text-align:right'>Qta già evasa</th>
@@ -187,7 +180,16 @@
 						<input type='hidden' name='id_prod[]' value="{{$prodotto->codice_articolo}}">
 							{{$prodotto->codice_articolo}}
 						</td>
-						
+
+
+
+						<td>
+							<?php
+								if (isset($arr_forn[$prodotto->id_fornitore])) {
+									echo $arr_forn[$prodotto->id_fornitore];
+								}
+							?>
+						</td>						
 						<td>
 							<?php
 								if (isset($arr_prod[$prodotto->codice_articolo])) {
@@ -195,6 +197,9 @@
 								}
 							?>
 						</td>
+
+
+
 
 						<td style='text-align:right'>{{$prodotto->quantita}}</td>
 
@@ -216,6 +221,7 @@
 				
 				<tfoot>
 					<tr>
+						<th></th>
 						<th></th>
 						<th></th>
 						<th></th>

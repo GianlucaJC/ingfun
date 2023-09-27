@@ -108,10 +108,13 @@ class ControllerParco extends Controller
 		$psm->mezzo_marciante = $request->input('mezzo_marciante');
 		$psm->mezzo_manutenzione = $request->input('mezzo_manutenzione');
 		$psm->mezzo_riparazione = $request->input('mezzo_riparazione');
+		
+		/*
 		$psm->officina_riferimento = $request->input('officina_riferimento');
 		$psm->data_consegna_riparazione = $request->input('data_consegna_riparazione');
 		$psm->importo_preventivo = $request->input('importo_preventivo');
 		$psm->importo_fattura = $request->input('importo_fattura');
+		*/
 
 		$psm->save();
 		$id_mezzo=$psm->id;
@@ -265,33 +268,56 @@ class ControllerParco extends Controller
 	}		
 
 
+	public function save_riparazione($request) {
+		$id_mezzo=$request->input('id_mezzo');
+		if ($id_mezzo!=0) 
+			$pr = parco_riparazioni::find($id_mezzo);
+		else {
+			$pr = new parco_riparazioni;
+			$pr->id_mezzo = $request->input('targa');
+		}	
+		
+
+		$pr->mezzo_marciante = $request->input('mezzo_marciante');
+		$pr->mezzo_manutenzione = $request->input('mezzo_manutenzione');
+		//$pr->mezzo_riparazione = $request->input('mezzo_riparazione');
+		$pr->officina_riferimento = $request->input('officina_riferimento');
+		$pr->data_consegna_riparazione = $request->input('data_consegna_riparazione');
+		$pr->importo_preventivo = $request->input('importo_preventivo');
+		$pr->importo_fattura = $request->input('importo_fattura');
+
+		$pr->save();
+		$id_mezzo=$pr->id;
+		return $id_mezzo;
+	}
+
 	public function riparazione($id_mezzo=0) {
 		$request=request();
 		$btn_save_mezzo=$request->input("btn_save_mezzo");
-		$save_mezzo=0;
+		$save_riparazione=0;
 		if ($btn_save_mezzo=="save") 
-			$save_mezzo=$this->save_mezzo($request);
+			$save_riparazione=$this->save_riparazione($request);
 
 		$info_mezzo=array();
-		$modello="";
-	
+		
 		if ($id_mezzo!=0) {
-			$info_mezzo=DB::table('parco_scheda_mezzo as s')
-			->select('s.*')
-			->where('id', "=", $id_mezzo)
+			$info_mezzo=DB::table('parco_riparazioni as r')
+			->join('parco_scheda_mezzo as m','r.id_mezzo','m.id')
+			->select('r.*','m.targa')
+			->where('r.id', "=", $id_mezzo)
 			->get();
-			$marca=$info_mezzo[0]->marca;
-			$modello=parco_modello_mezzo::select('id','modello')
-			->where("id_marca","=",$marca)
-			->get();		
 		}
 
-		$data=array("info_mezzo"=>$info_mezzo,"id_mezzo"=>$id_mezzo,"modello"=>$modello);
+		$mezzi=DB::table('parco_scheda_mezzo as s')
+		->select('s.id','s.targa')
+		->get();
+
+		$data=array("info_mezzo"=>$info_mezzo,"id_mezzo"=>$id_mezzo,"mezzi"=>$mezzi);
 
 		
 		if ($request->has("btn_save_mezzo")) {
 			$id_mezzo=$request->input('id_mezzo');
-			if ($save_mezzo!=0) $id_mezzo=$save_mezzo;
+			if ($save_riparazione!=0) $id_mezzo=$save_riparazione;
 			return redirect()->route("riparazione",['id_mezzo'=>$id_mezzo]);
 		}
 		else

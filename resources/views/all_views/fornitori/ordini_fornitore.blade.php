@@ -55,47 +55,41 @@
 
       <div class="container-fluid">
 		<div class="row mb-3">
-			<div class="col-md-4">
-				<div class="form-floating">
-					<select class="form-control" name="id_fornitore" id="id_fornitore" aria-label="Fornitore" required>
-					<option value=''>Select...</option>
-						@foreach ($fornitori as $fornitore)
-							<option value='{{$fornitore->id}}'
+			<div class="col-md-6">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-control" name="id_azienda_proprieta" id="id_azienda_proprieta" aria-label="Azienda di proprietà" required>
+						<option value=''>Select...</option>
+						@foreach($sezionali as $sezionale)
+							<option value='{{$sezionale->id}}'
 							<?php
-							if (isset($info_ordine[0]->id_fornitore) && $info_ordine[0]->id_fornitore==$fornitore->id) echo " selected ";
-						    ?>
-							>{{$fornitore->ragione_sociale}}</option>
+								if (isset($info_ordine[0])) {
+									if ($info_ordine[0]->id_azienda_proprieta==$sezionale->id) echo " selected ";
+								}
+							?>
+							>{{$sezionale->descrizione}}</option>
 						@endforeach
 					</select>
-					<label for="id_fornitore">FORNITORE*</label>
-					
-					<a href="{{ route('elenco_fornitori') }}" class="link-primary" target='_blank' onclick="
-							 $('.up').hide();$('#div_up_forn').show()">
-						Definisci/modifica
-					</a>					
-					<span id='div_up_forn' class='up' style='display:none'>
-						<a href='javascript:void(0)' class='ml-2' onclick='refresh_forn()'>
-							<font color='green'>
-								<i class="fas fa-sync-alt"></i>
-							</font>	
-						</a>	
-					</span>						
-				</div>
-			</div>
+					<label for="id_azienda_proprieta">Azienda di proprietà*</label>
+				</div>	
+			</div>		
+		</div>
+		<div class="row mb-3">
+			
+
 			<?php 
 				if (isset($info_ordine[0])) 
 					$data_ordine=$info_ordine[0]->data_ordine;
 				else 
 					$data_ordine=date("Y-m-d");
 			?>
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control dp" 
 					name="data_ordine" id="data_ordine" type="date" required  value="{{$data_ordine}}" />
 					<label for="data_ordine">Data ordine*</label>
 				</div>
 			</div>
-			<div class="col-md-4">
+			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control dp" 
 					name="data_presunta_arrivo_merce" id="data_presunta_arrivo_merce" type="date"   value="{{$info_ordine[0]->data_presunta_arrivo_merce ?? ''}}" />
@@ -103,11 +97,7 @@
 				</div>
 				
 			</div>
-		</div>
-			
-
-		<div class="row mb-3">
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-control" name="stato_ordine" id="stato_ordine" aria-label="Stato ordine" >
 						<option value='0'
@@ -127,7 +117,7 @@
 				</div>	
 			</div>
 
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-control" name="id_sede_consegna" id="id_sede_consegna" aria-label="Sede di consegna" required >
 						<option value=''>Select...</option>
@@ -144,8 +134,10 @@
 					<label for="id_sede_consegna">Sede di consegna*</label>
 				</div>	
 			</div>
+			
+		</div>
+			
 
-		</div>	
 
 <hr>
 		<div class="row">
@@ -154,6 +146,7 @@
 				<thead>
 					<tr>
 						<th>Codice</th>
+						<th>Fornitore</th>
 						<th style='text-align:right'>Qta</th>
 						<th style='text-align:right'>Prezzo Unitario</th>
 						<th style='text-align:right'>Imponibile</th>
@@ -172,6 +165,7 @@
 					@php($s_iva+=$prodotto->subtotale-($prodotto->prezzo_unitario*$prodotto->quantita))
 					<tr>
 						<td>{{$prodotto->codice_articolo}}</td>
+						<td>{{$prodotto->ragione_sociale}}</td>
 						<td style='text-align:right'>{{$prodotto->quantita}}</td>
 						<td style='text-align:right'>{{number_format($prodotto->prezzo_unitario,2)}}€</td>
 						<td style='text-align:right'>{{number_format($prodotto->prezzo_unitario*$prodotto->quantita,2)}}€</td>
@@ -182,7 +176,8 @@
 						<td style='width:200px'>
 
 							<!-- riga info per js !-->
-							<span id='inforow{{$prodotto->id}}'  data-codice='{{ $prodotto->codice_articolo}}' data-prezzo_unitario='{{$prodotto->prezzo_unitario}}' data-quantita='{{$prodotto->quantita}}' 
+							<span id='inforow{{$prodotto->id}}'  
+							data-id_fornitore='{{ $prodotto->id_fornitore}}'data-codice='{{ $prodotto->codice_articolo}}' data-prezzo_unitario='{{$prodotto->prezzo_unitario}}' data-quantita='{{$prodotto->quantita}}' 
 							data-subtotale='{{$prodotto->subtotale}}' data-aliquota='{{ $prodotto->aliquota}}|{{$arr_aliquota[$prodotto->aliquota]}}' >
 							</span>							
 							<a href="javascript:void(0)" onclick="edit_product({{$prodotto->id}})" >
@@ -200,6 +195,7 @@
 				
 				<tfoot>
 					<tr>
+						<th></th>
 						<th></th>
 						<th></th>
 						<th></th>
@@ -283,7 +279,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.282"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.283"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

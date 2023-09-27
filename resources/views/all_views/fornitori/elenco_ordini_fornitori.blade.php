@@ -57,9 +57,10 @@
 					<thead>
 						<tr>
 							<th>ID</th>
+							<th>Azienda di proprietà</th>
 							<th>Data ordine</th>
 							<th>Magazzino</th>
-							<th>Fornitore</th>
+							<!--<th>Fornitore</th>!-->
 							<th>Stato</th>
 							<th>Operazioni</th>
 						</tr>
@@ -78,7 +79,10 @@
 									 </del></font>
 								 @endif	
 								</td>	
-								
+
+								<td>
+									{{ $ordine->azienda_proprieta }}
+								</td>								
 								<td>
 									{{ $ordine->data_ordine_it }}
 								</td>
@@ -90,11 +94,11 @@
 									?>
 								</td>
 								<td>
-									{{ $ordine->ragione_sociale }}
+									
 
-								</td>
-
-								<td>
+								
+								<!--</td><td>!-->
+								
 									<?php
 									$stato_ordine=$ordine->stato_ordine;
 									$stato="Bozza";
@@ -134,9 +138,10 @@
 					<tfoot>
 						<tr>
 							<th>ID</th>
+							<th>Azienda di proprietà</th>
 							<th>Data ordine</th>
 							<th>Magazzino</th>
-							<th>Fornitore</th>
+							<!--<th>Fornitore</th>!-->
 							<th>Stato</th>
 							<th></th>
 						</tr>

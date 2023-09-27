@@ -106,7 +106,7 @@ class ControllerAcquisti extends Controller
 		else 
 			$ordine = new ordini_fornitore;
 		
-		$ordine->id_fornitore = $request->input('id_fornitore');
+		$ordine->id_azienda_proprieta = $request->input('id_azienda_proprieta');
 		$ordine->data_ordine = $request->input('data_ordine');
 		$ordine->data_presunta_arrivo_merce = $request->input('data_presunta_arrivo_merce');
 		$ordine->stato_ordine = $request->input('stato_ordine');
@@ -129,7 +129,8 @@ class ControllerAcquisti extends Controller
 			$po = new prodotti_ordini;
 		
 		$po->id_ordine = $id_ordine;
-		$po->id_magazzino = 0; ///da valorizzare correttamente!
+		$po->id_magazzino = 0; ///lasciato ma gestito da giacenze!
+		$po->id_fornitore = $request->input('id_fornitore');
 		$po->codice_articolo = $request->input('codice');
 		$po->quantita = $request->input('quantita');
 		$po->prezzo_unitario = $request->input('prezzo_unitario');
@@ -158,12 +159,15 @@ class ControllerAcquisti extends Controller
 		}	
 		$info_ordine=array();
 
-
+		$sezionali=DB::table('societa as s')
+		->select('s.id','s.descrizione')
+		->where('s.dele','=',0)
+		->orderBy('s.descrizione')	
+		->get();	
 	
 		if ($id_ordine!=0) {
 			$info_ordine=ordini_fornitore::from('ordini_fornitore as o')
-			->join('fornitori as f','o.id_fornitore','f.id')
-			->select('o.*','f.ragione_sociale')
+			->select('o.*')
 			->where('o.id', "=", $id_ordine)
 			->get();
 		}
@@ -188,7 +192,8 @@ class ControllerAcquisti extends Controller
 			prodotti_ordini::where('id', $dele_riga)->delete();
 
 		$prodotti_ordini=prodotti_ordini::from('prodotti_ordini as p')
-		->select('p.*')
+		->join('fornitori as f','p.id_fornitore','f.id')
+		->select('p.*','f.ragione_sociale')
 		->where('p.id_ordine','=',$id_ordine)
 		->get();
 
@@ -201,7 +206,7 @@ class ControllerAcquisti extends Controller
 				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
 		}	
 		
-		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"aliquote_iva"=>$aliquote_iva,"prodotti_ordini"=>$prodotti_ordini,'arr_aliquota'=>$arr_aliquota);
+		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"aliquote_iva"=>$aliquote_iva,"prodotti_ordini"=>$prodotti_ordini,'arr_aliquota'=>$arr_aliquota,"sezionali"=>$sezionali);
 
 
 		
@@ -247,8 +252,8 @@ class ControllerAcquisti extends Controller
 		}
 		
 		$elenco_ordini=DB::table('ordini_fornitore as o')
-		->join('fornitori as f','o.id_fornitore','f.id')
-		->select('o.*',DB::raw("DATE_FORMAT(o.data_ordine,'%d-%m-%Y') as data_ordine_it"),'f.ragione_sociale')
+		->leftjoin('societa as s','o.id_azienda_proprieta','s.id')
+		->select('o.*',DB::raw("DATE_FORMAT(o.data_ordine,'%d-%m-%Y') as data_ordine_it"),'s.descrizione as azienda_proprieta')
 		->when($view_dele=="0", function ($elenco_ordini) {
 			return $elenco_ordini->where('o.dele', "=","0");
 		})
@@ -351,8 +356,8 @@ class ControllerAcquisti extends Controller
 		$info_movimenti=array();
 		if ($id_ordine!=0) {
 			$info_ordine=ordini_fornitore::from('ordini_fornitore as o')
-			->join('fornitori as f','o.id_fornitore','f.id')
-			->select('o.*','f.ragione_sociale')
+			->leftjoin('societa as s','o.id_azienda_proprieta','s.id')
+			->select('o.*','s.descrizione as azienda_proprieta')
 			->where('o.id', "=", $id_ordine)
 			->get();
 			
@@ -365,10 +370,15 @@ class ControllerAcquisti extends Controller
 				$info_movimenti[$mov->id_prodotto]=$mov->totale;
 			}
 		}
-		$fornitori=fornitori::select('*')
+		$fornitori=fornitori::select('id','ragione_sociale')
 		->orderBy('ragione_sociale')
 		->where('dele','=',0)
 		->get();
+		$arr_forn=array();
+		foreach ($fornitori as $fornitore) {
+			$arr_forn[$fornitore->id]=$fornitore->ragione_sociale;
+		}		
+		
 		$magazzini = prod_magazzini::orderBy('descrizione')->get();
 
 
@@ -393,7 +403,7 @@ class ControllerAcquisti extends Controller
 		->get();
 
 		
-		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"prodotti_ordini"=>$prodotti_ordini,"arr_prod"=>$arr_prod,"info_movimenti"=>$info_movimenti);
+		$data=array("id_ordine"=>$id_ordine,"info_ordine"=>$info_ordine,'magazzini'=>$magazzini,"fornitori"=>$fornitori,'prodotti'=>$prodotti,"prodotti_ordini"=>$prodotti_ordini,"arr_prod"=>$arr_prod,"info_movimenti"=>$info_movimenti,"arr_forn"=>$arr_forn);
 
 
 		

@@ -136,6 +136,7 @@ function edit_product(id_riga) {
 	//$("#body_modal").html("Caricamento informazioni in corso...")		
 
 	if (id_riga!=0) {
+		id_fornitore=$("#inforow"+id_riga).data("id_fornitore")
 		codice=$("#inforow"+id_riga).data("codice")
 		
 		quantita=$("#inforow"+id_riga).data("quantita")
@@ -147,6 +148,7 @@ function edit_product(id_riga) {
 		
 		aliquota=$("#inforow"+id_riga).data("aliquota")
 	
+		$("#id_fornitore").val(id_fornitore)
 		$("#quantita").val(quantita)
 		
 		$("#prezzo_unitario").val(prezzo_unitario)
