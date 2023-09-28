@@ -144,9 +144,16 @@
 				<?php
 				$referer = $_SERVER['HTTP_REFERER'] ?? null;
 					if (strlen($referer)!=0) {
-					echo "<hr><a href='$referer' class='nav-link'>";
-						echo "<button type='button' class='btn btn-primary btn-sm'>Clicca quì per una nuova evasione sull'ordine</button>";
-					echo "</a>";
+						echo "<hr><a href='$referer' class='nav-link'>";
+							echo "<button type='button' class='btn btn-primary btn-sm'>Clicca quì per una nuova evasione sull'ordine</button>";
+						echo "</a>";
+						?><hr>
+						<a href="{{route('elenco_ordini_fornitori')}}">
+							<button type="button" class="btn btn-secondary btn-sm" >
+							Elenco evasione ordini
+							</button>
+						</a>
+						<?php
 					}	
 				?>
 
@@ -174,11 +181,18 @@
 					@foreach($prodotti_ordini as $prodotto)
 
 					
+					<?php
+					$id_ref_articolo=$prodotto->id_fornitore."-".$prodotto->codice_articolo;
+					?>
 					
 					<tr>
 						<td>
 						<input type='hidden' name='id_prod[]' value="{{$prodotto->codice_articolo}}">
+						<input type='hidden' name='id_forn[]' value="{{$prodotto->id_fornitore}}">
+
+
 							{{$prodotto->codice_articolo}}
+
 						</td>
 
 
@@ -201,18 +215,29 @@
 
 
 
-						<td style='text-align:right'>{{$prodotto->quantita}}</td>
+						<td style='text-align:right'>{{$prodotto->quantita}}
+						</td>
 
 
 						<td style='text-align:right'>
 							<?php
-								if (isset($info_movimenti[$prodotto->codice_articolo]))
-									echo $info_movimenti[$prodotto->codice_articolo];
+								$gia_evasa=0;
+								if (isset($info_movimenti[$prodotto->codice_articolo][$prodotto->id_fornitore])) {
+									$gia_evasa=$info_movimenti[$prodotto->codice_articolo][$prodotto->id_fornitore];
+								}	
+								if ($gia_evasa>0) echo $gia_evasa;
 							?>
+							<input type='hidden' class='ctrl_qta' name='ctrl_qta[]' value="{{$prodotto->quantita}}-{{$gia_evasa}}" data-id_ref_articolo='qta_e{{$id_ref_articolo}}'>
 						</td>
 
-						<td style='width:200px'>						
-							<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control qta_e" name="qta_evasa[]" placeholder="Quantità"/>
+						<td style='width:200px'>
+							@php($dis="disabled")
+						
+							@if ($prodotto->quantita>$gia_evasa)
+								@php ($dis="")
+							@endif
+							<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control qta_e" name="qta_evasa[]" placeholder="Quantità" {{$dis}} id='qta_e{{$id_ref_articolo}}' />
+							
 						</td>
 						
 					</tr>
@@ -250,7 +275,11 @@
 
 			<div class="row mb-3 mt-5" style='{{$disp_view}}'>
 				<div class="col-md-4">
-					<button type="submit" name="btn_save_qta" value="save" class="btn btn-success">Evadi le quantità indicate</button>
+					<?php
+						$dis_btn="";
+						if (isset($info_ordine[0]->stato_ordine) && $info_ordine[0]->stato_ordine==2) $dis_btn="disabled";
+					?>
+					<button type="submit" onclick="evasione()" name="btn_save_qta" value="save" class="btn btn-success" {{$dis_btn}}>Evadi le quantità indicate</button>
 					
 					
 					<a href="{{route('elenco_ordini_fornitori')}}">
@@ -289,7 +318,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/evasione_ordini.js?ver=1.002"></script>
+	<script src="{{ URL::asset('/') }}dist/js/evasione_ordini.js?ver=1.007"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

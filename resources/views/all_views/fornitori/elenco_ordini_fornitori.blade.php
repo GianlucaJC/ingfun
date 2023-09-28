@@ -103,6 +103,7 @@
 									$stato_ordine=$ordine->stato_ordine;
 									$stato="Bozza";
 									if ($stato_ordine==1) $stato="Ordinato";
+									if ($stato_ordine==2) $stato="Concluso";
 									?>
 									{{ $stato }}
 

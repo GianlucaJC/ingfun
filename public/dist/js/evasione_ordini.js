@@ -93,3 +93,23 @@ $(document).ready( function () {
     });
 	
 } );
+
+
+function evasione() {
+	ctrl=false
+	$('.ctrl_qta').each(function () {
+		value=$(this).val()
+		qta_ord=value.split("-")[0]
+		qta_eva=value.split("-")[1]
+		id_ref_articolo=$(this).data('id_ref_articolo');
+		value_ins=$("#"+id_ref_articolo).val()
+		console.log("id_ref_articolo",id_ref_articolo,"value_ins",$("#"+id_ref_articolo).val(),"qta_ord",qta_ord,"qta_eva",qta_eva)
+		if ((parseInt(value_ins)+parseInt(qta_eva))>parseInt(qta_ord)) ctrl=true
+	})
+	if (ctrl==true) {
+		event.preventDefault()
+		alert("Attenzione. Impossibile evadere quantità superiori a quelle ordinate (tenendo conto anche di quelle già evase)!");
+		return false
+	} else	
+		$('.qta_e').removeAttr('disabled');	
+}

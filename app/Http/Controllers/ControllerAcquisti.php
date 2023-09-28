@@ -306,17 +306,27 @@ class ControllerAcquisti extends Controller
 				$id_magazzino=$request->input("id_magazzino");
 				if (strlen($id_magazzino)!=0) {
 					$id_prod=$request->input("id_prod");
+					$id_fornitore=$request->input("id_forn");
 					$qta_evasa=$request->input("qta_evasa");
+					$ctrl_qta=$request->input("ctrl_qta");
 					
-					
+					$close=true;
 					for ($sca=0;$sca<=count($id_prod)-1;$sca++) {
 						$id_prodotto=$id_prod[$sca];
+						$ctrl=$ctrl_qta[$sca];
+						$ref_fornitore=$id_fornitore[$sca];
 						$qta=$qta_evasa[$sca];
+						
+						$info_qta=explode("-",$ctrl);
+						$curr_qta=intval($info_qta[0])-intval($info_qta[1])-intval($qta);
+						if ($curr_qta>0) $close=false;
+						
 						if (strlen($qta)>0) {
 							//creazione dei movimenti nel DB
 							$movimenti_carico = new movimenti_carico;
 							$movimenti_carico->id_ordine = $id_ordine;
 							$movimenti_carico->id_prodotto = $id_prodotto;
+							$movimenti_carico->id_fornitore = $ref_fornitore;
 							$movimenti_carico->qta = $qta;
 							$movimenti_carico->id_magazzino = $id_magazzino;
 							$movimenti_carico->save();
@@ -342,7 +352,11 @@ class ControllerAcquisti extends Controller
 							$prod_giacenze->save();
 						}
 					}
-					
+					if ($close==true) {
+						$ordine = ordini_fornitore::find($id_ordine);
+						$ordine->stato_ordine=2;
+						$ordine->save();
+					}
 					
 					
 					return redirect()->route("evasione_ordini",['id'=>$id_ordine])->with('evasione_ok', 'Le quantità sono state correttamente evase');					
@@ -362,12 +376,12 @@ class ControllerAcquisti extends Controller
 			->get();
 			
 			$info_m = movimenti_carico::
-			select("id_prodotto",DB::raw("SUM(qta) as totale"))
+			select("id_prodotto","id_fornitore",DB::raw("SUM(qta) as totale"))
 			->where("id_ordine","=",$id_ordine)
-			->groupBy("id_prodotto")
+			->groupBy("id_prodotto","id_fornitore")
 			->get();
 			foreach($info_m as $mov) {
-				$info_movimenti[$mov->id_prodotto]=$mov->totale;
+				$info_movimenti[$mov->id_prodotto][$mov->id_fornitore]=$mov->totale;
 			}
 		}
 		$fornitori=fornitori::select('id','ragione_sociale')
