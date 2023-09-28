@@ -628,7 +628,7 @@
 
 
 		<div class='row mb-3'>
-			<div class="col-md-3">
+			<div class="col-md-4">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="mezzo_riparazione" id="mezzo_riparazione" >
 					<option value=''>Select...</option>
@@ -649,6 +649,48 @@
 					<label for="mezzo_riparazione">Mezzo in riparazione</label>
 				</div>
 			</div>
+
+			<div class="col-md-4">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" name="mezzo_marciante" id="mezzo_marciante" >
+					<option value=''>Select...</option>
+						<option value=1
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->mezzo_marciante==1) echo " selected ";
+						}?>						
+						>SI</option>
+						<option value=2
+						<?php
+						if (isset($info_mezzo[0])) {
+								if ($info_mezzo[0]->mezzo_marciante==2) echo " selected ";
+						}?>						
+						>NO</option>
+					</select>
+					<label for="mezzo_marciante">Mezzo marciante</label>
+				</div>
+			</div>
+
+			<div class="col-md-4">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" name="mezzo_manutenzione" id="mezzo_manutenzione" >
+					<option value=''>Select...</option>
+						<option value=1
+						<?php
+						if (isset($info_mezzo[0])) {
+							if ($info_mezzo[0]->mezzo_manutenzione==1) echo " selected ";
+						}?>								
+						>SI</option>
+						<option value=2
+						<?php
+						if (isset($info_mezzo[0])) {
+							if ($info_mezzo[0]->mezzo_manutenzione==2) echo " selected ";
+						}?>								
+						>NO</option>
+					</select>
+					<label for="mezzo_manutenzione">Mezzo in manutenzione</label>
+				</div>
+			</div>			
 			<!--
 			<div class="col-md-9">
 				<div class="form-floating">

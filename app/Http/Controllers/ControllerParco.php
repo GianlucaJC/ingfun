@@ -270,11 +270,18 @@ class ControllerParco extends Controller
 
 	public function save_riparazione($request) {
 		$id_mezzo=$request->input('id_mezzo');
+		$edit=true;
 		if ($id_mezzo!=0) 
 			$pr = parco_riparazioni::find($id_mezzo);
 		else {
+			$edit=false;
+			//contestualmente ad una nuova riparazione attivo 'mezzo in riparazione' sulla scheda del mezzo
+			$id_ref=$request->input('targa');
+			$psm = parco_scheda_mezzo::find($id_ref);
+			$psm->mezzo_riparazione=1;
+			$psm->save();
 			$pr = new parco_riparazioni;
-			$pr->id_mezzo = $request->input('targa');
+			$pr->id_mezzo = $id_ref;
 		}	
 		
 
@@ -286,7 +293,17 @@ class ControllerParco extends Controller
 		$pr->importo_preventivo = $request->input('importo_preventivo');
 		$pr->importo_fattura = $request->input('importo_fattura');
 
+		if ($edit==true) {
+			if( strlen($request->input('data_consegna_riparazione')!=0)) {
+				$psm = parco_scheda_mezzo::find($id_mezzo);
+				$psm->mezzo_riparazione=2;
+				$psm->save();
+			}
+		}
+
 		$pr->save();
+
+		
 		$id_mezzo=$pr->id;
 		return $id_mezzo;
 	}

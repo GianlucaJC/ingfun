@@ -116,6 +116,7 @@
 		</div>	
 
 
+		@if(1==2)
 		<div class='row mb-3'>
 			<div class="col-md-3">
 				<div class="form-floating mb-3 mb-md-0">
@@ -158,7 +159,8 @@
 					<label for="mezzo_manutenzione">Mezzo in manutenzione</label>
 				</div>
 			</div>
-		</div>			
+		</div>
+		@endif		
 
         <div class="row">
 
