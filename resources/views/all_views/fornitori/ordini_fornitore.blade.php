@@ -53,6 +53,14 @@
 	<input type='hidden' name='id_ordine' id='id_ordine' value='{{$id_ordine}}'>
 	<input type='hidden' name='dele_riga' id='dele_riga'>
 
+	<?php
+		$stato="0"; //usato via js per disabilitare ordine se concluso
+		if (isset($info_ordine[0]->stato_ordine) && $info_ordine[0]->stato_ordine==2) $stato="2";
+		
+		echo "<input type='hidden' id='stato' value='$stato'>";
+	?>	
+			
+
       <div class="container-fluid">
 		<div class="row mb-3">
 			<div class="col-md-6">
@@ -110,8 +118,17 @@
 						<?php
 							if (isset($info_ordine[0]->stato_ordine) && $info_ordine[0]->stato_ordine==1) 
 								echo " selected ";
+						
 						?>
 						>Ordinato</option>
+						
+						
+						<?php
+							if (isset($info_ordine[0]->stato_ordine) && $info_ordine[0]->stato_ordine==2) 
+								echo "<option value='2' selected>";
+								echo "Concluso</option>";
+						?>
+					
 					</select>
 					<label for="stato_ordine">Stato ordine</label>
 				</div>	
@@ -180,12 +197,12 @@
 							data-id_fornitore='{{ $prodotto->id_fornitore}}'data-codice='{{ $prodotto->codice_articolo}}' data-prezzo_unitario='{{$prodotto->prezzo_unitario}}' data-quantita='{{$prodotto->quantita}}' 
 							data-subtotale='{{$prodotto->subtotale}}' data-aliquota='{{ $prodotto->aliquota}}|{{$arr_aliquota[$prodotto->aliquota]}}' >
 							</span>							
-							<a href="javascript:void(0)" onclick="edit_product({{$prodotto->id}})" >
-								<button type="button" class="btn btn-info" alt='Edit' title='Modifica riga'><i class="fas fa-edit"></i></button>
+							<a href="javascript:void(0)"  >
+								<button type="button" class="btn btn-info" alt='Edit' title='Modifica riga' onclick="edit_product({{$prodotto->id}})"><i class="fas fa-edit"></i></button>
 							</a>
 
-							<a href='#' onclick="dele_element({{$prodotto->id}})">
-								<button type="submit" name='dele_ele' class="btn btn-danger" title='Elimina riga ordine'><i class="fas fa-trash"></i></button>	
+							<a href='#' >
+								<button type="submit" name='dele_ele' class="btn btn-danger" onclick="dele_element({{$prodotto->id}})" title='Elimina riga ordine'><i class="fas fa-trash"></i></button>	
 							</a>
 							
 						</td>						
@@ -236,7 +253,7 @@
 					
 					
 					<a href="{{route('elenco_ordini_fornitori')}}">
-						<button type="button" class="btn btn-secondary" >
+						<button type="button" class="btn btn-secondary" id='btn_elenco'>
 						Elenco Ordini
 						</button>
 					</a>
@@ -279,14 +296,14 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.283"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.287"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
 	<!-- per upload -->
 	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
 	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.24"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.356"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.357"></script>
 	<!-- fine upload -->		
 	
 

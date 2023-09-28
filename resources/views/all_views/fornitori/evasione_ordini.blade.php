@@ -105,8 +105,14 @@
 						<?php
 							if (isset($info_ordine[0]->stato_ordine) && $info_ordine[0]->stato_ordine==1) 
 								echo " selected ";
+							
 						?>
 						>Ordinato</option>
+						<?php
+							if (isset($info_ordine[0]->stato_ordine) && $info_ordine[0]->stato_ordine==2) 
+								echo "<option value='2' selected>";
+								echo "Concluso</option>";
+						?>						
 					</select>
 					<label for="stato_ordine">Stato ordine</label>
 				</div>	

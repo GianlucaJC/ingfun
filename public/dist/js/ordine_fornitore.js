@@ -90,6 +90,12 @@ $(document).ready( function () {
 
 		
     });
+	stato=$("#stato").val()
+	if (stato=="2") {
+		$("#frm_ordini :input").attr("disabled", "disabled");
+		$("#frm_ordini1 :input").attr("disabled", "disabled");
+		$("#btn_elenco").prop("disabled", false);
+	}	
 	
 } );
 
