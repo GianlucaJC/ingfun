@@ -74,7 +74,7 @@ class DailyQuote extends Command
 					$name=$info_app->name;
 					
 					//test push
-					$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
+					//$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
 					
 					if ($push_id==null || strlen($push_id)==0) $send=false;
 					else $send=true;
