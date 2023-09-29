@@ -33,8 +33,11 @@ class DailyQuote extends Command
     public function handle()
     {
         
-		 
-			$list_push=appalti::select('l.id_lav_ref')
+			/*
+				Lista di push_id riferiti a lavoratori che non
+				hanno ancora accettato la/e richiesta/e
+			*/
+			$list_push=appalti::select('l.id_lav_ref','l.id_appalto')
 			->join("lavoratoriapp as l","appalti.id","l.id_appalto")
 			->where('l.status','=',0)
 			->groupby('l.id_lav_ref')
@@ -43,9 +46,11 @@ class DailyQuote extends Command
 			foreach ($list_push as $list ){
 				$send=false;
 				$id_ref=$list->id_lav_ref;
-				$user_ref=candidati::select('id_user')
+				$nominativo="";
+				$user_ref=candidati::select('id_user','nominativo')
 				->where('id','=',$id_ref)->get()->first();
 				if ($user_ref->id_user!=null) {
+					$nominativo=$user_ref->nominativo;
 					$push=user::select('push_id')
 					->where('id','=',$user_ref->id_user)->get()->first();
 					$push_id=$push->push_id;
@@ -56,6 +61,29 @@ class DailyQuote extends Command
 						$this->send_push($push_id,"alert","");
 					}	
 				}
+				
+				//Invio push a chi ha creato l'appalto per notificare che
+				//l'utente corrente della lista, non ha ancora accettato
+				$id_appalto=$list->id_appalto;
+				$info_app=appalti::select('u.push_id')
+				->join('users as u','appalti.id_creator','u.id')
+				->where('appalti.id', "=",$id_appalto)
+				->first();
+				if ($info_app->push_id) {
+					$push_id=$push->push_id;
+					
+					//test push
+					$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
+					
+					if ($push_id==null || strlen($push_id)==0) $send=false;
+					else $send=true;
+					
+					if ($send==true && strlen($nominativo)>0) {
+						$message="L'utente $nominativo non ha ancora accettato/rifiutato la richiesta per la partecipazione all'appalto $id_appalto";
+						$this->send_push($push_id,"alert_creator",$message);
+					}
+				}
+				
 			}
 			$this->info("Inviate ".$num_send." notifiche push di sollecito!");			
 		
@@ -80,6 +108,12 @@ class DailyQuote extends Command
 		if ($tipo=="alert")
 			$contents = [ 
 			   "it" => "Sollecito accettazione Servizio $message_extra", 
+			   "en" => "Request acceptance of new service"
+			]; 
+
+		if ($tipo=="alert_creator")
+			$contents = [ 
+			   "it" => $message_extra, 
 			   "en" => "Request acceptance of new service"
 			]; 
 

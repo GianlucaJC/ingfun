@@ -13,6 +13,8 @@ use App\Models\rifornimenti;
 use App\Models\reperibilita;
 use App\Models\parco_scheda_mezzo;
 use App\Models\set_global;
+use OneSignal;
+
 use DB;
 use Image;
 use Mail;
@@ -551,6 +553,9 @@ class ApiController extends Controller
 		if ($sn=="N") $status=2;
 		
 		$this->send_mail_creator($id_appalto,$id_lav_ref,$sn);
+		if ($status==2) 
+			$this->send_push($id_appalto,$tipo="alert",$id_lav_ref);
+		
 		
 		lavoratoriapp::where('id_appalto', $id_appalto)
 		->where('id_lav_ref', $id_lav_ref)
@@ -637,6 +642,49 @@ class ApiController extends Controller
 			
 		}	
 	}
+	
+	public function send_push($id_appalto,$tipo="new",$id_lav_ref) {
+		//$push_id="3863803b-eb7e-4ad4-aafd-958b85dff83f";
+		$nome_lav= DB::table('candidatis as c')
+		->where('c.id', "=",$id_lav_ref)
+		->first()->nominativo;
+		
+		$info_app=appalti::select('u.push_id')
+		->join('users as u','appalti.id_creator','u.id')
+		->where('appalti.id', "=",$id_appalto)
+		->first();
+		
+		if (!$info_app->push_id) return;
+		$push_id=$info_app->push_id;
+		echo "push_id $push_id";
+
+		$params = []; 
+		$params['include_player_ids'] = [$push_id]; 
+		$headings = array(
+			"it" => 'MisAPP News',
+			"en" => 'MisAPP News'
+			);
+		
+		if ($tipo=="new")
+			$contents = [ 
+			   "it" => "Nuova richiesta accettazione Servizio", 
+			   "en" => "Request acceptance of new service"
+			]; 
+
+		if ($tipo=="alert")
+			$contents = [ 
+			   "it" => "Servizio non accettato da operatore $nome_lav", 
+			   "en" => "Request not accepted from $nome_lav"
+			]; 
+
+		$params['priority'] = 10; 
+		$params['contents'] = $contents; 
+		$params['headings'] = $headings; 
+		//$params['delayed_option'] = "timezone"; // Will deliver on user's timezone 
+		//$params['delivery_time_of_day'] = "2:30PM"; // Delivery time
+
+		$resp=OneSignal::sendNotificationCustom($params);		
+	}	
   
 
 }
