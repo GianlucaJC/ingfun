@@ -65,12 +65,13 @@ class DailyQuote extends Command
 				//Invio push a chi ha creato l'appalto per notificare che
 				//l'utente corrente della lista, non ha ancora accettato
 				$id_appalto=$list->id_appalto;
-				$info_app=appalti::select('u.push_id')
+				$info_app=appalti::select('u.name','u.push_id')
 				->join('users as u','appalti.id_creator','u.id')
 				->where('appalti.id', "=",$id_appalto)
 				->first();
 				if ($info_app->push_id) {
 					$push_id=$push->push_id;
+					$name=$push->name;
 					
 					//test push
 					//$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
@@ -79,7 +80,7 @@ class DailyQuote extends Command
 					else $send=true;
 					
 					if ($send==true && strlen($nominativo)>0) {
-						$message="L'utente $nominativo non ha ancora accettato/rifiutato la richiesta per la partecipazione all'appalto $id_appalto";
+						$message="L'utente $nominativo ($name) non ha ancora accettato/rifiutato la richiesta per la partecipazione all'appalto $id_appalto";
 						$this->send_push($push_id,"alert_creator",$message);
 					}
 				}
