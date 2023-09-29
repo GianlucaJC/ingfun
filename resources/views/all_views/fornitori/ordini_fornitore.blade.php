@@ -157,6 +157,20 @@
 
 
 <hr>
+	<div id='div_canceled' style="dotted dashed solid double;display:none" class='mb-3'>
+		<input type='hidden' name='id_prod_canceled' id='id_prod_canceled'>
+		  <div class="form-group">
+			<label for="motivazione_canc">Motivazione della cancellazione</label>
+			<textarea class="form-control" id="motivazione_canc" name='motivazione_canc' rows="3"></textarea>
+		  </div>
+
+		  <button type="submit" onclick='art_cancel();' class="btn btn-primary" name='btn_canceled' value="cancel">Annulla ordine articolo</button>		
+		  
+		  <button type="button" onclick="$('#id_prod_canceled').val('');$('#div_canceled').hide(120)" class="btn btn-secondary">Chiudi</button>		
+		<hr>
+	</div>
+
+
 		<div class="row">
 		  <div class="col-lg-12">
 			<table id='tbl_prodotti_ordine' class="display">
@@ -177,36 +191,61 @@
 					@php($s_iva=0)
 					@php($s_totale=0)
 					@foreach($prodotti_ordini as $prodotto)
-					@php($imponibile+=$prodotto->prezzo_unitario*$prodotto->quantita)
-					@php($s_totale+=$prodotto->subtotale)
-					@php($s_iva+=$prodotto->subtotale-($prodotto->prezzo_unitario*$prodotto->quantita))
-					<tr>
-						<td>{{$prodotto->codice_articolo}}</td>
-						<td>{{$prodotto->ragione_sociale}}</td>
-						<td style='text-align:right'>{{$prodotto->quantita}}</td>
-						<td style='text-align:right'>{{number_format($prodotto->prezzo_unitario,2)}}€</td>
-						<td style='text-align:right'>{{number_format($prodotto->prezzo_unitario*$prodotto->quantita,2)}}€</td>
+						@php($imponibile+=$prodotto->prezzo_unitario*$prodotto->quantita)
+						@php($s_totale+=$prodotto->subtotale)
+						@php($s_iva+=$prodotto->subtotale-($prodotto->prezzo_unitario*$prodotto->quantita))
+						<tr>
+							<td>
+							<?php
+								if ($prodotto->canceled=="1") 
+									echo "<font color='red'><del>";
+								 
+								echo $prodotto->codice_articolo;
 
-						<td style='text-align:right'>{{number_format($prodotto->subtotale-($prodotto->prezzo_unitario*$prodotto->quantita),2)}}€</td>
-						<td style='text-align:right'>{{number_format($prodotto->subtotale,2)}}€</td>
-						
-						<td style='width:200px'>
-
-							<!-- riga info per js !-->
-							<span id='inforow{{$prodotto->id}}'  
-							data-id_fornitore='{{ $prodotto->id_fornitore}}'data-codice='{{ $prodotto->codice_articolo}}' data-prezzo_unitario='{{$prodotto->prezzo_unitario}}' data-quantita='{{$prodotto->quantita}}' 
-							data-subtotale='{{$prodotto->subtotale}}' data-aliquota='{{ $prodotto->aliquota}}|{{$arr_aliquota[$prodotto->aliquota]}}' >
-							</span>							
-							<a href="javascript:void(0)"  >
-								<button type="button" class="btn btn-info" alt='Edit' title='Modifica riga' onclick="edit_product({{$prodotto->id}})"><i class="fas fa-edit"></i></button>
-							</a>
-
-							<a href='#' >
-								<button type="submit" name='dele_ele' class="btn btn-danger" onclick="dele_element({{$prodotto->id}})" title='Elimina riga ordine'><i class="fas fa-trash"></i></button>	
-							</a>
+								if ($prodotto->canceled=="1") {
+									echo "</del></font>";
+									echo "<hr>";
+									echo "<i>".$prodotto->motivazione_canc;
+								}
+							?>
+							</td>
 							
-						</td>						
-					</tr>
+							
+							
+							<td>{{$prodotto->ragione_sociale}}</td>
+							<td style='text-align:right'>{{$prodotto->quantita}}</td>
+							<td style='text-align:right'>{{number_format($prodotto->prezzo_unitario,2)}}€</td>
+							<td style='text-align:right'>{{number_format($prodotto->prezzo_unitario*$prodotto->quantita,2)}}€</td>
+
+							<td style='text-align:right'>{{number_format($prodotto->subtotale-($prodotto->prezzo_unitario*$prodotto->quantita),2)}}€</td>
+							<td style='text-align:right'>{{number_format($prodotto->subtotale,2)}}€</td>
+							
+							<td style='width:200px'>
+
+								<!-- riga info per js !-->
+								<span id='inforow{{$prodotto->id}}'  
+								data-id_fornitore='{{ $prodotto->id_fornitore}}'data-codice='{{ $prodotto->codice_articolo}}' data-prezzo_unitario='{{$prodotto->prezzo_unitario}}' data-quantita='{{$prodotto->quantita}}' 
+								data-subtotale='{{$prodotto->subtotale}}' data-aliquota='{{ $prodotto->aliquota}}|{{$arr_aliquota[$prodotto->aliquota]}}' >
+								</span>							
+								
+								@if ($prodotto->canceled!="1")
+								<a href="javascript:void(0)"  >
+									<button type="button" class="btn btn-info" alt='Edit' title='Modifica riga' onclick="edit_product({{$prodotto->id}})"><i class="fas fa-edit"></i></button>
+								</a>
+
+
+								<a href='#' >
+									<button type="button" name='canc_ele' class="btn btn-warning" onclick="$('#id_prod_canceled').val({{$prodotto->id}});$('#div_canceled').show(120)" title='Annulla ordine prodotto'><i class="fas fa-ban"></i></button>	
+								</a>
+
+								<a href='#' >
+									<button type="submit" name='dele_ele' class="btn btn-danger" onclick="dele_element({{$prodotto->id}})" title='Elimina riga ordine'><i class="fas fa-trash"></i></button>	
+								</a>
+								@endif
+
+								
+							</td>						
+						</tr>
 					@endforeach
 				</body>
 				
@@ -296,7 +335,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.287"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ordine_fornitore.js?ver=1.288"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

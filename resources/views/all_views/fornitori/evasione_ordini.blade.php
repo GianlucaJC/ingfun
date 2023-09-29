@@ -169,7 +169,7 @@
 
 		<div class="row" style='{{$disp_view}}'>
 		  <div class="col-lg-12">
-			<table id='tbl_prodotti_ordine' class="display" style='width:60%'>
+			<table id='tbl_prodotti_ordine' class="display" style='width:75%'>
 				<thead>
 					<tr>
 						<th>Codice</th>
@@ -213,7 +213,19 @@
 						<td>
 							<?php
 								if (isset($arr_prod[$prodotto->codice_articolo])) {
+									
+									if ($prodotto->canceled=="1") 
+										echo "<font color='red'><del>";
+								 	 
 									echo $arr_prod[$prodotto->codice_articolo];
+
+									if ($prodotto->canceled=="1") {
+										echo "</del></font>";
+										echo "<hr>";
+										echo "<i>".$prodotto->motivazione_canc;
+									}
+
+
 								}
 							?>
 						</td>
@@ -227,13 +239,14 @@
 
 						<td style='text-align:right'>
 							<?php
+								$canceled=$prodotto->canceled;
 								$gia_evasa=0;
 								if (isset($info_movimenti[$prodotto->codice_articolo][$prodotto->id_fornitore])) {
 									$gia_evasa=$info_movimenti[$prodotto->codice_articolo][$prodotto->id_fornitore];
 								}	
 								if ($gia_evasa>0) echo $gia_evasa;
 							?>
-							<input type='hidden' class='ctrl_qta' name='ctrl_qta[]' value="{{$prodotto->quantita}}-{{$gia_evasa}}" data-id_ref_articolo='qta_e{{$id_ref_articolo}}'>
+							<input type='hidden' class='ctrl_qta' name='ctrl_qta[]' value="{{$prodotto->quantita}}-{{$gia_evasa}}-{{$canceled}}" data-id_ref_articolo='qta_e{{$id_ref_articolo}}'>
 						</td>
 
 						<td style='width:200px'>
@@ -241,6 +254,9 @@
 						
 							@if ($prodotto->quantita>$gia_evasa)
 								@php ($dis="")
+							@endif
+							@if ($prodotto->canceled==1) 
+								@php ($dis="disabled")
 							@endif
 							<input type="text" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" class="form-control qta_e" name="qta_evasa[]" placeholder="Quantità" {{$dis}} id='qta_e{{$id_ref_articolo}}' />
 							

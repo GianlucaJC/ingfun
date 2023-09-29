@@ -247,3 +247,14 @@ function calcolo_riga() {
 		$("#subtotale").val(subtotale)
 	}
 }
+
+function art_cancel() {
+	motivazione_canc=$("#motivazione_canc").val()
+	if (motivazione_canc.length==0) {
+		event.preventDefault()
+		event.stopPropagation()
+
+		alert("Definire correttamente una motivazione per l'annullamento dell'ordine relativo all'articolo");
+		return false;
+	}
+}

@@ -3,6 +3,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\user;
 use App\Models\italy_cities;
 use App\Models\fornitori;
@@ -100,11 +101,13 @@ class ControllerAcquisti extends Controller
 	
 	public function save_ordine($id_ordine) {
 		$request=request();
-	
+		$id_user=Auth::user()->id;
 		if ($id_ordine!=0) 
 			$ordine = ordini_fornitore::find($id_ordine);
-		else 
+		else {
 			$ordine = new ordini_fornitore;
+			$ordine->id_user=$id_user;
+		}
 		
 		$ordine->id_azienda_proprieta = $request->input('id_azienda_proprieta');
 		$ordine->data_ordine = $request->input('data_ordine');
@@ -144,6 +147,8 @@ class ControllerAcquisti extends Controller
 		$request=request();
 		$btn_save_ordine=$request->input("btn_save_ordine");
 		$btn_save_art=$request->input("btn_save_art");
+		$btn_canceled=$request->input("btn_canceled");
+		
 		$id_ordine=$request->input("id_ordine");
 		if (strlen($id_ordine)==0) $id_ordine=$id_ordine_init;
 		
@@ -156,7 +161,9 @@ class ControllerAcquisti extends Controller
 			$id_riga=$request->input("id_riga");
 			$this->save_art($id_ordine_modal,$id_riga);
 			return redirect()->route("ordini_fornitore",['id'=>$id_ordine_modal]);
-		}	
+		}
+
+			
 		$info_ordine=array();
 
 		$sezionali=DB::table('societa as s')
@@ -190,6 +197,11 @@ class ControllerAcquisti extends Controller
 		$dele_riga=$request->input("dele_riga");
 		if (strlen($dele_riga)!=0) 
 			prodotti_ordini::where('id', $dele_riga)->delete();
+
+		if ($btn_canceled=="cancel") {
+			$id_prod_canceled=$request->input("id_prod_canceled");
+			prodotti_ordini::where('id', $id_prod_canceled)->update(['canceled' => 1,'motivazione_canc'=>$request->input("motivazione_canc")]);
+		}
 
 		$prodotti_ordini=prodotti_ordini::from('prodotti_ordini as p')
 		->join('fornitori as f','p.id_fornitore','f.id')
@@ -319,7 +331,8 @@ class ControllerAcquisti extends Controller
 						
 						$info_qta=explode("-",$ctrl);
 						$curr_qta=intval($info_qta[0])-intval($info_qta[1])-intval($qta);
-						if ($curr_qta>0) $close=false;
+						$canceled=$info_qta[2];
+						if ($curr_qta>0 && $canceled!="1") $close=false;
 						
 						if (strlen($qta)>0) {
 							//creazione dei movimenti nel DB
