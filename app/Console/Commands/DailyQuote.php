@@ -70,8 +70,8 @@ class DailyQuote extends Command
 				->where('appalti.id', "=",$id_appalto)
 				->first();
 				if ($info_app->push_id) {
-					$push_id=$push->push_id;
-					$name=$push->name;
+					$push_id=$info_app->push_id;
+					$name=$info_app->name;
 					
 					//test push
 					//$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
