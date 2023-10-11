@@ -5,20 +5,30 @@ $current_uri=$arr_uri[0];
 $infx=Auth::user()->roles->pluck('name');
 $role=$infx[0];
 $inf=DB::table('main_menu')
-->select('roles','permissions')->where('route','=',$current_uri);
-$info=$inf->first();
+->select('roles','permissions')
+->where('route','=',$current_uri)
+->where('roles','like',"%".$role."%");
+//$info=$inf->first();
 $count=$inf->count();
+
 $enter=false;
-if($info) {
+if($count>0) {
+	$enter=true;
+	/*
 	$ruoli=$info->roles;
 	$arr=explode("|",$ruoli);
 	if (in_array($role,$arr) || strlen($ruoli)==0) $enter=true;
+	*/
 } else {
-	if ($count==0) $enter=true;
+	//per far passare le rotte direttamente senza la tabella main_menu
+	if ($current_uri=="menu") $enter=true; 
+	
+	
+	if ($role=="admin") $enter=true;
 	/*
 		se count==0 vuol dire
 		che la rotta non è inserita nella tabella main_menu:
-		per ora la faccio passare ugualmente, l'alternativa sarebbe far passare	tutte le rotte nella tabella, ma se poi dimentico qualche route	viene generato un errore nel render della pagina
+		per ora, in caso di admin, la faccio passare ugualmente, l'alternativa sarebbe far passare	tutte le rotte nella tabella, ma se poi dimentico qualche route	viene generato un errore nel render della pagina
 		(al limite man mano che si verificano errori per mancata presenza, popolo la tabella)...
 	*/
 	
