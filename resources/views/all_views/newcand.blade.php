@@ -14,6 +14,7 @@
 			@endif
 			<form method='post' action="{{ route('save_newuser') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+			
 			<input type='hidden' name='from' value="{{$from}}">
 			<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
 			<input type="hidden" name="nome" id="nome" value="{{ $candidati[0]['nome']}}">
@@ -53,6 +54,7 @@
 			
 				
 				<form method='post' action="{{ route('set_ruolo') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">					
+
 					<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>				
 					<input type='hidden' name='from' value="{{$from}}">
 					<input type="hidden" name="id_cand" id="id_cand" value="{{ $id_cand}}">
@@ -140,7 +142,7 @@
     <div class="content">
       <div class="container-fluid">
 
-
+		<input type='hidden' name='setuser'  id='setuser' value="{{$setuser}}">
         <div class="row">
 		 
 			@include('all_views.newcandLeft')
@@ -150,6 +152,7 @@
 		
 
 		<div class='row'>
+		
 			<div class="col-md-3">
 				@if ($id_cand!=0 && $candidati[0]['status_candidatura']=="3")
 					<button type="button" onclick="prepara_mail(2)" class="btn btn-secondary btn-lg btn-block mb-3" id='btn_comunica'>INVIA COMUNICAZIONE </button><hr>
@@ -251,7 +254,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.97"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newcand.js?ver=3.103"></script>
 	<script src="{{ URL::asset('/') }}dist/js/azione.js?ver=1.18"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>

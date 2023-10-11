@@ -1,3 +1,39 @@
+<?php
+$uri_info = request()->path();
+$arr_uri=explode("/",$uri_info);
+$current_uri=$arr_uri[0];
+$infx=Auth::user()->roles->pluck('name');
+$role=$infx[0];
+$inf=DB::table('main_menu')
+->select('roles','permissions')->where('route','=',$current_uri);
+$info=$inf->first();
+$count=$inf->count();
+$enter=false;
+if($info) {
+	$ruoli=$info->roles;
+	$arr=explode("|",$ruoli);
+	if (in_array($role,$arr) || strlen($ruoli)==0) $enter=true;
+} else {
+	if ($count==0) $enter=true;
+	/*
+		se count==0 vuol dire
+		che la rotta non è inserita nella tabella main_menu:
+		per ora la faccio passare ugualmente, l'alternativa sarebbe far passare	tutte le rotte nella tabella, ma se poi dimentico qualche route	viene generato un errore nel render della pagina
+		(al limite man mano che si verificano errori per mancata presenza, popolo la tabella)...
+	*/
+	
+}
+
+if ($enter==false) {
+	
+	//echo "<h3>Non possiedi le credenziali per accedere alla risorsa richiesta</h3>";
+	?>
+	@include('all_views.viewmaster.error')
+	<?php
+	exit;
+}	
+
+?>
 <!DOCTYPE html>
 <!--
 This is a starter template page. Use this page to start your new project from
@@ -39,18 +75,21 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </li>
       <li class="nav-item d-none d-sm-inline-block">
 		<?php
+			
 			$referer = $_SERVER['HTTP_REFERER'] ?? null;
-			if (strlen($referer)!=0) {
-				echo "<a href='$referer' class='nav-link'>";	
+			$uri_complete = request()->path();
+			//if ($uri_complete!="menu") {	
+				$referer="#";
+				echo "<a href='$referer' onclick='history.back()' class='nav-link'>";	
 					echo "<button type='button' class='btn btn-secondary btn-sm'>Indietro</button>";
 				echo "</a>";
-			}	
+			//}
 
 			
 		?>
 	</li>	
 	<li class="nav-item d-none d-sm-inline-block">	
-        <a href="{{ route('dashboard') }}" class="nav-link">
+        <a href="{{ route('menu') }}" class="nav-link">
 			<button type="button" class="btn btn-primary btn-sm">Homepage</button>	
 		</a>
       </li>
@@ -164,7 +203,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   
   
   
-   @extends('all_views.viewmaster.sidemenu')
+   @extends('all_views.viewmaster.sidemenu_new')
 
    <center>Sviluppo prototipale by <b>Misericordia</b></center>
    @yield('content_main')  

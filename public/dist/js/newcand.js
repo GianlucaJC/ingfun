@@ -29,6 +29,9 @@ var arr_send = {}; //usato in assunzione.js
 
 $(document).ready( function () {
 	$('body').addClass("sidebar-collapse");
+	if ($("#setuser").val()=="1") {
+		$('body').addClass("control-sidebar-slide-open").ControlSidebar('toggle');
+	}
 	$('.select2').select2()
 
 	$("#sub_newcand").click(function(){

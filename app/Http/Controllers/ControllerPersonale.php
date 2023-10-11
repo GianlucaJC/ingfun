@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\mainController;
 
 use App\Models\User;
 use Illuminate\Http\Request;
@@ -119,6 +120,7 @@ class ControllerPersonale extends Controller
 	}	
 
 	public function utenti(Request $request){
+		
 		$save_edit=$this->save_edit_utenti($request);
 		$view_dele=$request->input("view_dele");
 		if (strlen($view_dele)==0) $view_dele=0;

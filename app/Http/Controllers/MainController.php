@@ -43,9 +43,27 @@ class mainController extends Controller
 public function __construct()
 	{
 		$this->middleware('auth')->except(['index']);
+
 	}	
 	
-
+	public static function check_route($route) {
+		$infx=Auth::user()->roles->pluck('name');
+		$role=$infx[0];
+		$info=DB::table('main_menu')
+		->select('roles','permissions')->where('route','=',$route)->first();
+		$enter=false;
+		if($info) {
+			$ruoli=$info->roles;
+			$arr=explode("|",$ruoli);
+			if (in_array($role,$arr) || strlen($ruoli)==0) $enter=true;
+		}
+		if ($enter==false) {
+			echo "<h3>Non possiedi le credenziali per accedere alla risorsa richiesta</h3>";
+			exit;
+		}
+		
+	}
+	
     public function exportParco(Request $request){
 		//la classe è in app/exports/
         return Excel::download(new ExportParco, 'parco.xlsx');
@@ -138,6 +156,28 @@ public function __construct()
 			$esito="OK";
 		}	
 		return view('all_views/newpassuser')->with('esito',$esito);		
+	}
+	
+	public function menu($parent_id=0) {
+		$infx=Auth::user()->roles->pluck('name');
+		$role=$infx[0];
+	
+		//DB::enableQueryLog();
+		$voci=DB::table('main_menu')
+			->where('parent_id','=',$parent_id)
+			->where(function ($voci) use($role) {
+				$voci->where('roles','like',"%$role%")
+				->orWhere('roles','=',"");
+			})	
+			->where('reserved','=',0)
+			->orderBy('parent_id')
+			->orderBy('ordine')			
+			->get();
+		//$queries = DB::getQueryLog();
+		//print_r($queries);
+
+		
+		return view('all_views/menu')->with('voci',$voci);		
 	}
 	
 	public function dashboard(Request $request) {
@@ -261,7 +301,7 @@ public function __construct()
 		return $candidati;
 	}
 
-	public function newcand($id=0,$from=0) {
+	public function newcand($id=0,$from=0,$setuser=0) {
 		$candidati=array();
 		
 		//in caso di nuovo form l'array candidati è vuoto...per cui lo inizializzo 
@@ -359,7 +399,7 @@ public function __construct()
 		
 		
 		
-		return view('all_views/newcand')->with('stati', $stati)->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc)->with('email_accesso',$email_accesso)->with('user_active',$user_active)->with('roles',$roles)->with('ruolo',$ruolo);
+		return view('all_views/newcand')->with('stati', $stati)->with('regioni', $regioni)->with('all_comuni',$all_comuni)->with('tipoc',$tipoc)->with("candidati",$candidati)->with('id_cand',$id)->with('from',$from)->with('setuser',$setuser)->with('formazione', $formazione)->with("societa",$societa)->with("centri_costo",$centri_costo)->with("area_impiego",$area_impiego)->with("mansione",$mansione)->with("ccnl",$ccnl)->with("tipologia_contr",$tipologia_contr)->with('tipo_doc',$tipo_doc)->with("elenco_doc",$elenco_doc)->with('email_accesso',$email_accesso)->with('user_active',$user_active)->with('roles',$roles)->with('ruolo',$ruolo);
 	}
 
 	public function save_newcand(Request $request) {
@@ -677,5 +717,7 @@ public function __construct()
 
 		return view('all_views/listcand')->with('candidati', $candidati)->with("view_dele",$view_dele)->with("mansioni",$mansioni)->with("countall",$countall);
 	}
+	
+	
 
 }

@@ -1,5 +1,6 @@
 
 <?php
+
 use App\Models\User;
 	$id = Auth::user()->id;
 	$user = User::find($id);
@@ -8,7 +9,7 @@ use App\Models\User;
   <!-- Main Sidebar Container -->
   <aside class="main-sidebar sidebar-dark-primary elevation-4">
     <!-- Brand Logo -->
-    <a href="{{ route('dashboard') }}" class="brand-link">
+    <a href="{{ route('menu') }}" class="brand-link">
       <img src="{{ URL::asset('/') }}dist/img/4.png" alt="IngFUN Logo" class="brand-image img-circle elevation-5" style="opacity: 5;" >
       
 	  

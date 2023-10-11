@@ -58,7 +58,7 @@
 					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
-								<th>Operazioni</th>
+								<th>Operazioni/impostazioni</th>
 								<th>Dipendente</th>
 								<th>Stato</th>
 								<th>Inizio</th>
@@ -94,6 +94,11 @@
 								<tr>
 
 									<td>
+										@if ($scadenza->dele=="0") 
+											<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1,'setuser'=>1]) }}" target='_blank' >
+												<button type="button" class="btn btn-info" alt='Account' title='Account utente'><i class="fas fa-users-cog"></i></button>
+											</a>
+										@endif
 										@if ($scadenza->dele=="0") 
 											<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1]) }}" >
 												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
