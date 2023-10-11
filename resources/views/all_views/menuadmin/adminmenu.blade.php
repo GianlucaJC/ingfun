@@ -170,7 +170,7 @@
 					<br><hr>
 					<button type="submit" name="btn_sposta" id="btn_sposta" class="btn btn-primary" onclick='check_sposta()' value="save">Salva</button>
 					
-					<a href="{{ route('adminmenu') }}">
+					<a href="#" onclick="$('#div_schema').hide()">
 					<button type="button" class="btn btn-secondary">Chiudi</button>
 					</a>
 
