@@ -134,8 +134,16 @@ class ControllerAdmin extends Controller
 		->orderBy('a.parent_id')
 		->orderBy('a.ordine')
 		->get();
+
+		$menu_info=DB::table('main_menu as a')		
+		->select("a.*")
+		->where("a.reserved","=",0)
+		->orderBy('a.parent_id')
+		->orderBy('a.ordine')
+		->get();
+
 		$info_menu=array();
-		foreach($voci_menu as $info) {
+		foreach($menu_info as $info) {
 			$info_menu[$info->id]=$info->voce;
 		}
 
