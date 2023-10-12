@@ -28,7 +28,7 @@ use App\Models\User;
           </div><!-- /.col -->
           <div class="col-sm-6">
             <ol class="breadcrumb float-sm-right">
-              <li class="breadcrumb-item"><a href="{{ route('dashboard') }}">Home</a></li>
+              <li class="breadcrumb-item"><a href="{{ route('menu') }}">Home</a></li>
               
             </ol>
           </div><!-- /.col -->
@@ -42,19 +42,6 @@ use App\Models\User;
       <div class="container-fluid">
 		
 		@if ($user->hasRole('user'))
-
-			<div class="row">
-				<div class="col-md-12">
-				<a href="{{ route('dashboard') }}">
-					<div class="d-grid gap-2 mt-2">
-					  <button class="btn btn-secondary" type="button">
-					  <i class="fas fa-home" style='font-size:36px'></i><br>
-						TORNA MENU PRECEDENTE ==> Dashboard
-					  </button>
-					</div>
-				</a>
-				</div>
-			</div>
 
 			<div class="row mt-5">
 				<form method='post' action="{{ route('newpassuser') }}" id='save_newcand' name='save_newcand' autocomplete="off" class="needs-validation" autocomplete="off">
