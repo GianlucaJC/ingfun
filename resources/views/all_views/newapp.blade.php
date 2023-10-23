@@ -65,22 +65,51 @@
 			if (isset($appalti[0]->id_ditta))  $id_ditta_db=$appalti[0]->id_ditta;
 		?>	
 
+
 		<div class="row mb-3">
-			
+			<!-- div disattivato !-->		
 			<div class="col-md-6" style='display:none'>
 				<div class="form-floating">
 					<input class="form-control" id="descrizione_appalto" name='descrizione_appalto' type="text" placeholder="Definizione"  maxlength=150 value="{{$appalti[0]->descrizione_appalto ?? ''}}" />
 					<label for="descrizione_appalto">Descrizione Appalto</label>
 				</div>
-			</div>
+			</div>			
+
 			
-			<div class="col-md-4">
+			<div class="col-md-2">
 				<div class="form-floating">
 					<input class="form-control" disabled id="ref_appalto" type="text" placeholder="ID"  value="{{$appalti[0]->id ?? ''}}" />
 					<label for="ref_appalto">ID Appalto</label>
 				</div>
-			</div>			
-			<div class="col-md-4">
+			</div>
+
+
+			
+			<div class="col-md-8">
+				<div class="form-floating mb-3 mb-md-0">
+					<input class="form-control" id="luogo_incontro" name='luogo_incontro' type="text" placeholder="Luogo dell'incontro" required value="{{$appalti[0]->luogo_incontro ?? ''}}"  />
+					<label for="nome">Luogo incontro*</label>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="form-floating">
+					<input class="form-control" id="orario_incontro" name='orario_incontro' type="time" required value="{{$appalti[0]->orario_incontro ?? ''}}" maxlength=5 />
+					<label for="data_app">Orario incontro*</label>
+				</div>
+			</div>	
+		</div>			
+		
+		
+		<div class="row mb-3">	
+			
+			<div class="col-md-8">
+				<div class="form-floating mb-3 mb-md-0">
+					<input class="form-control" id="chiesa" name='chiesa' type="text" placeholder="Chiesa" required value="{{$appalti[0]->chiesa ?? ''}}"  />
+					<label for="nome">Chiesa*</label>
+				</div>
+			</div>
+			
+			<div class="col-md-2">
 				<div class="form-floating">
 				<?php
 					$d_def=date("Y-m-d");
@@ -93,7 +122,7 @@
 				</div>
 			</div>			
 
-			<div class="col-md-4">
+			<div class="col-md-2">
 				<div class="form-floating">
 					<input class="form-control" id="ora_app" name='ora_app' type="time" required value="{{$appalti[0]->orario_ref ?? ''}}" maxlength=5 />
 					<label for="data_app">Orario del servizio*</label>
@@ -285,6 +314,7 @@
 				</div>				
 			</div>	
 			
+
 		
 			<div class="row mb-3">
 

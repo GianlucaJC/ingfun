@@ -37,6 +37,10 @@ public function __construct()
 
 		//$appalti->descrizione_appalto = $request->input('descrizione_appalto');
 		$appalti->id_azienda_proprieta = $request->input('azienda_proprieta');
+		
+		$appalti->luogo_incontro = $request->input('luogo_incontro');
+		$appalti->orario_incontro = $request->input('orario_incontro');
+		$appalti->chiesa = $request->input('chiesa');
 		$appalti->data_ref = $request->input('data_app');
 		$appalti->orario_ref = $request->input('ora_app');
 		$appalti->id_ditta = $id_ditta;
