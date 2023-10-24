@@ -409,6 +409,11 @@ class ApiController extends Controller
 			if ($ditta->provincia) $info_ditta.=" - ".$ditta->provincia;
 			$info[$sc]['ditta']=$info_ditta;
 			$info[$sc]['descrizione_appalto']=$record->descrizione_appalto;
+			
+			$info[$sc]['luogo_incontro']=$record->luogo_incontro;
+			$info[$sc]['orario_incontro']=$record->orario_incontro;
+			$info[$sc]['chiesa']=$record->chiesa;
+			
 			$info[$sc]['variazione']=$record->variazione;
 			
 			$d=$record->data_ref;
