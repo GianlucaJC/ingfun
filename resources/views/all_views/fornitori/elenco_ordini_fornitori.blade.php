@@ -52,7 +52,7 @@
 
         <div class="row">
           <div class="col-md-12">
-		  
+
 				<table id='tbl_ordine' class="display">
 					<thead>
 						<tr>
@@ -60,7 +60,7 @@
 							<th>Azienda di proprietà</th>
 							<th>Data ordine</th>
 							<th>Magazzino</th>
-							<!--<th>Fornitore</th>!-->
+							<th>Fornitori</th>
 							<th>Stato</th>
 							<th>Operazioni</th>
 						</tr>
@@ -94,10 +94,19 @@
 									?>
 								</td>
 								<td>
-									
+								<?php
+									if (isset($info_fornitori[$ordine->id])) {
 
-								
-								<!--</td><td>!-->
+										for ($ss=0;$ss<=count($info_fornitori[$ordine->id])-1;$ss++) {
+											if ($ss>0) echo ", ";
+											if (isset($arr_forn[$info_fornitori[$ordine->id][$ss]]))
+												echo $arr_forn[$info_fornitori[$ordine->id][$ss]];
+										}
+									}
+								?>
+								</td>
+
+								<td>
 								
 									<?php
 									$stato_ordine=$ordine->stato_ordine;
@@ -142,7 +151,7 @@
 							<th>Azienda di proprietà</th>
 							<th>Data ordine</th>
 							<th>Magazzino</th>
-							<!--<th>Fornitore</th>!-->
+							<th>Fornitori</th>
 							<th>Stato</th>
 							<th></th>
 						</tr>

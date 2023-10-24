@@ -67,8 +67,8 @@
 			</div>			
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" id="codice_fiscale" name='codice_fiscale' type="text" required value="{{$info_fornitore[0]->codice_fiscale ?? ''}}" maxlength=16  />
-					<label for="codice_fiscale">Codice fiscale*</label>
+					<input class="form-control" id="codice_fiscale" name='codice_fiscale' type="text" value="{{$info_fornitore[0]->codice_fiscale ?? ''}}" maxlength=16  />
+					<label for="codice_fiscale">Codice fiscale</label>
 				</div>
 			</div>			
 

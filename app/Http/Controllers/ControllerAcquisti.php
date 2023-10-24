@@ -270,8 +270,38 @@ class ControllerAcquisti extends Controller
 			return $elenco_ordini->where('o.dele', "=","0");
 		})
 		->orderBy('o.id','desc')->get();
+		
+		$sca=0;
+		$info_fornitori=array();
+		$prodotti_ordini=prodotti_ordini::from('prodotti_ordini as p')
+		->select('p.*')
+		->orderBy('p.id_ordine')
+		->get();	
+		$id_old_o="?";$temp=array();
+		foreach($prodotti_ordini as $mov) {
+			$id_f=$mov->id_fornitore;
+			$id_o=$mov->id_ordine;
+			if ($id_old_o!=$id_o) {
+				$temp=array();
+				$sca=0;
+			}	
+			if (!in_array($id_f,$temp)) {
+				$temp[]=$id_f;
+				$info_fornitori[$id_o][$sca]=$id_f;				
+				$sca++;
+			}	
+			$id_old_o=$id_o;
+		}
+		
+		$fornitori=fornitori::select('id','ragione_sociale')
+		->orderBy('ragione_sociale')
+		->get();
+		$arr_forn=array();
+		foreach ($fornitori as $fornitore) {
+			$arr_forn[$fornitore->id]=$fornitore->ragione_sociale;
+		}		
 
-		return view('all_views/fornitori/elenco_ordini_fornitori')->with("view_dele",$view_dele)->with("elenco_ordini",$elenco_ordini)->with('magazzini',$magazzini);
+		return view('all_views/fornitori/elenco_ordini_fornitori')->with("view_dele",$view_dele)->with("elenco_ordini",$elenco_ordini)->with('magazzini',$magazzini)->with("info_fornitori",$info_fornitori)->with('arr_forn',$arr_forn);
 
 	}	
 
