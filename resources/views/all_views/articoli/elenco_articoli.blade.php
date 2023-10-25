@@ -57,9 +57,10 @@
 					<thead>
 						<tr>
 							<th>ID</th>
-							<th>Descrizione prodotto</th>
 							<th>Categoria</th>
 							<th>Sotto Categoria</th>
+							<th>Descrizione prodotto</th>
+							<th>Fornitori</th>
 							@foreach ($magazzini as $magazzino)
 								<th>
 									Qta 
@@ -87,16 +88,30 @@
 								</td>	
 								
 								<td>
+									{{ $articolo->categoria }}
+								</td>
+								<td>
+									{{ $articolo->sottocategoria }}
+								</td>
+
+
+								<td>
 									{{ $articolo->descrizione }}
 								</td>
 								
 								<td>
-									{{ $articolo->categoria }}
+								@if (isset($info_prod[$articolo->id]))
+									<?php
+										for ($sca=0;$sca<=count($info_prod[$articolo->id])-1;$sca++) {
+											if ($sca!=0) echo ", ";
+											if (isset($arr_forn[$info_prod[$articolo->id][$sca]]))
+												echo $arr_forn[$info_prod[$articolo->id][$sca]];
+										}
+									?>								
+								@endif
 								</td>
+								
 
-								<td>
-									{{ $articolo->sottocategoria }}
-								</td>
 
 								@foreach ($magazzini as $magazzino)
 									<td>
@@ -136,9 +151,10 @@
 					<tfoot>
 						<tr>
 							<th>ID</th>
-							<th>Descrizione prodotto</th>
 							<th>Categoria</th>
 							<th>Sotto Categoria</th>
+							<th>Descrizione prodotto</th>
+							<th>Fornitori</th>
 							@foreach ($magazzini as $magazzino)
 								<th>
 									

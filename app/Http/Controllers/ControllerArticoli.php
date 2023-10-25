@@ -13,6 +13,7 @@ use App\Models\prod_sottocategorie;
 use App\Models\prod_magazzini;
 use App\Models\prod_giacenze;
 use App\Models\prod_spostamenti;
+use App\Models\movimenti_carico;
 
 use DB;
 
@@ -176,6 +177,31 @@ class ControllerArticoli extends Controller
 		->groupBy('p.id')
 		->orderBy('p.id','desc')->get();
 
+		$prodotti_fornitori = movimenti_carico::
+			select("id_fornitore","id_prodotto")
+			->groupBy("id_fornitore","id_prodotto")
+			->orderBy("id_prodotto")
+			->orderBy("id_fornitore")
+			->get();
+		$info_prod=array();
+		$old_p="?";$sca=0;
+		foreach($prodotti_fornitori as $prod_f) {
+			$pr=$prod_f->id_prodotto;
+			if ($old_p!=$pr) $sca=0;			
+			$info_prod[$pr][$sca]=$prod_f->id_fornitore;
+			$sca++;
+			$old_p=$pr;
+		}		
+
+		$fornitori=fornitori::select('id','ragione_sociale')
+		->orderBy('ragione_sociale')
+		->get();
+		$arr_forn=array();
+		foreach ($fornitori as $fornitore) {
+			$arr_forn[$fornitore->id]=$fornitore->ragione_sociale;
+		}		
+		
+		
 
 		$giacenze=prod_giacenze::select('id_prodotto','id_magazzino','giacenza')
 		->get();
@@ -186,7 +212,7 @@ class ControllerArticoli extends Controller
 		
 		$magazzini=prod_magazzini::select('id','descrizione')->orderBy('descrizione')->get();
 
-		return view('all_views/articoli/elenco_articoli')->with("view_dele",$view_dele)->with("elenco_articoli",$elenco_articoli)->with("magazzini",$magazzini)->with('info_giacenze',$info_giacenze);
+		return view('all_views/articoli/elenco_articoli')->with("view_dele",$view_dele)->with("elenco_articoli",$elenco_articoli)->with("magazzini",$magazzini)->with('info_giacenze',$info_giacenze)->with("info_prod",$info_prod)->with('arr_forn',$arr_forn);
 
 	}	
 	
