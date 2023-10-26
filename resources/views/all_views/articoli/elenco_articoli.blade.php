@@ -50,6 +50,25 @@
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 
+		<div class="row">
+			<div class="col-md-6 mb-2">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-control" name="sede_magazzino" id="sede_magazzino" aria-label="Magazzino" onchange="$('#frm_articolo').submit()" >
+						<option value=''>[[Tutti]]</option>
+						@foreach($magazzini as $magazzino)
+							<option value='{{$magazzino->id}}'
+							@if ($magazzino->id==$sede_magazzino)
+								selected
+							@endif
+							>{{$magazzino->descrizione}}</option>
+						@endforeach
+					</select>
+					<label for="sede_magazzino">Filtro magazzino</label>
+				</div>	
+			</div>
+		</div>
+				
+
         <div class="row">
           <div class="col-md-12">
 		  
@@ -219,6 +238,7 @@
 					</div>
 				
 				</div>
+				
 			</div>	
 		</form>
         <!-- /.row -->

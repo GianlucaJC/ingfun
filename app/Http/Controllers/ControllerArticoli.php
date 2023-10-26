@@ -155,6 +155,7 @@ class ControllerArticoli extends Controller
 		
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
+		$sede_magazzino=$request->input("sede_magazzino");
 
 		if (strlen($dele_contr)!=0) {
 			prod_prodotti::where('id', $dele_contr)
@@ -164,18 +165,33 @@ class ControllerArticoli extends Controller
 			prod_prodotti::where('id', $restore_contr)
 			  ->update(['dele' => 0]);			
 		}		
+		
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		
-		$elenco_articoli=DB::table('prod_prodotti as p')
-		->select('p.*','c.descrizione as categoria','sc.descrizione as sottocategoria')
-		->join('prod_categorie as c','p.id_categoria','c.id')
-		->join('prod_sottocategorie as sc','p.id_sottocategoria','sc.id')
-		->when($view_dele=="0", function ($elenco_articoli) {
-			return $elenco_articoli->where('p.dele', "=","0");
-		})
-		->groupBy('p.id')
-		->orderBy('p.id','desc')->get();
+		if (strlen($sede_magazzino)!=0) {
+			$elenco_articoli=DB::table('prod_prodotti as p')
+			->select('p.*','c.descrizione as categoria','sc.descrizione as sottocategoria')
+			->join('prod_giacenze as g','p.id','g.id_prodotto')
+			->join('prod_categorie as c','p.id_categoria','c.id')
+			->join('prod_sottocategorie as sc','p.id_sottocategoria','sc.id')
+			->where('g.id_magazzino','=',$sede_magazzino)
+			->when($view_dele=="0", function ($elenco_articoli) {
+				return $elenco_articoli->where('p.dele', "=","0");
+			})
+			->groupBy('p.id')
+			->orderBy('p.id','desc')->get();
+		} else {
+			$elenco_articoli=DB::table('prod_prodotti as p')
+			->select('p.*','c.descrizione as categoria','sc.descrizione as sottocategoria')
+			->join('prod_categorie as c','p.id_categoria','c.id')
+			->join('prod_sottocategorie as sc','p.id_sottocategoria','sc.id')
+			->when($view_dele=="0", function ($elenco_articoli) {
+				return $elenco_articoli->where('p.dele', "=","0");
+			})
+			->groupBy('p.id')
+			->orderBy('p.id','desc')->get();
+		}
 
 		$prodotti_fornitori = movimenti_carico::
 			select("id_fornitore","id_prodotto")
@@ -212,7 +228,7 @@ class ControllerArticoli extends Controller
 		
 		$magazzini=prod_magazzini::select('id','descrizione')->orderBy('descrizione')->get();
 
-		return view('all_views/articoli/elenco_articoli')->with("view_dele",$view_dele)->with("elenco_articoli",$elenco_articoli)->with("magazzini",$magazzini)->with('info_giacenze',$info_giacenze)->with("info_prod",$info_prod)->with('arr_forn',$arr_forn);
+		return view('all_views/articoli/elenco_articoli')->with("view_dele",$view_dele)->with("elenco_articoli",$elenco_articoli)->with("magazzini",$magazzini)->with('info_giacenze',$info_giacenze)->with("info_prod",$info_prod)->with('arr_forn',$arr_forn)->with("sede_magazzino",$sede_magazzino);
 
 	}	
 	
