@@ -120,18 +120,23 @@
 								
 								<td>
 									@if ($ordine->dele=="0") 
+										
+										
 										<a href="{{ route('ordini_fornitore',['id'=>$ordine->id]) }}" >
 											<button title="Modifica ordine fornitore" type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
 										</a>
+										
 										
 										<a href="{{ route('evasione_ordini',['id'=>$ordine->id]) }}" >
 											<button title="Procedura evasione ordine" type="button" class="btn btn-success" alt='Evasione'><i class="fas fa-tasks"></i></button>
 										</a>
 										
 
+										
 										<a href='#' onclick="dele_element({{$ordine->id}})">
 											<button title="Elimina ordine fornitore" type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
 										</a>
+										
 									@endif
 									@if ($ordine->dele=="1") 
 										<a href='#'onclick="restore_element({{$ordine->id}})" >

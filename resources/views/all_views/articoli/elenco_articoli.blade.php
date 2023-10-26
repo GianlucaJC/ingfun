@@ -61,13 +61,14 @@
 							<th>Sotto Categoria</th>
 							<th>Descrizione prodotto</th>
 							<th>Fornitori</th>
+							<th>Prezzo medio</th>
 							@foreach ($magazzini as $magazzino)
-								<th>
+								<th class="sum">
 									Qta 
 									{{$magazzino->descrizione}}
 								</th>
 							@endforeach
-							
+							<th class="sum">Qta</th>
 							
 							<th>Operazioni</th>
 						</tr>
@@ -111,17 +112,25 @@
 								@endif
 								</td>
 								
-
-
+								<td>
+									{{number_format($articolo->prezzo_medio,2)}}€
+								</td>
+								
+								@php ($giacenza_globale=0)
 								@foreach ($magazzini as $magazzino)
 									<td>
 										<?php
+										
 											if (isset($info_giacenze[$articolo->id][$magazzino->id])) {
 												echo $info_giacenze[$articolo->id][$magazzino->id];
+												$giacenza_globale+=$info_giacenze[$articolo->id][$magazzino->id];
 											}
 										?>
 									</td>
 								@endforeach
+								<td>
+									{{$giacenza_globale}}
+								</td>
 
 
 
@@ -155,13 +164,31 @@
 							<th>Sotto Categoria</th>
 							<th>Descrizione prodotto</th>
 							<th>Fornitori</th>
+							<th>Prezzo medio</th>
 							@foreach ($magazzini as $magazzino)
 								<th>
 									
 								</th>
 							@endforeach
-							
+							<th>Qta</th>
 							<th></th>
+						</tr>
+						
+						<tr>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							<td></td>
+							@php ($ind_sum=0)
+							@foreach ($magazzini as $magazzino)
+								@php ($ind_sum++)
+								<td id='sum_res{{$ind_sum}}'></td>
+							@endforeach
+							@php ($ind_sum++)
+							<td id='sum_res{{$ind_sum}}'></td>
+							<td></td>
 						</tr>
 					</tfoot>					
 				</table>
@@ -227,6 +254,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/elenco_prodotti.js?ver=1.01"></script>
+	<script src="{{ URL::asset('/') }}dist/js/elenco_prodotti.js?ver=1.087"></script>
 
 @endsection

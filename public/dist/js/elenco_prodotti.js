@@ -4,7 +4,31 @@ $(document).ready( function () {
 		if (title.length!=0)
 			$(this).html('<input type="text" placeholder="Search ' + title + '" />');
     });	
+	
+	
     var table=$('#tbl_articoli').DataTable({
+		"fnDrawCallback": function ( row, data, start, end, display ) {
+            var api = this.api(), data;
+			ind_sum=0
+
+			this.api()
+			.columns({ search: 'applied' })
+            .every(function () {
+				
+				let ourSum = 0
+				if ($(this.header()).hasClass('sum')) {
+					ind_sum++
+					ourSum = this.data().reduce(function(a, b) {
+						var x = parseFloat(a) || 0;
+						var y = parseFloat(b) || 0;
+						return x + y;
+					}, 0);
+
+					$('#sum_res'+ind_sum).html("<b>"+ourSum+"</b>");
+				}
+			})
+		},			
+		
 		dom: 'Bfrtip',
 		buttons: [
 			'excel', 'pdf'
@@ -32,7 +56,30 @@ $(document).ready( function () {
         },
 
 		
-    });
+    });	
+	
+	/*
+	table.columns().every(function(index, tableCounter, counter) {
+		let ourSum = 0
+		let column = this;
+		
+		if ($(column.header()).hasClass('sum')) {
+		  ourSum = column.data().reduce(function(a, b) {
+			var x = parseFloat(a) || 0;
+			var y = parseFloat(b) || 0;
+			return x + y;
+		  }, 0);
+		}
+		else {
+		  ourSum = ""
+		}
+		console.log("column " + index + ": ourSum " + ourSum);	
+	})
+	*/
+    
+   
+	
+
 	
 } );
 

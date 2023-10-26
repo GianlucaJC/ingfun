@@ -139,8 +139,46 @@ class ControllerAcquisti extends Controller
 		$po->prezzo_unitario = $request->input('prezzo_unitario');
 		$po->aliquota = $request->input('aliquota');
 		$po->subtotale = $request->input('subtotale');
-
 		$po->save();
+		$this->save_prezzo_medio($id_ordine);
+	}
+	
+	public function save_prezzo_medio($id_ordine=0) {
+		//aggiorna tutti i prezzi medi dei prodotti a partire dall'ordine specificato
+		
+		//elenco tutti i prodotti dell'ordine o globali
+		if ($id_ordine==0)
+			$elenco=prod_prodotti::select('id as codice_articolo')
+			->get();
+		else
+			$elenco=prodotti_ordini::select('codice_articolo')
+			->when($id_ordine!=0, function ($elenco) use ($id_ordine) {
+				return $elenco->where('id_ordine', "=", $id_ordine);	
+			})
+			->get();
+		
+		//per ogni prodotto dell'ordine calcolo il prezzo medio
+		//e lo riverso nella tabella degli articoli
+		foreach ($elenco as $articolo) {
+			$codice_articolo=$articolo->codice_articolo;
+
+			$info_prezzo=prodotti_ordini::select(DB::raw("SUM(prezzo_unitario) as prezzo"))
+			->where('codice_articolo','=',$codice_articolo)
+			->get();
+
+			$num_rec=prodotti_ordini::where('codice_articolo','=',$codice_articolo)->count();
+			if ($num_rec>0) {
+				$prezzo_medio=($info_prezzo[0]->prezzo)/$num_rec;
+			}
+			else 
+				$prezzo_medio=0;
+			
+			prod_prodotti::where('id', $codice_articolo)
+			->update(['prezzo_medio' => $prezzo_medio]);			
+
+		}
+		
+		
 	}
 
 	public function ordini_fornitore($id_ordine_init=0) {
@@ -195,8 +233,11 @@ class ControllerAcquisti extends Controller
 
 
 		$dele_riga=$request->input("dele_riga");
-		if (strlen($dele_riga)!=0) 
+		if (strlen($dele_riga)!=0)  {
 			prodotti_ordini::where('id', $dele_riga)->delete();
+			//aggiorno il prezzo medio dopo una cancellazione
+			$this->save_prezzo_medio(0);
+		}	
 
 		if ($btn_canceled=="cancel") {
 			$id_prod_canceled=$request->input("id_prod_canceled");
@@ -244,7 +285,8 @@ class ControllerAcquisti extends Controller
 
 		if (strlen($dele_contr)!=0) {
 			ordini_fornitore::where('id', $dele_contr)
-			  ->update(['dele' => 1]);			
+			  ->update(['dele' => 1]);
+			  //non aggiorno il prezzo medio perchè l'ordine viene cancellato solo logicamente ed il calcolo del prezzo medio non tiene conto degli ordini con dele=1
 		}
 		if (strlen($restore_contr)!=0) {
 			ordini_fornitore::where('id', $restore_contr)
