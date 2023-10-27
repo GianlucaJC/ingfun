@@ -1,54 +1,4 @@
-<?php
-$uri_info = request()->path();
-$arr_uri=explode("/",$uri_info);
-$current_uri=$arr_uri[0];
-$infx=Auth::user()->roles->pluck('name');
-$role=$infx[0];
-$inf=DB::table('main_menu')
-->select('roles','permissions')
-->where('route','=',$current_uri)
-->where('roles','like',"%".$role."%");
-//$info=$inf->first();
-$count=$inf->count();
-
-$enter=false;
-if($count>0) {
-	$enter=true;
-	/*
-	$ruoli=$info->roles;
-	$arr=explode("|",$ruoli);
-	if (in_array($role,$arr) || strlen($ruoli)==0) $enter=true;
-	*/
-} else {
-	//per far passare le rotte direttamente senza la tabella main_menu
-	if ($current_uri=="menu") $enter=true; 
-	
-	
-	if ($role=="admin") $enter=true;
-	/*
-		se count==0 vuol dire
-		che la rotta non è inserita nella tabella main_menu:
-		per ora, in caso di admin, la faccio passare ugualmente, l'alternativa sarebbe far passare	tutte le rotte nella tabella, ma se poi dimentico qualche route	viene generato un errore nel render della pagina
-		(al limite man mano che si verificano errori per mancata presenza, popolo la tabella)...
-	*/
-	
-}
-
-if ($enter==false) {
-	
-	//echo "<h3>Non possiedi le credenziali per accedere alla risorsa richiesta</h3>";
-	?>
-	@include('all_views.viewmaster.error')
-	<?php
-	exit;
-}	
-
-?>
 <!DOCTYPE html>
-<!--
-This is a starter template page. Use this page to start your new project from
-scratch. This page gets rid of all links and provides the needed markup only.
--->
 <html lang="en">
 <head>
   <meta charset="utf-8">
@@ -112,27 +62,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
-      <!-- Navbar Search -->
-      <li class="nav-item">
-        <a class="nav-link" data-widget="navbar-search" href="#" role="button">
-          <i class="fas fa-search"></i>
-        </a>
-        <div class="navbar-search-block">
-          <form class="form-inline">
-            <div class="input-group input-group-sm">
-              <input class="form-control form-control-navbar" type="search" placeholder="Cerca" aria-label="Cerca">
-              <div class="input-group-append">
-                <button class="btn btn-navbar" type="submit">
-                  <i class="fas fa-search"></i>
-                </button>
-                <button class="btn btn-navbar" type="button" data-widget="navbar-search">
-                  <i class="fas fa-times"></i>
-                </button>
-              </div>
-            </div>
-          </form>
-        </div>
-      </li>
+
 
       <?php if (1==2) { ?>
 		  <!-- Messages Dropdown Menu -->
@@ -197,11 +127,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <!-- Notifications Dropdown Menu -->
 		@yield('notifiche')
 
-      <li class="nav-item">
-        <a class="nav-link" data-widget="fullscreen" href="#" role="button">
-          <i class="fas fa-expand-arrows-alt"></i>
-        </a>
-      </li>
+
       <li class="nav-item">
         <a class="nav-link" data-widget="control-sidebar" data-slide="true" href="#" role="button">
           <i class="fas fa-th-large"></i>
@@ -211,8 +137,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
   </nav>
   <!-- /.navbar -->
   
-
-   @extends('all_views.viewmaster.sidemenu_new')
+	@extends('all_views.viewmaster.side_sinistri')
+	
+	
 
    <center>Sviluppo prototipale by <b>Misericordia</b></center>
    @yield('content_main')  
