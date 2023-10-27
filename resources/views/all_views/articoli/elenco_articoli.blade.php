@@ -81,6 +81,7 @@
 							<th>Descrizione prodotto</th>
 							<th>Fornitori</th>
 							<th>Prezzo medio</th>
+							<th>Scorta minima</th>
 							@foreach ($magazzini as $magazzino)
 								<th class="sum">
 									Qta 
@@ -134,6 +135,9 @@
 								<td>
 									{{number_format($articolo->prezzo_medio,2)}}€
 								</td>
+								<td>
+									{{$articolo->scorta_minima}}
+								</td>
 								
 								@php ($giacenza_globale=0)
 								@foreach ($magazzini as $magazzino)
@@ -184,6 +188,7 @@
 							<th>Descrizione prodotto</th>
 							<th>Fornitori</th>
 							<th>Prezzo medio</th>
+							<th>Scorta minima</th>
 							@foreach ($magazzini as $magazzino)
 								<th>
 									
@@ -194,6 +199,7 @@
 						</tr>
 						
 						<tr>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>

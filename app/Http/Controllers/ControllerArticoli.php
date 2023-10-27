@@ -14,6 +14,7 @@ use App\Models\prod_magazzini;
 use App\Models\prod_giacenze;
 use App\Models\prod_spostamenti;
 use App\Models\movimenti_carico;
+use App\Models\ordini_fornitore;
 
 use DB;
 
@@ -37,6 +38,7 @@ class ControllerArticoli extends Controller
 		$prodotto->da_riordinare = $request->input('da_riordinare');
 		$prodotto->um_conf = $request->input('um_conf');
 		$prodotto->um = $request->input('um');
+		$prodotto->scorta_minima = $request->input('scorta_minima');
 
 		
 		
@@ -143,7 +145,23 @@ class ControllerArticoli extends Controller
 			$info_mag[$mag->id]=$mag->descrizione;
 		}				
 
-		$data=array("info_articolo"=>$info_articolo,"categorie"=>$categorie,"id_articolo"=>$id_articolo,"sotto_categorie"=>$sotto_categorie,"info_giacenze"=>$info_giacenze,"info_mag"=>$info_mag,"magazzini"=>$magazzini);
+		//verifico se il prodotto è in arrivo
+		$in_arrivo=ordini_fornitore::from('ordini_fornitore as o')
+		->join('prodotti_ordini as p','o.id','p.id_ordine')
+		->select('o.data_presunta_arrivo_merce')
+		->where('p.codice_articolo', "=", $id_articolo)
+		->where('o.stato_ordine',"=",0)
+		->first();
+		
+		$data_presunta_arrivo_merce="";
+		if (isset($in_arrivo)) {
+			$dp=$in_arrivo->data_presunta_arrivo_merce;
+			$datxx=date_create($dp);
+			$data_presunta_arrivo_merce=date_format($datxx,"d/m/Y");
+		}
+		
+
+		$data=array("info_articolo"=>$info_articolo,"categorie"=>$categorie,"id_articolo"=>$id_articolo,"sotto_categorie"=>$sotto_categorie,"info_giacenze"=>$info_giacenze,"info_mag"=>$info_mag,"magazzini"=>$magazzini,"data_presunta_arrivo_merce"=>$data_presunta_arrivo_merce);
 
 		return view('all_views/articoli/definizione_articolo')->with($data);
 		

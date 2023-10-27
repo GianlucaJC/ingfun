@@ -159,6 +159,7 @@ public function __construct()
 	}
 	
 	public function menu($parent_id=0) {
+		$request=request();
 		$infx=Auth::user()->roles->pluck('name');
 		$role=$infx[0];
 	
@@ -177,11 +178,35 @@ public function __construct()
 		//print_r($queries);
 
 		
-		return view('all_views/menu')->with('voci',$voci);		
+
+		if ($request->has("btn_save")) {
+			$mail_parco=$request->input('mail_parco');
+			
+			$count=DB::table('set_global')->where('id','=',1)->count();
+			if ($count==0)
+				$set_global = new set_global;
+			else
+				$set_global = set_global::find(1);
+					
+			$set_global->email_parco = $request->input('email_parco');
+			$set_global->email_acquisti = $request->input('email_acquisti');
+			$set_global->save();
+		}
+
+		$set_global=set_global::where('id', "=", 1)->get();
+		$email_parco="";$email_acquisti="";
+		if (isset($set_global[0]['email_parco'])) {
+			$email_parco=$set_global[0]['email_parco'];
+			$email_acquisti=$set_global[0]['email_acquisti'];
+		}	
+		
+		return view('all_views/menu')->with('email_parco',$email_parco)->with('email_acquisti',$email_acquisti)->with('voci',$voci);
+		
 	}
 	
 	public function dashboard(Request $request) {
-		//$this->test_mail();
+		//old entrypoint ->disable
+
 		if ($request->has("btn_save")) {
 			$mail_parco=$request->input('mail_parco');
 			

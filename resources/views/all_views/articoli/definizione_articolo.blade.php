@@ -96,17 +96,19 @@
 
 		<div class="row mb-3">
 
+			<!--
 			<div class="col-md-4">
 				<div class="form-floating">
 					<input class="form-control"  id="in_arrivo" name="in_arrivo" type="text" placeholder="In arrivo"  disabled />
 					<label for="in_arrivo">In arrivo</label>
 				</div>
 			</div>
+			!-->
 
 
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control"  id="data_stimata_arrivo" name="data_stimata_arrivo" type="text" placeholder="Confezionamento" disabled />
+					<input class="form-control"  id="data_stimata_arrivo" name="data_stimata_arrivo" type="text" placeholder="Confezionamento" disabled value="{{$data_presunta_arrivo_merce}}" />
 					<label for="data_stimata_arrivo">Data stimata arrivo</label>
 				</div>
 
@@ -135,6 +137,14 @@
 					<label for="da_riordinare">Da riordinare</label>
 				</div>
 			</div>
+			
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control"  id="scorta_minima" name="scorta_minima" type="text" placeholder="Scorta"  value="{{$info_articolo[0]->scorta_minima ?? ''}}" />
+					<label for="scorta_minima">Scorta minima</label>
+				</div>
+
+			</div>			
 
 
 		</div>
