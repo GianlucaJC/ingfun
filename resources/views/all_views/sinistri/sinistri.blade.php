@@ -1,6 +1,6 @@
 @extends('all_views.viewmaster.index_sinistri')
 
-@section('title', 'IngFUN')
+@section('title', 'Sinistro')
 
 
 
@@ -22,7 +22,7 @@
 
 
   <!-- Content Wrapper. Contains page content -->
-   <div class="content-wrapper">
+   <div class="content-wrapper" style="background-color:white">
     <!-- Content Header (Page header) -->
     <div class="content-header">
       <div class="container-fluid">
@@ -53,15 +53,17 @@
 		<div class="container-fluid">
 			<div class="alert alert-warning" role="alert">
 				<b>Attenzione!</b><hr>
-				Manca definizione appalto e/o targa
+				Manca definizione appalto
 			</div>
 		</div>	
 	@endif
-      <div class="container-fluid" style="{{$disp}}">
+      <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px">
 	  
 		<form method='post' action="{{ route('sinistri') }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
+		
+		
 		<div class="row mb-2">
 			<div class="col-md-6">
 				<div class="form-floating">
@@ -75,7 +77,7 @@
 		
 		<div class="row mb-2">
 
-			<div class="col-4">
+			<div class="col-6">
 				<div class="form-floating">
 					<select class="form-control" name="mezzo_coinvolto" id="mezzo_coinvolto" aria-label="da mezzo_coinvolto" >
 						<option value=''>Select...</option>
@@ -88,14 +90,18 @@
 
 			
 
-			<div class="col-4">
+			<div class="col-6">
 				<div class="form-floating">
 					<input class="form-control" id="dataora" name='dataora' type="datetime-local" required />
 					<label for="dataora">Data e Ora*</label>
 				</div>
 			</div>	
+		</div>
+		
 
-			<div class="col-4">
+		<div class="row mb-2">
+
+			<div class="col-6">
 				<div class="form-floating">
 					<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" >
 						<option value=''>Select...</option>
@@ -110,27 +116,23 @@
 					<label for="mezzo_marciante">Mezzo Marciante?*</label>
 				</div>
 			</div>
-		</div>
-		
-
-		<div class="row mb-2">
 			<div class="col-6">
 				<div class="form-floating">
 					<input class="form-control"  id="citta" name="citta" type="text" placeholder="Città"    />
 					<label for="citta">Città*</label>
 				</div>
 			</div>
-
-			<div class="col-6">
+		</div>
+		
+		<div class="row mb-2">
+			<div class="col-3">
 				<div class="form-floating">
 					<input class="form-control"  id="provincia" name="provincia" type="text" placeholder="Provincia"    />
 					<label for="provincia">Provincia*</label>
 				</div>
 			</div>
-		</div>
-		
-		<div class="row mb-2">
-			<div class="col-md-12">
+
+			<div class="col-9">
 				<div class="form-floating">
 					<input class="form-control"  id="indirizzo" name="indirizzo" type="text" placeholder="Indirizzo"    />
 					<label for="indirizzo">Indirizzo*</label>
@@ -141,7 +143,7 @@
 		<div class="row mb-2">
 			<div class="col-md-12">
 				<div class="form-floating">
-					<textarea class="form-control" id="descrizione" name="descrizione" rows="4"></textarea>
+					<textarea class="form-control" id="descrizione" name="descrizione" rows="4" style='height:100px'></textarea>
 					<label for="descrizione">Descrizione del sinistro*</label>
 				</div>
 			</div>
