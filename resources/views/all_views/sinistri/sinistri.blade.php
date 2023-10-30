@@ -31,7 +31,7 @@
 			<h1 class="m-0">
 				<center>
 					<font color='red'>
-						GESTIONE SINISTRI
+						DEFINIZIONE DEL SINISTRO
 					</font>
 				</center>
 				
@@ -62,7 +62,7 @@
 		<form method='post' action="{{ route('sinistri') }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
-		<div class="row mb-3">
+		<div class="row mb-2">
 			<div class="col-md-6">
 				<div class="form-floating">
 					<input class="form-control"  id="id_appalto" name="id_appalto" type="text" placeholder="ID appalto"  value="{{$id_appalto ?? ''}}" disabled  />
@@ -73,10 +73,10 @@
 
 		</div>
 		
-		<div class="row mb-3">
+		<div class="row mb-2">
 
-			<div class="col-md-4">
-				<div class="form-floating mb-3 mb-md-0">
+			<div class="col-4">
+				<div class="form-floating">
 					<select class="form-control" name="mezzo_coinvolto" id="mezzo_coinvolto" aria-label="da mezzo_coinvolto" >
 						<option value=''>Select...</option>
 							<option value='S'
@@ -86,26 +86,17 @@
 				</div>
 			</div>
 
-			<div class="col-md-2">
-				<div class="form-floating mb-3 mb-md-0">
-				<?php
-					$d_def=date("Y-m-d");
-					$d_app=$d_def;
-				?>
-					<input class="form-control" id="data_sinistro" name='data_sinistro' type="date" required value="{{$d_app}}" />
-					<label for="data_sinistro">Data*</label>
-				</div>
-			</div>			
+			
 
-			<div class="col-md-2">
-				<div class="form-floating mb-3 mb-md-0">
-					<input class="form-control" id="ora_app" name='ora_sinistro' type="datetime-local" required maxlength=5 />
-					<label for="ora_sinistro">Ora*</label>
+			<div class="col-4">
+				<div class="form-floating">
+					<input class="form-control" id="dataora" name='dataora' type="datetime-local" required />
+					<label for="dataora">Data e Ora*</label>
 				</div>
 			</div>	
 
-			<div class="col-md-4">
-				<div class="form-floating mb-3 mb-md-0">
+			<div class="col-4">
+				<div class="form-floating">
 					<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" >
 						<option value=''>Select...</option>
 							<option value='S'
@@ -119,107 +110,42 @@
 					<label for="mezzo_marciante">Mezzo Marciante?*</label>
 				</div>
 			</div>
-			
-
-
-
 		</div>
 		
 
-		<div class="row mb-3">
-
-			<!--
-			<div class="col-md-4">
+		<div class="row mb-2">
+			<div class="col-6">
 				<div class="form-floating">
-					<input class="form-control"  id="in_arrivo" name="in_arrivo" type="text" placeholder="In arrivo"  disabled />
-					<label for="in_arrivo">In arrivo</label>
+					<input class="form-control"  id="citta" name="citta" type="text" placeholder="Città"    />
+					<label for="citta">Città*</label>
 				</div>
 			</div>
-			!-->
 
-
-			
-			<div class="col-md-4">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-control" name="da_riordinare" id="da_riordinare" aria-label="da riordinare" >
-						<option value=''>Select...</option>
-							<option value='S'
-							<?php
-								if (isset($info_articolo[0]->da_riordinare) && $info_articolo[0]->da_riordinare=="S") echo " selected ";
-							?>
-							>SI</option>
-							
-							<option value='N'
-							<?php
-								if (isset($info_articolo[0]->da_riordinare) && $info_articolo[0]->da_riordinare=="N") echo " selected ";
-							?>
-							>NO</option>	
-							
-
-
-							
-					</select>
-					<label for="da_riordinare">Da riordinare</label>
+			<div class="col-6">
+				<div class="form-floating">
+					<input class="form-control"  id="provincia" name="provincia" type="text" placeholder="Provincia"    />
+					<label for="provincia">Provincia*</label>
 				</div>
 			</div>
-			
-			<div class="col-md-4">
-				<div class="form-floating">
-					<input class="form-control"  id="scorta_minima" name="scorta_minima" type="text" placeholder="Scorta"  value="{{$info_articolo[0]->scorta_minima ?? ''}}" />
-					<label for="scorta_minima">Scorta minima</label>
-				</div>
-
-			</div>			
-
-
 		</div>
 		
-
-		<div class="row mb-3">
-			<div class="col-md-6">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-control" name="id_categoria" id="id_categoria" aria-label="Categoria" required onchange='load_sc(this.value)'>
-						<option value=''>Select...</option>
-					</select>
-					<label for="categoria">Categoria*</label>
-					
-					<a href="{{ route('categorie_prodotti') }}" class="link-primary" target='_blank' onclick="
-							 $('.up').hide();$('#div_up_cat').show()">
-						Definisci/modifica
-					</a>					
-					<span id='div_up_cat' class='up' style='display:none'>
-						<a href='javascript:void(0)' class='ml-2' onclick='refresh_cat()'>
-							<font color='green'>
-								<i class="fas fa-sync-alt"></i>
-							</font>	
-						</a>	
-					</span>						
-				</div>	
+		<div class="row mb-2">
+			<div class="col-md-12">
+				<div class="form-floating">
+					<input class="form-control"  id="indirizzo" name="indirizzo" type="text" placeholder="Indirizzo"    />
+					<label for="indirizzo">Indirizzo*</label>
+				</div>
 			</div>
-
-			<div class="col-md-6">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-control" name="id_sotto_categoria" id="id_sotto_categoria" aria-label="Categoria" required >
-						<option value=''>Select...</option>
-					
-					</select>
-					<label for="categoria">Sotto Categoria*</label>
-					
-					<a href="{{ route('sottocategorie_prodotti') }}" class="link-primary" target='_blank' onclick='$("#id_sotto_categoria").find("option").remove().end();$(".up").hide();$("#div_up_scat").show()'>
-						Definisci/modifica
-					</a>
-					<span id='div_up_scat' class='up' style='display:none'>
-						<a href='javascript:void(0)' class='ml-2' onclick="$('#id_categoria').attr('selected', 'selected').trigger('change')">
-							<font color='green'>
-								<i class="fas fa-sync-alt"></i>
-							</font>	
-						</a>	
-					</span>						
-				</div>	
-			</div>
-
 		</div>
 
+		<div class="row mb-2">
+			<div class="col-md-12">
+				<div class="form-floating">
+					<textarea class="form-control" id="descrizione" name="descrizione" rows="4"></textarea>
+					<label for="descrizione">Descrizione del sinistro*</label>
+				</div>
+			</div>
+		</div>
 
 
 
