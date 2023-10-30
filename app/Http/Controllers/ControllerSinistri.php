@@ -13,9 +13,9 @@ class ControllerSinistri extends Controller
 		//$this->middleware('auth')->except(['index']);
 	}
 	
-	public function sinistri($id_appalto=0,$targa=0) {
+	public function sinistri($id_appalto=0) {
 		$request=request();
-		return view('all_views/sinistri/sinistri',compact('id_appalto','targa'));		
+		return view('all_views/sinistri/sinistri',compact('id_appalto'));		
 	}
 	
 	public function order_global() {

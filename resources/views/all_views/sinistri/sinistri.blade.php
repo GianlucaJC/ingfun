@@ -75,28 +75,52 @@
 		
 		<div class="row mb-3">
 
-			<div class="col-md-6">
-				<div class="form-floating">
-					<input class="form-control"  id="descrizione" name="descrizione" type="text" placeholder="Descrizione prodotto"  value="{{$info_articolo[0]->descrizione ?? ''}}"  maxlength=60 required />
-					<label for="codice">Descrizione prodotto*</label>
+			<div class="col-md-4">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-control" name="mezzo_coinvolto" id="mezzo_coinvolto" aria-label="da mezzo_coinvolto" >
+						<option value=''>Select...</option>
+							<option value='S'
+							>SI</option>
+					</select>
+					<label for="mezzo_coinvolto">Mezzo coinvolto*</label>
 				</div>
 			</div>
 
-
-			<div class="col-md-3">
-				<div class="form-floating">
-					<input class="form-control"  id="um_conf" name="um_conf" type="text" placeholder="Confezionamento"  value="{{$info_articolo[0]->um_conf ?? ''}}" />
-					<label for="giacenza">U.M./Confez.</label>
+			<div class="col-md-2">
+				<div class="form-floating mb-3 mb-md-0">
+				<?php
+					$d_def=date("Y-m-d");
+					$d_app=$d_def;
+				?>
+					<input class="form-control" id="data_sinistro" name='data_sinistro' type="date" required value="{{$d_app}}" />
+					<label for="data_sinistro">Data*</label>
 				</div>
+			</div>			
 
+			<div class="col-md-2">
+				<div class="form-floating mb-3 mb-md-0">
+					<input class="form-control" id="ora_app" name='ora_sinistro' type="datetime-local" required maxlength=5 />
+					<label for="ora_sinistro">Ora*</label>
+				</div>
+			</div>	
+
+			<div class="col-md-4">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" >
+						<option value=''>Select...</option>
+							<option value='S'
+							>SI</option>
+							
+							
+							<option value='N'	
+							>NO</option>	
+							
+					</select>
+					<label for="mezzo_marciante">Mezzo Marciante?*</label>
+				</div>
 			</div>
 			
-			<div class="col-md-3">
-				<div class="form-floating">
-					<input class="form-control"  id="um" name="um" type="text" placeholder="Unità di misura" value="{{$info_articolo[0]->um ?? ''}}" />
-					<label for="um">Unità di misura</label>
-				</div>
-			</div>
+
 
 
 		</div>

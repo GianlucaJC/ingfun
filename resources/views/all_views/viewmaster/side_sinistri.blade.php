@@ -25,12 +25,14 @@
 		  <li class="nav-item">
 				<form method="POST" action="{{ route('logout') }}">
 					@csrf
+					 <!--
 					  <li class="nav-item">
 						<a href="#" class="nav-link" onclick="event.preventDefault();this.closest('form').submit();">
 						  <i class="far fa-circle nav-icon"></i>
 						  <p>Logout</p>
 						</a>
 					  </li>
+					  !-->
 
 				</form>	
           </li>
