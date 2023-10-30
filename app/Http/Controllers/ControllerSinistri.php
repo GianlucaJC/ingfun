@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use App\Models\user;
 use App\Models\main_menu;
+use App\Models\appalti;
+use App\Models\parco_scheda_mezzo;
 use DB;
 
 class ControllerSinistri extends Controller
@@ -14,8 +16,20 @@ class ControllerSinistri extends Controller
 	}
 	
 	public function sinistri($id_appalto=0) {
+		$allinfo=appalti::select('appalti.*')
+		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
+		->where('appalti.id', "=",$id_appalto)
+		->groupBy('appalti.id')
+		->get();
+		
+		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as m')
+		->select('m.id','m.targa')
+		->orderBy('targa')
+		->get();
+
+		
 		$request=request();
-		return view('all_views/sinistri/sinistri',compact('id_appalto'));		
+		return view('all_views/sinistri/sinistri',compact('id_appalto','allinfo','mezzi'));		
 	}
 	
 	public function order_global() {

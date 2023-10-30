@@ -79,10 +79,16 @@
 
 			<div class="col-6">
 				<div class="form-floating">
-					<select class="form-control" name="mezzo_coinvolto" id="mezzo_coinvolto" aria-label="da mezzo_coinvolto" >
+					<select class="form-control" name="mezzo_coinvolto" id="mezzo_coinvolto" aria-label="da mezzo_coinvolto" required>
 						<option value=''>Select...</option>
-							<option value='S'
-							>SI</option>
+							@foreach($mezzi as $mezzo)
+								<option value='{{$mezzo->id}}'
+								@if(isset($allinfo[0]->targa))
+									@if ($allinfo[0]->targa==$mezzo->targa) 	selected
+									@endif
+								@endif
+								>{{$mezzo->targa}}</option>
+							@endforeach
 					</select>
 					<label for="mezzo_coinvolto">Mezzo coinvolto*</label>
 				</div>
@@ -103,7 +109,7 @@
 
 			<div class="col-6">
 				<div class="form-floating">
-					<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" >
+					<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" required >
 						<option value=''>Select...</option>
 							<option value='S'
 							>SI</option>
@@ -118,7 +124,7 @@
 			</div>
 			<div class="col-6">
 				<div class="form-floating">
-					<input class="form-control"  id="citta" name="citta" type="text" placeholder="Città"    />
+					<input class="form-control"  id="citta" name="citta" type="text" placeholder="Città"  required  />
 					<label for="citta">Città*</label>
 				</div>
 			</div>
@@ -127,14 +133,14 @@
 		<div class="row mb-2">
 			<div class="col-3">
 				<div class="form-floating">
-					<input class="form-control"  id="provincia" name="provincia" type="text" placeholder="Provincia"    />
-					<label for="provincia">Provincia*</label>
+					<input class="form-control"  id="provincia" name="provincia" type="text" placeholder="Prov" required  />
+					<label for="provincia">Prov*</label>
 				</div>
 			</div>
 
 			<div class="col-9">
 				<div class="form-floating">
-					<input class="form-control"  id="indirizzo" name="indirizzo" type="text" placeholder="Indirizzo"    />
+					<input class="form-control"  id="indirizzo" name="indirizzo" type="text" placeholder="Indirizzo"  required  />
 					<label for="indirizzo">Indirizzo*</label>
 				</div>
 			</div>
@@ -143,13 +149,13 @@
 		<div class="row mb-2">
 			<div class="col-md-12">
 				<div class="form-floating">
-					<textarea class="form-control" id="descrizione" name="descrizione" rows="4" style='height:100px'></textarea>
+					<textarea class="form-control" id="descrizione" name="descrizione" rows="4" required style='height:100px'></textarea>
 					<label for="descrizione">Descrizione del sinistro*</label>
 				</div>
 			</div>
 		</div>
 
-
+		<button type="submit" class="btn btn-primary">Crea Sinistro</button>
 
 
 
@@ -186,7 +192,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/definizione_articolo.js?ver=1.241"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.000"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
