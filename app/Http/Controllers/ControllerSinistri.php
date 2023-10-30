@@ -24,6 +24,7 @@ class ControllerSinistri extends Controller
 		
 		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as m')
 		->select('m.id','m.targa')
+		->where('m.dele','=',0)
 		->orderBy('targa')
 		->get();
 
