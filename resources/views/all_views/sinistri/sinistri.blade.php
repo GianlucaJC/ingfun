@@ -25,7 +25,7 @@
    <div class="content-wrapper" style="background-color:white">
     <!-- Content Header (Page header) -->
     <div class="content-header">
-      <div class="container-fluid">
+      <div class="container-fluid d-none d-sm-inline-block">
         <div class="row">
           <div class="col-sm-12">  
 			<h1 class="m-0">
@@ -59,7 +59,7 @@
 	@endif
       <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px">
 	  
-		<form method='post' action="{{ route('sinistri') }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
+		<form method='post' action="{{ route('sinistri',[$id_appalto]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
 		
@@ -111,11 +111,11 @@
 				<div class="form-floating">
 					<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" required >
 						<option value=''>Select...</option>
-							<option value='S'
+							<option value=1
 							>SI</option>
 							
 							
-							<option value='N'	
+							<option value=0	
 							>NO</option>	
 							
 					</select>
@@ -155,7 +155,7 @@
 			</div>
 		</div>
 
-		<button type="submit" class="btn btn-primary">Crea Sinistro</button>
+		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary" value="save">Crea Sinistro</button>
 
 
 
