@@ -46,10 +46,12 @@ $(document).ready( function () {
 		console.log("camera API is not supported by your browser")
 	}
 
+
+} );
+
 	function clickPhoto() {
 	   ctx.drawImage(video, 0,0, canvas.width, canvas.height);
 	 }	
-} );
 
 
 function save() {
