@@ -181,14 +181,16 @@
 				$lbl_save="Aggiorna sinistro";
 			} 
 		?>
-		@if ($id_sinistro!=0)
+		@if ($id_sinistro==333)
 			<div class="row mb-3" id='div_allegati' style="">
 				<div class="col-md-12">
 					<!-- l'upload viene fatto dal plugin  dist/js/upload/demo-config.js !-->
 					<?php include("class_allegati.php"); ?>
 				</div>
 			</div>
-		@endif
+		@endif	
+
+			<video id="video" style="text-align: center; border-radius: 20px;"></video>
 		
 		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary" value="save" onclick="save()">{{$lbl_save}}</button>
 
@@ -229,7 +231,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.002"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.003"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
