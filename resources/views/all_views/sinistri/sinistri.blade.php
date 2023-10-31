@@ -195,6 +195,11 @@
                 <button type="button" class="btn btn-warning" onclick="clickPhoto();">Take Photo</button>
             </div>
 		
+		<div class="jumbotron" style="text-align: center;">
+            <h3>Captured image will display here</h3>
+            <canvas id="myCanvas" width="300" height="300" style="text-align: center; border-radius: 20px;"></canvas>
+        </div>			
+		
 		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary" value="save" onclick="save()">{{$lbl_save}}</button>
 
 
