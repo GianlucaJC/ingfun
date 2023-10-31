@@ -177,7 +177,7 @@
 		<?php
 			$lbl_save="Crea Sinistro";
 			if ($id_sinistro!=0) {
-				echo "<button type='button' id='vision_main' class='btn btn-success btn-sm' onclick=\"$('#div_main').toggle(150)\">Visiona/Nascondi dettaglio sinistro</button>";
+				echo "<button type='button' id='vision_main' class='btn btn-success btn-sm' onclick=\"$('#div_main').toggle(150)\">Visiona sinistro</button>";
 				$lbl_save="Aggiorna sinistro";
 			} 
 		?>
