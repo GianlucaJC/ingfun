@@ -15,7 +15,7 @@
 			//Handle error here
 		});
 	}else{
-		console.log("camera API is not supported by your browser")
+		alert("camera API is not supported by your browser")
 	}
 
 
@@ -53,6 +53,7 @@ $(document).ready( function () {
 
 	function clickPhoto() {
 	   ctx.drawImage(video, 0,0, canvas.width, canvas.height);
+	   alert("camera API")
 	 }	
 
 
