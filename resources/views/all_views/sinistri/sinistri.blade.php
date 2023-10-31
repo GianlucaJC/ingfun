@@ -191,6 +191,9 @@
 		@endif	
 
 			<video id="video" style="text-align: center; border-radius: 20px;"></video>
+		            <div  style="text-align: center;">
+                <button type="button" class="btn btn-warning" onclick="clickPhoto();">Take Photo</button>
+            </div>
 		
 		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary" value="save" onclick="save()">{{$lbl_save}}</button>
 
