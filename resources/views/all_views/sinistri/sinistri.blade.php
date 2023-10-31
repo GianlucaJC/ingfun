@@ -181,13 +181,16 @@
 				$lbl_save="Aggiorna sinistro";
 			} 
 		?>
-		@if ($id_sinistro!=0)
+		@if ($id_sinistro==333)
 			<div class="row mb-3" id='div_allegati' style="">
 				<div class="col-md-12">
 					<!-- l'upload viene fatto dal plugin  dist/js/upload/demo-config.js !-->
 					<?php include("class_allegati.php"); ?>
 				</div>
 			</div>
+		@endif
+		@if ($id_sinistro!=0)
+			<input type="file" accept="image/*" capture="camera">
 		@endif
 		
 		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary" value="save" onclick="save()">{{$lbl_save}}</button>
