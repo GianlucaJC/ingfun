@@ -59,103 +59,140 @@
 	@endif
       <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px">
 	  
-		<form method='post' action="{{ route('sinistri',[$id_appalto]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
+		<form method='post' action="{{ route('sinistri',[$id_appalto,$id_sinistro]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
 		
+		<?php
+			$view_main="";
+			if ($id_sinistro!=0) $view_main="display:none";
+		?>
 		
-		<div class="row mb-2">
-			<div class="col-md-6">
-				<div class="form-floating">
-					<input class="form-control"  id="id_appalto" name="id_appalto" type="text" placeholder="ID appalto"  value="{{$id_appalto ?? ''}}" disabled  />
-					<label for="id_appalto">ID Appalto</label>
+		<div id='div_main' style="{{$view_main}}">
+			<div class="row mb-2">
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input class="form-control"  id="id_appalto" name="id_appalto" type="text" placeholder="ID appalto"  value="{{$id_appalto ?? ''}}" disabled  />
+						<label for="id_appalto">ID Appalto</label>
+					</div>
 				</div>
+
+
 			</div>
+			
+			<div class="row mb-2">
 
-
-		</div>
-		
-		<div class="row mb-2">
-
-			<div class="col-6">
-				<div class="form-floating">
-					<select class="form-control" name="mezzo_coinvolto" id="mezzo_coinvolto" aria-label="da mezzo_coinvolto" required>
-						<option value=''>Select...</option>
-							@foreach($mezzi as $mezzo)
-								<option value='{{$mezzo->id}}'
-								@if(isset($allinfo[0]->targa))
-									@if ($allinfo[0]->targa==$mezzo->targa) 	selected
+				<div class="col-6">
+					<div class="form-floating">
+						<select class="form-control" name="mezzo_coinvolto" id="mezzo_coinvolto" aria-label="da mezzo_coinvolto" required>
+							<option value=''>Select...</option>
+								@foreach($mezzi as $mezzo)
+									<option value='{{$mezzo->id}}'
+									
+									@if (isset($info_sinistro[0])) 
+										@if ($info_sinistro[0]->id_mezzo==$mezzo->id) 
+											selected
+										@endif
+									@else
+										@if(isset($allinfo[0]->targa))
+											@if ($allinfo[0]->targa==$mezzo->targa) 	selected
+											@endif
+										@endif
 									@endif
-								@endif
-								>{{$mezzo->targa}}</option>
-							@endforeach
-					</select>
-					<label for="mezzo_coinvolto">Mezzo coinvolto*</label>
+									
+									>{{$mezzo->targa}}</option>
+								@endforeach
+						</select>
+						<label for="mezzo_coinvolto">Mezzo coinvolto*</label>
+					</div>
 				</div>
-			</div>
 
+				
+
+				<div class="col-6">
+					<div class="form-floating">
+						<input class="form-control" id="dataora" name='dataora' type="datetime-local" required value="{{$info_sinistro[0]->dataora ?? ''}}" />
+						<label for="dataora">Data e Ora*</label>
+					</div>
+				</div>	
+			</div>
 			
 
-			<div class="col-6">
-				<div class="form-floating">
-					<input class="form-control" id="dataora" name='dataora' type="datetime-local" required />
-					<label for="dataora">Data e Ora*</label>
+			<div class="row mb-2">
+
+				<div class="col-6">
+					<div class="form-floating">
+						<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" required >
+							<option value=''>Select...</option>
+								<option value=1
+								@if (isset($info_sinistro[0]) && $info_sinistro[0]->mezzo_marciante==1) 
+									selected
+								@endif
+								>SI</option>
+								
+								<option value=0	
+								@if (isset($info_sinistro[0]) && $info_sinistro[0]->mezzo_marciante==0) 
+									selected
+								@endif
+								>NO</option>	
+								
+						</select>
+						<label for="mezzo_marciante">Mezzo Marciante?*</label>
+					</div>
 				</div>
-			</div>	
+				<div class="col-6">
+					<div class="form-floating">
+						<input class="form-control"  id="citta" name="citta" type="text" placeholder="Città"  required value="{{$info_sinistro[0]->citta ?? ''}}" />
+						<label for="citta">Città*</label>
+					</div>
+				</div>
+			</div>
+			
+			<div class="row mb-2">
+				<div class="col-3">
+					<div class="form-floating">
+						<input class="form-control"  id="provincia" name="provincia" type="text" placeholder="Prov" required  value="{{$info_sinistro[0]->provincia ?? ''}}" />
+						<label for="provincia">Prov*</label>
+					</div>
+				</div>
+
+				<div class="col-9">
+					<div class="form-floating">
+						<input class="form-control"  id="indirizzo" name="indirizzo" type="text" placeholder="Indirizzo"  required value="{{$info_sinistro[0]->indirizzo ?? ''}}" />
+						<label for="indirizzo">Indirizzo*</label>
+					</div>
+				</div>
+			</div>
+
+			<div class="row mb-2">
+				<div class="col-md-12">
+					<div class="form-floating">
+						<textarea class="form-control" id="descrizione" name="descrizione" rows="4" required style='height:100px'>{{$info_sinistro[0]->descrizione ?? ''}}</textarea>
+						<label for="descrizione">Descrizione del sinistro*</label>
+					</div>
+				</div>
+			</div>
+			
 		</div>
+		<?php
+			$lbl_save="Crea Sinistro";
+			if ($id_sinistro!=0) {
+				echo "<button type='button' id='vision_main' class='btn btn-success' onclick=\"$('#div_main').toggle(150)\">Visiona/Nascondi dettaglio sinistro</button>";
+				$lbl_save="Aggiorna sinistro";
+			} 
+		?>
+		@if ($id_sinistro!=0)
+			<div class="row mb-3" id='div_allegati' style="">
+				<div class="col-md-12">
+					<!-- l'upload viene fatto dal plugin  dist/js/upload/demo-config.js !-->
+					<?php include("class_allegati.php"); ?>
+				</div>
+			</div>
+		@endif
 		
+		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary" value="save" onclick="save()">{{$lbl_save}}</button>
 
-		<div class="row mb-2">
 
-			<div class="col-6">
-				<div class="form-floating">
-					<select class="form-control" name="mezzo_marciante" id="mezzo_marciante" aria-label="Mezzo marciante" required >
-						<option value=''>Select...</option>
-							<option value=1
-							>SI</option>
-							
-							
-							<option value=0	
-							>NO</option>	
-							
-					</select>
-					<label for="mezzo_marciante">Mezzo Marciante?*</label>
-				</div>
-			</div>
-			<div class="col-6">
-				<div class="form-floating">
-					<input class="form-control"  id="citta" name="citta" type="text" placeholder="Città"  required  />
-					<label for="citta">Città*</label>
-				</div>
-			</div>
-		</div>
-		
-		<div class="row mb-2">
-			<div class="col-3">
-				<div class="form-floating">
-					<input class="form-control"  id="provincia" name="provincia" type="text" placeholder="Prov" required  />
-					<label for="provincia">Prov*</label>
-				</div>
-			</div>
-
-			<div class="col-9">
-				<div class="form-floating">
-					<input class="form-control"  id="indirizzo" name="indirizzo" type="text" placeholder="Indirizzo"  required  />
-					<label for="indirizzo">Indirizzo*</label>
-				</div>
-			</div>
-		</div>
-
-		<div class="row mb-2">
-			<div class="col-md-12">
-				<div class="form-floating">
-					<textarea class="form-control" id="descrizione" name="descrizione" rows="4" required style='height:100px'></textarea>
-					<label for="descrizione">Descrizione del sinistro*</label>
-				</div>
-			</div>
-		</div>
-
-		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary" value="save">Crea Sinistro</button>
 
 
 
@@ -192,7 +229,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.000"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.002"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

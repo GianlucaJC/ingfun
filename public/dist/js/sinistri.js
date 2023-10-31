@@ -29,3 +29,9 @@ $(document).ready( function () {
   
 	
 } );
+
+
+function save() {
+	if (!confirm("Sicuri di confermare il sinistro?"))
+		event.preventDefault()
+}
