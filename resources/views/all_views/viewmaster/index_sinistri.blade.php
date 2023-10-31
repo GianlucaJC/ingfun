@@ -140,7 +140,7 @@
 	@extends('all_views.viewmaster.side_sinistri')
 	
 	
-
+  
    <center>Sviluppo prototipale by <b>Misericordia</b></center>
    @yield('content_main')  
 
