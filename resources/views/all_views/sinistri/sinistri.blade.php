@@ -65,7 +65,7 @@
 		
 		<?php
 			$view_main="";
-			if ($id_sinistro!=0) $view_main="display:none";
+			//if ($id_sinistro!=0) $view_main="display:none";
 		?>
 		
 		<div id='div_main' style="{{$view_main}}">
@@ -176,8 +176,11 @@
 		</div>
 		<?php
 			$lbl_save="Crea Sinistro";
+			
 			if ($id_sinistro!=0) {
+				/*
 				echo "<button type='button' id='vision_main' class='btn btn-success btn-lg btn-block' onclick=\"$('#div_main').toggle(150)\">Visiona sinistro</button>";
+				*/
 				$lbl_save="Aggiorna sinistro";
 			} 
 		?>

@@ -13,6 +13,7 @@ use App\Models\rifornimenti;
 use App\Models\reperibilita;
 use App\Models\parco_scheda_mezzo;
 use App\Models\set_global;
+use App\Models\support_sinistri;
 use OneSignal;
 
 use DB;
@@ -113,6 +114,7 @@ class ApiController extends Controller
 		/* PUT data comes in on the stdin stream */
 		$putdata = fopen("php://input", "r");
 		$filename = $request->header('filename');
+		$idsinistro = $request->header('idsinistro');
 		if ($putdata) {
 			/* Open a file for writing */
 			$tmpfname = tempnam("dist/upload/sinistri", "photo");
@@ -139,15 +141,13 @@ class ApiController extends Controller
 						
 				$idappalto = $request->header('idappalto');
 
-				/*
-				$rifornimenti = new rifornimenti;
-				//riverso i dati nel DB-->Attenzione agli underscore!!!!
-				$rifornimenti->id_user = $id_lav_ref;
-				$rifornimenti->id_appalto=$idappalto;
-				$rifornimenti->filename=$filename;
+				
+				$support = new support_sinistri;
+				//riverso i dati nel DB-->Attenzione alle variabili header con underscore!!!!
+				$support->id_sinistro = $idsinistro;
+				$support->filename=$filename;
+				$support->save();
 
-				$rifornimenti->save();
-				*/
 				$risp['header']="OK";
 				$risp['message']="File e dati riversati sul server";
 				
