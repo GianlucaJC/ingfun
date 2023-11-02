@@ -94,6 +94,73 @@ class ApiController extends Controller
 		$login['header']=$risp;
 		echo json_encode($login);
 	}
+
+	public function send_foto_inc(Request $request) {
+		
+		$check=$this->check_log($request); 
+		if ($check['esito']=="KO") {
+			$risp['header']=$check;
+			 echo json_encode($risp);
+			 exit;
+		} 
+		$id_lav_ref=$check['id_user'];
+		
+
+
+		$risp=array();
+		$login=array();
+		$login['header']="OK";
+		/* PUT data comes in on the stdin stream */
+		$putdata = fopen("php://input", "r");
+		$filename = $request->header('filename');
+		if ($putdata) {
+			/* Open a file for writing */
+			$tmpfname = tempnam("dist/upload/sinistri", "photo");
+			$fp = fopen($tmpfname, "w");
+			if ($fp) {
+				
+				/* Read the data 1 KB at a time and write to the file */
+				while ($data = fread($putdata, 1024)) {
+					fwrite($fp, $data);
+				}
+				/* Close the streams */
+				fclose($fp);
+				fclose($putdata);
+				
+				$path="dist/upload/sinistri/";
+				$small = "dist/upload/sinistri/thumbnail/small/";
+				$medium = "dist/upload/sinistri/thumbnail/medium/";
+				$result = rename($tmpfname, $path . $filename);  
+				copy($path.$filename, $small.$filename);
+				copy($path.$filename, $medium.$filename);
+				
+				$this->createThumbnail($small.$filename, 150, 93);
+				$this->createThumbnail($medium.$filename, 300, 185);
+						
+				$idappalto = $request->header('idappalto');
+
+				/*
+				$rifornimenti = new rifornimenti;
+				//riverso i dati nel DB-->Attenzione agli underscore!!!!
+				$rifornimenti->id_user = $id_lav_ref;
+				$rifornimenti->id_appalto=$idappalto;
+				$rifornimenti->filename=$filename;
+
+				$rifornimenti->save();
+				*/
+				$risp['header']="OK";
+				$risp['message']="File e dati riversati sul server";
+				
+				echo json_encode($risp);
+				exit;
+			}
+		}
+		$risp['header']="KO";
+		$risp['message']="Dati non riversati";
+		echo json_encode($risp);
+		
+   }
+
 	
 	public function send_foto(Request $request) {
 		

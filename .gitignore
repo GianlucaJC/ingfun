@@ -4,6 +4,7 @@
 /public/hot
 /public/allegati
 /public/storage
+/public/dist/upload
 /public/pdf_read.txt
 /storage/*.key
 /vendor
