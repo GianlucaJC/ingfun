@@ -26,6 +26,7 @@ class ControllerSinistri extends Controller
 			else
 				$sin=sinistri::find($id_sinistro);
 			
+			$sin->id_appalto=$id_appalto;
 			$sin->id_mezzo=$request->input("mezzo_coinvolto");
 			$sin->dataora=$request->input("dataora");
 			$sin->mezzo_marciante=$request->input("mezzo_marciante");
