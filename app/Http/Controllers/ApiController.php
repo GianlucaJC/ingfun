@@ -14,6 +14,7 @@ use App\Models\reperibilita;
 use App\Models\parco_scheda_mezzo;
 use App\Models\set_global;
 use App\Models\support_sinistri;
+use App\Models\sinistri;
 use OneSignal;
 
 use DB;
@@ -142,11 +143,20 @@ class ApiController extends Controller
 				$idappalto = $request->header('idappalto');
 
 				
-				$support = new support_sinistri;
-				//riverso i dati nel DB-->Attenzione alle variabili header con underscore!!!!
-				$support->id_sinistro = $idsinistro;
-				$support->filename=$filename;
-				$support->save();
+				$tiposend = $request->header('tiposend');
+				if ($tiposend=="inc") {
+					$support = new support_sinistri;
+					//riverso i dati nel DB-->Attenzione alle variabili header con underscore!!!!
+					$support->id_sinistro = $idsinistro;
+					$support->filename=$filename;
+					$support->save();
+				}
+				if ($tiposend=="cid") {
+					$sinistri = sinistri::find($idsinistro);
+					//riverso i dati nel DB-->Attenzione alle variabili header con underscore!!!!
+					$sinistri->file_cid=$filename;
+					$sinistri->save();					
+				}
 
 				$risp['header']="OK";
 				$risp['message']="File e dati riversati sul server";
