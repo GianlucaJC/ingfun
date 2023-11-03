@@ -258,6 +258,14 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('riparazione', [ 'as' => 'riparazione', 'uses' => 'App\Http\Controllers\ControllerParco@riparazione']);
 
 	Route::get('riparazione/{id_mezzo?}', [ 'as' => 'riparazione', 'uses' => 'App\Http\Controllers\ControllerParco@riparazione']);
+	
+	
+	Route::get('elenco_sinistri', [ 'as' => 'elenco_sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@elenco_sinistri']);
+	
+	Route::post('elenco_sinistri', [ 'as' => 'elenco_sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@elenco_sinistri']);
+
+
+	
 
 	Route::post('elenco_articoli', [ 'as' => 'elenco_articoli', 'uses' => 'App\Http\Controllers\ControllerArticoli@elenco_articoli']);
 
