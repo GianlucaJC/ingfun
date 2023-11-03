@@ -219,6 +219,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/elenco_sinistri.js?ver=1.179"></script>
+	<script src="{{ URL::asset('/') }}dist/js/elenco_sinistri.js?ver=1.180"></script>
 
 @endsection
