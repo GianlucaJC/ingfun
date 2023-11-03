@@ -48,7 +48,7 @@ function zoom(id_foto,from) {
 	arr=filename.split(";")
 	html+="<div class='row mb-2'>"
 		for (sca=0;sca<=arr.length-1;sca++) {
-			html+="<div class='col-sm-3 mr-3'>"
+			html+="<div class='col-sm-3 mr-4'>"
 				html+="<a href='"+url+"/dist/upload/sinistri/"+arr[sca]+"' 	target='_blank'>";
 					html+="<img src='"+url+"/dist/upload/sinistri/thumbnail/medium/"+arr[sca]+"'>";
 				html+="</a>";	
