@@ -1,6 +1,3 @@
-<?php
-	if (Auth::user()!==null) exit;
-?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
