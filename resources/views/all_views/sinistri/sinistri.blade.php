@@ -1,4 +1,4 @@
-@if (Auth::user()!==null) 
+@if (Auth::user()===null) 
 	@extends('all_views.viewmaster.index_sinistri')
 @else
 	@extends('all_views.viewmaster.index')
