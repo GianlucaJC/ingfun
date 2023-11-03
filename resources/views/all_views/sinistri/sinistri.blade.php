@@ -1,10 +1,8 @@
- 
-@extends('all_views.viewmaster.index_sinistri')
 
+
+@extends(Auth::user() ? 'all_views.viewmaster.index' : 'all_views.viewmaster.index_sinistri');
 
 @section('title', 'Sinistro')
-
-
 
 
 @section('extra_style')  
