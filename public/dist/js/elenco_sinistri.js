@@ -46,15 +46,18 @@ function zoom(id_foto,from) {
 	
 	html="";
 	arr=filename.split(";")
-	html+="<div class='row mb-2'>"
-		for (sca=0;sca<=arr.length-1;sca++) {
-			html+="<div class='col-sm-3 mr-4'>"
-				html+="<a href='"+url+"/dist/upload/sinistri/"+arr[sca]+"' 	target='_blank'>";
-					html+="<img src='"+url+"/dist/upload/sinistri/thumbnail/medium/"+arr[sca]+"'>";
-				html+="</a>";	
-			html+="</div>";
-		}
-	html+="</div>";	
+		html+="<div class='container-fluid'>";
+			for (sca=0;sca<=arr.length-1;sca++) {
+				html+="<div class='row mb-2'>"
+					html+="<div class='col-md-12 mb-2'>"
+						html+="<a href='"+url+"/dist/upload/sinistri/"+arr[sca]+"'	target='_blank'>";
+							html+="<img src='"+url+"/dist/upload/sinistri/thumbnail/medium/"+arr[sca]+"'>";
+						html+="</a>";	
+					html+="</div>";
+				html+="</div>";
+			}
+		html+="</div>"
+	
 	
 	$('#modal_img').modal('show')
 	$("#body_modal").html(html)	
