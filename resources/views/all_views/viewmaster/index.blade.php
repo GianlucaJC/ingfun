@@ -2,7 +2,17 @@
 $uri_info = request()->path();
 $arr_uri=explode("/",$uri_info);
 $current_uri=$arr_uri[0];
-$infx=Auth::user()->roles->pluck('name');
+
+if (Auth::user()!==null) {
+
+	$infx=Auth::user()->roles->pluck('name');
+}	
+else {
+	header("location: login"); 
+	exit;
+	//return Redirect::route('login');
+}
+
 $role=$infx[0];
 $inf=DB::table('main_menu')
 ->select('roles','permissions')
