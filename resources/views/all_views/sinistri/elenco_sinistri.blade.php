@@ -105,19 +105,25 @@
 								<span id='id_cid{{$sinistro->id}}' data-foto='{{$sinistro->file_cid}}'></span>
 								
 								@if (strlen($fx)>0)
-								<a href='javascript:void(0)'  onclick='zoom({{$sinistro->id}},1)'>
-									<button type="button" class="btn btn-primary" title='foto allegate'><i class="fas fa-camera"></i></button>
-								</a>
+									<a href='javascript:void(0)'  onclick='zoom({{$sinistro->id}},1)'>
+										<button type="button" class="btn btn-primary" title='foto allegate'><i class="fas fa-camera"></i></button>
+									</a>
 								@endif								
 								@if (strlen($sinistro->file_cid)>0)
-								<a href='javascript:void(0)'  onclick='zoom({{$sinistro->id}},2)'>
-									<button type="button" class="btn btn-info" title='file cid'><i class="fas fa-file"></i></button>
-								</a>
+									<a href='javascript:void(0)'  onclick='zoom({{$sinistro->id}},2)'>
+										<button type="button" class="btn btn-info" title='file cid'><i class="fas fa-file"></i></button>
+									</a>
 								@endif								
+								
+								<a href="{{ route('sinistri',[$sinistro->id_appalto,$sinistro->id])}}">
+									<button type="button" class="btn btn-success" title="Vedi/modifica sinistro"><i class="fas fa-edit"></i></button>	
+								</a>								
 								
 								<a href='#' onclick="dele_element({{$sinistro->id}})">
 									<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
 								</a>
+								
+								
 								@if ($sinistro->dele=="1") 
 									<a href='#'onclick="restore_element({{$sinistro->id}})" >									<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
 									</a>
@@ -219,6 +225,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/elenco_sinistri.js?ver=1.188"></script>
+	<script src="{{ URL::asset('/') }}dist/js/elenco_sinistri.js?ver=1.189"></script>
 
 @endsection

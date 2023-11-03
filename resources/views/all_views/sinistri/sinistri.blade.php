@@ -1,4 +1,8 @@
-@extends('all_views.viewmaster.index_sinistri')
+@if (Auth::user()!==null) 
+	@extends('all_views.viewmaster.index_sinistri')
+@else
+	@extends('all_views.viewmaster.index')
+@endif
 
 @section('title', 'Sinistro')
 

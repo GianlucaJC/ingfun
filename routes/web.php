@@ -46,7 +46,7 @@ use Illuminate\Support\Facades\Route;
 
 /////////////////
 
-Route::get('sinistri/{id_appalto?}/{targa?}', [ 'as' => 'sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@sinistri']);
+Route::get('sinistri/{id_appalto?}/{id_sinistro?}', [ 'as' => 'sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@sinistri']);
 
 Route::post('sinistri/{id_appalto?}/{id_sinistro?}', [ 'as' => 'sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@sinistri']);
 

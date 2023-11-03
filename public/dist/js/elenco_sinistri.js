@@ -63,16 +63,7 @@ function zoom(id_foto,from) {
 	$("#body_modal").html(html)	
 }
 
-function edit_elem(id_elem) {	
-	descrizione=$("#id_descr"+id_elem).data("descr")
-	importo=$("#id_importo"+id_elem).data("importo")
-	alias=$("#id_alias"+id_elem).data("alias")
-	$("#descr_contr").val(descrizione)
-	$("#importo").val(importo)
-	$("#alias").val(alias)
-	$("#edit_elem").val(id_elem)
-	$('#div_definition').show(150)
-}
+
 
 function dele_element(value) {
 	if(!confirm('Sicuri di eliminare l\'elemento?')) 
