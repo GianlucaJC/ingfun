@@ -72,10 +72,10 @@ class ControllerSinistri extends Controller
 	}	
 	
 	
-	public function sinistri($id_appalto=0,$id_sinistro=0) {
+	public function sinistri($id_appalto=0,$id_sinistro=0,$from=0) {
 		$request=request();
 		$btn_save=$request->input("btn_save");
-		
+		if ($request->has('from')) $from=$request->input('from');
 		if ($btn_save=="save") {
 			if ($id_sinistro==0)
 				$sin = new sinistri;
@@ -92,7 +92,7 @@ class ControllerSinistri extends Controller
 			$sin->descrizione=$request->input("descrizione");
 			$sin->save();
 			$id_sinistro=$sin->id;
-			return redirect()->route("sinistri",['id_appalto'=>$id_appalto,'id_sinistro'=>$id_sinistro]);			
+			return redirect()->route("sinistri",['id_appalto'=>$id_appalto,'id_sinistro'=>$id_sinistro,'from'=>$from]);			
 		}		
 		
 		
@@ -102,6 +102,20 @@ class ControllerSinistri extends Controller
 		->groupBy('appalti.id')
 		->get();
 		
+		$responsabile_mezzo="";
+		if (isset($allinfo[0])) {
+			$responsabile_mezzo=candidati::from('candidatis as c')
+			->select('c.id','c.nominativo')
+			->where('id','=',$allinfo[0]->responsabile_mezzo)
+			->get()->first()->nominativo;
+		}
+		
+		$last_appalti=appalti::select('id',DB::raw("DATE_FORMAT(data_ref,'%d-%m-%Y %H:%i') as data_ref"),'orario_ref','chiesa')
+		->orderBy('id','desc')
+        ->skip(0)
+        ->take(100)
+		->get();
+		
 		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as m')
 		->select('m.id','m.targa')
 		->where('m.dele','=',0)
@@ -109,16 +123,23 @@ class ControllerSinistri extends Controller
 		->get();
 
 		$info_sinistro=array();
+		$support_sinistri=array();
 		if ($id_sinistro!=0) {
 			$info_sinistro=sinistri::from('sinistri as s')
 			->select('s.*')
 			->where('s.id','=',$id_sinistro)
 			->get();
+
+			$support_sinistri=support_sinistri::from('support_sinistri as s')
+			->select('s.id_sinistro','s.filename')
+			->where('id_sinistro','=',$id_sinistro)
+			->get();
 		}
 
+	
+
 		
-		$request=request();
-		return view('all_views/sinistri/sinistri',compact('id_appalto','allinfo','mezzi','info_sinistro','id_sinistro'));		
+		return view('all_views/sinistri/sinistri',compact('id_appalto','allinfo','mezzi','info_sinistro','id_sinistro','from','last_appalti','responsabile_mezzo','support_sinistri'));		
 	}
 	
 	

@@ -48,7 +48,7 @@
 
 
 	@php ($disp="display:block")
-	@if ($id_appalto==0) 
+	@if ($id_appalto==0 && $from==0) 
 		@php ($disp="display:none")
 		<div class="container-fluid">
 			<div class="alert alert-warning" role="alert">
@@ -57,11 +57,37 @@
 			</div>
 		</div>	
 	@endif
+	
+	@if ($id_appalto==0 && $from==1) 
+		@php ($disp="display:none")
+		<div class="container" style="padding-left:20px;padding-right:20px">
+			<div class="row mb-3">
+				<div class="col-md-12">
+					<div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" name="ref_appalto" id="ref_appalto" onchange="def_sinistro(this.value)" required>
+							<option value=''>Select...</option>
+							@foreach($last_appalti as $last)
+								<option value='{{$last->id}}'>
+									{{$last->id}})  
+									{{$last->data_ref}} - 			{{$last->orario_ref}} - 
+									{{$last->chiesa}}
+								</option>
+							@endforeach
+					
+						</select>
+						<label for="ref_appalto">Appalto di riferimento*</label>
+					</div>
+				</div>					
+			</div>
+		</div>			
+	
+	@endif
       <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px">
 	  
 		<form method='post' action="{{ route('sinistri',[$id_appalto,$id_sinistro]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
+		<input type="hidden" value="{{$from}}" id="from" name="from">
 		
 		<?php
 			$view_main="";
@@ -76,7 +102,12 @@
 						<label for="id_appalto">ID Appalto</label>
 					</div>
 				</div>
-
+				<div class="col-md-6">
+					<div class="form-floating">
+						<input class="form-control"  id="responsabile" name="responsabile" type="text" value="{{$responsabile_mezzo ?? ''}}" disabled  />
+						<label for="responsabile">Responsabile mezzo</label>
+					</div>
+				</div>
 
 			</div>
 			
@@ -184,13 +215,32 @@
 				$lbl_save="Aggiorna sinistro";
 			} 
 		?>
-		@if ($id_sinistro==333)
-			<div class="row mb-3" id='div_allegati' style="">
+		@if ($id_sinistro!=0 && $from==1)
+			<a href='javascript:void(0)' onclick="$('#div_allegati').toggle(120)" >Aggiungi allegati</a>
+			<div class="row mb-3" id='div_allegati' style="display:none">
 				<div class="col-md-12">
 					<!-- l'upload viene fatto dal plugin  dist/js/upload/demo-config.js !-->
 					<?php include("class_allegati.php"); ?>
 				</div>
 			</div>
+			
+			<div class="row mb-2">
+				<div class="col-md-6">
+					<div class="row mb-2">
+						@foreach($support_sinistri as $support)
+							<div class="col-md-2">
+								<a href="{{ URL::asset('/') }}dist/upload/sinistri/{{$support->filename}}" target='_blank' >
+									<img src="{{ URL::asset('/') }}dist/upload/sinistri/thumbnail/medium/{{$support->filename}}" class="img-fluid img-thumbnail">
+								</a>
+							</div>
+						@endforeach
+					</div>
+				</div>
+			</div>	
+			
+			<hr>
+			
+			
 		@endif	
 
 		
@@ -216,9 +266,7 @@
 
 
 
-  <!-- /.content-wrapper -->
- 
-  
+
   
 
   
@@ -234,7 +282,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.008"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.016"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

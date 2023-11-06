@@ -46,9 +46,9 @@ use Illuminate\Support\Facades\Route;
 
 /////////////////
 
-Route::get('sinistri/{id_appalto?}/{id_sinistro?}', [ 'as' => 'sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@sinistri']);
+Route::get('sinistri/{id_appalto?}/{id_sinistro?}/{from?}', [ 'as' => 'sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@sinistri']);
 
-Route::post('sinistri/{id_appalto?}/{id_sinistro?}', [ 'as' => 'sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@sinistri']);
+Route::post('sinistri/{id_appalto?}/{id_sinistro?}/{from?}', [ 'as' => 'sinistri', 'uses' => 'App\Http\Controllers\ControllerSinistri@sinistri']);
 
 
 Route::group(['only_log' => ['auth']], function () {

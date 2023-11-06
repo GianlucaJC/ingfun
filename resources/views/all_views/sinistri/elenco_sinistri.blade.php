@@ -115,7 +115,7 @@
 									</a>
 								@endif								
 								
-								<a href="{{ route('sinistri',[$sinistro->id_appalto,$sinistro->id])}}">
+								<a href="{{ route('sinistri',[$sinistro->id_appalto,$sinistro->id,1])}}">
 									<button type="button" class="btn btn-success" title="Vedi/modifica sinistro"><i class="fas fa-edit"></i></button>	
 								</a>								
 								
@@ -153,6 +153,10 @@
 
         </div>
 
+		<a href="{{ route('sinistri',['id_appalto'=>0,'id_sinistro'=>0,'from'=>1]) }}">
+			<button type="button" class="btn btn-primary">Nuovo sinistro</button>
+		</a>
+		
 		<?php
 		
 			$check="";
