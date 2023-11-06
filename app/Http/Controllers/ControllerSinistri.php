@@ -28,6 +28,16 @@ class ControllerSinistri extends Controller
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 
+
+		if (strlen($dele_contr)!=0) {
+			sinistri::where('id', $dele_contr)
+			  ->update(['dele' => 1]);			
+		}
+		if (strlen($restore_contr)!=0) {
+			sinistri::where('id', $restore_contr)
+			  ->update(['dele' => 0]);			
+		}	
+
 		$sinistri=sinistri::from('sinistri as s')
 		->select('s.id','s.dele','s.id_appalto',DB::raw("DATE_FORMAT(s.dataora,'%d-%m-%Y %H:%i') as dataora"),'a.responsabile_mezzo','a.targa','s.file_cid')
 		->join('appalti as a','s.id_appalto','a.id')
@@ -59,14 +69,6 @@ class ControllerSinistri extends Controller
 		}
 
 
-		if (strlen($dele_contr)!=0) {
-			sinistri::where('id', $dele_contr)
-			  ->update(['dele' => 1]);			
-		}
-		if (strlen($restore_contr)!=0) {
-			sinistri::where('id', $restore_contr)
-			  ->update(['dele' => 0]);			
-		}	
 
 		return view('all_views/sinistri/elenco_sinistri',compact('sinistri','view_dele','all_lav','support_ref'));		
 		
