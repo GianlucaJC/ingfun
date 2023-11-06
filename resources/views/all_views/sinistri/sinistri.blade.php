@@ -235,6 +235,13 @@
 							</div>
 						@endforeach
 					</div>
+					<hr>
+					@if (strlen($info_sinistro[0]->file_cid)>0)
+						<a href="{{ URL::asset('/') }}dist/upload/sinistri/{{$info_sinistro[0]->file_cid}}" target='_blank' >
+							<img src="{{ URL::asset('/') }}dist/upload/sinistri/thumbnail/medium/{{$info_sinistro[0]->file_cid}}" class="img-fluid img-thumbnail">
+						</a>
+						<label>Cid</label>
+					@endif
 				</div>
 			</div>	
 			
