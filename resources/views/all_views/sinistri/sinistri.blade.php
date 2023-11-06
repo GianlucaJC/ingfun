@@ -84,7 +84,7 @@
 	@endif
       <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px">
 	  
-		<form method='post' action="{{ route('sinistri',[$id_appalto,$id_sinistro,$from]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
+		<form method='post' action="{{ route('sinistri',[$id_appalto,$from,$id_sinistro]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
 		<input type="hidden" value="{{$from}}" id="from" name="from">

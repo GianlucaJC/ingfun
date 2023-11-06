@@ -33,7 +33,7 @@ $(document).ready( function () {
 function def_sinistro(id_appalto) {
 	if (id_appalto.length==0) return false;
 	base_path = $("#url").val();
-	url=base_path+"/sinistri/"+id_appalto+"/0/1";
+	url=base_path+"/sinistri/"+id_appalto+"/1/0";
 	window.location = url
 }
 

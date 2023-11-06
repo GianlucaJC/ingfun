@@ -73,7 +73,7 @@ class ControllerSinistri extends Controller
 	}	
 	
 	
-	public function sinistri($id_appalto=0,$id_sinistro=0,$from=0) {
+	public function sinistri($id_appalto=0,$from=0,$id_sinistro=0) {
 		$request=request();
 		$delefoto=$request->input("delefoto");
 		if (strlen($delefoto)!=0) {
