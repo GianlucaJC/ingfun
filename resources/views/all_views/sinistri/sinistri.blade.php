@@ -105,7 +105,7 @@
 				<div class="col-6">
 					<div class="form-floating">
 						<input class="form-control"  id="responsabile" name="responsabile" type="text" value="{{$responsabile_mezzo ?? ''}}" disabled  />
-						<label for="responsabile">Responsabile mezzo</label>
+						<label for="responsabile">Responsabile</label>
 					</div>
 				</div>
 
