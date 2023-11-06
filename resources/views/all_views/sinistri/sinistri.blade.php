@@ -96,13 +96,13 @@
 		
 		<div id='div_main' style="{{$view_main}}">
 			<div class="row mb-2">
-				<div class="col-md-6">
+				<div class="col-6">
 					<div class="form-floating">
 						<input class="form-control"  id="id_appalto" name="id_appalto" type="text" placeholder="ID appalto"  value="{{$id_appalto ?? ''}}" disabled  />
 						<label for="id_appalto">ID Appalto</label>
 					</div>
 				</div>
-				<div class="col-md-6">
+				<div class="col-6">
 					<div class="form-floating">
 						<input class="form-control"  id="responsabile" name="responsabile" type="text" value="{{$responsabile_mezzo ?? ''}}" disabled  />
 						<label for="responsabile">Responsabile mezzo</label>
