@@ -42,4 +42,25 @@ function save() {
 		event.preventDefault()
 }
 
+function init_allegati(id_sinistro) {
+	//function set_class_allegati() in demo-config.js
+	set_class_allegati.id_sinistro=id_sinistro
+	set_class_allegati();
+	$('#div_allegati').toggle(120)
+}
 
+function dele_fx(id_foto) {
+	if (!confirm("Sicuri di eliminare la foto?")) {
+		return false;
+	}
+	$("#delefoto").val(id_foto)
+	$("#frm_sinistro").submit();
+}
+
+function dele_cid(id_sinistro) {
+	if (!confirm("Sicuri di eliminare il cid?")) {
+		return false;
+	}
+	$("#dele_cid").val(id_sinistro)
+	$("#frm_sinistro").submit();
+}

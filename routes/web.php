@@ -57,6 +57,8 @@ Route::group(['only_log' => ['auth']], function () {
 		blocco di rotte presenti nella tabella main_menu ma riservate (reserved=1) quindi non mostrate nella gestione menu.
 		Per aggiungere altre route nel DB, aggiungere alla tabella main_menu specificando il ruolo o in alternativa inserirle solo qui in web.php indicando il ruolo nella middleware
 	*/
+		Route::post('update_doc_sinistro', 'App\Http\Controllers\AjaxControllerParco@update_doc_sinistro');
+
 		Route::get('invoice/{id_doc?}', [ 'as' => 'invoice', 'uses' => 'App\Http\Controllers\ControllerInvito@invoice']);
 
 		Route::post('save_newapp', [ 'as' => 'save_newapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@save_newapp']);

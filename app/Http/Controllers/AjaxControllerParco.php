@@ -11,12 +11,37 @@ use App\Models\parco_carta_carburante;
 use App\Models\parco_badge_cisterna;
 use App\Models\parco_telepass;
 use App\Models\parco_servizi_noleggio;
+use App\Models\support_sinistri;
+use App\Models\sinistri;
 use Mail;
 use DB;
 
 
 class AjaxControllerParco extends Controller
 	{
+		
+	function update_doc_sinistro(Request $request) {
+		
+		$filename=$request->input("filename");
+		$id_sinistro=$request->input("id_sinistro");
+		$tipo_allegato=$request->input("tipo_allegato");
+
+		if ($tipo_allegato=="2")
+			sinistri::where('id', $id_sinistro)
+			->update(['file_cid' => $filename]);			
+		else {
+			$support = new support_sinistri;
+			$support->filename=$filename;
+			$support->id_sinistro=$id_sinistro;
+			$support->save();
+		}
+		
+		$risp=array();
+
+		$risp['status']="OK";
+		$risp['esito']="insert";
+		echo json_encode($risp);		
+	}		
 
 	public function refresh_servizi_noleggio(Request $request){
 		$marche=parco_servizi_noleggio::select('id','descrizione')

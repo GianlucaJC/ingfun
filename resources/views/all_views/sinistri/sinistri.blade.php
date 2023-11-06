@@ -84,10 +84,12 @@
 	@endif
       <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px">
 	  
-		<form method='post' action="{{ route('sinistri',[$id_appalto,$id_sinistro]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
+		<form method='post' action="{{ route('sinistri',[$id_appalto,$id_sinistro,$from]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
 		<input type="hidden" value="{{$from}}" id="from" name="from">
+		<input type='hidden' name='delefoto' id='delefoto'>
+		<input type='hidden' name='dele_cid' id='dele_cid'>
 		
 		<?php
 			$view_main="";
@@ -216,31 +218,68 @@
 			} 
 		?>
 		@if ($id_sinistro!=0 && $from==1)
-			<a href='javascript:void(0)' onclick="$('#div_allegati').toggle(120)" >Aggiungi allegati</a>
-			<div class="row mb-3" id='div_allegati' style="display:none">
+			<a href='javascript:void(0)' class='link' onclick="init_allegati({{$id_sinistro}})" >Aggiungi allegati</a>
+			<a  href='#' class='link ml-3' onclick='url=window.location.href;location.href=url;'>Refresh allegati</a>
+			
+			<div class="row mt-3 mb-3" id='div_allegati' style="display:none">
+				<div class="col-md-6">
+					<div class="form-floating mb-3 mb-md-0">
+						<select class="form-select" name="tipo_allegato" id="tipo_allegato" onchange="set_class_allegati.tipo_allegato=this.value">
+							<option value='1'>Allegato standard
+							</option>
+							<option value='2'>File CID
+							</option>
+						</select>
+						<label for="tipo_allegato">Tipo di file*</label>
+					</div>
+				</div>
 				<div class="col-md-12">
-					<!-- l'upload viene fatto dal plugin  dist/js/upload/demo-config.js !-->
+					<!-- l'upload viene fatto dal plugin  dist/js/upload_sinistri/demo-config.js !-->
+					
 					<?php include("class_allegati.php"); ?>
 				</div>
 			</div>
+
+			<div id="div_save" class='mt-2'></div>
 			
-			<div class="row mb-2">
+			<div class="row mt-3 mb-2">
 				<div class="col-md-6">
 					<div class="row mb-2">
 						@foreach($support_sinistri as $support)
-							<div class="col-md-2">
+							<div class="col-md-2" id='fx{{$support->id}}'>
 								<a href="{{ URL::asset('/') }}dist/upload/sinistri/{{$support->filename}}" target='_blank' >
+								<?php if (strpos($support->filename,"pdf"))
+									echo "<i class='fas fa-file-pdf fa-lg'></i> Apri file ";
+								else {?>							
+									
 									<img src="{{ URL::asset('/') }}dist/upload/sinistri/thumbnail/medium/{{$support->filename}}" class="img-fluid img-thumbnail">
+								 <?php } ?>	
 								</a>
+								
+								<label>
+								<a href="javascript:void(0)" onclick='dele_fx({{$support->id}})'>
+									<i class="fas fa-trash-alt fa-xs"></i>
+								</a>
+								</label>
 							</div>
+							
 						@endforeach
 					</div>
 					<hr>
 					@if (strlen($info_sinistro[0]->file_cid)>0)
 						<a href="{{ URL::asset('/') }}dist/upload/sinistri/{{$info_sinistro[0]->file_cid}}" target='_blank' >
+						<?php
+						if (strpos($info_sinistro[0]->file_cid,"pdf"))
+							echo "<i class='fas fa-file-pdf fa-lg'></i> Apri file ";
+						else { 
+							?>
 							<img src="{{ URL::asset('/') }}dist/upload/sinistri/thumbnail/medium/{{$info_sinistro[0]->file_cid}}" class="img-fluid img-thumbnail">
+							<?php } ?>
 						</a>
 						<label>Cid</label>
+						<a href="javascript:void(0)" onclick="dele_cid({{$id_sinistro}})">
+							<i class="fas fa-trash-alt fa-xs"></i>
+						</a>						
 					@endif
 				</div>
 			</div>	
@@ -289,14 +328,14 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.016"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.021"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	
 	<!-- per upload -->
-	<script src="{{ URL::asset('/') }}dist/js/upload/jquery.dm-uploader.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-ui.js?ver=1.24"></script>
-	<script src="{{ URL::asset('/') }}dist/js/upload/demo-config.js?ver=2.356"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload_sinistri/jquery.dm-uploader.min.js"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload_sinistri/demo-ui.js?ver=1.24"></script>
+	<script src="{{ URL::asset('/') }}dist/js/upload_sinistri/demo-config.js?ver=2.363"></script>
 	<!-- fine upload -->		
 	
 

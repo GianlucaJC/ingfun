@@ -41,6 +41,7 @@ class ControllerSinistri extends Controller
 
 		$support_sinistri=support_sinistri::from('support_sinistri as s')
 		->select('s.id_sinistro','s.filename')
+		->where('dele','=',0)
 		->get();
 		$support_ref=array();
 		foreach ($support_sinistri as $support) {
@@ -74,6 +75,18 @@ class ControllerSinistri extends Controller
 	
 	public function sinistri($id_appalto=0,$id_sinistro=0,$from=0) {
 		$request=request();
+		$delefoto=$request->input("delefoto");
+		if (strlen($delefoto)!=0) {
+			support_sinistri::where('id', $delefoto)
+			  ->update(['dele' => 1]);
+		}
+		$dele_cid=$request->input("dele_cid");
+		if (strlen($dele_cid)!=0) {
+			sinistri::where('id', $dele_cid)
+			  ->update(['file_cid' => null]);
+		}
+
+		
 		$btn_save=$request->input("btn_save");
 		if ($request->has('from')) $from=$request->input('from');
 		if ($btn_save=="save") {
@@ -134,8 +147,9 @@ class ControllerSinistri extends Controller
 			->get();
 
 			$support_sinistri=support_sinistri::from('support_sinistri as s')
-			->select('s.id_sinistro','s.filename')
+			->select('s.id','s.id_sinistro','s.filename')
 			->where('id_sinistro','=',$id_sinistro)
+			->where('dele','=',0)
 			->get();
 		}
 

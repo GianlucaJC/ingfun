@@ -81,13 +81,24 @@ try {
 
 	}	
 	
+	if ($from=="sinistri") {
+		$sub="dist/upload/sinistri/";
+	}
+	
 	$filepath = "$sub/".$filename;
     if (!move_uploaded_file(
         $_FILES['file']['tmp_name'],
         $filepath
     )) {
         throw new RuntimeException('Failed to move uploaded file.');
-    }
+    } else {
+		if ($from=="sinistri") {
+			copy ($filepath,$sub="dist/upload/sinistri/thumbnail/medium/$filename");
+			copy ($filepath,$sub="dist/upload/sinistri/thumbnail/small/$filename");
+		}
+		
+	}
+	
 
 
 	
