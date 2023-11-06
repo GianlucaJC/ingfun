@@ -107,7 +107,7 @@ class ControllerSinistri extends Controller
 			$responsabile_mezzo=candidati::from('candidatis as c')
 			->select('c.id','c.nominativo')
 			->where('id','=',$allinfo[0]->responsabile_mezzo)
-			->get()->first()->nominativo;
+			->get()->firstorFail()->nominativo;
 		}
 		
 		$last_appalti=appalti::select('id',DB::raw("DATE_FORMAT(data_ref,'%d-%m-%Y %H:%i') as data_ref"),'orario_ref','chiesa')
