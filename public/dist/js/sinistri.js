@@ -11,7 +11,12 @@
         if (!form.checkValidity()) {
           event.preventDefault()
           event.stopPropagation()
-        }
+        } else {
+			$("#btn_save").html('Attendere...');
+			$("#btn_save").prop("disabled",true)
+			
+		}
+			
 		/*
 		var cf=$("#codfisc").val()
 		var valida=validaCodiceFiscale(cf);
@@ -41,10 +46,6 @@ function save() {
 	
 	if (!confirm("Sicuri di confermare il sinistro?"))
 		event.preventDefault()
-	else {
-		$("#btn_save").html('Attendere...');
-		$("#btn_save").prop("disabled",true)
-	}
 }
 
 function init_allegati(id_sinistro) {
