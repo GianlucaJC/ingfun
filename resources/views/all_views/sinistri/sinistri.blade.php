@@ -1,6 +1,10 @@
+<?php
+$nolog=1;
+if (!Auth::user() && $from==0) $nolog=0;
 
+?>
 
-@extends(Auth::user() ? 'all_views.viewmaster.index' : 'all_views.viewmaster.index_sinistri');
+@extends($nolog==1 ? 'all_views.viewmaster.index' : 'all_views.viewmaster.index_sinistri')
 
 @section('title', 'Sinistro')
 

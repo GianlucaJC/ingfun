@@ -11,6 +11,7 @@ use App\Models\sinistri;
 use App\Models\candidati;
 use App\Models\contatti;
 use App\Models\support_sinistri;
+use Illuminate\Support\Facades\Auth;
 use Mail;
 use DB;
 
@@ -78,6 +79,10 @@ class ControllerSinistri extends Controller
 	
 	public function sinistri($id_appalto=0,$from=0,$id_sinistro=0) {
 		$request=request();
+		
+		if (Auth::user()===null && $from==1) return redirect()->route("login");
+	
+		
 		$delefoto=$request->input("delefoto");
 		if (strlen($delefoto)!=0) {
 			support_sinistri::where('id', $delefoto)
@@ -177,7 +182,7 @@ class ControllerSinistri extends Controller
 	public function send_m($email,$id_appalto,$id_sinistro){
 		$titolo="";$body_msg="";
 		$d=date("Y-m-d");
-		$href="https://217.18.125.177/ingfun/public/sinistri/$id_appalto/0/$id_sinistro";
+		$href="https://217.18.125.177/ingfun/public/sinistri/$id_appalto/1/$id_sinistro";
 		$titolo="Notifica creazione sinistro da APP";
 		$body_msg="Un nuovo sinistro è stato creato via APP.\nPer prenderne visione cliccare sul link $href";
 		
