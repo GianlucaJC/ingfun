@@ -113,12 +113,11 @@ class ControllerSinistri extends Controller
 			if ($new==1 && $from!=1) {
 				//notifica 
 				$mails=contatti::select('mail')->get();
-				$email="";
 				foreach ($mails as $mail) {
-					if (strlen($email)!=0) $email.=";";
-					$email.=$mail->mail;
+					$email=$mail->mail;
+					$this->send_m($email,$id_appalto,$id_sinistro);
 				}
-				$this->send_m($email,$id_appalto,$id_sinistro);
+				
 			}
 			
 			return redirect()->route("sinistri",['id_appalto'=>$id_appalto,'id_sinistro'=>$id_sinistro,'from'=>$from]);			
@@ -181,7 +180,7 @@ class ControllerSinistri extends Controller
 		$href="https://217.18.125.177/ingfun/public/sinistri/$id_appalto/0/$id_sinistro";
 		$titolo="Notifica creazione sinistro da APP";
 		$body_msg="Un nuovo sinistro è stato creato via APP.\nPer prenderne visione cliccare sul link $href";
-
+		
 		
 		try {
 
