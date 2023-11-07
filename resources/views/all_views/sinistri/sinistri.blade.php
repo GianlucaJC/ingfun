@@ -94,6 +94,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 		<input type="hidden" value="{{$from}}" id="from" name="from">
 		<input type='hidden' name='delefoto' id='delefoto'>
 		<input type='hidden' name='dele_cid' id='dele_cid'>
+		<input type='hidden' name='save_sin' id='save_sin'>
 		
 		<?php
 			$view_main="";
@@ -332,7 +333,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.025"></script>
+	<script src="{{ URL::asset('/') }}dist/js/sinistri.js?ver=1.026"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

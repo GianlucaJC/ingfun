@@ -95,9 +95,9 @@ class ControllerSinistri extends Controller
 		}
 
 		$new=0;
-		$btn_save=$request->input("btn_save");
+		$save_sin=$request->input("save_sin");
 		if ($request->has('from')) $from=$request->input('from');
-		if ($btn_save=="save") {
+		if ($save_sin=="save") {
 			if ($id_sinistro==0) {
 				$new=1;
 				$sin = new sinistri;

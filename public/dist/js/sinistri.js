@@ -13,8 +13,8 @@
           event.stopPropagation()
         } else {
 			$("#btn_save").html('Attendere...');
-			$('#btn_save').prop('readonly', true);
-			
+			$('#btn_save').prop('disabled', true);
+			$("#save_sin").val("save")
 		}
 			
 		/*
