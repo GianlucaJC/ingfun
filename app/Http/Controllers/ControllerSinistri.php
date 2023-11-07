@@ -124,7 +124,6 @@ class ControllerSinistri extends Controller
 				}
 				
 			}
-			
 			return redirect()->route("sinistri",['id_appalto'=>$id_appalto,'id_sinistro'=>$id_sinistro,'from'=>$from]);			
 		}		
 		
