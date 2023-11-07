@@ -41,7 +41,10 @@ function save() {
 	
 	if (!confirm("Sicuri di confermare il sinistro?"))
 		event.preventDefault()
-	$("#btn_save").prop("disabled",true)
+	else {
+		$("#btn_save").html('Attendere...');
+		$("#btn_save").prop("disabled",true)
+	}
 }
 
 function init_allegati(id_sinistro) {
