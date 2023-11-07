@@ -9,8 +9,9 @@ use App\Models\appalti;
 use App\Models\parco_scheda_mezzo;
 use App\Models\sinistri;
 use App\Models\candidati;
+use App\Models\contatti;
 use App\Models\support_sinistri;
-
+use Mail;
 use DB;
 
 class ControllerSinistri extends Controller
@@ -88,12 +89,14 @@ class ControllerSinistri extends Controller
 			  ->update(['file_cid' => null]);
 		}
 
-		
+		$new=0;
 		$btn_save=$request->input("btn_save");
 		if ($request->has('from')) $from=$request->input('from');
 		if ($btn_save=="save") {
-			if ($id_sinistro==0)
+			if ($id_sinistro==0) {
+				$new=1;
 				$sin = new sinistri;
+			}	
 			else
 				$sin=sinistri::find($id_sinistro);
 			
@@ -107,6 +110,17 @@ class ControllerSinistri extends Controller
 			$sin->descrizione=$request->input("descrizione");
 			$sin->save();
 			$id_sinistro=$sin->id;
+			if ($new==1 && $from!=1) {
+				//notifica 
+				$mails=contatti::select('mail')->get();
+				$email="";
+				foreach ($mails as $mail) {
+					if (strlen($email)!=0) $email.=";";
+					$email.=$mail->mail;
+				}
+				$this->send_m($email,$id_appalto,$id_sinistro);
+			}
+			
 			return redirect()->route("sinistri",['id_appalto'=>$id_appalto,'id_sinistro'=>$id_sinistro,'from'=>$from]);			
 		}		
 		
@@ -161,6 +175,37 @@ class ControllerSinistri extends Controller
 		return view('all_views/sinistri/sinistri',compact('id_appalto','allinfo','mezzi','info_sinistro','id_sinistro','from','last_appalti','responsabile_mezzo','support_sinistri'));		
 	}
 	
-	
+	public function send_m($email,$id_appalto,$id_sinistro){
+		$titolo="";$body_msg="";
+		$d=date("Y-m-d");
+		$href="https://217.18.125.177/ingfun/public/sinistri/$id_appalto/0/$id_sinistro";
+		$titolo="Notifica creazione sinistro da APP";
+		$body_msg="Un nuovo sinistro è stato creato via APP.\nPer prenderne visione cliccare sul link $href";
+
+		
+		try {
+
+			$data["email"] = $email;
+			$data["title"] = $titolo;
+			$data["body"] = $body_msg;
+
+
+			Mail::send('emails.notifdoc', $data, function($message)use($data) {
+				$message->to($data["email"], $data["email"])
+				->subject($data["title"]);
+
+			});
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo!";
+
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+		}		
+			
+			
+		
+		return json_encode($status);
+	}	
 }
 
