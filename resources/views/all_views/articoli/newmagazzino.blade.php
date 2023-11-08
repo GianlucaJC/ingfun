@@ -9,17 +9,36 @@
 				<font color='red'>Definizione Magazzino</font>
 			</h4>
 				<div class="row">
-					<div class="col-md-6">
-						<div class="input-group mb-3">
-						  <div class="input-group-prepend">
-							<span class="input-group-text" id="basic-addon1">Descrizione</span>
-						  </div>
-						  <input type="text" class="form-control" placeholder="Descrizione Magazzino" aria-label="Descrizione magazzino" name="descr_contr" id="descr_contr" required>
-						</div>			
+
+
+					<div class="col-md-4">
+						<div class="form-floating">
+							<input class="form-control"  id="descr_contr" name="descr_contr" type="text" placeholder="Descrizione magazzino"  required  />
+							<label for="descr_contr">Descrizione</label>
+						</div>
+					</div>					
+
+				
+					
+					<div class="col-md-4">
+						<div class="form-floating mb-3 mb-md-0">
+							<select class="form-control" name="id_sezionale" id="id_sezionale" aria-label="Sezionale" required>
+								<option value=''>Select...</option>
+								@foreach ($sezionali as $sez) 
+									<option value='{{$sez->id}}'
+									>{{$sez->descrizione}}
+									</option>	
+								@endforeach
+							</select>
+							<label for="sezionale">Sezionale*</label>
+						</div>	
 					</div>
-					<div class="col-md-6">
-						<button type="submit" class="btn btn-success" >Crea/Modifica Magazzino</button>
-						<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
+					
+					
+					
+					<div class="col-md-4">
+						<button type="submit" class="btn btn-success btn-lg" >Crea/Modifica Magazzino</button>
+						<button type="button" class="btn btn-secondary btn-lg" onclick="$('#div_definition').toggle(150)">
 						Chiudi
 						</button>
 						

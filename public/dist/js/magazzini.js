@@ -39,7 +39,9 @@ $(document).ready( function () {
 
 function edit_elem(id_elem) {
 	descrizione=$("#id_descr"+id_elem).data("descr")
+	id_sezionale=$("#id_descr"+id_elem).data("sezionale")
 	$("#descr_contr").val(descrizione)
+	$("#id_sezionale").val(id_sezionale)
 	$("#edit_elem").val(id_elem)
 	$('#div_definition').show(150)
 }

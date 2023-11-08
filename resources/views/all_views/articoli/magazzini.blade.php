@@ -73,7 +73,7 @@
 								 @if ($magazzino->dele=="1") 
 									<font color='red'><del> 
 								 @endif
-									<span id='id_descr{{$magazzino->id}}' data-descr='{{ $magazzino->descrizione }}'>
+									<span id='id_descr{{$magazzino->id}}' data-descr='{{ $magazzino->descrizione }}' data-sezionale='{{$magazzino->id_sezionale}}'>
 										{{ $magazzino->descrizione }}
 									</span>	
 								 @if ($magazzino->dele=="1") 
@@ -170,6 +170,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/magazzini.js?ver=1.02"></script>
+	<script src="{{ URL::asset('/') }}dist/js/magazzini.js?ver=1.03"></script>
 
 @endsection

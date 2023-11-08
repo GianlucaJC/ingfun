@@ -15,6 +15,7 @@ use App\Models\prod_giacenze;
 use App\Models\prod_spostamenti;
 use App\Models\movimenti_carico;
 use App\Models\ordini_fornitore;
+use App\Models\societa;
 
 use DB;
 
@@ -354,6 +355,7 @@ class ControllerArticoli extends Controller
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$view_dele=$request->input("view_dele");
 		$descr_contr=$request->input("descr_contr");
+		$id_sezionale=$request->input("id_sezionale");
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 
@@ -364,6 +366,7 @@ class ControllerArticoli extends Controller
 			$arr=array();
 			$arr['dele']=0;
 			$arr['descrizione']=$descr_contr;
+			$arr['id_sezionale']=$id_sezionale;
 			DB::table("prod_magazzini")->insert($arr);
 		}
 		
@@ -371,7 +374,7 @@ class ControllerArticoli extends Controller
 		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
 			$descr_contr=$descr_contr;
 			prod_magazzini::where('id', $edit_elem)
-			  ->update(['descrizione' => $descr_contr]);
+			  ->update(['descrizione' => $descr_contr,'id_sezionale' => $id_sezionale]);
 		}
 		if (strlen($dele_contr)!=0) {
 			prod_magazzini::where('id', $dele_contr)
@@ -384,16 +387,17 @@ class ControllerArticoli extends Controller
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		
+		$sezionali=societa::select("id","descrizione")->orderBy("descrizione")->get();
 		
 		$magazzini=DB::table('prod_magazzini as p')
-		->select("p.id","p.descrizione","p.dele","s.descrizione as sezionale")
+		->select("p.id","p.descrizione","p.dele","s.descrizione as sezionale","s.id as id_sezionale")
 		->leftjoin("societa as s","p.id_sezionale","s.id")
 		->when($view_dele=="0", function ($magazzini) {
 			return $magazzini->where('p.dele', "=","0");
 		})
 		->orderBy('p.descrizione')->get();
 
-		return view('all_views/articoli/magazzini')->with('magazzini',$magazzini)->with("view_dele",$view_dele);
+		return view('all_views/articoli/magazzini')->with('magazzini',$magazzini)->with('sezionali',$sezionali)->with("view_dele",$view_dele);
 		
 	}	
 	
