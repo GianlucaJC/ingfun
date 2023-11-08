@@ -385,11 +385,13 @@ class ControllerArticoli extends Controller
 		if ($view_dele=="on") $view_dele=1;
 		
 		
-		$magazzini=DB::table('prod_magazzini')
+		$magazzini=DB::table('prod_magazzini as p')
+		->select("p.id","p.descrizione","p.dele","s.descrizione as sezionale")
+		->leftjoin("societa as s","p.id_sezionale","s.id")
 		->when($view_dele=="0", function ($magazzini) {
-			return $magazzini->where('dele', "=","0");
+			return $magazzini->where('p.dele', "=","0");
 		})
-		->orderBy('descrizione')->get();
+		->orderBy('p.descrizione')->get();
 
 		return view('all_views/articoli/magazzini')->with('magazzini',$magazzini)->with("view_dele",$view_dele);
 		

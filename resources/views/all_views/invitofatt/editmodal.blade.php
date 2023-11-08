@@ -19,14 +19,47 @@
 							</div>
 						</div>
 
+
 						<div class="col-md-3">
-							<div class="form-floating">
-								<input class="form-control" id="codice" name='codice' type="text" placeholder="Codice"   />
-								<label for="codice">Codice</label>
+							<div class="form-floating mb-3 mb-md-0">
+
+								<select class="form-select" id="codice_mag" aria-label="Codice magazzino" name='codice_mag' onchange="set_codice(this.value)" >
+
+									<option value=''>Select...</option>
+									@foreach ($codici as $codx) 
+										<option value="{{$codx->id}}|{{$codx->descrizione}}">
+											{{$codx->id}}|{{$codx->descrizione}}
+										</option>	
+									@endforeach
+								</select>
+
+								<label for="codice_mag">Codice</label>
+
+								<small><a href="{{ route('definizione_articolo') }}" class="link-primary mt-2" target='_blank' onclick="$('.up').hide();$('#div_up4').show()">
+									Definisci o modifica
+								</a></small>
+								<span id='div_up4' class='up' style='display:none'>
+									<a href='javascript:void(0)' class='ml-2' onclick='refresh_servizi()'>
+										<font color='green'>
+											<i class="fas fa-sync-alt" title='refresh'></i>
+										</font>	
+									</a>	
+								</span>							
 							</div>
 						</div>
 						
-						<div class="col-md-5 tipoins" id='div_service'>
+						
+						<div class="col-md-2">
+							<div class="form-floating">
+								<input class="form-control" id="codice" name='codice' type="text" placeholder="Codice"   />
+								 <label for="codice">Codice</label>
+							</div>
+						</div>
+					
+						
+	
+						
+						<div class="col-md-4 tipoins" id='div_service'>
 						  <div class="form-floating mb-3 mb-md-0">
 							
 							<select class="form-select" id="service" aria-label="Servizi" name='service' onchange='set_service(this.value)'>
@@ -68,12 +101,7 @@
 						</div>
 						
 						
-						<div class="col-md-2">
-							<div class="form-floating">
-								<input class="form-control" id="quantita" name='quantita' type="text" placeholder="Q.tà" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');calcolo_riga()" required />
-								<label for="quantita">Quantità</label>
-							</div>		
-						</div>
+
 					</div>
 					
 				</div>
@@ -81,16 +109,24 @@
 
 				<div class="col-md-6">
 					<div class="row mb-3">
+
+						<div class="col-md-2">
+							<div class="form-floating">
+								<input class="form-control" id="quantita" name='quantita' type="text" placeholder="Q.tà" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');calcolo_riga()" required />
+								<label for="quantita">Q.ta</label>
+							</div>		
+						</div>					
+					
 						<div class="col-md-2">
 							<div class="form-floating">
 								<input class="form-control" id="um" name='um' type="text" placeholder="UM"  />
 								<label for="um">U.M.</label>
 							</div>		
 						</div>							
-						<div class="col-md-4">
+						<div class="col-md-3">
 							<div class="form-floating">
 								<input class="form-control" id="prezzo_unitario" name='prezzo_unitario' type="text" placeholder="Prezzo unitario" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');;calcolo_riga()" required />
-								<label for="prezzo_unitario">Prezzo Unitario</label>
+								<label for="prezzo_unitario">PrezzoUn.</label>
 							</div>		
 						</div>	
 						<div class="col-md-3">
@@ -119,10 +155,10 @@
 							</span>							
 							</div>
 						</div>	
-						<div class="col-md-3">
+						<div class="col-md-2">
 							<div class="form-floating">
 								<input class="form-control" id="subtotale" name='subtotale' type="text" placeholder="Subtotale" oninput="this.value = this.value.replace(/[^0-9.]/g, '').replace(/(\..*?)\..*/g, '$1').replace(/^0[^.]/, '0');" required />
-								<label for="subtotale" >Subtotale</label>
+								<label for="subtotale" >SubTot</label>
 							</div>		
 						</div>
 					

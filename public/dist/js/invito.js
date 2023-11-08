@@ -227,6 +227,7 @@ function prepare_to_send(id_fattura) {
 					html+="</div>";
 				html+="</div>";
 			html+="</div>";
+			html+="<small><b><font color='red'>ATTENZIONE!</font></b> Contestualmente all'invio della fattura saranno aggiornante le giacenze nel magazzino relativo al sezionale</small>"
 			
 			$("#body_modal_fatt").html(html)
 			
@@ -709,5 +710,13 @@ function add_pagamento(tipo) {
 			</div>
 		</div>`
 	$("#div_pagamenti").append(html)
+}
+
+function set_codice(value) {
+	info=value.split("|")
+	if (info.length>1) {
+		$("#codice").val(info[0])
+		$("#prodotto").val(info[1])
+	}
 }
 

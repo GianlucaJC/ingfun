@@ -61,6 +61,7 @@
 						<tr>
 							<th>ID</th>
 							<th>Magazzino</th>
+							<th>Sezionale</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -78,7 +79,11 @@
 								 @if ($magazzino->dele=="1") 
 									 </del></font>
 								 @endif	
-								</td>	
+								</td>
+								<td>
+									{{ $magazzino->sezionale }}
+								</td>
+								
 								<td>
 									@if ($magazzino->dele=="0") 
 										<a href='#' onclick="edit_elem({{$magazzino->id}})">
@@ -104,6 +109,7 @@
 						<tr>
 							<th>ID</th>
 							<th>Magazzino</th>
+							<th>Sezionale</th>
 							<th></th>
 						</tr>
 					</tfoot>					
