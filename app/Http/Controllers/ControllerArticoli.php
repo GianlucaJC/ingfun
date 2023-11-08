@@ -16,8 +16,12 @@ use App\Models\prod_spostamenti;
 use App\Models\movimenti_carico;
 use App\Models\ordini_fornitore;
 use App\Models\societa;
+use App\Models\fatture;
+use App\Models\articoli_fattura;
+use App\Models\set_global;
 
 use DB;
+use Mail;
 
 class ControllerArticoli extends Controller
 {
@@ -401,6 +405,97 @@ class ControllerArticoli extends Controller
 		
 	}	
 	
+	public static function scarico_articoli($id_fattura) {
+		/*
+			La procedura chiamante attualmente proviene dal 
+			Controller AjaxControllerCand che a sua volta può essere invocato per l'invio delle mail (ad esempio delle fatture-->route('invito'))
+		*/
+		
+		$id_sez=fatture::select("id_sezionale")->where("id","=",$id_fattura)->get()->first();
+
+		if ($id_sez!=null) {
+			$id_sezionale=$id_sez->id_sezionale;
+			$id_mag=prod_magazzini::select("id")->where("id_sezionale","=",$id_sezionale)->get()->first();
+
+			if ($id_mag!=null) {
+				$id_magazzino=$id_mag->id;
+				$articoli=articoli_fattura::select("codice","quantita")
+				->where("id_doc","=",$id_fattura)->get();
+				foreach($articoli as $articolo) {
+					$qta=$articolo->quantita;
+					$codice=$articolo->codice;
+
+					$up_giacenza=prod_giacenze
+					::where("id_prodotto","=",$codice)
+					->where("id_magazzino","=",$id_magazzino)
+					->decrement('giacenza', $qta);
+					
+					//giacenza globale prodotto
+					$info_g=prod_giacenze::select(DB::raw("SUM(giacenza) as giacenza"))
+					->where('id_prodotto','=',$codice)
+					->get();
+					
+					$giac=null;
+					if ($info_g!=null) $giac=$info_g[0]->giacenza;
+
+					$scorta=prod_prodotti::select("scorta_minima")
+					->where('id','=',$codice)
+					->get();
+					
+					if ($scorta!=null && $giac!=null) {
+						$scorta_m=$scorta[0]->scorta_minima;
+						if ($giac<=$scorta_m) {
+							$email_acquisti=set_global::select("email_acquisti")->get()->first()->email_acquisti;
+							if ($email_acquisti!=null) {
+								//email notifica superamento scorta minima
+								ControllerArticoli::send_mail($email_acquisti,$codice,$scorta_m,$giac);
+							}
+						}
+					}
+					
+					//check scorta minima
+					
+				}
+			}
+		}
+
+	}
+	
+
+	public static function send_mail($email,$codice,$scorta_m,$giac){
+
+		$titolo = "Superamento scorta minima";
+		
+		$body_msg = "Attenzione! Per il prodotto $codice risulta superato il limite di scorta minima ($scorta_m). L'attuale giacenza globale nei vari magazzini per il prodotto è $giac";
+		
+
+		try {
+
+			$data["email"] = $email;
+			$data["title"] = $titolo;
+			$data["body"] = $body_msg;
+			$files=array();
+			Mail::send('emails.notifdoc', $data, function($message)use($data, $files) {
+				$message->to($data["email"], $data["email"])
+				->subject($data["title"]);
+				if (count($files)!=0) {
+					foreach ($files as $file){
+						$message->attach($file);
+					}
+				}
+			});
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo!";
+
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+		}		
+			
+			
+		
+		return json_encode($status);
+	}	
 	
 }
 

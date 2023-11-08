@@ -335,7 +335,7 @@ function send_real(id_ref,email,num_elem,num,id_fattura) {
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/send_mail",
-		data: {_token: CSRF_TOKEN, id_cand:id_cand, titolo:oggetto, email:email, body_msg:body_msg,id_fattura:id_fattura},
+		data: {_token: CSRF_TOKEN, id_cand:id_cand, titolo:oggetto, email:email, body_msg:body_msg,id_fattura:id_fattura,num:num},
 		success: function (data) {
 			
 			html="<font color='green'><i class='fa fa-thumbs-up'></i></font>";
@@ -354,7 +354,7 @@ function send_real(id_ref,email,num_elem,num,id_fattura) {
 				new_num=num+1
 				
 				if (new_num<num_elem) {					
-					send_real(arr_send[new_num]['id_ref'],arr_send[new_num]['mail'],num_elem,new_num)
+					send_real(arr_send[new_num]['id_ref'],arr_send[new_num]['mail'],num_elem,new_num,id_fattura)
 				} else {
 					$("#btn_ass").hide(150)
 					//ultimo alert tramite setTimeout altrimenti non viene renderizzato l'ultimo check della notifica

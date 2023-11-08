@@ -72,7 +72,10 @@
 								 @if ($soc->dele=="1") 
 									<font color='red'><del> 
 								 @endif
-									<span id='id_descr{{$soc->id}}' data-descr='{{ $soc->descrizione }}' data-mail='{{ $soc->mail_scadenze }}'>
+									<span id='id_descr{{$soc->id}}' data-descr='{{ $soc->descrizione }}' data-mail='{{ $soc->mail_scadenze }}'
+									data-mail_fatture='{{ $soc->mail_fatture }}'
+									>
+									
 										{{ $soc->descrizione }}
 									</span>	
 								 @if ($soc->dele=="1") 
@@ -168,6 +171,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/societa.js?ver=1.2"></script>
+	<script src="{{ URL::asset('/') }}dist/js/societa.js?ver=1.20"></script>
 
 @endsection

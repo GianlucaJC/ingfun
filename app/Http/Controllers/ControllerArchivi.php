@@ -506,6 +506,7 @@ class ControllerArchivi extends Controller
 		$view_dele=$request->input("view_dele");
 		$descr_contr=$request->input("descr_contr");
 		$mail_scadenze=$request->input("mail_scadenze");
+		$mail_fatture=$request->input("mail_fatture");
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 
@@ -514,10 +515,12 @@ class ControllerArchivi extends Controller
 		if (strlen($descr_contr)!=0 && $edit_elem==0) {
 			$descr_contr=strtoupper($descr_contr);
 			$mail_scadenze=strtolower($mail_scadenze);
+			$mail_fatture=strtolower($mail_fatture);
 			$arr=array();
 			$arr['dele']=0;
 			$arr['descrizione']=$descr_contr;
 			$arr['mail_scadenze']=$mail_scadenze;
+			$arr['mail_fatture']=$mail_fatture;
 			DB::table("societa")->insert($arr);
 		}
 		
@@ -525,8 +528,9 @@ class ControllerArchivi extends Controller
 		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
 			$descr_contr=strtoupper($descr_contr);
 			$mail_scadenze=strtolower($mail_scadenze);
+			$mail_fatture=strtolower($mail_fatture);
 			societa::where('id', $edit_elem)
-			  ->update(['descrizione' => $descr_contr,'mail_scadenze' => $mail_scadenze]);
+			  ->update(['descrizione' => $descr_contr,'mail_scadenze' => $mail_scadenze,'mail_fatture' => $mail_fatture]);
 		}
 		if (strlen($dele_contr)!=0) {
 			societa::where('id', $dele_contr)

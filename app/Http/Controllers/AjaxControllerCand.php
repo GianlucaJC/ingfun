@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Storage;
+use App\Http\Controllers\ControllerArticoli;
 
 use Illuminate\Http\Request;
 use App\Models\italy_provincies;
@@ -101,7 +102,12 @@ class AjaxControllerCand extends Controller
 				];
 			}
 			if (strlen($id_fattura)!=0) {
-				$this->scarico_articoli($id_fattura);
+				$cur_send = $request->input('num');
+				if ($cur_send==0) {
+					//procedura di scarico con verifica scorta minima
+					ControllerArticoli::scarico_articoli($id_fattura);
+				}	
+				
 				fatture::where('id', $id_fattura)
 				  ->update(['status' => 2]);					
 				$files = [
@@ -137,26 +143,7 @@ class AjaxControllerCand extends Controller
 		return json_encode($status);
 	}
 	
-	public function scarico_articoli($id_fattura) {
-		$id_sez=fatture::select("id_sezionale")->where("id","=",$id_fattura)->get()->first();
-		if ($id_sez!=null) {
-			$id_sezionale=$id_sez->id_sezionale;
-			$id_mag=prod_magazzini::select("id")->where("id_sezionale","=",$id_sezionale)->get()->first();
-			if ($id_mag!=null) {
-				$id_magazzino=$id_mag->id;
-				$articoli=articoli_fattura::select("codice","quantita")
-				->where("id_doc","=",$id_fattura)->get();
-				foreach($articoli as $articolo) {
-					$qta=$articolo->quantita;
-					$codice=$articolo->codice;
-					$up_giacenza=prod_giacenze
-					::where("id_prodotto","=",$codice)
-					->where("id_magazzino","=",$id_magazzino)
-					->decrement('giacenza', $qta);
-				}
-			}
-		}
-	}
+
 
 	public function storia_campo() {
 		$id_cand=$_POST['id_cand'];
