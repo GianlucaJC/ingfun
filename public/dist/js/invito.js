@@ -227,7 +227,7 @@ function prepare_to_send(id_fattura) {
 					html+="</div>";
 				html+="</div>";
 			html+="</div>";
-			html+="<small><b><font color='red'>ATTENZIONE!</font></b> Contestualmente all'invio della fattura saranno aggiornante le giacenze nel magazzino relativo al sezionale</small>"
+			html+="<small><b><font color='red'>ATTENZIONE!</font></b> Contestualmente all'invio della fattura saranno aggiornate le giacenze nel magazzino relativo al sezionale</small>"
 			
 			$("#body_modal_fatt").html(html)
 			
