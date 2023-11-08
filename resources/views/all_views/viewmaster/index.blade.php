@@ -4,10 +4,6 @@ $arr_uri=explode("/",$uri_info);
 $current_uri=$arr_uri[0];
 $url_base=url('/');
 
-if (!Auth::user()) {
-	header("location: $url_base/login");
-	exit;
-}
 $infx=Auth::user()->roles->pluck('name');
 
 $role=$infx[0];
