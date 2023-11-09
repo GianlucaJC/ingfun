@@ -35,11 +35,11 @@
 
 								<label for="codice_mag">Codice</label>
 
-								<small><a href="{{ route('definizione_articolo') }}" class="link-primary mt-2" target='_blank' onclick="$('.up').hide();$('#div_up4').show()">
+								<small><a href="{{ route('elenco_articoli') }}" class="link-primary mt-2" target='_blank' onclick="$('.up').hide();$('#div_up4').show()">
 									Definisci o modifica
 								</a></small>
 								<span id='div_up4' class='up' style='display:none'>
-									<a href='javascript:void(0)' class='ml-2' onclick='refresh_servizi()'>
+									<a href='javascript:void(0)' class='ml-2' onclick='refresh_prodotti()'>
 										<font color='green'>
 											<i class="fas fa-sync-alt" title='refresh'></i>
 										</font>	

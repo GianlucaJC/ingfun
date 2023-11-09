@@ -372,9 +372,8 @@ function alertFunc() {
 	alert("Operazione effettuata!");
 }
 
-function refresh_servizi() {
+function refresh_prodotti() {
 	base_path = $("#url").val();
-	ditta = $("#ditta").val();
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
@@ -383,26 +382,22 @@ function refresh_servizi() {
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
-		url: base_path+"/refresh_servizi",
-		data: {_token: CSRF_TOKEN,ditta:ditta},
+		url: base_path+"/refresh_prodotti",
+		data: {_token: CSRF_TOKEN},
 		success: function (data) {
-			$("#service")
+			$("#codice_mag")
 			.find('option')
 			.remove()
 			.end();	
 			
-			$('#service').append("<option value=''>Select...</option>");
+			$('#codice_mag').append("<option value=''>Select...</option>");
 			$.each(JSON.parse(data), function (i, item) {
-
-			js=`
-				<option value="`+item.id_servizio+`|`+item.descrizione+`|`+item.importo_ditta+`|`+item.aliquota+`|`+item.aliquota_v+`">`+item.descrizione +`</option>
-			`
-
-			$('#service').append(js);
+				
+				$('#codice_mag').append('<option value="' + item.id + '|'+item.descrizione+'">' + item.descrizione + '</option>');
 						
 			});
 		}
-	});		
+	});	
 }
 
 function edit_product(id_riga,last_ordine,id_servizio) {
