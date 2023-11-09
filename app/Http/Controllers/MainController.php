@@ -160,7 +160,10 @@ public function __construct()
 	
 	public function menu($parent_id=0) {
 		$request=request();
+		if (!Auth::user())  return redirect('/login');
+		
 		$infx=Auth::user()->roles->pluck('name');
+		
 		$role=$infx[0];
 	
 		//DB::enableQueryLog();

@@ -431,7 +431,7 @@ class ControllerArticoli extends Controller
 					->decrement('giacenza', $qta);
 					
 					//giacenza globale prodotto
-					$info_g=prod_giacenze::select(DB::raw("SUM(giacenza) as giacenza"))
+					$info_g=prod_giacenze::select(DB::raw("SUM(giacenzax) as giacenza"))
 					->where('id_prodotto','=',$codice)
 					->get();
 					
