@@ -298,6 +298,9 @@ if (!Auth::user() && $from==0) $nolog=0;
 		
 		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary btn-lg btn-block" value="save" onclick="save()">{{$lbl_save}}</button>
 
+		<a href='javascript:void(0)' onclick="save">
+		{{$lbl_save}}
+		</a>
 
 
 
