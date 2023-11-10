@@ -31,7 +31,10 @@
     })
 })()
 $(document).ready( function () {
-
+	$( "#btn_save" ).on( "click", function() {
+		if (!confirm("Sicuri di confermare il sinistro?"))
+			event.preventDefault()
+	} );
 
 } );
 
