@@ -296,8 +296,11 @@ if (!Auth::user() && $from==0) $nolog=0;
 
 		
 		
-		<button type="submit" id="btn_save1" name="btn_save1" class="btn btn-primary btn-lg btn-block" value="save" onclick="save()">{{$lbl_save}}</button>
-
+		
+		<!--
+			onclick="save()" 
+			disabilitato perchè su iOS non viene eseguita JS nella webview
+		!-->	
 		<button type="submit" id="btn_save" name="btn_save" class="btn btn-primary btn-lg btn-block" value="save">{{$lbl_save}}</button>
 
 
