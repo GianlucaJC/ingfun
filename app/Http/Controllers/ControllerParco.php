@@ -29,7 +29,7 @@ class ControllerParco extends Controller
 		else 
 			$psm = new parco_scheda_mezzo;
 		$psm->targa = strtoupper($request->input('targa'));
-		$psm->numero_interno = $request->input('numero_interno');
+		$psm->numero_interno = "";
 		$psm->tipologia = $request->input('tipologia');
 		$psm->marca = $request->input('marca');
 		$psm->modello = $request->input('modello');

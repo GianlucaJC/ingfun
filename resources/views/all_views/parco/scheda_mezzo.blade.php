@@ -61,10 +61,13 @@
 					<label for="targa">TARGA*</label>
 				</div>
 			</div>			
+			
+			<!-- esiste un campo numero_interno nel DB ma mi è stato chiesto di far visualizzare l'ID assegnato automaticamente
+			!-->
 			<div class="col-md-6">
 				<div class="form-floating">
-					<input class="form-control" id="numero_interno" name='numero_interno' type="text" required value="{{$info_mezzo[0]->numero_interno ?? ''}}" maxlength=50 />
-					<label for="numero_interno">Numero interno*</label>
+					<input class="form-control" id="numero_interno" name='numero_interno' type="text" disabled value="{{$info_mezzo[0]->id ?? ''}}" />
+					<label for="numero_interno">Numero interno</label>
 				</div>
 			</div>			
 		</div>
@@ -528,7 +531,7 @@
 			
 			<div class="col-md-4">
 				<div class="form-floating">
-					<input class="form-control" id="ultima_revisione" name='ultima_revisione' type="date" value="{{$info_mezzo[0]->ultima_revisione ?? ''}}"  required />
+					<input class="form-control" id="ultima_revisione" name='ultima_revisione' type="date" value="{{$info_mezzo[0]->ultima_revisione ?? ''}}"   />
 					<label for="ultima_revisione">Ultima revisione</label>
 				</div>
 			</div>			
