@@ -15,6 +15,7 @@ use App\Models\parco_scheda_mezzo;
 use App\Models\set_global;
 use App\Models\support_sinistri;
 use App\Models\sinistri;
+use App\Models\contatti;
 use OneSignal;
 
 use DB;
@@ -141,6 +142,7 @@ class ApiController extends Controller
 				$this->createThumbnail($medium.$filename, 300, 185);
 						
 				$idappalto = $request->header('idappalto');
+				$notificasin = $request->header('notificasin');
 
 				
 				$tiposend = $request->header('tiposend');
@@ -157,6 +159,13 @@ class ApiController extends Controller
 					$sinistri->file_cid=$filename;
 					$sinistri->save();					
 				}
+				if ($notificasin=="0") {
+					$mails=contatti::select('mail')->get();
+					foreach ($mails as $mail) {
+						$email=$mail->mail;
+						$this->send_m($email,$idappalto,$idsinistro);
+					}				
+				}
 
 				$risp['header']="OK";
 				$risp['message']="File e dati riversati sul server";
@@ -170,6 +179,39 @@ class ApiController extends Controller
 		echo json_encode($risp);
 		
    }
+   
+	public function send_m($email,$id_appalto,$id_sinistro){
+		$titolo="";$body_msg="";
+		$d=date("Y-m-d");
+		$href="https://217.18.125.177/ingfun/public/sinistri/$id_appalto/1/$id_sinistro";
+		$titolo="Notifica creazione sinistro da APP";
+		$body_msg="Un nuovo sinistro è stato creato via APP.\nPer prenderne visione cliccare sul link $href";
+		
+		
+		try {
+
+			$data["email"] = $email;
+			$data["title"] = $titolo;
+			$data["body"] = $body_msg;
+
+
+			Mail::send('emails.notifdoc', $data, function($message)use($data) {
+				$message->to($data["email"], $data["email"])
+				->subject($data["title"]);
+
+			});
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo!";
+
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+		}		
+			
+			
+		
+		return json_encode($status);
+	}	   
 
 	
 	public function send_foto(Request $request) {

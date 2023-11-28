@@ -219,7 +219,10 @@ if (!Auth::user() && $from==0) $nolog=0;
 				/*
 				echo "<button type='button' id='vision_main' class='btn btn-success btn-lg btn-block' onclick=\"$('#div_main').toggle(150)\">Visiona sinistro</button>";
 				*/
-				$lbl_save="Aggiorna sinistro";
+				if ($nolog==0)
+					$lbl_save="Aggiorna sinistro/Torna elenco foto";
+				else
+					$lbl_save="Aggiorna sinistro";
 			} 
 		?>
 		@if ($id_sinistro!=0 && $from==1)
