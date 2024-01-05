@@ -47,7 +47,9 @@
 						<td><?php echo number_format($articolo->subtotale,2)." €"?></td>
 						<td>
 							<!-- riga info per js !-->
-							<span id='inforow{{$articolo->id}}' data-ordine='{{ $articolo->ordine}}' data-codice='{{ $articolo->codice}}' data-descrizione='{{ $articolo->descrizione}}' data-quantita='{{ $articolo->quantita}}' data-um='{{ $articolo->um}}' data-prezzo_unitario='{{ $articolo->prezzo_unitario}}'  data-subtotale='{{ $articolo->subtotale}}' data-aliquota='{{ $articolo->aliquota}}|{{$arr_aliquota[$articolo->aliquota]}}' >
+							<span id='inforow{{$articolo->id}}' data-ordine='{{ $articolo->ordine}}' data-codice='{{ $articolo->codice}}' data-descrizione='{{ $articolo->descrizione}}'
+							data-mag_sca='{{ $articolo->mag_sca}}'
+							data-quantita='{{ $articolo->quantita}}' data-um='{{ $articolo->um}}' data-prezzo_unitario='{{ $articolo->prezzo_unitario}}'  data-subtotale='{{ $articolo->subtotale}}' data-aliquota='{{ $articolo->aliquota}}|{{$arr_aliquota[$articolo->aliquota]}}' >
 							</span>	
 							
 							<a href='#' onclick="edit_product({{$articolo->id}},0,0)">

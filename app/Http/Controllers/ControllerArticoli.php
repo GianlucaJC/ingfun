@@ -410,54 +410,48 @@ class ControllerArticoli extends Controller
 			La procedura chiamante attualmente proviene dal 
 			Controller AjaxControllerCand che a sua volta può essere invocato per l'invio delle mail (ad esempio delle fatture-->route('invito'))
 		*/
-		
-		$id_sez=fatture::select("id_sezionale")->where("id","=",$id_fattura)->get()->first();
 
-		if ($id_sez!=null) {
-			$id_sezionale=$id_sez->id_sezionale;
-			$id_mag=prod_magazzini::select("id")->where("id_sezionale","=",$id_sezionale)->get()->first();
+		$articoli=articoli_fattura::select("codice","quantita","mag_sca")
+		->where("id_doc","=",$id_fattura)->get();
 
-			if ($id_mag!=null) {
-				$id_magazzino=$id_mag->id;
-				$articoli=articoli_fattura::select("codice","quantita")
-				->where("id_doc","=",$id_fattura)->get();
-				foreach($articoli as $articolo) {
-					$qta=$articolo->quantita;
-					$codice=$articolo->codice;
+		foreach($articoli as $articolo) {
+			$qta=$articolo->quantita;
+			$codice=$articolo->codice;
+			$id_magazzino=$articolo->mag_sca;
+			
+			$up_giacenza=prod_giacenze
+			::where("id_prodotto","=",$codice)
+			->where("id_magazzino","=",$id_magazzino)
+			->decrement('giacenza', $qta);
 
-					$up_giacenza=prod_giacenze
-					::where("id_prodotto","=",$codice)
-					->where("id_magazzino","=",$id_magazzino)
-					->decrement('giacenza', $qta);
-					
-					//giacenza globale prodotto
-					$info_g=prod_giacenze::select(DB::raw("SUM(giacenza) as giacenza"))
-					->where('id_prodotto','=',$codice)
-					->get();
-					
-					$giac=null;
-					if ($info_g!=null) $giac=$info_g[0]->giacenza;
+			//giacenza globale prodotto
+			$info_g=prod_giacenze::select(DB::raw("SUM(giacenza) as giacenza"))
+			->where('id_prodotto','=',$codice)
+			->get();
+			
+			$giac=null;
+			if ($info_g!=null) $giac=$info_g[0]->giacenza;
 
-					$scorta=prod_prodotti::select("scorta_minima")
-					->where('id','=',$codice)
-					->get();
-					
-					if ($scorta!=null && $giac!=null) {
-						$scorta_m=$scorta[0]->scorta_minima;
-						if ($giac<=$scorta_m) {
-							$email_acquisti=set_global::select("email_acquisti")->get()->first()->email_acquisti;
-							if ($email_acquisti!=null) {
-								//email notifica superamento scorta minima
-								ControllerArticoli::send_mail($email_acquisti,$codice,$scorta_m,$giac);
-							}
-						}
+			$scorta=prod_prodotti::select("scorta_minima")
+			->where('id','=',$codice)
+			->get();
+			
+			if ($scorta!=null && $giac!=null) {
+				$scorta_m=$scorta[0]->scorta_minima;
+				if ($giac<=$scorta_m) {
+					$email_acquisti=set_global::select("email_acquisti")->get()->first()->email_acquisti;
+					if ($email_acquisti!=null) {
+						//email notifica superamento scorta minima
+						ControllerArticoli::send_mail($email_acquisti,$codice,$scorta_m,$giac);
 					}
-					
-					//check scorta minima
-					
 				}
 			}
+			
+			//check scorta minima
+			
 		}
+
+
 
 	}
 	

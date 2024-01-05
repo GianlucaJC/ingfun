@@ -80,7 +80,7 @@
 				<table id='tbl_list_pers' class="display">
 					<thead>
 						<tr>
-							<th>Operazioni</th>
+							<th style='min-width:190px'>Operazioni</th>
 							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
 							<th>Azienda di proprietà</th>
@@ -96,7 +96,7 @@
 					@foreach($gestione as $gest)
 						<tr>
 
-							<td>
+							<td style='min-width:190px'>
 								@if ($gest->dele=="0") 
 									<a href="{{ route('newapp',['id'=>$gest->id,'from'=>1,'num_send'=>0]) }}" >
 										<button type="button" class="btn btn-info" alt='Edit' title="Modifica Appalto"><i class="fas fa-edit"></i></button>
@@ -231,9 +231,10 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th></th>
+							<th style='min-width:190px'></th>
 							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
+							<th>Azienda di proprietà</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>

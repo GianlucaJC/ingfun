@@ -342,6 +342,8 @@ Route::group(['only_log' => ['auth']], function () {
 Route::group(['only_log' => ['auth']], function () {
 
 	//chiamate ajax prodotti
+	
+	Route::post('check_disp_maga', 'App\Http\Controllers\AjaxControllerAcquisti@check_disp_maga');
 
 	Route::post('elenco_categorie', 'App\Http\Controllers\AjaxControllerAcquisti@elenco_categorie');
 	
@@ -415,6 +417,8 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('check_url', 'App\Http\Controllers\AjaxControllerCand@check_url');
 
 	Route::post('send_mail', 'App\Http\Controllers\AjaxControllerCand@send_mail');
+
+	
 	
 	Route::post('count_pdf', 'App\Http\Controllers\ControllerPdf@count_pdf');
 	Route::post('analisi_pdf', 'App\Http\Controllers\ControllerPdf@analisi_pdf');

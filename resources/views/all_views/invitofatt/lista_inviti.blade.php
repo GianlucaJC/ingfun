@@ -248,6 +248,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.182"></script>
+	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.190"></script>
 
 @endsection

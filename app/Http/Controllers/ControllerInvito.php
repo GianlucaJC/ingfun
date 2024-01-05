@@ -14,7 +14,7 @@ use App\Models\servizi_ditte;
 use App\Models\servizi;
 use App\Models\appalti;
 use App\Models\prod_prodotti;
-
+use App\Models\prod_magazzini;
 
 use DB;
 use PDF;
@@ -160,6 +160,7 @@ public function __construct()
 		
 		
 		$art->codice = $request->input('codice');
+		$art->mag_sca = $request->input('mag_sca');
 		
 		$art->descrizione = $request->input('prodotto');
 		$art->quantita = $request->input('quantita');
@@ -532,7 +533,7 @@ public function __construct()
 
 		
 		$articoli_fattura=DB::table('articoli_fattura as a')
-		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota')
+		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.mag_sca','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota')
 		->where('a.id_doc', "=",$id_doc)
 		->get();
 		
@@ -585,6 +586,9 @@ public function __construct()
 		$codici=prod_prodotti::select("id","descrizione")
 		->orderBy('descrizione')->get();
 		
+		$magazzini=prod_magazzini::select('id','descrizione')->orderBy('descrizione')->get();
+		
+		
 		$dati=array();
 		$dati['id_doc']=$id_doc;
 		$dati['tipo_pagamento']=$tipo_pagamento;
@@ -592,7 +596,7 @@ public function __construct()
 		if ($preview_pdf=="preview") return $this->Invoice($dati);
 		if ($genera_pdf=="genera") $this->Invoice($dati);
 	
-		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi)->with('all_s',$all_s)->with('sezionali',$sezionali)->with('sezionale',$sezionale)->with('codici',$codici);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi)->with('all_s',$all_s)->with('sezionali',$sezionali)->with('sezionale',$sezionale)->with('codici',$codici)->with('magazzini',$magazzini);
 	}
 
 	function lista_pagamenti() {

@@ -167,6 +167,8 @@ function calcolo_riga() {
 }
 
 function prepare_to_send(id_fattura) {
+	
+	$("#resp_check").empty();
 	$('#modal_fatt').modal('toggle')
 	$("#title_modal_fatt").html("Invia fattura a destinatari")
 	$("#body_modal_fatt").html("Caricamento informazioni in corso...")
@@ -227,14 +229,19 @@ function prepare_to_send(id_fattura) {
 					html+="</div>";
 				html+="</div>";
 			html+="</div>";
-			html+="<small><b><font color='red'>ATTENZIONE!</font></b> Contestualmente all'invio della fattura saranno aggiornate le giacenze nel magazzino relativo al sezionale</small>"
+			html+="<small><b><font color='red'>ATTENZIONE!</font></b> Contestualmente all'invio della fattura saranno aggiornate le giacenze nel magazzino relativo</small>"
 			
 			$("#body_modal_fatt").html(html)
 			
+			html="";
+			testo="Verifica disponibilità per scarico";
+
+			html+="<button type='button' class='btn btn-info' id='btn_check' onclick='send_email("+id_fattura+",0)'>"+testo+"</button>"
+
 			
 			testo="Invia Fattura";
 
-			html="<button type='button' class='btn btn-primary' id='btn_send_fatt' onclick='send_email("+id_fattura+")'>"+testo+"</button>"
+			html+="<button type='button' class='btn btn-primary ml-2' id='btn_send_fatt' onclick='send_email("+id_fattura+",1)'>"+testo+"</button>"
 			$("#altri_btn_fatt").html(html)
 			
 		}
@@ -243,65 +250,215 @@ function prepare_to_send(id_fattura) {
 	
 }
 
-function send_email(id_fattura) {
-	sel=false;
-	arr_send = {};
-	$( ".mailsend" ).each(function() {
-		value=$( this ).prop( "checked" );
-		if (value==true) {
-			sel=true
+function send_email(id_fattura,check) {
+	if (check==1) {
+		sel=false;
+		arr_send = {};
+		$( ".mailsend" ).each(function() {
+			value=$( this ).prop( "checked" );
+			if (value==true) {
+				sel=true
+			}
+		});	
+		
+		if (sel==false) {
+			alert("Selezionare almeno un destinatario per la notifica!")
+			return false;
+		}	
+		
+		oggetto=$("#oggetto").val();
+		body_msg=$("#body_msg").val();
+		if (oggetto.length==0) {
+			alert("Definire l'oggetto!");
+			return false;
+		}
+		if (body_msg.length==0) {
+			alert("Definire il corpo del messaggio!");
+			return false;
+		}
+	}
+	/*
+		prima dell'invio della fattura, verifico 
+		se le quantità degli articoli da scaricare sono maggiori delle quantità presenti nel magazzino di riferimento. In tal caso invalido l'invio
+	*/
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/check_disp_maga",
+		data: {_token: CSRF_TOKEN, id_fattura:id_fattura},
+		success: function (data) {
+			resp=JSON.parse(data)
+			html="";
+			if (resp.esito_globale==false) {
+				html=`
+					<div class="alert alert-warning" role="alert">
+					  <b>Attenzione!</b> Scarico non possibile per mancanza di disponibilità nei magazzini indicati in fattura
+					</div>
+				`
+				esito_codice=resp.esito_codice
+				
+					html+=`<table id='tbl_scarico' class="display">
+						<thead>
+							<tr>
+								<th>Codice</th>
+								<th>Esito</th>
+							</tr>
+						</thead>
+					`	
+
+					$.each(esito_codice, function (i, item) {
+							disp="";
+							
+							if (item=="0") 
+								disp="<i class='fas fa-times fa-xs' style='color: #ff0000;'></i> Insufficiente";
+							if (item=="1") 
+								disp="<i class='fas fa-check fa-xs' style='color: #00ff00;'></i> Disponibile";
+							if (item=="2") disp="<i class='fas fa-check fa-xs' style='color: #ff8000;'></i>  Disponibile in altro magazzino";
+							if (item=="3") disp="<i class='fas fa-check fa-xs' style='color: #00ff00;'></i> Codice non scaricabile (articolo assente)";
+
+							html+=`<tr>
+								<td>`+i+`</td>
+								<td>`+disp+`</td>
+							</tr>`
+					})
+					html+="</table>"
+					
+					risp=resp.risp
+					
+					html+="<button type='button' class='btn btn-primary' onclick=\"$('#div_detail_sca').toggle(150)\">Dettaglio giacenze in magazzino per i codici richiesti</button>"
+					
+					html+="<div id='div_detail_sca' style='display:none' class='mt-2'><hr>"
+						html+=`<table id='tbl_detail_scarico' class="display">
+							<thead>
+								<tr>
+									<th>Codice</th>
+									<th>Magazzino</th>
+									<th>Giacenza</th>
+									<th>Qta richiesta</th>
+								</tr>
+							</thead>
+						`	
+						
+						$.each(risp, function (code, obj) {
+							
+							$.each(obj, function (id_mag, item) {
+								console.log("code",code,"id_mag",id_mag,"item",item)
+								
+								bck="style='background:CHARTREUSE'";
+								if (item.giacenza<item.qta)  
+									bck="style='background:gold'"								
+								html+=`
+									<tr>
+										<td style='text-align:center'>
+											`+code+`
+										</td>`
+										if (item.tipo_mag=="MAGREQ")
+											html+="<td "+bck+">";
+										else 
+											html+="<td>";
+									
+										html+=item.magazzino
+										if (item.tipo_mag=="MAGREQ")
+											html+=" (Magazzino della richiesta)"
+										
+										html+=`
+										<td style='text-align:center'>`
+										 if (item.giacenza<item.qta)
+											html+="<font color='red'>"+item.giacenza+"</font>"
+										 else
+											html+="<font color='green'>"+item.giacenza+"</font>"
+											
+										html+=`</td>							
+										<td style='text-align:center'>
+											`+item.qta+`
+										</td>							
+									</tr>
+								`
+							})
+
+						})
+						html+="</table>"
+					html+="</div>";
+					
+					$("#body_modal_fatt").html(html);
+					
+				
+				
+				var table=$('#tbl_scarico, #tbl_detail_scarico').DataTable({
+					dom: 'Bfrtip',
+					buttons: [
+						'excel', 'pdf'
+					],		
+					language: {
+						lengthMenu: 'Visualizza _MENU_ records per pagina',
+						zeroRecords: 'Nessun codice trovato',
+						info: 'Pagina _PAGE_ di _PAGES_',
+						infoEmpty: 'Non sono presenti codici',
+						infoFiltered: '(Filtrati da _MAX_ codici totali)',
+					},
+				});				
+
+			} else {
+				if (check==0) {
+					html=`
+						<div class="alert alert-success" role="alert">
+						  <b>Esito positivo!</b> I prodotti presenti nella fattura sono disponibili per lo scarico nei rispettivi magazzini specificati
+						</div>
+					`			
+					$("#resp_check").html(html);
+				}				
+			}
+			
+			
+			
+			if (check==1 && resp.esito_globale==true) {
+
+				altre=$("#altre").val();
+				if (altre.length!=0) {
+					arr_altri=altre.split(";")
+					id_ref="altre";
+					$("#sendam").show(50);
+					for (sca=0;sca<=arr_altri.length-1;sca++) {						
+						mail=arr_altri[sca]
+						send_real(id_ref,mail,-1,-1)
+					}
+					
+				}
+				
+				
+				num_elem=0
+
+				fl_send=false
+				$( ".mailsend" ).each(function() {		
+					value=$( this ).prop( "checked" );
+					id_ref_origin=(this.id)
+					id_ref=id_ref_origin.substr(8);
+					mail=$("#"+id_ref_origin).data("send")
+					
+					if (value==true) {
+						fl_send=true
+						arr_send[num_elem] = {};
+						arr_send[num_elem]['id_ref'] = id_ref;
+						arr_send[num_elem]['mail'] = mail
+						num_elem++
+					}
+				})
+				//invia la prima notifica, le altre in callback nella chiamata ajax
+				if (fl_send==true) 
+					send_real(arr_send[0]['id_ref'],arr_send[0]['mail'],num_elem,0,id_fattura)			
+				
+			}
+				
 		}
 	});	
-	
-	if (sel==false) {
-		alert("Selezionare almeno un destinatario per la notifica!")
-		return false;
-	}	
-	
-	oggetto=$("#oggetto").val();
-	body_msg=$("#body_msg").val();
-	if (oggetto.length==0) {
-		alert("Definire l'oggetto!");
-		return false;
-	}
-	if (body_msg.length==0) {
-		alert("Definire il corpo del messaggio!");
-		return false;
-	}
 
-	altre=$("#altre").val();
-	if (altre.length!=0) {
-		arr_altri=altre.split(";")
-		id_ref="altre";
-		$("#sendam").show(50);
-		for (sca=0;sca<=arr_altri.length-1;sca++) {						
-			mail=arr_altri[sca]
-			send_real(id_ref,mail,-1,-1)
-		}
-		
-	}
-	
-	
-	num_elem=0
 
-	fl_send=false
-	$( ".mailsend" ).each(function() {		
-		value=$( this ).prop( "checked" );
-		id_ref_origin=(this.id)
-		id_ref=id_ref_origin.substr(8);
-		mail=$("#"+id_ref_origin).data("send")
-		
-		if (value==true) {
-			fl_send=true
-			arr_send[num_elem] = {};
-			arr_send[num_elem]['id_ref'] = id_ref;
-			arr_send[num_elem]['mail'] = mail
-			num_elem++
-		}
-	})
-	//invia la prima notifica, le altre in callback nella chiamata ajax
-	if (fl_send==true) 
-		send_real(arr_send[0]['id_ref'],arr_send[0]['mail'],num_elem,0,id_fattura)
 
 }
 function send_real(id_ref,email,num_elem,num,id_fattura) {
@@ -427,6 +584,7 @@ function edit_product(id_riga,last_ordine,id_servizio) {
 	if (id_riga!=0) {
 		codice=$("#inforow"+id_riga).data("codice")
 		descrizione=$("#inforow"+id_riga).data("descrizione")
+		mag_sca=$("#inforow"+id_riga).data("mag_sca")
 		quantita=$("#inforow"+id_riga).data("quantita")
 		um=$("#inforow"+id_riga).data("um")
 		prezzo_unitario=$("#inforow"+id_riga).data("prezzo_unitario")
@@ -438,6 +596,7 @@ function edit_product(id_riga,last_ordine,id_servizio) {
 
 		$("#codice").val(codice)
 		$("#prodotto").val(descrizione)
+		$("#mag_sca").val(mag_sca)
 		$("#quantita").val(quantita)
 		$("#um").val(um)
 		$("#prezzo_unitario").val(prezzo_unitario)

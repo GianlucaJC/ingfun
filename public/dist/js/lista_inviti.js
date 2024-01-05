@@ -21,7 +21,8 @@ $(document).ready( function () {
                 .column( 5, { search: 'applied' } )
                 .data()
                 .reduce( function (a, b) {
-                    return intVal(a) + intVal(b);
+					tot= intVal(a) + intVal(b)
+                    return tot.toFixed(2);
                 }, 0 );
   
             // Update status DIV
