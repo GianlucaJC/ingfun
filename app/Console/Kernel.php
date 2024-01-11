@@ -14,6 +14,7 @@ class Kernel extends ConsoleKernel
      * @return void
      */
     protected $commands = [
+		Commands\CheckDisableUser::class,
         Commands\DailyQuote::class,
 		Commands\ScadenzaBollo::class,
 		Commands\ScadenzaNoleggio::class,
@@ -21,6 +22,8 @@ class Kernel extends ConsoleKernel
     protected function schedule(Schedule $schedule)
     {
         // $schedule->command('inspire')->hourly();
+        $schedule->command('scadenza:account')
+        ->everyMinute();
         $schedule->command('quote:daily')
         ->everyMinute();		
         $schedule->command('scadenza:bollo')

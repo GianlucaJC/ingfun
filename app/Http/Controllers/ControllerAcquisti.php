@@ -42,6 +42,7 @@ class ControllerAcquisti extends Controller
 		$fornitori->pec = $request->input('pec');
 
 		$fornitori->telefono = $request->input('telefono');
+		$fornitori->email = $request->input('email');
 		$fornitori->sdi = $request->input('sdi');
 		$fornitori->iban = $request->input('iban');
 

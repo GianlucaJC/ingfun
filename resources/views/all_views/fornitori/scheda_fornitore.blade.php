@@ -167,7 +167,16 @@
 		</div>
 		
 		<div class="row mb-3">
-			<div class="col-md-12">
+			<div class="col-md-4">
+				<div class="input-group mb-3">
+				  <div class="input-group-prepend">
+					<span class="input-group-text" id="basic-addon5">E-mail</span>
+				  </div>
+				  <input type="text" class="form-control" placeholder="email" id="email" name='email' value="{{$info_fornitore[0]->email ?? ''}}">
+				</div>			
+			</div>		
+		
+			<div class="col-md-8">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select select2" style='height:auto' name="tipo_pagamento[]" id="tipo_pagamento" multiple>
 						<?php
@@ -220,12 +229,14 @@
 			<div class="row mb-3 mt-5">
 				<div class="col-md-4">
 					<button type="submit" name="btn_save_fornitore" value="save" class="btn btn-success">Crea/Modifica Ditta</button>
+					<a href="{{ route('scheda_fornitore') }}">
+						<button type="button" class="btn btn-primary">Nuovo fornitore</button>
+					</a>
 					<a href="{{ route('elenco_fornitori') }}">
-						<button type="button" class="btn btn-secondary" >
+						<button type="button" class="btn btn-secondary ml-3" >
 						Elenco fornitori
 						</button>
-					</a>
-					
+					</a>					
 				</div>	
 			</div>	
 		

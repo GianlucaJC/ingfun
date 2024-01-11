@@ -56,7 +56,7 @@
 				<table id='tbl_fornitori' class="display">
 					<thead>
 						<tr>
-							<th>ID</th>
+							<th>Progressivo</th>
 							<th>Ragione Sociale</th>
 							<th>Partita IVA</th>
 							<th>Codice Fiscale</th>
@@ -64,14 +64,16 @@
 						</tr>
 					</thead>
 					<tbody>
+						<?php $prg=0;?>
 						@foreach($elenco_fornitori as $fornitore)
+							<?php $prg++; ?>
 							<tr>
 								<td>
 								 @if ($fornitore->dele=="1") 
 									<font color='red'><del> 
 								 @endif
 									<span id='id_descr{{$fornitore->id}}' data-id_ordine=''>
-										{{ $fornitore->id }}
+										{{$prg}}
 									</span>	
 								 @if ($fornitore->dele=="1") 
 									 </del></font>
@@ -118,7 +120,7 @@
 					</tbody>
 					<tfoot>
 						<tr>
-							<th>ID</th>
+							<th>Progressivo</th>
 							<th>Ragione Sociale</th>
 							<th>Partita IVA</th>
 							<th>Codice Fiscale</th>
