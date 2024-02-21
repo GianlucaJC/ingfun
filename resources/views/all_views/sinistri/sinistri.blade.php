@@ -86,7 +86,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 		</div>			
 	
 	@endif
-      <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px">
+      <div class="container-fluid" style="{{$disp}};padding-left:20px;padding-right:20px;height:1000px">
 	  
 		<form method='post' action="{{ route('sinistri',[$id_appalto,$from,$id_sinistro]) }}" id='frm_sinistro' name='frm_sinistro' autocomplete="off" class="needs-validation" novalidate>
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
@@ -141,7 +141,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 									>{{$mezzo->targa}}</option>
 								@endforeach
 						</select>
-						<label for="mezzo_coinvolto">Mezzo coinvolto*</label>
+						<label for="mezzo_coinvolto">Mezzo*</label>
 					</div>
 				</div>
 
@@ -175,7 +175,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 								>NO</option>	
 								
 						</select>
-						<label for="mezzo_marciante">Mezzo Marciante?*</label>
+						<label for="mezzo_marciante">Mezzo*</label>
 					</div>
 				</div>
 				<div class="col-6">
