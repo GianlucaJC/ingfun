@@ -94,7 +94,7 @@
 			<div class="col-md-2">
 				<div class="form-floating">
 					<input class="form-control" id="orario_incontro" name='orario_incontro' type="time" required value="{{$appalti[0]->orario_incontro ?? ''}}" maxlength=5 />
-					<label for="data_app">Orario incontro*</label>
+					<label for="orario_incontro">Orario incontro*</label>
 				</div>
 			</div>	
 		</div>			
@@ -431,7 +431,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.200"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.225"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

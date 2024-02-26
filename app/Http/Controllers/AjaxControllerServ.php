@@ -13,6 +13,7 @@ use App\Models\aliquote_iva;
 use App\Models\presenze;
 use App\Models\candidati;
 use App\Models\log_presenze;
+use App\Models\appalti;
 use Mail;
 use DB;
 
@@ -80,11 +81,56 @@ class AjaxControllerServ extends Controller
         return json_encode($infoditta);
 	}	
 
+	
 	public function lavoratori_sezionali(Request $request){		
 		$id_sezionale = $request->input('id_sezionale');
+		$data_app = $request->input('data_app');
+		$ora_app = $request->input('ora_app');
+		$ora_app = strtotime($ora_app);
+		$h1="";$h2="";$hh1="";$hh2="";
+		for ($sca=1;$sca<=3;$sca++) {
+			if ($sca==1){
+				$hh1="06:00";$hh2="12:59";
+				$h1=strtotime($hh1);$h2=strtotime($hh2);
+			}
+			if ($sca==2){
+				$hh1="13:00";$hh2="18:59";
+				$h1=strtotime($hh1);$h2=strtotime($hh2);
+			}
+			if ($sca==3){
+				$hh1="19:00";$hh2="05:59";
+				$h1=strtotime($hh1);$h2=strtotime($hh2);
+			}
+			if (
+				(
+					$h1 < $h2 &&
+					$ora_app >= $h1 &&
+					$ora_app <= $h2
+				) ||
+				(
+					$h1 > $h2 && (
+					$ora_app >= $h1 ||
+					$ora_app <= $h2
+				)
+				)
+			) {
+
+				break; 			
+			}	
+		}
 		
+		
+		$cond="data_ref='$data_app' and TIME_FORMAT ( str_to_date ( replace (`orario_ref`,':',''),'%H%i' ),'%H:%i' ) between '$hh1' and '$hh2'";
+		$impegnati=appalti::from('appalti as a')
+		->select('a.id','l.id_lav_ref')
+		->join('lavoratoriapp as l','a.id','l.id_appalto')
+		->whereRaw($cond)
+		->get();
+		
+
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('status_candidatura','=',3)
+		->where('area_impiego','=',1)
 		->when($id_sezionale!="all", function ($lavoratori) use ($id_sezionale) {
 			return $lavoratori->where('soc_ass','=',$id_sezionale);
 		})
@@ -98,8 +144,9 @@ class AjaxControllerServ extends Controller
 			else 7 end')
 		->orderBy('nominativo')	
 		->get();
-
-        return json_encode($lavoratori);
+		$dati['lavoratori']=$lavoratori;
+		$dati['impegnati']=$impegnati;
+        return json_encode($dati);
 	}	
 
 

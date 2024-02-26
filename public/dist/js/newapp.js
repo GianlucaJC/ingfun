@@ -186,6 +186,16 @@ function btnlav(curr) {
 }
 
 function lista_lavoratori(id_sezionale) {
+	data_app=$("#data_app").val();
+	ora_app=$("#ora_app").val();
+	if (data_app.length==0) {
+		alert("Valorizzare la data del servizio")
+		return false;
+	}
+	if (ora_app.length==0) {
+		alert("Valorizzare l'orario del servizio")
+		return false;
+	}
 	check_save.lav_from_list=true;
 	$("#div_lav_sel").hide();
 	if (id_sezionale.length==0) {
@@ -203,7 +213,7 @@ function lista_lavoratori(id_sezionale) {
 	$.ajax({
 		type: 'POST',
 		url: base_path+"/lavoratori_sezionali",
-		data: {_token: CSRF_TOKEN, id_sezionale:id_sezionale},
+		data: {_token: CSRF_TOKEN, id_sezionale:id_sezionale,data_app:data_app,ora_app:ora_app},
 		success: function (data) {
 			html=""
 			curr=0;
@@ -211,7 +221,17 @@ function lista_lavoratori(id_sezionale) {
 			old_t="";
 			btnlav.opendiv=false
 			btnlav.closediv=false
-			$.each(JSON.parse(data), function (i, item) {				
+			dati=JSON.parse(data)
+			lavoratori=dati.lavoratori
+			impegnati=dati.impegnati
+			impegni=new Array()
+			$.each(impegnati, function (i,item) {
+				id_a=item.id
+				id_l=item.id_lav_ref
+				impegni[id_l]=id_a
+			})
+			console.warn(lavoratori)
+			$.each(lavoratori, function (i, item) {	
 				curr++
 				if (flx==0) btnlav.opendiv=true
 				else {
@@ -266,19 +286,32 @@ function lista_lavoratori(id_sezionale) {
 			
 			arr_l=$("#lavoratori").val().split(";")
 			$('.btn_lav').each(function () {
+				
+				
 				ref=$(this).attr('data-id_lav');
+				check_i=Object.keys(impegni).indexOf(ref)
+				
+				class_btn1="btn-info";class_btn2="btn-outline-info";
+				if (check_i=="0") {
+					class_btn1="btn-warning";class_btn2="btn-outline-warning";
+				}
 				if ($.inArray( ref, arr_l )!== -1) {
-					$( this ).removeClass('btn-outline-info').addClass('btn-info').addClass('sele')
+					$( this ).removeClass(class_btn2).addClass(class_btn1).addClass('sele')
 				}
 				else {
-					$( this ).removeClass('sele').removeClass('btn-info').addClass('btn-outline-info')
+					$( this ).removeClass('sele').removeClass(class_btn1).addClass(class_btn2)
 				}
 			});	
 
 			$( ".btn_lav" ).on( "click", function() {
-				
-				if ($( this ).hasClass('btn-outline-info')) 
+				ref=$(this).attr('data-id_lav');
+				check_i=Object.keys(impegni).indexOf(ref)
+				if ($( this ).hasClass('btn-outline-info')) {
+					if (check_i=="0") {
+						if (!confirm("Sei sicuro? Il lavoratore risulta già impegnato in altro appalto")) return false;
+					}					
 					$( this ).removeClass('btn-outline-info').addClass('btn-info').addClass('sele')
+				}	
 				else 
 					$( this ).removeClass('sele').removeClass('btn-info').addClass('btn-outline-info')
 				
