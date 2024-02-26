@@ -85,10 +85,16 @@
 
 
 			
-			<div class="col-md-8">
+			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
 					<input class="form-control" id="luogo_incontro" name='luogo_incontro' type="text" placeholder="Luogo dell'incontro" required value="{{$appalti[0]->luogo_incontro ?? ''}}"  />
 					<label for="nome">Luogo incontro*</label>
+				</div>
+			</div>
+			<div class="col-md-2">
+				<div class="form-floating">
+					<input class="form-control" id="km_percorrenza" name='km_percorrenza' type="text"  value="{{$appalti[0]->km_percorrenza ?? ''}}" maxlength=10 />
+					<label for="km_percorrenza">Km percorrenza</label>
 				</div>
 			</div>
 			<div class="col-md-2">
@@ -102,7 +108,7 @@
 		
 		<div class="row mb-3">	
 			
-			<div class="col-md-8">
+			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
 					<input class="form-control" id="chiesa" name='chiesa' type="text" placeholder="Chiesa" required value="{{$appalti[0]->chiesa ?? ''}}"  />
 					<label for="nome">Chiesa*</label>
@@ -128,7 +134,13 @@
 					<label for="data_app">Orario del servizio*</label>
 				</div>
 			</div>	
-			
+
+			<div class="col-md-2">
+				<div class="form-floating">
+					<input class="form-control" id="orario_fine_servizio" name='orario_fine_servizio' type="time"  value="{{$appalti[0]->orario_fine_servizio ?? ''}}" maxlength=5 />
+					<label for="orario_fine_servizio">Orario fine servizio</label>
+				</div>
+			</div>			
 		</div>
 		
 		<div class='row mb-3'>
