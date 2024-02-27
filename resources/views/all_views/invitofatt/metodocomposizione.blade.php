@@ -147,13 +147,24 @@
 								?>
 							</td>
 							<td>
-								<?php							
+							<?php							
 								if (isset($id_servizi[$ditta->id_appalto])) {
 									for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
 										$value=$id_servizi[$ditta->id_appalto][$sca];
 										if (isset($all_servizi[$value])) 
 											if ($sca>0) echo ", ";
-											echo $all_servizi[$value]['descrizione'].":";
+											$descr_servizio=$all_servizi[$value]['descrizione'];
+											echo $descr_servizio.":";
+											
+											if(strpos($descr_servizio,'RIMBORSO KM') !== false) {
+												$km=$ditta->km_percorrenza;
+												$importo=$all_servizi[$value]['importo_ditta'];
+												
+												$new_imp=floatval($km)*floatval($importo);
+												$all_servizi[$value]['importo_ditta']=$new_imp;
+												echo "$km*$importo=";
+											}
+												
 											echo $all_servizi[$value]['importo_ditta']."€";
 
 									}

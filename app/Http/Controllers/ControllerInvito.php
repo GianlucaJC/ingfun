@@ -106,7 +106,7 @@ public function __construct()
 		
 				$appalti=DB::table('appalti as a')
 				->join("serviziapp as s","a.id","s.id_appalto")
-				->select("a.id_ditta",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"),"s.id_servizio")
+				->select("a.id_ditta",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"),"s.id_servizio","a.km_percorrenza","a.orario_fine_servizio")
 				->where('a.id', "=",$id_app)	
 				->get();
 
@@ -116,6 +116,7 @@ public function __construct()
 					$data_ref=$appalto->data_ref;
 					$id_ditta=$appalto->id_ditta;
 					$id_servizio=$appalto->id_servizio;
+					$km=$appalto->km_percorrenza;
 					
 					$servizi_ditte=DB::table('servizi_ditte as sd')
 					->join('servizi as s','sd.id_servizio','s.id')
@@ -128,6 +129,11 @@ public function __construct()
 						$aliquota=$servizio->aliquota;
 						$descr=$servizio->descrizione."($data_ref)";
 						$subtotale=$importo_ditta;
+						if(strpos($descr,'RIMBORSO KM') !== false) {
+							$descr.=" ".$km."*".$importo_ditta;
+							$importo_ditta=floatval($km)*floatval($importo_ditta);
+							$subtotale=$importo_ditta;
+						}
 						if (isset($arr_aliquota[$aliquota])) 
 							$subtotale=$importo_ditta*(($arr_aliquota[$aliquota]/100)+1);
 							
@@ -457,7 +463,7 @@ public function __construct()
 		->join("ditte as d","a.id_ditta","d.id")
 		->join('serviziapp as sa','a.id','sa.id_appalto')
 		->join('lavoratoriapp as la','a.id','la.id_appalto')
-		->select("sa.id_servizio","la.id_lav_ref","la.status","d.id as id_ditta","d.denominazione","a.id as id_appalto",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"))
+		->select("sa.id_servizio","la.id_lav_ref","la.status","d.id as id_ditta","d.denominazione","a.id as id_appalto",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"),"a.km_percorrenza","a.orario_fine_servizio")
 		->where(function ($query) use($ditta){	
 			$query->where('a.id_ditta', "=",$ditta);	
 		})
@@ -471,14 +477,20 @@ public function __construct()
 		})
 		->orderBy('a.id')
 		->get();
-	
 
 		$id_servizi=array();$ids_lav=array();
+		$indice_s=1;
+		
 		foreach($ditteinapp as $appalto) {
 			if (isset($id_servizi[$appalto->id_appalto])) {
-				if (!in_array($appalto->id_servizio,$id_servizi[$appalto->id_appalto]))
-					$id_servizi[$appalto->id_appalto][]=$appalto->id_servizio;
-			} else 	$id_servizi[$appalto->id_appalto][]=$appalto->id_servizio;
+				if (!in_array($appalto->id_servizio,$id_servizi[$appalto->id_appalto])) {
+					$id_servizi[$appalto->id_appalto][$indice_s]=$appalto->id_servizio;
+					$indice_s++;
+				}
+			} else 	{
+				$id_servizi[$appalto->id_appalto][0]=$appalto->id_servizio;
+				$indice_s=1;
+			}
 			
 
 			if (isset($ids_lav[$appalto->id_appalto])) {

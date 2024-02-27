@@ -120,7 +120,7 @@ class AjaxControllerServ extends Controller
 		}
 		
 		
-		$cond="data_ref='$data_app' and TIME_FORMAT ( str_to_date ( replace (`orario_ref`,':',''),'%H%i' ),'%H:%i' ) between '$hh1' and '$hh2'";
+		$cond="a.data_ref='$data_app' and TIME_FORMAT ( str_to_date ( replace (`a`.`orario_ref`,':',''),'%H%i' ),'%H:%i' ) between '$hh1' and '$hh2' and l.status='1' ";
 		$impegnati=appalti::from('appalti as a')
 		->select('a.id','l.id_lav_ref')
 		->join('lavoratoriapp as l','a.id','l.id_appalto')

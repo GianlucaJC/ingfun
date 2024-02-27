@@ -232,7 +232,7 @@
 			<div class="row mb-3">
 				<div class="col-md-12">
 					<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" name="azienda_proprieta" id="azienda_proprieta"  required onchange='lista_lavoratori(this.value)'>
+						<select class="form-select" name="azienda_proprieta" id="azienda_proprieta"   onchange='lista_lavoratori(this.value)'>
 						<option value=''>Select...</option>
 						<option value='all'>[[Tutte]]</option>
 						<?php
