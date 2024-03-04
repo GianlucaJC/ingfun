@@ -83,7 +83,7 @@ class Registro extends Controller
 		$giorni=$this->giorni($periodo);
 
 		$lav_all=DB::table('candidatis as c')
-		->select("c.id as id_lav","c.nominativo","c.status_candidatura","c.dele")
+		->select("c.id as id_lav","c.nominativo","c.status_candidatura","c.dele","c.data_fine")
 		->orderBy("c.nominativo")
 		->get();
 
@@ -103,6 +103,7 @@ class Registro extends Controller
 		foreach($lavoratori as $lav) {
 			$lavoratori_mov[$lav->id_lav]['nominativo']=$lav->nominativo;
 		}
+
 		
 		//$lav_lista: solo lavoratori attualmente assunti o che hanno partecipato ad almeno un appalto nel periodo prescelto
 		$lav_lista=array();
@@ -116,8 +117,21 @@ class Registro extends Controller
 			} else {
 				if (isset($lavoratori_mov[$lav_sn->id_lav]))
 					$lav_lista[$lav_sn->id_lav]['presenza']="movim";
+				else {
+					$periodo_ok=false;
+					if ($lav_sn->data_fine!=null) {
+						$perx=$lav_sn->data_fine;
+						$newDate = date('Y-m-t', strtotime($perx. ' + 1 months'));
+						if ($newDate>=$per_a) $periodo_ok=true;
+					}
+					
+					if ($periodo_ok==true) {
+						$lav_lista[$lav_sn->id_lav]['presenza']="only_view";
+					}	
+				}	
 			}
 		}
+		
 
 		//tutti i servizi svolti a prescindere dai lavoratori
 		/* eliminato il riferimento al periodo
