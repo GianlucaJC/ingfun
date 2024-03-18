@@ -96,7 +96,11 @@
 					@foreach($gestione as $gest)
 						<tr>
 
-							<td style='min-width:190px'>
+							<td style='min-width:220px'>
+								
+								<a href="#" onclick="if (!confirm('Sicuri di duplicare?')) event.preventDefault()">
+									<button type="submit" class="btn btn-primary" name='clona' value="{{$gest->id}}" alt='Duplica' title="Duplica Appalto"><i class="fas fa-clone"></i></button>
+								</a>							
 								@if ($gest->dele=="0") 
 									<a href="{{ route('newapp',['id'=>$gest->id,'from'=>1,'num_send'=>0]) }}" >
 										<button type="button" class="btn btn-info" alt='Edit' title="Modifica Appalto"><i class="fas fa-edit"></i></button>

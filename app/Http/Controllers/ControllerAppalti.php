@@ -199,14 +199,13 @@ public function __construct()
 		->orderBy('sm.targa')
 		->groupBy('sm.id')
 		->get();
-		
 
 		if ($id!=0) {
 			$view_dele="1";
 			$appalti=DB::table('appalti AS a')
 			->select('a.*','sa.id_servizio','la.id_lav_ref','la.status')
 			->join('serviziapp as sa','a.id','sa.id_appalto')
-			->join('lavoratoriapp as la','a.id','la.id_appalto')			
+			->leftjoin('lavoratoriapp as la','a.id','la.id_appalto')			
 			->where('a.id', "=", $id)
 			->get();
 			
@@ -219,12 +218,16 @@ public function __construct()
 					$ids_lav[$appalto->id_lav_ref]=$appalto->status;
 
 			}	
+			
+
 			$id_ditta=$appalti[0]->id_ditta;
+			
 			$servizi=DB::table('servizi as s')
 			->join('servizi_ditte as d','s.id','d.id_servizio')
 			->select('s.descrizione','d.id_servizio','d.importo_ditta','d.aliquota','d.importo_lavoratore')
 			->where('d.id_ditta', '=', $id_ditta)
 			->get();
+			
 		}	
 		
 
@@ -243,7 +246,7 @@ public function __construct()
 
 	public function listapp($id_appalto=0) {
 		
-		
+
 		$dx=date("Y-m-d");
 		
 		$view_dele=0;
@@ -260,6 +263,29 @@ public function __construct()
 		}	
 
 		$restore_cand=request()->input("restore_cand");
+		
+		if (request()->has("clona")) {
+			$id_clone_from=request()->input("clona");
+			$clone_app = appalti::find($id_clone_from);
+			$new = $clone_app->replicate();
+			$new->save();
+			$newID=$new->id;
+			
+			$list_serv=serviziapp::select('id_servizio','importo_lavoratore')
+			->where('id_appalto', $id_clone_from)
+			->get();
+			foreach($list_serv as $new_serv) {
+				DB::table('serviziapp')->insert([
+					'id_appalto' => $newID,
+					'id_servizio' => $new_serv->id_servizio,
+					'importo_lavoratore' => $new_serv->importo_lavoratore,
+					'created_at'=>now(),
+					'updated_at'=>now()
+				]);					
+			}
+
+		}
+		
 		$dele_cand=request()->input("dele_cand");
 		$push_appalti=request()->input("push_appalti");
 
