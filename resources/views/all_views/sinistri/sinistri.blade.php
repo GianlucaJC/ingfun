@@ -175,7 +175,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 								>NO</option>	
 								
 						</select>
-						<label for="mezzo_marciante">Mezzo*</label>
+						<label for="mezzo_marciante">Marciante*</label>
 					</div>
 				</div>
 				<div class="col-6">
