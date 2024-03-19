@@ -198,17 +198,22 @@ function lista_lavoratori(id_sezionale) {
 	}
 	check_save.lav_from_list=true;
 	$("#div_lav_sel").hide();
+	/*
 	if (id_sezionale.length==0) {
 		$("#lavoratori").val('')
 		$("#div_lavoratori").empty()
 		return false;
 	}
+	*/
 	base_path = $("#url").val();
 	$.ajaxSetup({
 		headers: {
 			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
 		}
 	});
+	elenco_lav=$("#lavoratoria").val()
+	
+	
 	let CSRF_TOKEN = $("#token_csrf").val();
 	$.ajax({
 		type: 'POST',
@@ -228,9 +233,20 @@ function lista_lavoratori(id_sezionale) {
 			$.each(impegnati, function (i,item) {
 				id_a=item.id
 				id_l=item.id_lav_ref
-				impegni[id_l]=id_a
+				//impegni[id_l]=id_a
+				impegni.push(id_l)
 			})
-			console.warn(lavoratori)
+			
+			reperibilita=dati.reperibili
+			const reperibili=[]
+			$.each(reperibilita, function (i,item) {
+				id_r=item.id_user
+				console.warn("id_r",id_r)
+				reperibili.push(id_r)
+			})	
+			console.warn("reperibili",reperibili)
+			
+			
 			$.each(lavoratori, function (i, item) {	
 				curr++
 				if (flx==0) btnlav.opendiv=true
@@ -286,15 +302,37 @@ function lista_lavoratori(id_sezionale) {
 			
 			arr_l=$("#lavoratori").val().split(";")
 			$('.btn_lav').each(function () {
-				
-				
 				ref=$(this).attr('data-id_lav');
-				check_i=Object.keys(impegni).indexOf(ref)
-				
-				class_btn1="btn-info";class_btn2="btn-outline-info";
-				if (check_i=="0") {
-					class_btn1="btn-warning";class_btn2="btn-outline-warning";
+				ref=parseInt(ref)
+				/*
+				check_old=Object.keys(elenco_lav).indexOf(ref)
+				console.log("ref",ref,"check_old",check_old,"arr_l",arr_l)
+				if (check_old>0 && $( this ).hasClass('btn-outline-info')) {
+					$( this ).removeClass('btn-outline-info').addClass('btn-info').addClass('sele')
 				}
+				*/			
+				//check_r=Object.keys(reperibili).indexOf(ref)
+				
+				
+				check_r=reperibili.includes(ref)
+				class_btn1="btn-info";class_btn2="btn-outline-info";
+				if (check_r==true) {
+					class_btn1="btn-warning";class_btn2="btn-outline-warning";
+				} else {				
+
+					//check_i=Object.keys(impegni).indexOf(ref)
+					check_i=impegni.includes(ref)
+					
+					class_btn1="btn-info";class_btn2="btn-outline-info";
+					if (check_i==true) {
+						class_btn1="btn-danger";class_btn2="btn-outline-danger";
+					}
+				}
+
+
+				
+				
+				
 				if ($.inArray( ref, arr_l )!== -1) {
 					$( this ).removeClass(class_btn2).addClass(class_btn1).addClass('sele')
 				}
@@ -303,12 +341,18 @@ function lista_lavoratori(id_sezionale) {
 				}
 			});	
 
+
+
+
 			$( ".btn_lav" ).on( "click", function() {
 				ref=$(this).attr('data-id_lav');
-				check_i=Object.keys(impegni).indexOf(ref)
+				ref=parseInt(ref)
+				
+				check_i=impegni.includes(ref)
+				check_r=reperibili.includes(ref)
 				if ($( this ).hasClass('btn-outline-info')) {
-					if (check_i=="0") {
-						if (!confirm("Sei sicuro? Il lavoratore risulta già impegnato in altro appalto")) return false;
+					if (check_i==true || check_r==true) {
+						if (!confirm("Sei sicuro? Il lavoratore risulta già reperibile o impegnato in altro appalto")) return false;
 					}					
 					$( this ).removeClass('btn-outline-info').addClass('btn-info').addClass('sele')
 				}	

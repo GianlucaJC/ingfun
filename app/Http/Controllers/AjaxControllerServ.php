@@ -10,6 +10,7 @@ use App\Models\societa;
 use App\Models\ditte;
 use App\Models\ref_doc_ditte;
 use App\Models\aliquote_iva;
+use App\Models\reperibilita;
 use App\Models\presenze;
 use App\Models\candidati;
 use App\Models\log_presenze;
@@ -88,7 +89,8 @@ class AjaxControllerServ extends Controller
 		$ora_app = $request->input('ora_app');
 		$ora_app = strtotime($ora_app);
 		$h1="";$h2="";$hh1="";$hh2="";
-		for ($sca=1;$sca<=3;$sca++) {
+		
+		for ($sca=1;$sca<=4;$sca++) {
 			if ($sca==1){
 				$hh1="06:00";$hh2="12:59";
 				$h1=strtotime($hh1);$h2=strtotime($hh2);
@@ -98,7 +100,11 @@ class AjaxControllerServ extends Controller
 				$h1=strtotime($hh1);$h2=strtotime($hh2);
 			}
 			if ($sca==3){
-				$hh1="19:00";$hh2="05:59";
+				$hh1="19:00";$hh2="23:59";
+				$h1=strtotime($hh1);$h2=strtotime($hh2);
+			}
+			if ($sca==4){
+				$hh1="00:00";$hh2="05:59";
 				$h1=strtotime($hh1);$h2=strtotime($hh2);
 			}
 			if (
@@ -118,6 +124,8 @@ class AjaxControllerServ extends Controller
 				break; 			
 			}	
 		}
+		if ($sca>3) $sca=3;
+		$fascia=$sca;
 		
 		
 		$cond="a.data_ref='$data_app' and TIME_FORMAT ( str_to_date ( replace (`a`.`orario_ref`,':',''),'%H%i' ),'%H:%i' ) between '$hh1' and '$hh2' and l.status='1' ";
@@ -127,6 +135,10 @@ class AjaxControllerServ extends Controller
 		->whereRaw($cond)
 		->get();
 		
+		$cond="data='$data_app' and fascia=$fascia";
+		$reperibili=reperibilita::select('id_user')
+		->whereRaw($cond)
+		->get();		
 
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('status_candidatura','=',3)
@@ -146,6 +158,7 @@ class AjaxControllerServ extends Controller
 		->get();
 		$dati['lavoratori']=$lavoratori;
 		$dati['impegnati']=$impegnati;
+		$dati['reperibili']=$reperibili;
         return json_encode($dati);
 	}	
 

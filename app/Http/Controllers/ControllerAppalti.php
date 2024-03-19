@@ -268,6 +268,8 @@ public function __construct()
 			$id_clone_from=request()->input("clona");
 			$clone_app = appalti::find($id_clone_from);
 			$new = $clone_app->replicate();
+			$new->orario_ref="";
+			$new->orario_incontro=null;
 			$new->save();
 			$newID=$new->id;
 			
@@ -283,6 +285,20 @@ public function __construct()
 					'updated_at'=>now()
 				]);					
 			}
+
+			$list_lav=lavoratoriapp::select('id_lav_ref')
+			->where('id_appalto', $id_clone_from)
+			->get();
+			foreach($list_lav as $new_lav) {
+				DB::table('lavoratoriapp')->insert([
+					'id_appalto' => $newID,
+					'id_lav_ref' => $new_lav->id_lav_ref,
+					'status' => 0,
+					'created_at'=>now(),
+					'updated_at'=>now()
+				]);					
+			}
+			
 
 		}
 		
