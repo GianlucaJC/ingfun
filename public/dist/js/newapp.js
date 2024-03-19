@@ -300,7 +300,11 @@ function lista_lavoratori(id_sezionale) {
 			if (curr>0) html+="</div>";
 			$("#div_lavoratori").html(html)
 			
-			arr_l=$("#lavoratori").val().split(";")
+			const arr_l=[]
+			arr_ref=$("#lavoratori").val().split(";")
+			for (sca=0;sca<=arr_ref.length-1;sca++) {
+				arr_l.push(parseInt(arr_ref[sca]))
+			}
 			$('.btn_lav').each(function () {
 				ref=$(this).attr('data-id_lav');
 				ref=parseInt(ref)
@@ -331,9 +335,9 @@ function lista_lavoratori(id_sezionale) {
 
 
 				
-				
-				
-				if ($.inArray( ref, arr_l )!== -1) {
+				check_pres=arr_l.includes(ref)
+				if (check_pres==true) {
+				//if ($.inArray( ref, arr_l )!== -1) {
 					$( this ).removeClass(class_btn2).addClass(class_btn1).addClass('sele')
 				}
 				else {
