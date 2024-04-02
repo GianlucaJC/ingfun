@@ -269,6 +269,7 @@ public function __construct()
 			$clone_app = appalti::find($id_clone_from);
 			$new = $clone_app->replicate();
 			$new->orario_ref="";
+			$new->status=0;
 			$new->orario_incontro=null;
 			$new->save();
 			$newID=$new->id;

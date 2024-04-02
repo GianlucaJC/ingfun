@@ -114,73 +114,79 @@
 					</tr>
 				</thead>
 				<tbody>
-					@php ($num_art=0)
-					@php ($old_ida=0)
-					@foreach($ditteinapp as $ditta)
-						<?php 
-						if ($old_ida==$ditta->id_appalto) continue;
-						$old_ida=$ditta->id_appalto;
-						?>
+<!-- Indentazione a sx per comodità !-->				
+@php ($num_art=0)
+@php ($old_ida=0)
+@foreach($ditteinapp as $ditta)
+<?php 
+if ($old_ida==$ditta->id_appalto) continue;
+$old_ida=$ditta->id_appalto;
+?>
+	
+<tr>
+	@php ($num_art++)
+	<td style='text-align:center'>
+		{{$ditta->id_appalto}}
+	</td>	
+
+	<td>
+		{{$ditta->data_ref}}
+	</td>	
+
+	<td>
+		<?php
+
+		if (isset($ids_lav[$ditta->id_appalto])) {
+			for ($sca=0;$sca<count($ids_lav[$ditta->id_appalto]);$sca++) {
+				$value=$ids_lav[$ditta->id_appalto][$sca];
+				if (isset($all_lav[$value])) 
+					if ($sca>0) echo ", ";
+					echo $all_lav[$value];
+			}
+		}
+
+		?>
+	</td>
+	<td>
+	<?php							
+		if (isset($id_servizi[$ditta->id_appalto])) {
+			for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
+				$value=$id_servizi[$ditta->id_appalto][$sca];
+				if (isset($all_servizi[$value])) 
+					if ($sca>0) echo ", ";
+					$descr_servizio=$all_servizi[$value]['descrizione'];
+					echo $descr_servizio.":";
+					
+					if(strpos($descr_servizio,'RIMBORSO KM') !== false) {
+						$km=$ditta->km_percorrenza;
+						$importo=$all_servizi[$value]['importo_ditta'];
 						
-						<tr>
-							@php ($num_art++)
-							<td style='text-align:center'>
-								{{$ditta->id_appalto}}
-							</td>	
+						$num_pers_appalto=1;
+						if ($all_servizi[$value]['da_moltiplicare']==1) $num_pers_appalto=count($ids_lav[$ditta->id_appalto]);
+						
+						if ($num_pers_appalto==0) $num_pers_appalto=1;
+						
+						$new_imp=floatval($km)*floatval($importo)*$num_pers_appalto;
+						$all_servizi[$value]['importo_ditta']=$new_imp;
+						echo "$km*$importo*$num_pers_appalto=";
+					}
+						
+					echo $all_servizi[$value]['importo_ditta']."€";
 
-							<td>
-								{{$ditta->data_ref}}
-							</td>	
-
-							<td>
-								<?php
-
-								if (isset($ids_lav[$ditta->id_appalto])) {
-									for ($sca=0;$sca<count($ids_lav[$ditta->id_appalto]);$sca++) {
-										$value=$ids_lav[$ditta->id_appalto][$sca];
-										if (isset($all_lav[$value])) 
-											if ($sca>0) echo ", ";
-											echo $all_lav[$value];
-									}
-								}
-
-								?>
-							</td>
-							<td>
-							<?php							
-								if (isset($id_servizi[$ditta->id_appalto])) {
-									for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
-										$value=$id_servizi[$ditta->id_appalto][$sca];
-										if (isset($all_servizi[$value])) 
-											if ($sca>0) echo ", ";
-											$descr_servizio=$all_servizi[$value]['descrizione'];
-											echo $descr_servizio.":";
-											
-											if(strpos($descr_servizio,'RIMBORSO KM') !== false) {
-												$km=$ditta->km_percorrenza;
-												$importo=$all_servizi[$value]['importo_ditta'];
-												
-												$new_imp=floatval($km)*floatval($importo);
-												$all_servizi[$value]['importo_ditta']=$new_imp;
-												echo "$km*$importo=";
-											}
-												
-											echo $all_servizi[$value]['importo_ditta']."€";
-
-									}
-								}		
-							?>								
-							</td>
-							<td style='text-align:center'>
-								<div class="form-check">
-								  <input class="form-check-input" type="checkbox" value="{{$ditta->id_appalto}}" id="app_sel" name="app_sel[]" checked>
-								  <label class="form-check-label" for="app_sel">
-								   
-								  </label>
-								</div>								
-							</td>
-						</tr>
-					@endforeach
+			}
+		}		
+	?>								
+	</td>
+	<td style='text-align:center'>
+		<div class="form-check">
+		  <input class="form-check-input" type="checkbox" value="{{$ditta->id_appalto}}" id="app_sel" name="app_sel[]" checked>
+		  <label class="form-check-label" for="app_sel">
+		   
+		  </label>
+		</div>								
+	</td>
+</tr>
+@endforeach
 					@if ($num_art>100) 
 						<div class="alert alert-warning" role="alert">
 						  <b>Attenzione!</b> Limite massimo di righe visualizzabili superato (100). Impostare un filtro per ridurle

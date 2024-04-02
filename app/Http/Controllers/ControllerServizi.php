@@ -356,10 +356,11 @@ public function __construct()
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");
 		$descr_contr=$request->input("descr_contr");
 		$acronimo=$request->input("acronimo");
+		$da_moltiplicare=$request->input("da_moltiplicare");
 		//Creazione nuovo elemento
 		if (strlen($descr_contr)!=0 && $edit_elem==0) {			
 			$descr_contr=strtoupper($descr_contr);
-			$data=['dele'=>0, 'descrizione' => $descr_contr, 'acronimo' => $acronimo];	
+			$data=['dele'=>0, 'descrizione' => $descr_contr, 'acronimo' => $acronimo, 'da_moltiplicare'=>$da_moltiplicare];	
 			DB::table("servizi")->insert($data);
 			$esito_saves=1;
 		}
@@ -367,7 +368,7 @@ public function __construct()
 		//Modifica elemento
 		if (strlen($descr_contr)!=0 && $edit_elem!=0) {
 			$descr_contr=strtoupper($descr_contr);
-			$data=['dele'=>0, 'descrizione' => $descr_contr, 'acronimo' => $acronimo];
+			$data=['dele'=>0, 'descrizione' => $descr_contr, 'acronimo' => $acronimo,'da_moltiplicare'=>$da_moltiplicare];
 			servizi::where('id', $edit_elem)			
 			  ->update($data);
 			 $esito_saves=2;

@@ -67,6 +67,7 @@
 							
 							<th>Servizio</th>
 							<th>Acronimo</th>
+							<th>da moltiplicare</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -88,10 +89,19 @@
 									{{ $servizio->acronimo }}
 								</td>
 								<td>
+									<?php
+									if ($servizio->da_moltiplicare==0) 	echo "N";
+									else
+									  echo "S";
+									?>
+								</td>
+								
+								<td>
 									<!--informazioni sulla riga per js !-->
 									<span id='info_s{{$servizio->id}}' 
 									data-descr_servizio='{{$servizio->descrizione}}'
 									data-acronimo='{{$servizio->acronimo}}'
+									data-da_moltiplicare='{{$servizio->da_moltiplicare}}'
 									>
 									</span>
 								
@@ -120,6 +130,7 @@
 							
 							<th>Servizio</th>
 							<th>Acronimo</th>
+							<th>da moltiplicare</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -180,6 +191,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/gestione_servizi.js?ver=1.16"></script>
+	<script src="{{ URL::asset('/') }}dist/js/gestione_servizi.js?ver=1.17"></script>
 
 @endsection

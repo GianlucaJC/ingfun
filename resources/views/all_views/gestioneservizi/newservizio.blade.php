@@ -9,7 +9,7 @@
 				<font color='red'>Definizione Servizio</font>
 			</h4>
 				<div class="row">
-					<div class="col-md-4">
+					<div class="col-md-3">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">
 							<span class="input-group-text" id="basic-addon1">Descrizione</span>
@@ -18,7 +18,7 @@
 						</div>			
 					</div>
 
-					<div class="col-md-4">
+					<div class="col-md-3">
 						<div class="input-group mb-3">
 						  <div class="input-group-prepend">
 							<span class="input-group-text" id="basic-addon1">Acronimo</span>
@@ -26,8 +26,23 @@
 						  <input type="text" class="form-control" placeholder="Associazione con acronimo" aria-label="Acronimo" name="acronimo" id="acronimo" required>
 						</div>			
 					</div>
+					
+					<div class="col-md-3">
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<span class="input-group-text" id="basic-addon1">Da moltiplicare</span>
+						  </div>
+						 
+							<select class="form-select" aria-label="da moltiplicare" id='da_moltiplicare' name='da_moltiplicare' required>
+							  <option value="">Select</option>
+							  <option value="1">SI</option>
+							  <option value="0">NO</option>
+							</select>						 
+						 
+						</div>			
+					</div>					
 				
-					<div class="col-md-4">
+					<div class="col-md-3">
 						<button type="submit" class="btn btn-success" >Crea/Modifica Servizio</button>
 						<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
 						Chiudi

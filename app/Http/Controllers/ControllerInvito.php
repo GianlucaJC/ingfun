@@ -449,13 +449,14 @@ public function __construct()
 		}
 		$all_s=DB::table('servizi_ditte as sd')
 		->join('servizi as s','sd.id_servizio','s.id')
-		->select('s.descrizione','sd.id_servizio','sd.importo_ditta','sd.aliquota')
+		->select('s.descrizione','s.da_moltiplicare','sd.id_servizio','sd.importo_ditta','sd.aliquota')
 		->where('sd.id_ditta','=',$ditta)
 		->get();
 		$all_servizi=array();
 		foreach($all_s as $single) {
 			$all_servizi[$single->id_servizio]['descrizione']=$single->descrizione;
 			$all_servizi[$single->id_servizio]['importo_ditta']=$single->importo_ditta;
+			$all_servizi[$single->id_servizio]['da_moltiplicare']=$single->da_moltiplicare;
 		}	
 		
 		

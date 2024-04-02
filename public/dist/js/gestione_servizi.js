@@ -46,9 +46,11 @@ function new_serv() {
 function edit_elem(id_elem) {	
 	descr_servizio=$("#info_s"+id_elem).data("descr_servizio")
 	acronimo=$("#info_s"+id_elem).data("acronimo")
+	da_moltiplicare=$("#info_s"+id_elem).data("da_moltiplicare")
 	
 	$("#descr_contr").val(descr_servizio);
 	$("#acronimo").val(acronimo);
+	$("#da_moltiplicare").val(da_moltiplicare);
 	$('#div_definition').show(150)
 	$("#edit_elem").val(id_elem)
 }
