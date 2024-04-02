@@ -148,17 +148,21 @@ $old_ida=$ditta->id_appalto;
 		?>
 	</td>
 	<td>
-	<?php							
+	<?php			
+
 		if (isset($id_servizi[$ditta->id_appalto])) {
 			for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
 				$value=$id_servizi[$ditta->id_appalto][$sca];
-				if (isset($all_servizi[$value])) 
+				if (isset($all_servizi[$value])) {
 					if ($sca>0) echo ", ";
 					$descr_servizio=$all_servizi[$value]['descrizione'];
 					echo $descr_servizio.":";
 					
-					if(strpos($descr_servizio,'RIMBORSO KM') !== false) {
-						$km=$ditta->km_percorrenza;
+					if ($all_servizi[$value]['da_moltiplicare']==1) {
+						if(strpos($descr_servizio,'RIMBORSO KM') !== false) 
+							$km=$ditta->km_percorrenza;
+						else 
+							$km=1;
 						$importo=$all_servizi[$value]['importo_ditta'];
 						
 						$num_pers_appalto=1;
@@ -168,11 +172,15 @@ $old_ida=$ditta->id_appalto;
 						
 						$new_imp=floatval($km)*floatval($importo)*$num_pers_appalto;
 						$all_servizi[$value]['importo_ditta']=$new_imp;
-						echo "$km*$importo*$num_pers_appalto=";
+						if(strpos($descr_servizio,'RIMBORSO KM') !== false) 
+							echo "$km*$importo*$num_pers_appalto=";
+						else
+							echo "$importo*$num_pers_appalto=";
+					
 					}
 						
 					echo $all_servizi[$value]['importo_ditta']."€";
-
+				}
 			}
 		}		
 	?>								
