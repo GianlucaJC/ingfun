@@ -58,7 +58,7 @@
 					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
-								<th>Operazioni/impostazioni</th>
+								<th style='min-width:180px'>Operazioni/impostazioni</th>
 								<th>Dipendente</th>
 								<th>Stato</th>
 								<th>Inizio</th>
@@ -93,7 +93,7 @@
 							@foreach($scadenze as $scadenza)
 								<tr>
 
-									<td>
+									<td style='min-width:180px'>
 										@if ($scadenza->dele=="0") 
 											<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1,'setuser'=>1]) }}" target='_blank' >
 												<button type="button" class="btn btn-info" alt='Account' title='Account utente'><i class="fas fa-users-cog"></i></button>
@@ -306,7 +306,7 @@
 						</tbody>
 						<tfoot>
 							<tr>
-								<th></th>
+								<th style='min-width:180px'></th>
 								<th>Nominativo</th>
 								<th>Stato</th>
 								<th>Inizio</th>
