@@ -489,6 +489,21 @@ class ControllerPersonale extends Controller
 		
 		$restore_cand=$request->input("restore_cand");
 		$dele_cand=$request->input("dele_cand");
+		
+		if (request()->has("clona")) {
+			$id_clone_from=request()->input("clona");
+			$clone_dip = candidati::find($id_clone_from);
+			$cognome=$clone_dip->cognome;
+			$nome_bis=$clone_dip->nome." (bis)";
+			$new = $clone_dip->replicate();
+			$new->nome=$nome_bis;
+			$new->nominativo=$cognome." ".$nome_bis;
+			$new->tipo_anagr="ASS";
+			$new->data_inizio=null;
+			$new->data_fine=null;
+			$new->status_candidatura=3;
+			$new->save();
+		}			
 
 		
 		if (strlen($dele_cand)!=0) {

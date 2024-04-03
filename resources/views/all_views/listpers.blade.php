@@ -95,6 +95,10 @@
 
 									<td style='min-width:180px'>
 										@if ($scadenza->dele=="0") 
+											<a href="#" onclick="if (!confirm('Sicuri di duplicare?')) event.preventDefault()">
+											<button type="submit" class="btn btn-primary" name='clona' value="{{$scadenza->id}}" alt='Duplica' title="Duplica nominativo"><i class="fas fa-clone"></i></button>
+											</a>
+										
 											<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1,'setuser'=>1]) }}" target='_blank' >
 												<button type="button" class="btn btn-info" alt='Account' title='Account utente'><i class="fas fa-users-cog"></i></button>
 											</a>

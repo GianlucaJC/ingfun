@@ -14,6 +14,7 @@ use App\Models\tipologia_contr;
 use App\Models\tipo_doc;
 use App\Models\ref_doc;
 use App\Models\contatti;
+use App\Models\candidati;
 
 use DB;
 
@@ -82,7 +83,11 @@ class ControllerArchivi extends Controller
 			if (strlen($id_cand)==0) $id_cand=0;
 		}
 		if (session('id_cand')) $id_cand=session('id_cand');
-
+		$codfisc="?";
+		if ($id_cand!=0) {
+			$candidati=candidati::where('id', "=", $id_cand)->get();
+			$codfisc=$candidati[0]['codfisc'];			
+		}
 		if (request()->has("save_doc")) {
 			$message="";
 			if (strlen($id_edit)==0 && strlen(request()->input('allegato'))==0) {				
@@ -100,6 +105,7 @@ class ControllerArchivi extends Controller
 			
 			$ref_doc->dele=0;
 			$ref_doc->id_cand = $id_cand;
+			$ref_doc->codfisc = $codfisc;
 			$ref_doc->id_tipo_doc = request()->input('tipodoc');
 			$ref_doc->id_sotto_tipo = request()->input('sottotipodoc');
 			$ref_doc->id_sotto_tipo = request()->input('sottotipodoc');
@@ -142,7 +148,8 @@ class ControllerArchivi extends Controller
 		->when((strlen($id_cand)!=0), function ($candidati) use($id_cand) {
 			return $candidati->where('id', "=",$id_cand);
 		})
-		*/		
+		*/
+		->groupBy('codfisc')
 		->orderBy('nominativo')->get();
 		
 		
@@ -157,7 +164,8 @@ class ControllerArchivi extends Controller
 		->join('tipo_doc as d', 'r.id_tipo_doc', '=', 'd.id')
 		->leftJoin('voci_doc as v', 'r.id_sotto_tipo', '=', 'v.id')
 		->select('r.id','r.id_cand','r.scadenza', 'r.nomefile', 'r.created_at', 'r.updated_at','d.descrizione as tipodocumento', 'v.descrizione as sottodocumento')
-		->where('r.id_cand','=',$id_cand)
+		//->where('r.id_cand','=',$id_cand)
+		->where('r.codfisc','=',$codfisc)
 		->orderByDesc('r.id')
 		->get();		
 		

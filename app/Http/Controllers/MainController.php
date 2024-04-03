@@ -334,11 +334,12 @@ public function __construct()
 		
 		//in caso di nuovo form l'array candidati è vuoto...per cui lo inizializzo 
 		$candidati=$this->init_newcand();
-		$user=null;
+		$user=null;$codfisc="?";
 		$user_active=false;$email_accesso="";$ruolo="";
 		if ($id!=0) {
 			$candidati=candidati::where('id', "=", $id)->get();
 			$id_user=$candidati[0]['id_user'];
+			$codfisc=$candidati[0]['codfisc'];
 			if ($id_user!=null && strlen($id_user)!=0) {
 				$user_active=true;
 
@@ -410,7 +411,8 @@ public function __construct()
 		->join('tipo_doc as d', 'r.id_tipo_doc', '=', 'd.id')
 		->leftJoin('voci_doc as v', 'r.id_sotto_tipo', '=', 'v.id')
 		->select('r.id','r.id_cand','r.scadenza', 'r.nomefile', 'r.created_at', 'r.updated_at','d.id as id_tipo_doc', 'd.descrizione as tipodocumento', 'v.id as id_sotto_tipo', 'v.descrizione as sottodocumento')
-		->where('r.id_cand','=',$id)
+		//->where('r.id_cand','=',$id)
+		->where('r.codfisc','=',$codfisc)
 		->orderByDesc('r.id')
 		//->take(5)
 		->get();
@@ -593,10 +595,12 @@ public function __construct()
 		$id_cand=$request->input('id_cand');
 		$from=$request->input('from');
 		$resp=candidati::select('id_user')->where("id","=",$id_cand)->get();
+
 		if ($resp[0]->id_user==null || strlen($resp[0]->id_user)==0) 
 			$user = new User;
-		else
+		else {
 			$user = User::find($resp[0]->id_user);
+		}	
 		
 		$pw_first=$request->input('pw_first');
 		$password = Hash::make($pw_first);
