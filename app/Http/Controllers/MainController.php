@@ -594,8 +594,8 @@ public function __construct()
 	public function save_newuser(Request $request) {
 		$id_cand=$request->input('id_cand');
 		$from=$request->input('from');
-		$resp=candidati::select('id_user')->where("id","=",$id_cand)->get();
-
+		$resp=candidati::select('id_user','codfisc')->where("id","=",$id_cand)->get();
+		$codfisc=$resp[0]->codfisc;
 		if ($resp[0]->id_user==null || strlen($resp[0]->id_user)==0) 
 			$user = new User;
 		else {
@@ -610,7 +610,7 @@ public function __construct()
 		
 		$user->save();
 		$id_user=$user->id;
-		candidati::where('id','=',$id_cand)
+		candidati::where('codfisc','=',$codfisc)
 		->update(['id_user' => $id_user]);
 		
 		$user = user::find($id_user);
