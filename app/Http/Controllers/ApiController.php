@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\appalti;
 use App\Models\ditte;
+use App\Models\candidati;
 use App\Models\lavoratoriapp;
 use App\Models\mezzi;
 use App\Models\rifornimenti;
@@ -395,7 +396,9 @@ class ApiController extends Controller
 	
 	public function countappalti(Request $request) {
 		if (Auth::user()) {
-			$id_lav_ref=Auth::user()->id;
+			$id=Auth::user()->id;
+			$candidati=candidati::where('id', "=", $id)->get();
+			$id_lav_ref=$candidati[0]['id_user'];			
 			$check=array();
 		}
 		else {
