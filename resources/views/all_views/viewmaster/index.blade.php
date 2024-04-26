@@ -120,7 +120,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
       <!-- Navbar Search -->
-      <li class="nav-item">
+      <li class="nav-item" style='display:none'>
         <a class="nav-link" data-widget="navbar-search" href="#" role="button">
           <i class="fas fa-search"></i>
         </a>
@@ -221,7 +221,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
    @extends('all_views.viewmaster.sidemenu_new')
 
-   <center>Sviluppo prototipale by <b>Misericordia</b></center>
+   <span id='credit_top'>
+	<center>Sviluppo prototipale by <b>Misericordia</b></center>
+   </span> 
    @yield('content_main')  
 
    @extends('all_views.viewmaster.sidebar')

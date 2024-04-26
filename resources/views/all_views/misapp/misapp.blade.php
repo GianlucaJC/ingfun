@@ -35,15 +35,14 @@
 				<div class="d-flex w-100 justify-content-between">
 				  <h3 class="mb-1">Nuovi lavori</h3>
 
-				  <small><i class="fas fa-list-alt"></i></small>
+				  <i class="fas fa-folder-plus fa-2x"></i>
 				</div>
-				<p class="mb-1">Visiona i nuovi lavori che ti sono stati assegnati</p>
+				<p class="mb-1"><i>Visiona i nuovi lavori che ti sono stati assegnati</i></p>
 				
                 <button type="button" class="btn btn-warning position-relative">
                     Nuovi
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id='new_job' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         3
-                        <span class="visually-hidden">New jobs</span>
                     </span>
                 </button>
                 
@@ -52,32 +51,29 @@
               
               <a href="#" class="list-group-item list-group-item-action">
 				<div class="d-flex w-100 justify-content-between">
-				  <h5 class="mb-1">Storico, Rifornimenti, Sinistri</h5>
-				  <small class="text-body-secondary"><i class="fas fa-list-alt"></i></small>
+				  <h3 class="mb-1">Storico, Rifornimenti, Sinistri</h3>
+				  <i class="fas fa-map-marker-alt fa-2x"></i>
 				</div>
-				<p class="mb-1">Visiona lo storico dei lavori e la gestione dei rifornimenti</p>
+				<p class="mb-1"><i>Visiona lo storico dei lavori e la gestione dei rifornimenti</i></p>
 
                 <button type="button" class="btn btn-warning position-relative">
                     Nuovi
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         3
-                        <span class="visually-hidden">New jobs</span>
                     </span>
                 </button>                
 
                 <button type="button" class="ml-3 btn btn-danger position-relative">
                     Rifiutati
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id='job_no' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         0
-                        <span class="visually-hidden">Rifiutati</span>
                     </span>
                 </button>                
                 
                 <button type="button" class="ml-3 btn btn-success position-relative">
                     Accettati
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span id='job_yes' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         1
-                        <span class="visually-hidden">Accettati</span>
                     </span>
                 </button> 
 
@@ -88,13 +84,13 @@
 				<div class="d-flex w-100 justify-content-between">
 				  <h3 class="mb-1">Nuove reperibilità</h3>
 
-				  <small><i class="fas fa-list-alt"></i></small>
+				 <i class="far fa-calendar-check fa-2x"></i>
 				</div>
-				<p class="mb-1">Visiona le reperibilità che ti sono state assegnate</p>
+				<p class="mb-1"><i>Visiona le reperibilità che ti sono state assegnate</i></p>
 				
                 <button type="button" class="btn btn-warning position-relative">
                     Nuove
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    <span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         1
                         <span class="visually-hidden">New reper</span>
                     </span>
@@ -102,36 +98,36 @@
 			  </a>
 
 
-              <a href="#" class="list-group-item list-group-item-action">
+			  <a href="#" class="list-group-item list-group-item-action">
 				<div class="d-flex w-100 justify-content-between">
-				  <h5 class="mb-1">Storico Reperibilità</h5>
-				  <small class="text-body-secondary"><i class="fas fa-list-alt"></i></small>
+				  <h3 class="mb-1">Storico Reperibilità</h5>
+				  <i class="fas fa-list-alt fa-2x"></i>
 				</div>
-				<p class="mb-1">Visiona storico delle reperibilità</p>
+				<p class="mb-1"><i>Visiona storico delle reperibilità</i></p>
 
-                <button type="button" class="btn btn-warning position-relative">
-                    Nuove
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        1
-                        <span class="visually-hidden">New reper</span>
-                    </span>
-                </button>                
+				<button type="button" class="btn btn-warning position-relative">
+					Nuove
+					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						1
+						<span class="visually-hidden">New reper</span>
+					</span>
+				</button>                
 
-                <button type="button" class="ml-3 btn btn-danger position-relative">
-                    Rifiutate
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        0
-                        <span class="visually-hidden">Rifiutate</span>
-                    </span>
-                </button>                
-                
-                <button type="button" class="ml-3 btn btn-success position-relative">
-                    Accettate
-                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        0
-                        <span class="visually-hidden">Accettate</span>
-                    </span>
-                </button> 
+				<button type="button" class="ml-3 btn btn-danger position-relative">
+					Rifiutate
+					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						0
+						<span class="visually-hidden">Rifiutate</span>
+					</span>
+				</button>                
+				
+				<button type="button" class="ml-3 btn btn-success position-relative">
+					Accettate
+					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						0
+						<span class="visually-hidden">Accettate</span>
+					</span>
+				</button> 
 
 			  </a>			  
               
@@ -169,6 +165,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.06"></script>
+	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=1.09"></script>
 
 @endsection
