@@ -397,6 +397,7 @@ class ApiController extends Controller
 	public function countappalti(Request $request) {
 		if (Auth::user()) {
 			$id=Auth::user()->id;
+			echo "id $id";
 			$candidati=candidati::where('id', "=", $id)->get();
 			$id_lav_ref=$id;
 			$check=array();
