@@ -223,6 +223,11 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@newapp']);
 
 
+	Route::get('misapp/{id?}', [ 'as' => 'misapp', 'uses' => 'App\Http\Controllers\ControllerMisapp@misapp']);
+	
+	Route::post('misapp/{id?}', [ 'as' => 'misapp', 'uses' => 'App\Http\Controllers\ControllerMisapp@misapp']);
+
+
 	Route::get('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@listapp']);
 	
 	Route::post('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@listapp']);
