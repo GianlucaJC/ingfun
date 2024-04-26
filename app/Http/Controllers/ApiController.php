@@ -398,7 +398,7 @@ class ApiController extends Controller
 		if (Auth::user()) {
 			$id=Auth::user()->id;
 			$candidati=candidati::where('id', "=", $id)->get();
-			$id_lav_ref=$candidati[0]['id_user'];			
+			$id_lav_ref=1;
 			$check=array();
 		}
 		else {
