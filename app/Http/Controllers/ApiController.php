@@ -394,14 +394,19 @@ class ApiController extends Controller
 	}	
 	
 	public function countappalti(Request $request) {
-
-		$check=$this->check_log($request); 
-		if ($check['esito']=="KO") {
-			$risp['header']=$check;
-			 echo json_encode($risp);
-			 exit;
-		} 
-		$id_lav_ref=$check['id_user'];
+		if (Auth::user()) {
+			$id_lav_ref=Auth::user()->id;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}
 		/*
 		$count=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
@@ -463,7 +468,8 @@ class ApiController extends Controller
 		$risp['numrepsi']=$numrepsi;
 		$risp['numrepno']=$numrepno;
 		
-		echo json_encode($risp);
+		if (Auth::user()) return $risp;
+		else echo json_encode($risp);
 		
 	}	
 

@@ -1,6 +1,9 @@
 $(document).ready( function () {
 	$("#credit_top").hide()
-	$(".notif").hide()
+	$('.notif').each(function () {
+		value=$(this).html()
+		if (value.trim()==0) $(this).hide()
+	})	
 
 } );
 

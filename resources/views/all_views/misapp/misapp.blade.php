@@ -26,10 +26,10 @@
     <div class="content">
       <div class="container-fluid mt-4">
 
-	  
+
 		<form method='post' action="{{ route('misapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
-			
+	
 			<div class="list-group">
 			  <a href="#" class="list-group-item list-group-item-action" aria-current="true">
 				<div class="d-flex w-100 justify-content-between">
@@ -42,13 +42,12 @@
                 <button type="button" class="btn btn-warning position-relative">
                     Nuovi
                     <span id='new_job' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3
+						{{$result['count']}}
                     </span>
                 </button>
                 
 			  </a>
-			  
-              
+
               <a href="#" class="list-group-item list-group-item-action">
 				<div class="d-flex w-100 justify-content-between">
 				  <h3 class="mb-1">Storico, Rifornimenti, Sinistri</h3>
@@ -59,21 +58,21 @@
                 <button type="button" class="btn btn-warning position-relative">
                     Nuovi
                     <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        3
+                        {{$result['count']}}
                     </span>
                 </button>                
 
                 <button type="button" class="ml-3 btn btn-danger position-relative">
                     Rifiutati
                     <span id='job_no' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        0
+                        {{$result['storici_no']}}
                     </span>
                 </button>                
                 
                 <button type="button" class="ml-3 btn btn-success position-relative">
                     Accettati
                     <span id='job_yes' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        1
+                        {{$result['storici_si']}}
                     </span>
                 </button> 
 
@@ -91,8 +90,7 @@
                 <button type="button" class="btn btn-warning position-relative">
                     Nuove
                     <span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        1
-                        <span class="visually-hidden">New reper</span>
+                       {{$result['count_newrep']}}
                     </span>
                 </button>
 			  </a>
@@ -108,24 +106,21 @@
 				<button type="button" class="btn btn-warning position-relative">
 					Nuove
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						1
-						<span class="visually-hidden">New reper</span>
+						{{$result['count_newrep']}}
 					</span>
 				</button>                
 
 				<button type="button" class="ml-3 btn btn-danger position-relative">
 					Rifiutate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						0
-						<span class="visually-hidden">Rifiutate</span>
+						{{$result['numrepno']}}
 					</span>
 				</button>                
 				
 				<button type="button" class="ml-3 btn btn-success position-relative">
 					Accettate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						0
-						<span class="visually-hidden">Accettate</span>
+						{{$result['numrepsi']}}
 					</span>
 				</button> 
 
@@ -165,6 +160,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=1.09"></script>
+	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=1.102"></script>
 
 @endsection
