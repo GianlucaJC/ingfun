@@ -15,15 +15,6 @@
 
 
 <style>
-.circle {
-  width: 30px;
-  height: 30px;
-  border-radius: 70%;
-  display: flex;
-  align-items: center;
-  text-align: center;
-}
-
 
 </style>
 @section('content_main')
@@ -48,28 +39,105 @@
 				</div>
 				<p class="mb-1">Visiona i nuovi lavori che ti sono stati assegnati</p>
 				
-                <div class="circle" style="background: yellow;">
-                    <p>3</p>
-                </div>
-				
+                <button type="button" class="btn btn-warning position-relative">
+                    Nuovi
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        3
+                        <span class="visually-hidden">New jobs</span>
+                    </span>
+                </button>
+                
 			  </a>
-			  <a href="#" class="list-group-item list-group-item-action">
+			  
+              
+              <a href="#" class="list-group-item list-group-item-action">
 				<div class="d-flex w-100 justify-content-between">
-				  <h5 class="mb-1">List group item heading</h5>
+				  <h5 class="mb-1">Storico, Rifornimenti, Sinistri</h5>
 				  <small class="text-body-secondary"><i class="fas fa-list-alt"></i></small>
 				</div>
-				<p class="mb-1">Some placeholder content in a paragraph.</p>
-				<small class="text-body-secondary">And some muted small print.</small>
+				<p class="mb-1">Visiona lo storico dei lavori e la gestione dei rifornimenti</p>
+
+                <button type="button" class="btn btn-warning position-relative">
+                    Nuovi
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        3
+                        <span class="visually-hidden">New jobs</span>
+                    </span>
+                </button>                
+
+                <button type="button" class="ml-3 btn btn-danger position-relative">
+                    Rifiutati
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                        <span class="visually-hidden">Rifiutati</span>
+                    </span>
+                </button>                
+                
+                <button type="button" class="ml-3 btn btn-success position-relative">
+                    Accettati
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        1
+                        <span class="visually-hidden">Accettati</span>
+                    </span>
+                </button> 
+
 			  </a>
-			  <a href="#" class="list-group-item list-group-item-action">
+
+
+			  <a href="#" class="list-group-item list-group-item-action" aria-current="true">
 				<div class="d-flex w-100 justify-content-between">
-				  <h5 class="mb-1">List group item heading</h5>
-				  <small class="text-body-secondary">3 days ago</small>
+				  <h3 class="mb-1">Nuove reperibilità</h3>
+
+				  <small><i class="fas fa-list-alt"></i></small>
 				</div>
-				<p class="mb-1">Some placeholder content in a paragraph.</p>
-				<small class="text-body-secondary">And some muted small print.</small>
+				<p class="mb-1">Visiona le reperibilità che ti sono state assegnate</p>
+				
+                <button type="button" class="btn btn-warning position-relative">
+                    Nuove
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        1
+                        <span class="visually-hidden">New reper</span>
+                    </span>
+                </button>
 			  </a>
-			</div>
+
+
+              <a href="#" class="list-group-item list-group-item-action">
+				<div class="d-flex w-100 justify-content-between">
+				  <h5 class="mb-1">Storico Reperibilità</h5>
+				  <small class="text-body-secondary"><i class="fas fa-list-alt"></i></small>
+				</div>
+				<p class="mb-1">Visiona storico delle reperibilità</p>
+
+                <button type="button" class="btn btn-warning position-relative">
+                    Nuove
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        1
+                        <span class="visually-hidden">New reper</span>
+                    </span>
+                </button>                
+
+                <button type="button" class="ml-3 btn btn-danger position-relative">
+                    Rifiutate
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                        <span class="visually-hidden">Rifiutate</span>
+                    </span>
+                </button>                
+                
+                <button type="button" class="ml-3 btn btn-success position-relative">
+                    Accettate
+                    <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        0
+                        <span class="visually-hidden">Accettate</span>
+                    </span>
+                </button> 
+
+			  </a>			  
+              
+
+              
+
 
 		</form>
       </div><!-- /.container-fluid -->
