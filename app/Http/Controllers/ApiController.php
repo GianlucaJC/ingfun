@@ -371,18 +371,38 @@ class ApiController extends Controller
 	}
 
 	public function lavori(Request $request) {
-		$check=$this->check_log($request); 
-		if ($check['esito']=="KO") {
-			$risp['header']=$check;
-			 echo json_encode($risp);
-			 exit;
-		} 
-		$id_lav_ref=$check['id_user'];
+		$from="ALL";
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			$from=$request->input('from');
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}
+		
+		if ($id_lav_ref==0) return array();		
 
 
 		$lavori=appalti::select(DB::raw("DATE_FORMAT(appalti.data_ref,'%d-%m-%Y') as data_ref"),'appalti.id','appalti.descrizione_appalto','appalti.orario_ref','appalti.targa','l.status')
 		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 		->where('appalti.dele', "=","0")
+		->when($from=="New", function ($lavori) {			
+			return $lavori->where('l.status', "=","0");
+		})
 		->where('l.id_lav_ref',"=",$id_lav_ref)
 		->orderBy('appalti.id','desc')
 		->get();
@@ -401,7 +421,10 @@ class ApiController extends Controller
 			$candidati=candidati::select("id")
 			->where('id_user', "=", $id)->get();
 			
-			$id_lav_ref=$candidati[0]['id'];
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
 			$check=array();
 		}
 		else {
@@ -413,6 +436,8 @@ class ApiController extends Controller
 			} 
 			$id_lav_ref=$check['id_user'];
 		}
+		
+		if ($id_lav_ref==0) return array();
 		/*
 		$count=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')

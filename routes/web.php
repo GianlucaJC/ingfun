@@ -345,7 +345,10 @@ Route::group(['only_log' => ['auth']], function () {
 
 //routing Ajax
 Route::group(['only_log' => ['auth']], function () {
-
+	
+	Route::post('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
+	Route::get('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
+	
 	//chiamate ajax prodotti
 	
 	Route::post('check_disp_maga', 'App\Http\Controllers\AjaxControllerAcquisti@check_disp_maga');

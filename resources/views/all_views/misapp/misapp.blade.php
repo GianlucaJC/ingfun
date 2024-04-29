@@ -8,8 +8,12 @@
 
 @section('title', 'IngFUN')
 
-@section('extra_style') 
 
+<meta name="csrf-token" content="{{{ csrf_token() }}}">
+
+
+@section('extra_style') 
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 @endsection
 
 
@@ -29,50 +33,63 @@
 
 		<form method='post' action="{{ route('misapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
-	
-			<div class="list-group">
-			  <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+
+			
+
+			<div id="app">
+				<App></App>
+			</div>
+
+			<?php
+				$disp="";
+				if (!isset($result['count'])) {
+					$disp="display:none";
+					echo "<h3><center>Utente non riconosciuto!</center></h3>";
+				}	
+			?>
+			<div class="list-group" style='{{$disp}}' id='div_servizi'>
+			  <a href="#" onclick="clickit('New')" class="list-group-item list-group-item-action" aria-current="true">
 				<div class="d-flex w-100 justify-content-between">
 				  <h3 class="mb-1">Nuovi lavori</h3>
 
 				  <i class="fas fa-folder-plus fa-2x"></i>
 				</div>
-				<p class="mb-1"><i>Visiona i nuovi lavori che ti sono stati assegnati</i></p>
+				<p class="mb-1"><i>Visiona solo i nuovi lavori che ti sono stati assegnati</i></p>
 				
-                <button type="button" class="btn btn-warning position-relative">
+                <button type="button" disabled class="btn btn-warning position-relative">
                     Nuovi
                     <span id='new_job' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['count']}}
+						{{$result['count'] ?? ''}}
                     </span>
                 </button>
-                
+               
 			  </a>
 
-              <a href="#" class="list-group-item list-group-item-action">
+              <a href="#" onclick="clickit('ALL')" class="list-group-item list-group-item-action">
 				<div class="d-flex w-100 justify-content-between">
 				  <h3 class="mb-1">Storico, Rifornimenti, Sinistri</h3>
 				  <i class="fas fa-map-marker-alt fa-2x"></i>
 				</div>
 				<p class="mb-1"><i>Visiona lo storico dei lavori e la gestione dei rifornimenti</i></p>
 
-                <button type="button" class="btn btn-warning position-relative">
+                <button type="button" disabled class="btn btn-warning position-relative">
                     Nuovi
                     <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$result['count']}}
+                        {{$result['count'] ?? ''}}
                     </span>
                 </button>                
 
-                <button type="button" class="ml-3 btn btn-danger position-relative">
+                <button type="button" disabled class="ml-3 btn btn-danger position-relative">
                     Rifiutati
                     <span id='job_no' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$result['storici_no']}}
+                        {{$result['storici_no'] ?? ''}}
                     </span>
                 </button>                
                 
-                <button type="button" class="ml-3 btn btn-success position-relative">
+                <button type="button" disabled class="ml-3 btn btn-success position-relative">
                     Accettati
                     <span id='job_yes' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$result['storici_si']}}
+                        {{$result['storici_si'] ?? ''}}
                     </span>
                 </button> 
 
@@ -85,12 +102,12 @@
 
 				 <i class="far fa-calendar-check fa-2x"></i>
 				</div>
-				<p class="mb-1"><i>Visiona le reperibilità che ti sono state assegnate</i></p>
+				<p class="mb-1"><i>Visiona solo le nuove reperibilità che ti sono state assegnate</i></p>
 				
-                <button type="button" class="btn btn-warning position-relative">
+                <button type="button" disabled class="btn btn-warning position-relative">
                     Nuove
                     <span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                       {{$result['count_newrep']}}
+                       {{$result['count_newrep'] ?? ''}}
                     </span>
                 </button>
 			  </a>
@@ -103,24 +120,24 @@
 				</div>
 				<p class="mb-1"><i>Visiona storico delle reperibilità</i></p>
 
-				<button type="button" class="btn btn-warning position-relative">
+				<button type="button"disabled  class="btn btn-warning position-relative">
 					Nuove
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['count_newrep']}}
+						{{$result['count_newrep'] ?? ''}}
 					</span>
 				</button>                
 
-				<button type="button" class="ml-3 btn btn-danger position-relative">
+				<button type="button" disabled class="ml-3 btn btn-danger position-relative">
 					Rifiutate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['numrepno']}}
+						{{$result['numrepno'] ?? ''}}
 					</span>
 				</button>                
 				
-				<button type="button" class="ml-3 btn btn-success position-relative">
+				<button type="button" disabled class="ml-3 btn btn-success position-relative">
 					Accettate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['numrepsi']}}
+						{{$result['numrepsi'] ?? ''}}
 					</span>
 				</button> 
 
@@ -160,6 +177,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=1.102"></script>
+	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=<?php echo time(); ?>"></script>
 
 @endsection
