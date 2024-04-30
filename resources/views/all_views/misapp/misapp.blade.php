@@ -48,100 +48,69 @@
 				}	
 			?>
 			<div class="list-group" style='{{$disp}}' id='div_servizi'>
-			  <a href="#" onclick="clickit('New')" class="list-group-item list-group-item-action" aria-current="true">
-				<div class="d-flex w-100 justify-content-between">
-				  <h3 class="mb-1">Nuovi lavori</h3>
 
-				  <i class="fas fa-folder-plus fa-2x"></i>
-				</div>
-				<p class="mb-1"><i>Visiona solo i nuovi lavori che ti sono stati assegnati</i></p>
-				
-                <button type="button" disabled class="btn btn-warning position-relative">
-                    Nuovi
-                    <span id='new_job' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['count'] ?? ''}}
-                    </span>
-                </button>
-               
-			  </a>
 
-              <a href="#" onclick="clickit('ALL')" class="list-group-item list-group-item-action">
+            <span class="list-group-item list-group-item-action">
 				<div class="d-flex w-100 justify-content-between">
-				  <h3 class="mb-1">Storico, Rifornimenti, Sinistri</h3>
+				  <h4 class="mb-1">Storico, Rifornimenti, Sinistri</h4>
 				  <i class="fas fa-map-marker-alt fa-2x"></i>
 				</div>
 				<p class="mb-1"><i>Visiona lo storico dei lavori e la gestione dei rifornimenti</i></p>
 
-                <button type="button" disabled class="btn btn-warning position-relative">
+                <button type="button" onclick="clickit('New')"  class="btn btn-warning position-relative">
                     Nuovi
                     <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{$result['count'] ?? ''}}
                     </span>
                 </button>                
 
-                <button type="button" disabled class="ml-3 btn btn-danger position-relative">
+                <button type="button" onclick="clickit('Rif')" class="ml-3 btn btn-danger position-relative">
                     Rifiutati
                     <span id='job_no' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{$result['storici_no'] ?? ''}}
                     </span>
                 </button>                
                 
-                <button type="button" disabled class="ml-3 btn btn-success position-relative">
+                <button type="button" onclick="clickit('Acc')"  class="ml-3 btn btn-success position-relative">
                     Accettati
                     <span id='job_yes' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{$result['storici_si'] ?? ''}}
                     </span>
                 </button> 
 
-			  </a>
+			</span>
 
-
-			  <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-				<div class="d-flex w-100 justify-content-between">
-				  <h3 class="mb-1">Nuove reperibilità</h3>
-
-				 <i class="far fa-calendar-check fa-2x"></i>
-				</div>
-				<p class="mb-1"><i>Visiona solo le nuove reperibilità che ti sono state assegnate</i></p>
-				
-                <button type="button" disabled class="btn btn-warning position-relative">
-                    Nuove
-                    <span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                       {{$result['count_newrep'] ?? ''}}
-                    </span>
-                </button>
-			  </a>
 
 
 			  <a href="#" class="list-group-item list-group-item-action">
 				<div class="d-flex w-100 justify-content-between">
-				  <h3 class="mb-1">Storico Reperibilità</h5>
+				  <h4 class="mb-1">Storico Reperibilità</h4>
 				  <i class="fas fa-list-alt fa-2x"></i>
 				</div>
 				<p class="mb-1"><i>Visiona storico delle reperibilità</i></p>
 
-				<button type="button"disabled  class="btn btn-warning position-relative">
+				<button type="button"  class="btn btn-warning position-relative">
 					Nuove
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 						{{$result['count_newrep'] ?? ''}}
 					</span>
 				</button>                
 
-				<button type="button" disabled class="ml-3 btn btn-danger position-relative">
+				<button type="button"  class="ml-3 btn btn-danger position-relative">
 					Rifiutate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 						{{$result['numrepno'] ?? ''}}
 					</span>
 				</button>                
 				
-				<button type="button" disabled class="ml-3 btn btn-success position-relative">
+				<button type="button"  class="ml-3 btn btn-success position-relative">
 					Accettate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 						{{$result['numrepsi'] ?? ''}}
 					</span>
 				</button> 
 
-			  </a>			  
+			</a>			  
               
 
               

@@ -346,9 +346,11 @@ Route::group(['only_log' => ['auth']], function () {
 //routing Ajax
 Route::group(['only_log' => ['auth']], function () {
 	
+	//chiamate per misapp-web
 	Route::post('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
 	Route::get('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
-	
+	Route::post('risposta_user', [ 'as' => 'risposta_user', 'uses' => 'App\Http\Controllers\ApiController@risposta_user']);
+
 	//chiamate ajax prodotti
 	
 	Route::post('check_disp_maga', 'App\Http\Controllers\AjaxControllerAcquisti@check_disp_maga');

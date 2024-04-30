@@ -403,11 +403,26 @@ class ApiController extends Controller
 		->when($from=="New", function ($lavori) {			
 			return $lavori->where('l.status', "=","0");
 		})
+		->when($from=="Acc", function ($lavori) {			
+			return $lavori->where('l.status', "=","1");
+		})
+		->when($from=="Rif", function ($lavori) {			
+			return $lavori->where('l.status', "=","2");
+		})				
 		->where('l.id_lav_ref',"=",$id_lav_ref)
 		->orderBy('appalti.id','desc')
 		->get();
 
-			
+		if (Auth::user()) {
+			$lav_new=array();$indice=0;
+			foreach($lavori as $lavoro) {
+				$lavoro['indice']=$indice;
+				$lav_new[]=$lavoro;
+				$indice++;
+			}
+			$lavori=$lav_new;
+		}
+
 		$risp['header']=$check;
 		$risp['lavori']=$lavori;
 		echo json_encode($risp);
@@ -700,13 +715,29 @@ class ApiController extends Controller
 	}	
 	
 	public function risposta_user(Request $request) {
-		$check=$this->check_log($request); 
-		if ($check['esito']=="KO") {
-			$risp['header']=$check;
-			 echo json_encode($risp);
-			 exit;
-		} 
-		$id_lav_ref=$check['id_user'];
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}
+
+
 		$id_appalto=$request->input("id_appalto");
 		$sn=$request->input("sn");
 		$status=0;
@@ -763,7 +794,7 @@ class ApiController extends Controller
 		if ($info_app->email) {
 			$email=$info_app->email;
 			
-			//$email="morescogianluca@gmail.com";
+$email="morescogianluca@gmail.com";
 			$status=array();
 			try {
 				$msg="";
@@ -799,7 +830,7 @@ class ApiController extends Controller
 				$status['status']="KO";
 				$status['message']="Errore occorso durante l'invio! $e";
 			}
-			print_r($status);
+//print_r($status);
 			
 		}	
 	}
