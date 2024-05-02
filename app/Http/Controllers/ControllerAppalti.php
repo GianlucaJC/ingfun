@@ -115,13 +115,16 @@ public function __construct()
 				->update($data);
 				
 			}	
+			
+		   //$send=true;$push_id="XX"; //decommentare per test (ed abilitare un ID fittizio in this->send_push())
 			if ($send==true) {
 				$num_send++;
 				$this->send_push($push_id,"new","");
 			}	
 
 		}
-		
+	
+
 		//push per eventuali estromessi dall'appalto
 		$resp=candidati::select('u.push_id')
 		->join('users as u','candidatis.id_user','u.id')
@@ -343,6 +346,7 @@ public function __construct()
 			}
 			
 		}
+		
 
 		$sezionali=societa::select('id','descrizione')
 		->orderBy('descrizione')
@@ -371,7 +375,8 @@ public function __construct()
 	}
 
 	public function send_push($userId,$tipo="new",$message_extra="") {
-		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f";
+		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f"; // test push MisAPP mobile
+		//$userId="5a6b39e0-9fb3-4b73-9cd3-971de475894b"; //test Push web - Firefox
 		if (strlen($userId)==0) return;
 		$params = []; 
 		$params['include_player_ids'] = [$userId]; 

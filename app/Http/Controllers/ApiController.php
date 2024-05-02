@@ -812,7 +812,7 @@ class ApiController extends Controller
 		if ($info_app->email) {
 			$email=$info_app->email;
 			
-$email="morescogianluca@gmail.com";
+			//$email="morescogianluca@gmail.com";
 			$status=array();
 			try {
 				$msg="";

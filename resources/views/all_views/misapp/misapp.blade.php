@@ -23,6 +23,28 @@
 		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 		});
 	});
+
+
+
+	var OneSignal = window.OneSignal || [];
+  	OneSignal.push(function() {
+		OneSignal.init({
+		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+		autoRegister: false,
+		notifyButton: {
+			enable: true,
+		},
+		});
+		OneSignal.registerForPushNotifications();
+  	});
+     OneSignal.push(function() {
+      OneSignal.getUserId(function(userId) {
+
+			console.log("userId",userid)
+      });
+    });
+
+
 	</script>	
 @endsection
 
