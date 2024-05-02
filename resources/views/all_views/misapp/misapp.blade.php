@@ -19,11 +19,12 @@
 	<script>
 	window.OneSignalDeferred = window.OneSignalDeferred || [];
 	OneSignalDeferred.push(function(OneSignal) {
-		user=OneSignal.User.PushSubscription.id;
-		console.log("user",user);
 		OneSignal.init({
 		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 		});
+		user=OneSignal.User.PushSubscription.id;
+		console.log("user",user);
+
 	});
 
 	</script>	
