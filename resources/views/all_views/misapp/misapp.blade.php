@@ -39,7 +39,7 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid mt-4">
-
+	  <div class='onesignal-customlink-container'></div>
 
 		<form method='post' action="{{ route('misapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
