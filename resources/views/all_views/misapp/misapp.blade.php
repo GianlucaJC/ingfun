@@ -28,36 +28,18 @@
 
 	OneSignal.push(function() {
 	OneSignal.on('subscriptionChange', function (isSubscribed) {
+		alert("sottoscritto!")
 		console.log("The user's subscription state is now:",isSubscribed);
 		OneSignal.push(function() {
 			OneSignal.getUserId(function(userId) {
+				alert(userId)
 			console.log("OneSignal User ID:", userId);
 			});
 		});
 		});
 	});	
 
-	OneSignal.push(["init", {
-    appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-    autoRegister: false,
-    promptOptions: {
-        /* My prompt options */
-    },
-    welcomeNotification: {
-        //my options
-    },
-    notifyButton: {
-      enable: true,
-      showCredit: false,
-      prenotify: true,
-      position: 'bottom-left',
-      text: {
-        /*My text options */
-     },
-     colors: { // My custom colors
-     }
-   }
-}]);	
+	
 
 	</script>	
 @endsection
