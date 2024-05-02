@@ -22,10 +22,42 @@
 		OneSignal.init({
 		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 		});
-		user=OneSignal.User.PushSubscription.id;
-		console.log("user",user);
-
 	});
+
+	var OneSignal = window.OneSignal || [];
+
+	OneSignal.push(function() {
+	OneSignal.on('subscriptionChange', function (isSubscribed) {
+		console.log("The user's subscription state is now:",isSubscribed);
+		OneSignal.push(function() {
+			OneSignal.getUserId(function(userId) {
+			console.log("OneSignal User ID:", userId);
+			});
+		});
+		});
+	});	
+
+	OneSignal.push(["init", {
+    appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+    autoRegister: false,
+    promptOptions: {
+        /* My prompt options */
+    },
+    welcomeNotification: {
+        //my options
+    },
+    notifyButton: {
+      enable: true,
+      showCredit: false,
+      prenotify: true,
+      position: 'bottom-left',
+      text: {
+        /*My text options */
+     },
+     colors: { // My custom colors
+     }
+   }
+}]);	
 
 	</script>	
 @endsection
