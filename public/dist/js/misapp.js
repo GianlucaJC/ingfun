@@ -197,10 +197,17 @@ Vue.component('Detail',{
 
 	template:`
 		<div v-if="dettaglio==true" class='container-fluid'>
-			<button type="button" class="btn btn-primary" @click="home_appalti">Torna su elenco appalti</button>
+			<div class="d-grid gap-2">
+				<button type="button" class="btn btn-primary" @click="home_appalti">Torna su elenco appalti</button>
+			</div>	
 			
+			
+
 			<div class="mt-2 alert alert-info" role="alert">
-				Riferimento Appalto: <b>{{infoappalto.info[0].id_appalto}}</b>
+				Riferimento Appalto: <b>{{infoappalto.info[0].id_appalto}}</b> 
+				<span v-if="infoappalto.info[0].status==0" ><i class="ml-3 fas fa-circle fa-lg" style="color: #FFD43B;"></i></span>
+				<span v-if="infoappalto.info[0].status==1" ><i class="ml-3 fas fa-circle fa-lg" style="color: #63f852;"></i></span>
+				<span v-if="infoappalto.info[0].status==2" ><i class="ml-3 fas fa-circle fa-lg" style="color: #ff0000;"></i></span>
 			</div>
 			<hr>
 			<div v-if="infoappalto.info[0].luogo_incontro">
