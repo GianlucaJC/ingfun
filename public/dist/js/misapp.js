@@ -218,7 +218,32 @@ Vue.component('Detail',{
 				<p class="h5">{{infoappalto.info[0].chiesa}}</p>
 			</div>
 
+			<div v-if="infoappalto.info[0].data_ref">
+				<p class="h6 opacity-25">data</p>
+				<p class="h5">{{infoappalto.info[0].data_ref}}</p>
+			</div>			
+
+			<div v-if="infoappalto.info[0].ditta">
+				<p class="h6 opacity-25">Ditta</p>
+				<p class="h5">{{infoappalto.info[0].ditta}}</p>
+			</div>			
+
+			<div v-if="infoappalto.info[0].lavoratori">
+				<p class="h6 opacity-25">Squadra</p>
+				<p class="h5">{{infoappalto.info[0].lavoratori}}</p>
+			</div>
 			
+			<div v-if="infoappalto.info[0].responsabile_mezzo">
+				<p class="h6 opacity-25">Responsabile mezzo</p>
+				<p class="h5">{{infoappalto.info[0].responsabile_mezzo}}</p>
+			</div>
+
+			<div v-if="infoappalto.info[0].note">
+				<p class="h6 opacity-25">Note</p>
+				<p class="h5">{{infoappalto.info[0].note}}</p>
+			</div>			
+
+
 		</div>
 	`,
 	data() {
