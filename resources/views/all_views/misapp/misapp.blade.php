@@ -20,26 +20,15 @@
 	
 	<script>
 
-		window.OneSignal = window.OneSignal || [];
-        OneSignal.push(function() {
-            OneSignal.init({
-                appId: 'f9677f83-05dd-44ed-b301-b5c49d5c8777',
-            });
-
-        });
-        OneSignal.push(function() {
- 
-               OneSignal.getUserId(function(userId) {
-                 alert(userId);
-               });
-          
-        });	
 
 		window.OneSignalDeferred = window.OneSignalDeferred || [];
 		OneSignalDeferred.push(function(OneSignal) {
 			OneSignal.init({
 			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 			});
+			OneSignal.getUserId(function(userId) {
+                 alert(userId);
+            });			
 		});
 	</script>	
 @endsection
