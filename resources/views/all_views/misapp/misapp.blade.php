@@ -147,5 +147,6 @@
 
 
 	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=<?php echo time(); ?>"></script>
+	
 
 @endsection

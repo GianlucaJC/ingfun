@@ -521,22 +521,40 @@ class ApiController extends Controller
 
 	public function infoappalti(Request $request) {
 
-		$check=$this->check_log($request); 
-		if ($check['esito']=="KO") {
-			$risp['header']=$check;
-			 echo json_encode($risp);
-			 exit;
-		} 
-		$id_lav_ref=$check['id_user'];
-		$wh=99;$id_ref_a=0;
-		if ($request->has("from")) {
-			$from=$request->input("from");
-			if ($from=="menu") $wh=0;
-			if ($from=="storico") {
-				$wh=1;
-				$id_ref_a=$request->input("id_ref_a");
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+			$wh=1;
+			$id_ref_a=$request->input("id_ref_a");
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+			$wh=99;$id_ref_a=0;
+			if ($request->has("from")) {
+				$from=$request->input("from");
+				if ($from=="menu") $wh=0;
+				if ($from=="storico") {
+					$wh=1;
+					$id_ref_a=$request->input("id_ref_a");
+				}
 			}
-		}	
+		}
+
+	
 
 		if ($wh==99) {
 			$risp['header']=$check;
