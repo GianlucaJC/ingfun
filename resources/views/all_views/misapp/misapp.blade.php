@@ -14,6 +14,16 @@
 
 @section('extra_style') 
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
+
+	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+	<script>
+	window.OneSignalDeferred = window.OneSignalDeferred || [];
+	OneSignalDeferred.push(function(OneSignal) {
+		OneSignal.init({
+		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+		});
+	});
+	</script>	
 @endsection
 
 
