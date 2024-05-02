@@ -56,22 +56,38 @@
 				  <i class="fas fa-map-marker-alt fa-2x"></i>
 				</div>
 				<p class="mb-1"><i>Visiona lo storico dei lavori e la gestione dei rifornimenti</i></p>
-
-                <button type="button" onclick="clickit('New')"  class="btn btn-warning position-relative">
+				<?php
+					$trigger="onclick=\"clickit('New')\"";
+					if (!$result['count'] ||  $result['count']==0) {
+						$trigger="disabled onclick=\"clickit('New')\"";
+					}
+				?>
+                <button type="button" <?php echo $trigger; ?>  class="btn btn-warning position-relative">
                     Nuovi
                     <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{$result['count'] ?? ''}}
                     </span>
                 </button>                
-
-                <button type="button" onclick="clickit('Rif')" class="ml-3 btn btn-danger position-relative">
+				<?php
+					$trigger="onclick=\"clickit('Rif')\"";
+					if (!$result['storici_no'] ||  $result['storici_no']==0) {
+						$trigger="disabled onclick=\"clickit('Rif')\"";
+					}
+				?>
+                <button type="button" <?php echo $trigger; ?> class="ml-3 btn btn-danger position-relative">
                     Rifiutati
                     <span id='job_no' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{$result['storici_no'] ?? ''}}
                     </span>
                 </button>                
-                
-                <button type="button" onclick="clickit('Acc')"  class="ml-3 btn btn-success position-relative">
+
+				<?php
+					$trigger="onclick=\"clickit('Acc')\"";
+					if (!$result['storici_si'] ||  $result['storici_si']==0) {
+						$trigger="disabled onclick=\"clickit('Acc')\"";
+					}
+				?>
+                <button type="button" <?php echo $trigger; ?> class="ml-3 btn btn-success position-relative">
                     Accettati
                     <span id='job_yes' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
                         {{$result['storici_si'] ?? ''}}
