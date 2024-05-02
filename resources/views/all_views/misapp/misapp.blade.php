@@ -24,20 +24,19 @@
 		});
 	});
 
-	var OneSignal = window.OneSignal || [];
-
-	OneSignal.push(function() {
-	OneSignal.on('subscriptionChange', function (isSubscribed) {
-		alert("sottoscritto!")
-		console.log("The user's subscription state is now:",isSubscribed);
-		OneSignal.push(function() {
-			OneSignal.getUserId(function(userId) {
-				alert(userId)
-			console.log("OneSignal User ID:", userId);
-			});
-		});
-		});
-	});	
+	window.OneSignal = window.OneSignal || [];
+ 	 OneSignal.push(function() {
+    OneSignal.init({
+      appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+    });
+    OneSignal.on('subscriptionChange', function (isSubscribed) {
+        console.log("The user's subscription state is now:", isSubscribed);
+        OneSignal.getUserId(function(userId) {
+          alert(userId);
+          // (Output) OneSignal User ID: 270a35cd-4dda-4b3f-b04e-41d7463a2316    
+         });
+    });
+  });
 
 	
 
