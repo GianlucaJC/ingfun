@@ -38,6 +38,17 @@
     });
   });
 
+  window.OneSignal = window.OneSignal || [];
+  OneSignal.push(function() {
+	alert("entrato");
+    OneSignal.init({
+      appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+    });
+     OneSignal.getUserId(function(userid){
+        alert(userid);
+      });
+  });  
+
 	
 
 	</script>	
