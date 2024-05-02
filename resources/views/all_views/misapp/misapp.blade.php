@@ -19,45 +19,12 @@
 	<script>
 	window.OneSignalDeferred = window.OneSignalDeferred || [];
 	OneSignalDeferred.push(function(OneSignal) {
+		user=OneSignal.User.PushSubscription.id;
+		console.log("user",user);
 		OneSignal.init({
 		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 		});
 	});
-
-
-
-	var OneSignal = window.OneSignal || [];
-
-    OneSignal.push(function() {
-        OneSignal.on('notificationPermissionChange', function(permissionChange) {
-            var currentPermission = permissionChange.to;
-
-            if (currentPermission == "granted") {
-                OneSignal.getUserId(function(userId) { 
-                    console.log(userId);
-                });
-            }
-        });
-	})
-	
-
-  	OneSignal.push(function() {
-		OneSignal.init({
-		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-		autoRegister: false,
-		notifyButton: {
-			enable: true,
-		},
-		});
-		OneSignal.registerForPushNotifications();
-  	});
-     OneSignal.push(function() {
-      OneSignal.getUserId(function(userId) {
-
-			console.log("userId",userid)
-      });
-    });
-
 
 	</script>	
 @endsection
