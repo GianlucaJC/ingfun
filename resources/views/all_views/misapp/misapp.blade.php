@@ -16,41 +16,31 @@
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 
 	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-	<script>
-	window.OneSignalDeferred = window.OneSignalDeferred || [];
-	OneSignalDeferred.push(function(OneSignal) {
-		OneSignal.init({
-		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-		});
-	});
-
-	window.OneSignal = window.OneSignal || [];
- 	 OneSignal.push(function() {
-    OneSignal.init({
-      appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-    });
-    OneSignal.on('subscriptionChange', function (isSubscribed) {
-        console.log("The user's subscription state is now:", isSubscribed);
-        OneSignal.getUserId(function(userId) {
-          alert(userId);
-          // (Output) OneSignal User ID: 270a35cd-4dda-4b3f-b04e-41d7463a2316    
-         });
-    });
-  });
-
-  window.OneSignal = window.OneSignal || [];
-  OneSignal.push(function() {
-	alert("entrato");
-    OneSignal.init({
-      appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-    });
-     OneSignal.getUserId(function(userid){
-        alert(userid);
-      });
-  });  
-
 	
+	
+	<script>
 
+		window.OneSignal = window.OneSignal || [];
+        OneSignal.push(function() {
+            OneSignal.init({
+                appId: 'f9677f83-05dd-44ed-b301-b5c49d5c8777',
+            });
+
+        });
+        OneSignal.push(function() {
+ 
+               OneSignal.getUserId(function(userId) {
+                 alert(userId);
+               });
+          
+        });	
+
+		window.OneSignalDeferred = window.OneSignalDeferred || [];
+		OneSignalDeferred.push(function(OneSignal) {
+			OneSignal.init({
+			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+			});
+		});
 	</script>	
 @endsection
 
