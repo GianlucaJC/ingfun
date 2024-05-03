@@ -24,9 +24,16 @@
 			OneSignal.init({
 			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 			});
-			userid=OneSignal.User.PushSubscription.id;
-			alert(userid)
 		});
+		const options = {
+  method: 'POST',
+  headers: {accept: 'application/json', 'content-type': 'application/json'}
+};
+
+fetch('https://api.onesignal.com/apps/f9677f83-05dd-44ed-b301-b5c49d5c8777/users', options)
+  .then(response => response.json())
+  .then(response => console.log(response))
+  .catch(err => console.error(err));
 		
 	</script>	
 
