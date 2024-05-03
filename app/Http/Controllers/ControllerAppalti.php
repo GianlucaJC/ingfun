@@ -123,7 +123,7 @@ public function __construct()
 			}	
 
 		}
-	
+
 
 		//push per eventuali estromessi dall'appalto
 		$resp=candidati::select('u.push_id')
@@ -377,6 +377,7 @@ public function __construct()
 	public function send_push($userId,$tipo="new",$message_extra="") {
 		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f"; // test push MisAPP mobile
 		//$userId="5a6b39e0-9fb3-4b73-9cd3-971de475894b"; //test Push web - Firefox
+		//$userId="56c40841-2d6b-4b75-bd73-f15179ccf294"; //test Push web - chrome mobile
 		if (strlen($userId)==0) return;
 		$params = []; 
 		$params['include_player_ids'] = [$userId]; 
