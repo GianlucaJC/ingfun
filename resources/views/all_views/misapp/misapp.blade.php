@@ -17,7 +17,10 @@
 
 	
 	
-	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+	<!--
+		<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+	!-->	
+	<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
 	<script>
 		/*
 		window.OneSignalDeferred = window.OneSignalDeferred || [];
