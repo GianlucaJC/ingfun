@@ -38,12 +38,39 @@
         });
     });
 
-    function test(response) {
-        alert(response)
+    function register(response) {
+       console.log(response)
     }	
     OneSignal.push(function() {
-        OneSignal.getUserId().then(response => test(response));
+        OneSignal.getUserId().then(response => register(response));
     });
+
+	function onSubscribeButtonClicked() {
+		OneSignal.getUserId(function(userId) { 
+			alert(userId)
+			/*
+			const options = {
+				method  : 'POST',
+				headers : new Headers({ 'Content-Type' : 'application/json' }),
+				body    : JSON.stringify({ subscribe: true, userId: userId }),
+				credentials: "same-origin"
+			};
+
+			fetch('/api/webpush/register', options).then((res) => {
+			}).catch((error) => {
+			});  
+			*/
+		});
+	}
+
+	OneSignal.on('subscriptionChange', function (isSubscribed) {                    
+		if(isSubscribed) {
+			onSubscribeButtonClicked();                        
+		}
+		else {
+			onUnsubscribeButtonClicked();
+		}
+	 });
 		
 	</script>	
 
