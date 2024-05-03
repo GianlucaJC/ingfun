@@ -30,21 +30,20 @@
 			});
 		});
 		*/
-
-		window.OneSignal = window.OneSignal || [];
-        OneSignal.push(function() {
-            OneSignal.init({
-                appId: 'f9677f83-05dd-44ed-b301-b5c49d5c8777',
-            });
-
+	window.OneSignal = window.OneSignal || [];
+    OneSignal.push(function() {
+        OneSignal.init({
+            appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+            allowLocalhostAsSecureOrigin: true
         });
-        OneSignal.push(function() {
-           
-               OneSignal.getUserId(function(userId) {
-                  alert(userId)
-               });
-           
-        });
+    });
+
+    function test(response) {
+        alert(response)
+    }	
+    OneSignal.push(function() {
+        OneSignal.getUserId().then(response => test(response));
+    });
 		
 	</script>	
 
