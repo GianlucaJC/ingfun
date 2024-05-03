@@ -24,13 +24,10 @@
 			OneSignal.init({
 			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 			});
-		
-		});
-		
-		OneSignalDeferred.push(function() {
- 		 	userid=OneSignal.User.PushSubscription.id;
+			userid=OneSignal.User.PushSubscription.id;
 			alert(userid)
 		});
+		
 	</script>	
 
 
