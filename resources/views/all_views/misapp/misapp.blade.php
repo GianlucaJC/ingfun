@@ -16,36 +16,47 @@
 	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 	<script>
-		/*
 		window.OneSignalDeferred = window.OneSignalDeferred || [];
-		OneSignalDeferred.push(function(OneSignal) {
+		OneSignalDeferred.push(function (OneSignal) {
 			OneSignal.init({
-			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+				appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 			});
-		});
-		*/
-	
-		window.OneSignalDeferred = window.OneSignalDeferred || [];
-            OneSignalDeferred.push(function (OneSignal) {
-                OneSignal.init({
-                    appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-                });
-                OneSignal.User.PushSubscription.addEventListener("change", function (event) {
-                    console.log("event");
-                    console.log(event);
-                    if (event.current.id) {
-                        //send data to server 
-                        let data = {
-                            player_id: event.current.id,
-                           
-                        }
-						alert(event.current.id)
-
-                    }
+			OneSignal.User.PushSubscription.addEventListener("change", function (event) {
+				console.log("event");
+				console.log(event);
+				if (event.current.id) {
+						register_push(event.current.id)
+				}
 
 
-                });
-            });		
+			});
+		});		
+		
+		//register_push("test") //per test in locale
+		function register_push(pushid) {
+			id_user="<?php echo $id_user; ?>"
+			const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
+			const csrf = metaElements.length > 0 ? metaElements[0].content : "";			
+			fetch("register_push", {
+				method: 'post',
+				headers: {
+				"Content-type": "application/x-www-form-urlencoded; charset=UTF-8",
+				"X-CSRF-Token": csrf
+				},
+				body: "pushid="+pushid+"&id_user="+id_user
+			})
+			.then(response => {
+				if (response.ok) {
+					return response.json();
+				}
+			})
+			.then(resp=>{
+
+			})
+			.catch(status, err => {
+				return console.log(status, err);
+			})		
+		}			
 		
 	</script>	
 
@@ -74,7 +85,7 @@
 		<form method='post' action="{{ route('misapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
 
-			
+		
 
 			<div id="app">
 				<App></App>

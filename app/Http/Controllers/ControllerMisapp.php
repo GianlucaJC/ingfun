@@ -24,7 +24,7 @@ public function __construct()
 		$view_dele="";
 		$id_user=Auth::user()->id;
 		$result = (new ApiController)->countappalti($request);
-		return view('all_views/misapp/misapp')->with('result',$result);
+		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user);
 
 	}
 

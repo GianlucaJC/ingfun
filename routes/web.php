@@ -347,6 +347,9 @@ Route::group(['only_log' => ['auth']], function () {
 Route::group(['only_log' => ['auth']], function () {
 	
 	//chiamate per misapp-web
+	
+	Route::post('register_push', [ 'as' => 'register_push', 'uses' => 'App\Http\Controllers\ApiController@register_push']);
+	Route::get('register_push', [ 'as' => 'register_push', 'uses' => 'App\Http\Controllers\ApiController@register_push']);
 	Route::post('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
 	Route::get('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
 	Route::post('risposta_user', [ 'as' => 'risposta_user', 'uses' => 'App\Http\Controllers\ApiController@risposta_user']);

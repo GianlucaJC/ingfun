@@ -32,7 +32,16 @@ class ApiController extends Controller
 	}
 	*/
 
-
+	public function register_push(Request $request) {
+		$id_user=$request->input("id_user");
+		$pushid=$request->input("pushid");
+		if (strlen($pushid)>0) {
+			user::where('id', $id_user)->update(['push_id' => $pushid]);
+		}
+		$resp=array();
+		$resp['esito']="OK";
+		return $resp;		
+	}
 	public function check_log($request) {
 		if ($request->hasHeader('utente')) {
 			$utente=$request->header("utente");
