@@ -324,7 +324,7 @@ public function __construct()
 			$list_push=appalti::select('l.id_lav_ref')
 			->join("lavoratoriapp as l","appalti.id","l.id_appalto")
 			->where('appalti.id', $push_appalti)
-			->where('status','=',0)
+			->where('l.status','=',0)
 			->groupby('l.id_lav_ref')
 			->get();
 			foreach ($list_push as $list ){
