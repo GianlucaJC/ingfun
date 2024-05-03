@@ -16,25 +16,36 @@
 	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 	<script>
+		/*
 		window.OneSignalDeferred = window.OneSignalDeferred || [];
 		OneSignalDeferred.push(function(OneSignal) {
 			OneSignal.init({
 			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 			});
 		});
-		
-		var OneSignal = window.OneSignal || [];
+		*/
+	
+		window.OneSignalDeferred = window.OneSignalDeferred || [];
+            OneSignalDeferred.push(function (OneSignal) {
+                OneSignal.init({
+                    appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+                });
+                OneSignal.User.PushSubscription.addEventListener("change", function (event) {
+                    console.log("event");
+                    console.log(event);
+                    if (event.current.id) {
+                        //send data to server 
+                        let data = {
+                            player_id: event.current.id,
+                           
+                        }
+						alert(event.current.id)
 
-		OneSignal.push(function() {
-		OneSignal.on('subscriptionChange', function (isSubscribed) {
-			alert("The user's subscription state is now:");
-			OneSignal.push(function() {
-				OneSignal.getUserId(function(userId) {
-				alert(userId);
-				});
-			});
-			});
-		});
+                    }
+
+
+                });
+            });		
 		
 	</script>	
 
