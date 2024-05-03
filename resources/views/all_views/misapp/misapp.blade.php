@@ -38,12 +38,14 @@
         });
     });
 
+	/*
     function register(response) {
        console.log(response)
     }	
     OneSignal.push(function() {
         OneSignal.getUserId().then(response => register(response));
     });
+	*/
 
 	function onSubscribeButtonClicked() {
 		OneSignal.getUserId(function(userId) { 
@@ -62,15 +64,16 @@
 			*/
 		});
 	}
-
-	OneSignal.on('subscriptionChange', function (isSubscribed) {                    
-		if(isSubscribed) {
-			onSubscribeButtonClicked();                        
-		}
-		else {
-			onUnsubscribeButtonClicked();
-		}
-	 });
+	OneSignal.push(() => {
+		OneSignal.on('subscriptionChange', function (isSubscribed) {                    
+			if(isSubscribed) {
+				onSubscribeButtonClicked();                        
+			}
+			else {
+				onUnsubscribeButtonClicked();
+			}
+		});
+	})
 		
 	</script>	
 
