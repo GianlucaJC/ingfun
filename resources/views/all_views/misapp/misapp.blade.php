@@ -26,13 +26,14 @@
 		OneSignal.push(function() {
 			OneSignal.getUserId().then(function(userId) {
 				alert(userId);
-			}	
+			})
 		});
 	</script>	
 
 	
+	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
 
-	
+
 
 @endsection
 
