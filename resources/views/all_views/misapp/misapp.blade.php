@@ -19,21 +19,29 @@
 	
 	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 	<script>
+		/*
 		window.OneSignalDeferred = window.OneSignalDeferred || [];
 		OneSignalDeferred.push(function(OneSignal) {
 			OneSignal.init({
 			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
 			});
 		});
-		const options = {
-  method: 'POST',
-  headers: {accept: 'application/json', 'content-type': 'application/json'}
-};
+		*/
 
-fetch('https://api.onesignal.com/apps/f9677f83-05dd-44ed-b301-b5c49d5c8777/users', options)
-  .then(response => response.json())
-  .then(response => console.log(response))
-  .catch(err => console.error(err));
+		window.OneSignal = window.OneSignal || [];
+        OneSignal.push(function() {
+            OneSignal.init({
+                appId: 'f9677f83-05dd-44ed-b301-b5c49d5c8777',
+            });
+
+        });
+        OneSignal.push(function() {
+           
+               OneSignal.getUserId(function(userId) {
+                  alert(userId)
+               });
+           
+        });
 		
 	</script>	
 
