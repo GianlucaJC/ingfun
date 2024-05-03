@@ -23,11 +23,19 @@
 			});
 		});
 		
+		var OneSignal = window.OneSignal || [];
+
 		OneSignal.push(function() {
-			OneSignal.getUserId().then(function(userId) {
+		OneSignal.on('subscriptionChange', function (isSubscribed) {
+			alert("The user's subscription state is now:");
+			OneSignal.push(function() {
+				OneSignal.getUserId(function(userId) {
 				alert(userId);
-			})
+				});
+			});
+			});
 		});
+		
 	</script>	
 
 	
