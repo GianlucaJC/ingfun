@@ -17,63 +17,28 @@
 
 	
 	
-	<!--
-		<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
-	!-->	
-	<script src="https://cdn.onesignal.com/sdks/OneSignalSDK.js" async=""></script>
-	<script>
-		/*
-		window.OneSignalDeferred = window.OneSignalDeferred || [];
-		OneSignalDeferred.push(function(OneSignal) {
-			OneSignal.init({
-			appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-			});
-		});
-		*/
-	window.OneSignal = window.OneSignal || [];
-    OneSignal.push(function() {
-        OneSignal.init({
-            appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
-            allowLocalhostAsSecureOrigin: true
-        });
-    });
 
-	/*
+	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
+
+	<script>
+	
+	window.OneSignalDeferred = window.OneSignalDeferred || [];
+	OneSignalDeferred.push(function(OneSignal) {
+		OneSignal.init({
+		appId: "f9677f83-05dd-44ed-b301-b5c49d5c8777",
+		});
+	});
+
+
+	
     function register(response) {
-       console.log(response)
+    	alert(response)
     }	
     OneSignal.push(function() {
         OneSignal.getUserId().then(response => register(response));
     });
-	*/
+	
 
-	function onSubscribeButtonClicked() {
-		OneSignal.getUserId(function(userId) { 
-			alert(userId)
-			/*
-			const options = {
-				method  : 'POST',
-				headers : new Headers({ 'Content-Type' : 'application/json' }),
-				body    : JSON.stringify({ subscribe: true, userId: userId }),
-				credentials: "same-origin"
-			};
-
-			fetch('/api/webpush/register', options).then((res) => {
-			}).catch((error) => {
-			});  
-			*/
-		});
-	}
-	OneSignal.push(() => {
-		OneSignal.on('subscriptionChange', function (isSubscribed) {                    
-			if(isSubscribed) {
-				onSubscribeButtonClicked();                        
-			}
-			else {
-				onUnsubscribeButtonClicked();
-			}
-		});
-	})
 		
 	</script>	
 
