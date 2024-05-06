@@ -183,9 +183,9 @@ Vue.component("box-appalto",{
 				<p class="card-text">
 					
 				</p>
-				<a href="#" class="btn btn-success" @click='view_dettaglio(item.id)'>Dettagli</a>
-				<a href="#" class="ml-2 btn btn-primary">Rifornimenti</a>
-				<a href="#" class="ml-2 btn btn-danger">Sinistri</a>
+				<a href="#" class="btn btn-success btn-lg btn-block" @click='view_dettaglio(item.id)'>Dettagli</a>
+				<a href="#" class="btn btn-primary btn-lg btn-block">Rifornimenti</a>
+				<a href="#" class="btn btn-danger btn-lg btn-block">Sinistri</a>
 			</div>
 		</div>	
 	`,
