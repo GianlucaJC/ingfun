@@ -91,6 +91,10 @@
 				<App></App>
 			</div>
 
+			<div id="rep">
+				<Rep></Rep>
+			</div>
+			
 			<?php
 				$disp="";
 				if (!isset($result['count'])) {
@@ -155,22 +159,39 @@
 				  <i class="fas fa-list-alt fa-2x"></i>
 				</div>
 				<p class="mb-1"><i>Visiona storico delle reperibilità</i></p>
+				<?php
+					$trigger="onclick=\"clickitr('New')\"";
+					if (!$result['count'] ||  $result['count']==0) {
+						$trigger="disabled onclick=\"clickitr('New')\"";
+					}
+				?>
+                <button type="button" <?php echo $trigger; ?>  class="btn btn-warning position-relative">
+                    Nuove
+                    <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                        {{$result['count_newrep'] ?? ''}}
+                    </span>
+                </button>  
 
-				<button type="button"  class="btn btn-warning position-relative">
-					Nuove
-					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['count_newrep'] ?? ''}}
-					</span>
-				</button>                
-
-				<button type="button"  class="ml-3 btn btn-danger position-relative">
+				<?php
+					$trigger="onclick=\"clickitr('Rif')\"";
+					if (!$result['count'] ||  $result['count']==0) {
+						$trigger="disabled onclick=\"clickitr('Rif')\"";
+					}
+				?>
+                <button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-danger position-relative">
 					Rifiutate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 						{{$result['numrepno'] ?? ''}}
 					</span>
 				</button>                
 				
-				<button type="button"  class="ml-3 btn btn-success position-relative">
+				<?php
+					$trigger="onclick=\"clickitr('Acc')\"";
+					if (!$result['count'] ||  $result['count']==0) {
+						$trigger="disabled onclick=\"clickitr('Acc')\"";
+					}
+				?>
+                <button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-success position-relative">
 					Accettate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
 						{{$result['numrepsi'] ?? ''}}
@@ -214,6 +235,7 @@
 
 
 	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=<?php echo time(); ?>"></script>
+	<script src="{{ URL::asset('/') }}dist/js/misrep.js?ver=<?php echo time(); ?>"></script>
 	
 
 @endsection

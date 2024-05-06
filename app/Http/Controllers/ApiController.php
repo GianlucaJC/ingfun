@@ -665,22 +665,57 @@ class ApiController extends Controller
 	
 
 	public function lavori_rep(Request $request) {
-		$check=$this->check_log($request); 
-		if ($check['esito']=="KO") {
-			$risp['header']=$check;
-			 echo json_encode($risp);
-			 exit;
-		} 
-		$id_lav_ref=$check['id_user'];
+		$from="ALL";
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			$from=$request->input('from');
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}
+		
+		if ($id_lav_ref==0) return array();		
+
 
 
 		$lavori=reperibilita::select(DB::raw("DATE_FORMAT(reperibilita.data,'%d-%m-%Y') as data"),'reperibilita.id','reperibilita.fascia','reperibilita.status')
 		->where('reperibilita.dele', "=","0")
 		->where('reperibilita.id_user',"=",$id_lav_ref)
+		->when($from=="New", function ($lavori) {			
+			return $lavori->where('status', "=","0");
+		})
+		->when($from=="Acc", function ($lavori) {			
+			return $lavori->where('status', "=","1");
+		})
+		->when($from=="Rif", function ($lavori) {			
+			return $lavori->where('status', "=","2");
+		})		
 		->orderBy('reperibilita.id','desc')
 		->get();
 
-			
+		if (Auth::user()) {
+			$lav_new=array();$indice=0;
+			foreach($lavori as $lavoro) {
+				$lavoro['indice']=$indice;
+				$lav_new[]=$lavoro;
+				$indice++;
+			}
+			$lavori=$lav_new;
+		}			
 		$risp['header']=$check;
 		$risp['lavori']=$lavori;
 		echo json_encode($risp);
@@ -787,13 +822,29 @@ class ApiController extends Controller
 	}
 	
 	public function risposta_user_rep(Request $request) {
-		$check=$this->check_log($request); 
-		if ($check['esito']=="KO") {
-			$risp['header']=$check;
-			 echo json_encode($risp);
-			 exit;
-		} 
-		$id_lav_ref=$check['id_user'];
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}
+
+
 		$id_rep=$request->input("id_rep");
 		$sn=$request->input("sn");
 		$status=0;

@@ -354,7 +354,10 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
 	Route::post('risposta_user', [ 'as' => 'risposta_user', 'uses' => 'App\Http\Controllers\ApiController@risposta_user']);
 	Route::post('infoappalti', [ 'as' => 'infoappalti', 'uses' => 'App\Http\Controllers\ApiController@infoappalti']);
+	Route::post('risposta_user_rep', [ 'as' => 'risposta_user_rep', 'uses' => 'App\Http\Controllers\ApiController@risposta_user_rep']);
 	
+
+	Route::post('lavori_rep', [ 'as' => 'lavori_rep', 'uses' => 'App\Http\Controllers\ApiController@lavori_rep']);
 	//chiamate ajax prodotti
 	
 	Route::post('check_disp_maga', 'App\Http\Controllers\AjaxControllerAcquisti@check_disp_maga');
