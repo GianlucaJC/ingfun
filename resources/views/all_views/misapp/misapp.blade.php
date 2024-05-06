@@ -161,7 +161,7 @@
 				<p class="mb-1"><i>Visiona storico delle reperibilità</i></p>
 				<?php
 					$trigger="onclick=\"clickitr('New')\"";
-					if (!$result['count'] ||  $result['count']==0) {
+					if (!$result['count_newrep'] ||  $result['count_newrep']==0) {
 						$trigger="disabled onclick=\"clickitr('New')\"";
 					}
 				?>
@@ -174,7 +174,7 @@
 
 				<?php
 					$trigger="onclick=\"clickitr('Rif')\"";
-					if (!$result['count'] ||  $result['count']==0) {
+					if (!$result['numrepno'] ||  $result['numrepno']==0) {
 						$trigger="disabled onclick=\"clickitr('Rif')\"";
 					}
 				?>
@@ -187,7 +187,7 @@
 				
 				<?php
 					$trigger="onclick=\"clickitr('Acc')\"";
-					if (!$result['count'] ||  $result['count']==0) {
+					if (!$result['numrepsi'] ||  $result['numrepsi']==0) {
 						$trigger="disabled onclick=\"clickitr('Acc')\"";
 					}
 				?>
