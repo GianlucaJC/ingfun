@@ -58,44 +58,7 @@
 			})		
 		}			
 		
-
-		function getUserInfo() {
-	console.log('getUserInfo()');
-	Promise.all([
-		OneSignal.Notifications.permission,
-		OneSignal.User.PushSubscription.id,
-		OneSignal.User.PushSubscription.token,
-		OneSignal.User.PushSubscription.optedIn,
-		OneSignal.context.serviceWorkerManager.getActiveState(),
-	])
-		.then(
-			([
-				isSubscribed,
-				subscriptionId,
-				pushToken,
-        optedIn,
-				serviceWorkerActive,
-			]) => {
-        console.log('What is the current URL of this page?', location.href);
-         console.log(
-					"Is a service worker registered and active? (should be false on Safari, otherwise should be 'OneSignal Worker')?",
-					serviceWorkerActive
-				);
-        console.log('')
-        console.log('Are you subscribed, in the browser?', isSubscribed)
-        console.log('Are you opted-in, in OneSignal?' , optedIn);
-				console.log('');
-				console.log('What is your OneSignal Subscription ID?', subscriptionId);
-				console.log('What is your Push Token?', pushToken);
-				
-			}
-		)
-		.catch(e => {
-			console.error('Issue determining whether push is enabled:', e);
-		});
-}
-getUserInfo();
-</script>	
+	</script>	
 
 	
 	<script src="https://cdn.jsdelivr.net/npm/vue@2.5.17/dist/vue.js"></script>
