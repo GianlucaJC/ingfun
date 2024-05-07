@@ -14,6 +14,7 @@ use App\Models\societa;
 use App\Models\mezzi;
 use App\Models\parco_scheda_mezzo;
 use OneSignal;
+use Twilio\Rest\Client;
 
 use DB;
 
@@ -307,6 +308,12 @@ public function __construct()
 		}
 		
 		$dele_cand=request()->input("dele_cand");
+		$send_wa=request()->input("send_wa");
+		
+		if (strlen($send_wa)!=0) {
+			$this->send();
+		}
+
 		$push_appalti=request()->input("push_appalti");
 
 		
@@ -368,11 +375,32 @@ public function __construct()
 		})
 		->orderByDesc('appalti.id')	
 		->get();		
+
 		
 
 		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta);
 
 	}
+
+	public function send()
+    {
+		$request=request();
+		//echo env('TWILIO_SID')."<hr>";
+		//echo $request->to.": ".$request->message."<hr>";
+        try {
+            $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
+
+            $message = $twilio->messages->create("whatsapp:".$request->to, [
+                'from' => "whatsapp:".env('TWILIO_PHONE_NUMBER'),
+                'body' => $request->message,
+            ]);
+
+           //dd($message);
+        } catch (\Exception $e) {
+            dd($e);
+        }
+		
+    }
 
 	public function send_push($userId,$tipo="new",$message_extra="") {
 		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f"; // test push MisAPP mobile

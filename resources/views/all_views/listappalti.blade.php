@@ -69,8 +69,37 @@
 			?>
 		</div>
 	  
+		<?php if (1==2) {?>
 		<form method='post' action="{{ route('listapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
+
+			<div class="container">
+            <div class="row">
+                <h1>Laravel: Whatsapp Twilio Notifications Example</h1>
+
+                <div class="col-md-12 mt-5">
+                    
+                        @csrf
+
+                        <div class="mb-3">
+                            <label for="message" class="form-label">Your Message</label>
+                            <textarea name="message" class="form-control" id="message" rows="3" required="required"></textarea>
+                        </div>
+                        <div class="mb-3">
+                            <label for="phone" class="form-label">To Phone Number</label>
+                            <input type="text" name="to" class="form-control" id="phone" placeholder="+919876543210" required="required">
+                        </div>
+
+                        <div>
+                            <button type="submit" name='send_wa' value='send' class="btn btn-primary">Send</button>
+                        </div>
+                    
+                </div>
+            </div>
+        </div>
+		<?php } ?>
+
+			
 			<div class="row">
 			  <div class="col-lg-12">
 				<h5>TOTALE  APPALTI</h5>
