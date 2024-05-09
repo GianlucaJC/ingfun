@@ -156,6 +156,7 @@ Vue.component("box-appalto",{
 			btnDis
 		};
 	},
+
 	template:`
 		<div class="card">
 			<div class="card-header">
@@ -185,7 +186,8 @@ Vue.component("box-appalto",{
 				</p>
 				<a href="#" class="btn btn-success btn-lg btn-block" @click='view_dettaglio(item.id)'>Dettagli</a>
 				<a href="#" class="btn btn-primary btn-lg btn-block">Rifornimenti</a>
-				<a href="#" class="btn btn-danger btn-lg btn-block">Sinistri</a>
+				
+				<a :href="'sinistri/'+item.id+'/0'" class="btn btn-danger btn-lg btn-block">Nuovo sinistro su questo appalto</a>
 			</div>
 		</div>	
 	`,
