@@ -187,7 +187,7 @@ Vue.component("box-appalto",{
 				<a href="#" class="btn btn-success btn-lg btn-block" @click='view_dettaglio(item.id)'>Dettagli</a>
 				<a href="#" class="btn btn-primary btn-lg btn-block">Rifornimenti</a>
 				
-				<a :href="'sinistri/'+item.id+'/0'" class="btn btn-danger btn-lg btn-block">Nuovo sinistro su questo appalto</a>
+				<a :href="'sinistri/'+item.id+'/1'" class="btn btn-danger btn-lg btn-block">Nuovo sinistro su questo appalto</a>
 			</div>
 		</div>	
 	`,

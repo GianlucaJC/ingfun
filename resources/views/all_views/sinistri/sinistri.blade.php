@@ -225,7 +225,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 					$lbl_save="Aggiorna sinistro";
 			} 
 		?>
-		@if ($id_sinistro!=0 && $from==1)
+		@if (($id_sinistro!=0 && $from==1) || 1==1)
 			<a href='javascript:void(0)' class='link' onclick="init_allegati({{$id_sinistro}})" >Aggiungi allegati</a>
 			<a  href='#' class='link ml-3' onclick='url=window.location.href;location.href=url;'>Refresh allegati</a>
 			
