@@ -385,8 +385,8 @@ public function __construct()
 	public function send()
     {
 		$request=request();
-		//echo env('TWILIO_SID')."<hr>";
-		//echo $request->to.": ".$request->message."<hr>";
+		echo env('TWILIO_SID')."<hr>";
+		echo $request->to.": ".$request->message."<hr>";
         try {
             $twilio = new Client(env('TWILIO_SID'), env('TWILIO_AUTH_TOKEN'));
 
@@ -395,7 +395,7 @@ public function __construct()
                 'body' => $request->message,
             ]);
 
-           //dd($message);
+           dd($message);
         } catch (\Exception $e) {
             dd($e);
         }

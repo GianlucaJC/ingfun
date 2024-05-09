@@ -98,8 +98,8 @@
 			<?php
 				$disp="";
 				if (!isset($result['count'])) {
-					$disp="display:none";
-					echo "<h3><center>Utente non riconosciuto!</center></h3>";
+					//$disp="display:none";
+					//echo "<h3><center>Utente non riconosciuto!</center></h3>";
 				}	
 			?>
 			<div class="list-group" style='{{$disp}}' id='div_servizi'>
@@ -113,40 +113,46 @@
 				<p class="mb-1"><i>Visiona lo storico dei lavori e la gestione dei rifornimenti</i></p>
 				<?php
 					$trigger="onclick=\"clickit('New')\"";
-					if (!$result['count'] ||  $result['count']==0) {
+					if (!isset($result['count']) ||  $result['count']==0) {
 						$trigger="disabled onclick=\"clickit('New')\"";
 					}
 				?>
                 <button type="button" <?php echo $trigger; ?>  class="btn btn-warning position-relative">
                     Nuovi
                     <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$result['count'] ?? ''}}
+						<?php
+							if (isset($result['count'])) echo $result['count'];
+						?>
                     </span>
                 </button>                
 				<?php
 					$trigger="onclick=\"clickit('Rif')\"";
-					if (!$result['storici_no'] ||  $result['storici_no']==0) {
+					if (!isset($result['storici_no']) ||  $result['storici_no']==0) {
 						$trigger="disabled onclick=\"clickit('Rif')\"";
 					}
 				?>
                 <button type="button" <?php echo $trigger; ?> class="ml-3 btn btn-danger position-relative">
                     Rifiutati
                     <span id='job_no' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$result['storici_no'] ?? ''}}
+						<?php
+							if (isset($result['storici_no'])) echo $result['storici_no'];
+						?>
                     </span>
                 </button>                
 
 				<?php
 					$trigger="onclick=\"clickit('Acc')\"";
-					if (!$result['storici_si'] ||  $result['storici_si']==0) {
+					if (!isset($result['storici_si']) ||  $result['storici_si']==0) {
 						$trigger="disabled onclick=\"clickit('Acc')\"";
 					}
 				?>
                 <button type="button" <?php echo $trigger; ?> class="ml-3 btn btn-success position-relative">
                     Accettati
                     <span id='job_yes' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$result['storici_si'] ?? ''}}
-                    </span>
+						<?php
+							if (isset($result['storici_si'])) echo $result['storici_si'];
+						?>
+				</span>
                 </button> 
 
 			</span>
@@ -161,40 +167,46 @@
 				<p class="mb-1"><i>Visiona storico delle reperibilità</i></p>
 				<?php
 					$trigger="onclick=\"clickitr('New')\"";
-					if (!$result['count_newrep'] ||  $result['count_newrep']==0) {
+					if (!isset($result['count_newrep']) ||  $result['count_newrep']==0) {
 						$trigger="disabled onclick=\"clickitr('New')\"";
 					}
 				?>
                 <button type="button" <?php echo $trigger; ?>  class="btn btn-warning position-relative">
                     Nuove
                     <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                        {{$result['count_newrep'] ?? ''}}
+						<?php
+							if (isset($result['count_newrep'])) echo $result['count_newrep'];
+						?>
                     </span>
                 </button>  
 
 				<?php
 					$trigger="onclick=\"clickitr('Rif')\"";
-					if (!$result['numrepno'] ||  $result['numrepno']==0) {
+					if (!isset($result['numrepno']) ||  $result['numrepno']==0) {
 						$trigger="disabled onclick=\"clickitr('Rif')\"";
 					}
 				?>
                 <button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-danger position-relative">
 					Rifiutate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['numrepno'] ?? ''}}
+						<?php
+							if (isset($result['numrepno'])) echo $result['numrepno'];
+						?>
 					</span>
 				</button>                
 				
 				<?php
 					$trigger="onclick=\"clickitr('Acc')\"";
-					if (!$result['numrepsi'] ||  $result['numrepsi']==0) {
+					if (!isset($result['numrepsi']) ||  $result['numrepsi']==0) {
 						$trigger="disabled onclick=\"clickitr('Acc')\"";
 					}
 				?>
                 <button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-success position-relative">
 					Accettate
 					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-						{{$result['numrepsi'] ?? ''}}
+						<?php
+							if (isset($result['numrepsi'])) echo $result['numrepsi'];
+						?>
 					</span>
 				</button> 
 
