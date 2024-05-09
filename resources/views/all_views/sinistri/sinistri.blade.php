@@ -233,7 +233,7 @@ if (!Auth::user() && $from==0) $nolog=0;
 				<div class="col-md-6">
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select" name="tipo_allegato" id="tipo_allegato" onchange="set_class_allegati.tipo_allegato=this.value">
-							<option value='1'>Allegato standard
+							<option value='1'>Allegato sinistro
 							</option>
 							<option value='2'>File CID
 							</option>
