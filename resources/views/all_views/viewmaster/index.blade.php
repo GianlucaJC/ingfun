@@ -90,7 +90,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
       <li class="nav-item">
         <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
       </li>
-      <li class="nav-item d-none d-sm-inline-block">
+      <li class="nav-item  d-sm-inline-block">
 		<?php
 			
 			$referer = $_SERVER['HTTP_REFERER'] ?? null;
@@ -105,7 +105,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			
 		?>
 	</li>	
-	<li class="nav-item d-none d-sm-inline-block">	
+	<li class="nav-item  d-sm-inline-block">	
         <a href="{{ route('menu') }}" class="nav-link">
 			<button type="button" class="btn btn-primary btn-sm">Homepage</button>	
 		</a>

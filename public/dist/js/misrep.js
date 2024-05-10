@@ -39,7 +39,6 @@ var app = Vue.component('Rep',{
 	methods: {
 
 		events(from) {
-			
 			$("#div_servizi").hide(150)
 			//<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
 			const metaElements = document.querySelectorAll('meta[name="csrf-token"]');

@@ -94,7 +94,11 @@
 			<div id="rep">
 				<Rep></Rep>
 			</div>
-			
+
+			<div id="rif">
+				<Rif></Rif>
+			</div>
+
 			<?php
 				$disp="";
 				if (!isset($result['count'])) {
@@ -248,6 +252,7 @@
 
 	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=<?php echo time(); ?>"></script>
 	<script src="{{ URL::asset('/') }}dist/js/misrep.js?ver=<?php echo time(); ?>"></script>
+	<script src="{{ URL::asset('/') }}dist/js/misref.js?ver=<?php echo time(); ?>"></script>
 	
 
 @endsection

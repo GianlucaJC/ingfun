@@ -83,6 +83,7 @@ var app = Vue.component('App',{
 
 
 Vue.component("box-appalto",{
+	
     mounted: function () {
         window.appalto=this;
     },		
@@ -148,6 +149,9 @@ Vue.component("box-appalto",{
 				return console.log(status, err);
 			})				
 
+		},
+		appsel(id_appalto,targa) {
+			loadrif(id_appalto,targa)
 		}
 	},	
 	data() {
@@ -184,10 +188,10 @@ Vue.component("box-appalto",{
 				<p class="card-text">
 					
 				</p>
+				
 				<a href="#" class="btn btn-success btn-lg btn-block" @click='view_dettaglio(item.id)'>Dettagli</a>
 				
-					
-				<a href="#" class="btn btn-primary  btn-block"><small>Nuovo rifornimento per l'appalto</small></a>
+				<a href="#" @click="appsel(item.id,item.targa)" class="btn btn-primary  btn-block"><small>Nuovo rifornimento per l'appalto</small></a>
 				<a :href="'sinistri/'+item.id+'/1'" class="btn btn-danger btn-block"><small>Nuovo sinistro su questo appalto</small></a>
 				
 				

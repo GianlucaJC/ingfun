@@ -42,6 +42,19 @@ class ApiController extends Controller
 		$resp['esito']="OK";
 		return $resp;		
 	}
+
+	public function elenco_mezzi() {
+		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as sm')
+		->select('sm.id','mm.marca','mom.modello','sm.targa')
+		->join('parco_marca_mezzo as mm','sm.marca','mm.id')
+		->join('parco_modello_mezzo as mom','sm.modello','mom.id')
+		->orderBy('mm.marca')
+		->orderBy('sm.targa')
+		->groupBy('sm.id')
+		->get();		
+		echo json_encode($mezzi);
+	}
+
 	public function check_log($request) {
 		if ($request->hasHeader('utente')) {
 			$utente=$request->header("utente");
