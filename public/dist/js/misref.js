@@ -16,8 +16,30 @@ var app = Vue.component('Rif',{
 								{{ mezzo.marca }} - {{mezzo.modello}} - {{mezzo.targa}}
 							</option>
 						</select>
+						
 
+					</div>	
+
+					<div class="form-group">
+						<label>Importo</label>
+						<input type="text" class="form-control" v-model='importo' placeholder="Importo">
 					</div>					
+					<div class="form-group">
+						<label>Km</label>
+						<input type="text" class="form-control" v-model='km' placeholder="km">
+					</div>					
+					<div class="form-group">
+						<label>Note</label>
+						<input type="text" class="form-control" v-model='note' placeholder="Note">
+					</div>					
+
+
+					<div class="form-group">
+						<label>Scegli un file o scatta foto</label>
+						<div class="input-group mb-3">
+							<input type="file" class="form-control" id="inputGroupFile01" @change="uploadFile" ref="file">
+				  		</div>
+					</div>
 				</p>
 			</div>
 		</div>
@@ -28,19 +50,42 @@ var app = Vue.component('Rif',{
 		let view_root=true;
 		let mezzi= null; 
 		let selected=null;
+		let importo=null;
+		let km=null;
+		let note=null;
 
 		
 		return {
 			appalto_ref,
 			view_root,
 			mezzi,
-			selected
+			selected,
+			importo,
+			km,
+			note
 		};
 	},
     mounted: function () {
         window.rifornimenti=this;
     },	
 	methods: {
+
+		uploadFile() {
+			this.Images = this.$refs.file.files[0];
+			this.submitFile()
+		},
+		submitFile() {
+			var data = new FormData()
+			data.append('file', this.Images)
+			data.append('user', 'hubot')
+			
+			fetch('/avatars', {
+			  method: 'POST',
+			  body: data
+			})
+
+		},
+		
 
 		loadrif(id_appalto,targa) {
 			this.selected=targa
