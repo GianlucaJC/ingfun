@@ -97,9 +97,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			$uri_complete = request()->path();
 			//if ($uri_complete!="menu") {	
 				$referer="#";
-				echo "<a href='$referer' onclick='history.back()' class='nav-link'>";	
-					echo "<button type='button' class='btn btn-secondary btn-sm'>Indietro</button>";
-				echo "</a>";
+				echo "<span id='id_back'>";
+					echo "<a href='$referer' onclick='history.back()' class='nav-link'>";	
+						echo "<button type='button' class='btn btn-secondary btn-sm'>Indietro</button>";
+					echo "</a>";
+				echo "</span>";
 			//}
 
 			

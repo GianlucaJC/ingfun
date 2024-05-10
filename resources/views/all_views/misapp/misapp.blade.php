@@ -16,6 +16,7 @@
 	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
 	<script>
+		document.getElementById("id_back").style.display = "none";
 		window.OneSignalDeferred = window.OneSignalDeferred || [];
 		OneSignalDeferred.push(function (OneSignal) {
 			OneSignal.init({
@@ -72,6 +73,7 @@
 <style>
 
 </style>
+
 @section('content_main')
 
   <!-- Content Wrapper. Contains page content -->

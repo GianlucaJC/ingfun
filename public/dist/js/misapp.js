@@ -4,7 +4,7 @@ $(document).ready( function () {
 		value=$(this).html()
 		if (value.trim()==0) $(this).hide()
 	})	
-
+	$("#id_back").hide();
 } );
 
 
