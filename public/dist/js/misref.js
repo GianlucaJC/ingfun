@@ -10,10 +10,13 @@ var app = Vue.component('Rif',{
 					<hr>
 					<h5>RIFORNIMENTO PER APPALTO {{appalto_ref}}</h5>
 					<div class="form-group">
-						<label for="mezzo_ass">Mezzo associato</label>
-						<select class="form-control" id="mezzo_ass" v-model="selected">
+						<label >Mezzo associato*</label>
+						
+						<!-- v-on:change="change_mezzo($event)"!-->
+
+						<select class="form-control"  v-model="targa">
 							<option v-for="mezzo in mezzi" :value="mezzo.targa">
-								{{ mezzo.marca }} - {{mezzo.modello}} - {{mezzo.targa}}
+								{{mezzo.marca}}-{{mezzo.modello}}-{{mezzo.targa}}
 							</option>
 						</select>
 						
@@ -21,11 +24,11 @@ var app = Vue.component('Rif',{
 					</div>	
 
 					<div class="form-group">
-						<label>Importo</label>
+						<label>Importo*</label>
 						<input type="text" class="form-control" v-model='importo' placeholder="Importo">
 					</div>					
 					<div class="form-group">
-						<label>Km</label>
+						<label>Km*</label>
 						<input type="text" class="form-control" v-model='km' placeholder="km">
 					</div>					
 					<div class="form-group">
@@ -35,10 +38,16 @@ var app = Vue.component('Rif',{
 
 
 					<div class="form-group">
-						<label>Scegli un file o scatta foto</label>
+						<label>Scegli un file o scatta foto scontrino e targa</label>
 						<div class="input-group mb-3">
-							<input type="file" class="form-control" id="inputGroupFile01" @change="uploadFile" ref="file">
+							<input type="file" class="form-control" @change="uploadFile($event)">
 				  		</div>
+					</div>
+					<div>
+						<button type="button" class="btn btn-success" :disabled="sendko" @click='send_segn()'>Invia segnalazione</button>
+						
+						<span  v-show="sendko"><i class="fas fa-spinner fa-spin"></i></span>
+
 					</div>
 				</p>
 			</div>
@@ -49,20 +58,24 @@ var app = Vue.component('Rif',{
 		let appalto_ref=null;
 		let view_root=true;
 		let mezzi= null; 
-		let selected=null;
+		let mezzo=null;
+		let targa=null;
 		let importo=null;
 		let km=null;
 		let note=null;
-
+		let file=null
+		let sendko=false;
 		
 		return {
 			appalto_ref,
 			view_root,
 			mezzi,
-			selected,
+			targa,
 			importo,
 			km,
-			note
+			note,
+			file,
+			sendko
 		};
 	},
     mounted: function () {
@@ -70,25 +83,80 @@ var app = Vue.component('Rif',{
     },	
 	methods: {
 
-		uploadFile() {
-			this.Images = this.$refs.file.files[0];
-			this.submitFile()
+		/*
+		change_mezzo: function(e){
+			//var id = e.target.value;
+			mezzo = e.target.options[e.target.options.selectedIndex].text;
+			this.mezzo=mezzo
 		},
-		submitFile() {
-			var data = new FormData()
-			data.append('file', this.Images)
-			data.append('user', 'hubot')
+		*/
+
+		check_ins() {
+			file=this.file
+			importo=this.importo
+			km=this.km
+			targa=this.targa
+			if (!importo || !km || !targa) return false
+			if (file==null) return "nofile"
+		},
+		send_segn() {
 			
-			fetch('/avatars', {
+			check=this.check_ins()
+			if (check=="nofile") {
+				alert("Scattare una foto o sceglierne una dalla galleria")	
+				return false
+			}
+			else if (check==false) {
+				alert("I campi contrassegnati con * sono obbligatori e devono essere valorizzati")
+				return false
+			} 
+			this.sendko=true
+			var data = new FormData()
+			data.append('file', file)
+			data.append('id_appalto', this.appalto_ref)
+			data.append('importo', this.importo)
+			data.append('km', this.km)
+			data.append('note', this.note)
+			data.append('targa', this.targa)
+
+			//<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
+			const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
+			const csrf = metaElements.length > 0 ? metaElements[0].content : "";			
+			
+			fetch('send_foto', {
 			  method: 'POST',
+			  headers: {
+				//"Content-type": "multipart/form-data",
+				"X-CSRF-Token": csrf
+			  },
 			  body: data
 			})
+			.then(response => {
+				if (response.ok) {
+				   return response.json();
+				}
+			})
+			.then(response=>{
+				if (response.header=="KO") 
+					alert (response.message)
+				else
+					alert("Segnalazione inviata con successo!")
+				this.sendko=false
+			})
+			.catch(status, err => {
+				return console.log(status, err);
+			})				
 
+		},
+
+		uploadFile(event) {
+			file = event.target.files[0];
+			this.file=file
 		},
 		
 
 		loadrif(id_appalto,targa) {
-			this.selected=targa
+			this.targa=targa
 			this.appalto_ref=id_appalto
 			//$("#div_servizi").hide(150)
             $("#app").hide();

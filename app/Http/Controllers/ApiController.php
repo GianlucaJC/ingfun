@@ -238,79 +238,82 @@ class ApiController extends Controller
 
 	
 	public function send_foto(Request $request) {
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}		
+
+		$filename="test.jpg";
 		
-		$check=$this->check_log($request); 
-		if ($check['esito']=="KO") {
-			$risp['header']=$check;
-			 echo json_encode($risp);
-			 exit;
-		} 
-		$id_lav_ref=$check['id_user'];
+		//$filename = $request->header('filename');
+
+
+		$file = $_FILES['file'];
+		$temp = $file['tmp_name'];
 		
+		$target_file = tempnam("dist/upload/rifornimenti", "photo");
+	
+		if (move_uploaded_file($temp, $target_file)) {
+			$path="dist/upload/rifornimenti/";
+			$small = "dist/upload/rifornimenti/thumbnail/small/";
+			$medium = "dist/upload/rifornimenti/thumbnail/medium/";
+			$result = rename($target_file, $path . $filename);  
+			copy($path.$filename, $small.$filename);
+			copy($path.$filename, $medium.$filename);
+			
+			
+			$this->createThumbnail($small.$filename, 150, 93);
+			$this->createThumbnail($medium.$filename, 300, 185);
+			
+								
+			$idappalto = $request->input('id_appalto');
+			$importo = $request->input('importo');
+			$km = $request->input('km');
+			$note = $request->input('note');
+			$targa = $request->input('targa');
+			
+			$data=date("Y-m-d");
 
-
-		$risp=array();
-		$login=array();
-		$login['header']="OK";
-		/* PUT data comes in on the stdin stream */
-		$putdata = fopen("php://input", "r");
-		$filename = $request->header('filename');
-		if ($putdata) {
-			/* Open a file for writing */
-			$tmpfname = tempnam("dist/upload/rifornimenti", "photo");
-			$fp = fopen($tmpfname, "w");
-			if ($fp) {
-				
-				/* Read the data 1 KB at a time and write to the file */
-				while ($data = fread($putdata, 1024)) {
-					fwrite($fp, $data);
-				}
-				/* Close the streams */
-				fclose($fp);
-				fclose($putdata);
-				
-				$path="dist/upload/rifornimenti/";
-				$small = "dist/upload/rifornimenti/thumbnail/small/";
-				$medium = "dist/upload/rifornimenti/thumbnail/medium/";
-				$result = rename($tmpfname, $path . $filename);  
-				copy($path.$filename, $small.$filename);
-				copy($path.$filename, $medium.$filename);
-				
-				$this->createThumbnail($small.$filename, 150, 93);
-				$this->createThumbnail($medium.$filename, 300, 185);
-						
-				$idappalto = $request->header('idappalto');
-				
-				$importo = $request->header('importo');
-				$km = $request->header('km');
-				$note = $request->header('note');
-				$mezzo = $request->header('mezzo');
-				$info=explode("-",$mezzo);
-				$targa=trim($info[1]);
-				$data=date("Y-m-d");
-
-				$rifornimenti = new rifornimenti;
-				//riverso i dati nel DB-->Attenzione agli underscore!!!!
-				$rifornimenti->id_user = $id_lav_ref;
-				$rifornimenti->id_appalto=$idappalto;
-				$rifornimenti->filename=$filename;
-				$rifornimenti->importo=$importo;
-				$rifornimenti->km=$km;
-				$rifornimenti->note=$note;
-				$rifornimenti->targa=$targa;
-				$rifornimenti->data=$data;
-				$rifornimenti->save();
-				$risp['header']="OK";
-				$risp['message']="File e dati riversati sul server";
-				
-				
-				//aggiornamenti per eventuale noleggio
-				$info_id=parco_scheda_mezzo::select('id','km_alert_mail','notifica_alert_noleggio')
-				->where('targa', "=",$targa)
-				->where('proprieta','=',1)
-				->get()->first();
-				
+			$rifornimenti = new rifornimenti;
+			//riverso i dati nel DB-->Attenzione agli underscore!!!! (provenienti dal vecchio REQUEST App)
+			$rifornimenti->id_user = $id_lav_ref;
+			$rifornimenti->id_appalto=$idappalto;
+			$rifornimenti->filename=$filename;
+			$rifornimenti->importo=$importo;
+			$rifornimenti->km=$km;
+			$rifornimenti->note=$note;
+			$rifornimenti->targa=$targa;
+			$rifornimenti->data=$data;
+			$rifornimenti->save();
+			$risp['header']="OK";
+			$risp['message']="File e dati riversati sul server";
+			
+			
+			//aggiornamenti per eventuale noleggio
+			$info_id=parco_scheda_mezzo::select('id','km_alert_mail','notifica_alert_noleggio')
+			->where('targa', "=",$targa)
+			->where('proprieta','=',1)
+			->get()->first();
+			if (isset($info_id->id)) {
 				$id_mezzo=$info_id->id;
+				
 				if ($id_mezzo!=null && strlen($id_mezzo)!=0) {
 					$psm=parco_scheda_mezzo::find($id_mezzo);
 					$psm->km_noleggio_remote=$km;
@@ -327,15 +330,16 @@ class ApiController extends Controller
 						}
 					}
 				}
-				///
-				
-				
-				echo json_encode($risp);
-				exit;
 			}
+			///
+			
+			
+			echo json_encode($risp);
+			exit;
+
 		}
 		$risp['header']="KO";
-		$risp['message']="Dati non riversati";
+		$risp['message']="Attemzione - Dati non riversati per errore riscontrato";
 		echo json_encode($risp);
 		
    }

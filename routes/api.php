@@ -32,8 +32,7 @@ Route::get('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\A
 
 Route::put('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 
-Route::post('send_foto', [ 'as' => 'send_foto', 'uses' => 
-'App\Http\Controllers\ApiController@send_foto']);
+Route::post('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 
 
 Route::get('send_foto_inc', [ 'as' => 'send_foto_inc', 'uses' => 'App\Http\Controllers\ApiController@send_foto_inc']);
