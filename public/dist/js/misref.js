@@ -154,13 +154,19 @@ var app = Vue.component('Rif',{
 				}
 			})
 			.then(response=>{
-				if (response.header=="KO") 
-					alert (response.message)
-				else  {
-					this.sendreal=true
-					alert("Segnalazione inviata con successo!")
-				}	
-				this.sendko=false
+				if (!response) {
+					alert ("Errore generico! Assicurati di inviare immagini (no .pdf, .doc, etc.)")
+					this.sendko=false
+				}
+				else {
+					if (response.header=="KO") 
+						alert (response.message)
+					else  {
+						this.sendreal=true
+						alert("Segnalazione inviata con successo!")
+					}	
+					this.sendko=false
+				}
 			})
 			.catch(status, err => {
 				return console.log(status, err);
