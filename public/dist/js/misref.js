@@ -44,9 +44,14 @@ var app = Vue.component('Rif',{
 				  		</div>
 					</div>
 					<div>
-						<button type="button" class="btn btn-success" :disabled="sendko" @click='send_segn()'>Invia segnalazione</button>
+						<button v-show="!sendreal" type="button" class="btn btn-success" :disabled="sendko" @click='send_segn()'>Invia segnalazione</button>
+						<span class='ml-3' v-show="sendko"><i class="fas fa-spinner fa-spin"></i></span>
 						
-						<span  v-show="sendko"><i class="fas fa-spinner fa-spin"></i></span>
+						<div v-show="sendreal" class="alert alert-success" role="alert">
+							Segnalazione inviata con successo!<hr>
+							<button type="button" class="btn btn-primary" @click='new_segn()'>Nuova segnalazione</button>
+					  	</div>						
+						
 
 					</div>
 				</p>
@@ -65,6 +70,8 @@ var app = Vue.component('Rif',{
 		let note=null;
 		let file=null
 		let sendko=false;
+
+		let sendreal=false;
 		
 		return {
 			appalto_ref,
@@ -75,7 +82,8 @@ var app = Vue.component('Rif',{
 			km,
 			note,
 			file,
-			sendko
+			sendko,
+			sendreal
 		};
 	},
     mounted: function () {
@@ -98,6 +106,15 @@ var app = Vue.component('Rif',{
 			targa=this.targa
 			if (!importo || !km || !targa) return false
 			if (file==null) return "nofile"
+		},
+
+		new_segn() {
+			this.importo=null;
+			this.km=null;
+			this.note=null;
+			this.file=null;
+			this.sendreal=false;
+			this.sendko=false;
 		},
 		send_segn() {
 			
@@ -139,8 +156,10 @@ var app = Vue.component('Rif',{
 			.then(response=>{
 				if (response.header=="KO") 
 					alert (response.message)
-				else
+				else  {
+					this.sendreal=true
 					alert("Segnalazione inviata con successo!")
+				}	
 				this.sendko=false
 			})
 			.catch(status, err => {
