@@ -69,10 +69,9 @@
 			?>
 		</div>
 	  
-		<?php if (1==2) {?>
 		<form method='post' action="{{ route('listapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
-			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
-
+		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
+			<?php if (1==2) {?>
 			<div class="container">
             <div class="row">
                 <h1>Laravel: Whatsapp Twilio Notifications Example</h1>
@@ -337,6 +336,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.06"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.09"></script>
 
 @endsection
