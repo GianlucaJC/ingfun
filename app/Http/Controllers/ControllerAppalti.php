@@ -402,13 +402,17 @@ public function __construct()
 		
     }
 
+
 	public function send_push($userId,$tipo="new",$message_extra="") {
 		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f"; // test push MisAPP mobile
 		//$userId="5a6b39e0-9fb3-4b73-9cd3-971de475894b"; //test Push web - Firefox
-		//$userId="56c40841-2d6b-4b75-bd73-f15179ccf294"; //test Push web - chrome mobile
+		//$userId="be4f0ff4-76e4-4b0c-b316-bbf1fb023bf0"; //test Push web - chrome mobile
 		if (strlen($userId)==0) return;
 		$params = []; 
 		$params['include_player_ids'] = [$userId]; 
+		$url="ingfun/public/misapp";
+		$params['url'] = $url; 
+		
 		$headings = array(
 			"it" => 'MisAPP News',
 			"en" => 'MisAPP News'

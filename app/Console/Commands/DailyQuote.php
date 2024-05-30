@@ -95,6 +95,8 @@ class DailyQuote extends Command
 		if (strlen($userId)==0) return;
 		$params = []; 
 		$params['include_player_ids'] = [$userId]; 
+		$url="ingfun/public/misapp";
+		$params['url'] = $url;		
 		$headings = array(
 			"it" => 'MisAPP News',
 			"en" => 'MisAPP News'
