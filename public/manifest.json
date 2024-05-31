@@ -1,10 +1,11 @@
 {
+	"id": "/?source=pwa",
     "name": "MisAPP",
     "short_name": "MisApp",
     "start_url": "/ingfun/public/misapp",
     "background_color": "#ffffff",
     "description": "MisAPP Appalti-Servizi",
-    "display": "standalone",
+    "display": "minimal-ui",
     "theme_color": "#ffffff",
     "icons": [
         {
