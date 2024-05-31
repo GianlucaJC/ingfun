@@ -1,14 +1,14 @@
 {
-    "name": "PushWEB - MisAPP",
+    "name": "MisAPP",
     "short_name": "MisApp",
-    "start_url": "/index.php",
-    "background_color": "#dc3545",
-    "description": "WebPush - MisAPP",
+    "start_url": "/ingfun/public/misapp",
+    "background_color": "#ffffff",
+    "description": "MisAPP Appalti-Servizi",
     "display": "fullscreen",
-    "theme_color": "#6777ef",
+    "theme_color": "#ffffff",
     "icons": [
         {
-            "src": "dist/img/misapp.png",
+            "src": "dist/img/mis.png",
             "sizes": "512x512",
             "type": "image/png",
             "purpose": "any maskable"
