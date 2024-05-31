@@ -179,7 +179,7 @@ Vue.component("box-appalto",{
 					<button type="button" :disabled=btnDis v-on:click="request_risp(rsp,item.id,'N',item.indice)" class="btn btn-outline-danger">Rifiuta</button>
 				</p>		
 
-				<h4>{{item.descrizione_appalto}}</h4>
+				<h4>{{item.id}}</h4>
 			</div>
 			<div class="card-body">
 				<h5 class="card-title">
