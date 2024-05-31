@@ -13,7 +13,7 @@
 
 
 @section('extra_style') 
-	
+	<link rel="manifest" href="{{ asset('/manifest.json') }}">
 
 	<script src="https://cdn.onesignal.com/sdks/web/v16/OneSignalSDK.page.js" defer></script>
 
