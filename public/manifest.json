@@ -4,7 +4,7 @@
     "start_url": "/ingfun/public/misapp",
     "background_color": "#ffffff",
     "description": "MisAPP Appalti-Servizi",
-    "display": "fullscreen",
+    "display": "standalone",
     "theme_color": "#ffffff",
     "icons": [
         {
