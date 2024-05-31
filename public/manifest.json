@@ -1,0 +1,17 @@
+{
+    "name": "PushWEB - MisAPP",
+    "short_name": "MisApp",
+    "start_url": "/index.php",
+    "background_color": "#dc3545",
+    "description": "WebPush - MisAPP",
+    "display": "fullscreen",
+    "theme_color": "#6777ef",
+    "icons": [
+        {
+            "src": "dist/img/misapp.png",
+            "sizes": "512x512",
+            "type": "image/png",
+            "purpose": "any maskable"
+        }
+    ]
+}
