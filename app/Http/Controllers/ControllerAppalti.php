@@ -375,7 +375,7 @@ public function __construct()
 					$email_az=$user_ref->email_az;
 					if ($email_az!=null) $email=$email_az;
 					
-$email="morescogianluca@gmail.com";	
+
 					$list->ditta_ref=$ditta_ref;
 					$list->lav_id=$lav_id;
 					$list->ids_lav=$ids_lav;
