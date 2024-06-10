@@ -63,7 +63,23 @@
             ?>
             <th {{$st1}}>{{$responsabile}}</th>
         </tr>
-
+        @if ($appalto->note)
+        <tr>
+            <td {{$st}}>Note</td>
+            <th {{$st1}}>{{$appalto->note}}</th>
+        </tr>
+                    
+        @endif
+        <?php 
+            if (strlen($appalto->variazione)!=0) {
+                echo "<tr>";
+                    echo "<td $st>Variazione</td>";
+                    echo "<th>
+                            <span style='background-color:yellow'><font color='black'><b>".$appalto->variazione."</b></font></span>";
+                    echo "</th>";
+                echo "</tr>";
+            }
+         ?>
     </table>
 </body>
 </html>

@@ -41,7 +41,28 @@ $(document).ready( function () {
 
 	$("#sub_newcand").click(function(){
 	});
+
+	$('#variazione').on("change keyup paste", function(){
+		$("#bell").html("<i class='fas fa-bell' style='color: #df0000;'></i>")
+		$("#flag_variazione").val("1")
+	})
 } );
+
+
+function set_bell() {
+	if( typeof set_bell.value == 'undefined' ) set_bell.value=0
+	if (set_bell.value==0) set_bell.value=1
+	else set_bell.value=0
+	if (set_bell.value==1){
+		$("#flag_variazione").val("1")
+		$("#bell").html("<i class='fas fa-bell' style='color: #df0000;'></i>")
+	}
+	else{
+		$("#flag_variazione").val("")
+		$("#bell").html("<i class='far fa-bell-slash'></i>")
+	}
+}
+
 
 function check_save() {
 	if( typeof check_save.lav_from_list == 'undefined' ) 

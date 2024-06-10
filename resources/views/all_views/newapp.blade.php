@@ -356,24 +356,20 @@
 				</div>	
 			</div>
 			
-			<?php 
-				$flag_variazione="0";
-				if (strlen($id_app)!=0 && $id_app!=0) {
-					$only="";
-					if (strlen($appalti[0]->variazione)!=0) 
-						$only="readonly";
-					else $flag_variazione="1";
-					?>
-				<div class="row mb-3">
-					<div class="col-md-12">
-						<div class="form-floating">
-							<textarea class="form-control" name='variazione' id="variazione" rows="4" {{$only}}>{{$appalti[0]->variazione ?? ''}}</textarea>
-							<label for="variazione">Variazione (max una) </label>
-						</div>
-					</div>	
-				</div>				
-			<?php }	?>
-			<input type='hidden' name='flag_variazione' id='flag_variazione' value='{{$flag_variazione}}'>
+			
+			<div class="row mb-3">
+				<span id='bell' onclick="set_bell()">
+				<i class="far fa-bell-slash"></i>
+				</span>
+				<div class="col-md-12">
+					<div class="form-floating">
+						<textarea class="form-control" name='variazione' id="variazione" rows="4">{{$appalti[0]->variazione ?? ''}}</textarea>
+						<label for="variazione">Variazione</label>
+					</div>
+				</div>	
+			</div>				
+
+			<input type='hidden' name='flag_variazione' id='flag_variazione'>
 			<hr>
 		</div>
 			
@@ -443,7 +439,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.265"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.272"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

@@ -27,6 +27,87 @@ public function __construct()
 		$this->middleware('auth')->except(['index']);
 	}		
 
+	public function send_list_push_mail($id_app,$type,$only_send=array()) {
+		$list_push=appalti::select('appalti.*','l.id_lav_ref','appalti.id')
+		->join("lavoratoriapp as l","appalti.id","l.id_appalto")
+		->where('appalti.id', $id_app)
+		->where('l.status','=',0)
+		->groupby('l.id_lav_ref')
+		->get();
+
+		$ids_lav=array();
+		foreach($list_push as $list) {
+			if (!in_array($list->id_lav_ref,$ids_lav))  
+				$ids_lav[]=$list->id_lav_ref;
+		}	
+
+		$ditta_ref="";
+		if (isset($list_push[0])) {
+			$id_ditta=$list_push[0]->id_ditta;
+			$ditta_info=ditte::select('denominazione')->where('id', "=",$id_ditta)->get()->first();
+			if ($ditta_info->denominazione!=null) $ditta_ref=$ditta_info->denominazione;
+		}
+		$lavs=candidati::select('id','nominativo')->get();
+		$lav_id=array();
+		foreach($lavs as $lav) {
+			$lav_id[$lav->id]=$lav->nominativo;
+		}
+		$list_rest=array();
+		foreach ($list_push as $list ){
+			$list->ditta_ref=$ditta_ref;
+			$list->lav_id=$lav_id;
+			$list->ids_lav=$ids_lav;
+			$list_rest[]=$list;
+		}
+
+
+		$lavs=candidati::select('id','nominativo')->get();
+		$lav_id=array();
+		foreach($lavs as $lav) {
+			$lav_id[$lav->id]=$lav->nominativo;
+		}
+		$num_send_mail=0;$num_send=0;
+		foreach ($list_push as $list ){
+			$send=false;$send_m=false;
+			$id_ref=$list->id_lav_ref;
+			if (count($only_send)>0) {
+				if (!in_array($id_ref,$only_send)) continue;
+			}
+			$user_ref=candidati::select('id_user','email','email_az','nominativo')->where('id','=',$id_ref)->get()->first();
+			if ($user_ref->id_user!=null) {
+				$push=user::select('push_id')
+				->where('id','=',$user_ref->id_user)->get()->first();
+				$push_id=$push->push_id;
+				if ($push_id==null || strlen($push_id)==0) $send=false;
+				else $send=true;
+
+				
+				$email=$user_ref->email;
+				$email_az=$user_ref->email_az;
+				$list->nominativo=$user_ref->nominativo;
+
+				if ($email_az!=null) $email=$email_az;
+
+		
+				if ($email==null || strlen($email)==0) $send_m=false;
+				else $send_m=true;
+				
+				if ($send_m==true) {
+					$num_send_mail++;
+					$this->send_mail($email,$type,$list);
+				}
+
+				if ($send==true) {
+					$num_send++;
+					$this->send_push($push_id,$type,"");
+				}	
+			}
+		}		
+		$arr['num_send_mail']=$num_send_mail;
+		$arr['num_send']=$num_send;
+		return $arr;
+	}
+
 	public function save_newapp(Request $request) {			
 		$id_user=Auth::user()->id;
 		$id_app=$request->input('id_app');
@@ -102,15 +183,9 @@ public function __construct()
 					'updated_at'=>now()
 				]);
 				//in caso di nuovi lavoratori inseriti, invio push
-				$send=true;
-				$resp=candidati::select('u.push_id')
-				->join('users as u','candidatis.id_user','u.id')
-				->where("candidatis.id","=", $id_lav_ref);
-				if ($resp->count()==0) $send=false;
-				else {
-					$push_id=$resp->get()->first()->push_id;
-					if ($push_id==null || strlen($push_id)==0) $send=false;
-				}				
+				$only_send[]=$id_lav_ref;
+				$list_push=$this->send_list_push_mail($id_app,"new",$only_send);
+
 			} else {
 				$data=['to_delete' => 0];
 				lavoratoriapp::where('id_appalto', $id_app)			
@@ -118,51 +193,39 @@ public function __construct()
 				->update($data);
 				
 			}	
-			
-		   //$send=true;$push_id="XX"; //decommentare per test (ed abilitare un ID fittizio in this->send_push())
-			if ($send==true) {
-				$num_send++;
-				$this->send_push($push_id,"new","");
-			}	
+
 
 		}
 
 
 		//push per eventuali estromessi dall'appalto
-		$resp=candidati::select('u.push_id')
+		$resp=candidati::select('u.push_id','l.id_lav_ref')
 		->join('users as u','candidatis.id_user','u.id')
 		->join('lavoratoriapp as l','l.id_lav_ref','candidatis.id')		
 		->where("l.to_delete","=", 1)
 		->where("l.id_appalto","=", $id_app)
 		->groupBy('candidatis.id');
+		$estr=false;
 		if ($resp->count()!=0){
+			$estr=true;
+			$only_send=array();
 			$all_push=$resp->get();
 			foreach($all_push as $single) {
-				$push_id=$single->push_id;
-				$this->send_push($push_id,"dele",$request->input('descrizione_appalto'));
+				$id_lav_ref=$single->id_lav_ref;
+				$only_send[]=$id_lav_ref;
 			}					
+			$list_push=$this->send_list_push_mail($id_app,"dele",$only_send);
 
 		}		
 		$deleted = lavoratoriapp::where('to_delete','=',1)
 		->where('id_appalto','=',$id_app)->delete();
 		
-		//push per eventuale variazione (max una)
+		//push per eventuale variazione
 		$flag_variazione=$request->input('flag_variazione');
-		if ($flag_variazione=="1" && strlen($request->input('variazione'))!=0) {
-			$resp=candidati::select('u.push_id')
-			->join('users as u','candidatis.id_user','u.id')
-			->join('lavoratoriapp as l','l.id_lav_ref','candidatis.id')		
-			->where("l.id_appalto","=", $id_app)
-			->groupBy('candidatis.id');	
-			if ($resp->count()!=0){
-				$all_push=$resp->get();
-				foreach($all_push as $single) {
-					$push_id=$single->push_id;
-					$this->send_push($push_id,"edit",$request->input('descrizione_appalto'));
-				}					
-
-			}			
+		if ($flag_variazione=="1" && $estr==false && strlen($request->input('variazione'))!=0) {
+			$list_push=$this->send_list_push_mail($id_app,"edit",array());			
 		}
+
 			
 		//
 		
@@ -330,72 +393,10 @@ public function __construct()
 		
 		$num_send=0;$num_send_mail=0;
 		if (strlen($push_appalti)!=0) {
-			$list_push=appalti::select('appalti.*','l.id_lav_ref','appalti.id')
-			->join("lavoratoriapp as l","appalti.id","l.id_appalto")
-			->where('appalti.id', $push_appalti)
-			->where('l.status','=',0)
-			->groupby('l.id_lav_ref')
-			->get();
-
-			$ids_lav=array();
-			foreach($list_push as $list) {
-				if (!in_array($list->id_lav_ref,$ids_lav))  
-					$ids_lav[]=$list->id_lav_ref;
-			}	
-
-			
-
-			$id_ditta=$list_push[0]->id_ditta;
-
-
-			$ditta_ref="";
-			$ditta_info=ditte::select('denominazione')->where('id', "=",$id_ditta)->get()->first();
-			if ($ditta_info->denominazione!=null) $ditta_ref=$ditta_info->denominazione;
-
-			$lavs=candidati::select('id','nominativo')->get();
-			$lav_id=array();
-			foreach($lavs as $lav) {
-				$lav_id[$lav->id]=$lav->nominativo;
-			}
-			
-			foreach ($list_push as $list ){
-				$send=false;$send_m=false;
-				$id_ref=$list->id_lav_ref;
-				$user_ref=candidati::select('id_user','email','email_az','nominativo')
-				->where('id','=',$id_ref)->get()->first();
-				if ($user_ref->id_user!=null) {
-					$push=user::select('push_id')
-					->where('id','=',$user_ref->id_user)->get()->first();
-					$push_id=$push->push_id;
-					if ($push_id==null || strlen($push_id)==0) $send=false;
-					else $send=true;
-
-					
-					$email=$user_ref->email;
-					$email_az=$user_ref->email_az;
-					if ($email_az!=null) $email=$email_az;
-					
-
-					$list->ditta_ref=$ditta_ref;
-					$list->lav_id=$lav_id;
-					$list->ids_lav=$ids_lav;
-					$list->nominativo=$user_ref->nominativo;
-			
-					if ($email==null || strlen($email)==0) $send_m=false;
-					else $send_m=true;
-					
-					if ($send_m==true) {
-						$num_send_mail++;
-						$this->send_mail($email,"alert",$list);
-					}
-
-					if ($send==true) {
-						$num_send++;
-						$this->send_push($push_id,"alert","");
-					}	
-				}
-			}
-			
+			//invio push e mail
+			$list_push=$this->send_list_push_mail($push_appalti,"alert",array());
+			$num_send=$list_push['num_send'];
+			$num_send_mail=$list_push['num_send_mail'];
 		}
 		
 
