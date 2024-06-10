@@ -15,6 +15,8 @@ use App\Models\mezzi;
 use App\Models\parco_scheda_mezzo;
 use OneSignal;
 use Twilio\Rest\Client;
+use Mail;
+
 
 use DB;
 
@@ -326,18 +328,40 @@ public function __construct()
 			  ->update(['dele' => 0]);			
 		}
 		
-		$num_send=0;
+		$num_send=0;$num_send_mail=0;
 		if (strlen($push_appalti)!=0) {
-			$list_push=appalti::select('l.id_lav_ref')
+			$list_push=appalti::select('appalti.*','l.id_lav_ref','appalti.id')
 			->join("lavoratoriapp as l","appalti.id","l.id_appalto")
 			->where('appalti.id', $push_appalti)
 			->where('l.status','=',0)
 			->groupby('l.id_lav_ref')
 			->get();
+
+			$ids_lav=array();
+			foreach($list_push as $list) {
+				if (!in_array($list->id_lav_ref,$ids_lav))  
+					$ids_lav[]=$list->id_lav_ref;
+			}	
+
+			
+
+			$id_ditta=$list_push[0]->id_ditta;
+
+
+			$ditta_ref="";
+			$ditta_info=ditte::select('denominazione')->where('id', "=",$id_ditta)->get()->first();
+			if ($ditta_info->denominazione!=null) $ditta_ref=$ditta_info->denominazione;
+
+			$lavs=candidati::select('id','nominativo')->get();
+			$lav_id=array();
+			foreach($lavs as $lav) {
+				$lav_id[$lav->id]=$lav->nominativo;
+			}
+			
 			foreach ($list_push as $list ){
-				$send=false;
+				$send=false;$send_m=false;
 				$id_ref=$list->id_lav_ref;
-				$user_ref=candidati::select('id_user')
+				$user_ref=candidati::select('id_user','email','email_az','nominativo')
 				->where('id','=',$id_ref)->get()->first();
 				if ($user_ref->id_user!=null) {
 					$push=user::select('push_id')
@@ -345,6 +369,26 @@ public function __construct()
 					$push_id=$push->push_id;
 					if ($push_id==null || strlen($push_id)==0) $send=false;
 					else $send=true;
+
+					
+					$email=$user_ref->email;
+					$email_az=$user_ref->email_az;
+					if ($email_az!=null) $email=$email_az;
+					
+$email="morescogianluca@gmail.com";	
+					$list->ditta_ref=$ditta_ref;
+					$list->lav_id=$lav_id;
+					$list->ids_lav=$ids_lav;
+					$list->nominativo=$user_ref->nominativo;
+			
+					if ($email==null || strlen($email)==0) $send_m=false;
+					else $send_m=true;
+					
+					if ($send_m==true) {
+						$num_send_mail++;
+						$this->send_mail($email,"alert",$list);
+					}
+
 					if ($send==true) {
 						$num_send++;
 						$this->send_push($push_id,"alert","");
@@ -401,6 +445,48 @@ public function __construct()
         }
 		
     }
+
+	public function send_mail($email,$tipo="new",$appalto) {
+
+		$titolo="Nuova richiesta accettazione Servizio";
+		if ($tipo=="new")
+			$titolo="Nuova richiesta accettazione Servizio";
+
+		if ($tipo=="alert")
+			$titolo="Sollecito accettazione Servizio";
+
+		if ($tipo=="edit")
+			$titolo="Segnalazione di variazione su appalto";
+
+		if ($tipo=="dele")
+			$titolo="Estromissione da appalto"; 
+
+		$body_msg="Appalto ID: ".$appalto->id;
+
+		try {
+			
+			
+			$data["title"] = $titolo;
+			$data["appalto"] = $appalto;
+			
+
+			Mail::send('emails.misapp_notif', $data, function($message)use($data,$email) {
+				$message->to($email, $email)
+				->subject($data["title"]);
+			});
+
+	
+			
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo";
+			return $status;
+			
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+			return $status;
+		}		
+	}
 
 
 	public function send_push($userId,$tipo="new",$message_extra="") {
