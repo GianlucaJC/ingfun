@@ -7,7 +7,9 @@ use App\Models\lavoratoriapp;
 use App\Models\appalti;
 use App\Models\candidati;
 use App\Models\user;
+use App\Models\ditte;
 use OneSignal;
+use Mail;
 
 class DailyQuote extends Command
 {
@@ -30,66 +32,131 @@ class DailyQuote extends Command
      *
      * @return int
      */
+
+
     public function handle()
-    {
-        
-			/*
-				Lista di push_id riferiti a lavoratori che non
-				hanno ancora accettato la/e richiesta/e
-			*/
-			$list_push=appalti::select('l.id_lav_ref','l.id_appalto')
-			->join("lavoratoriapp as l","appalti.id","l.id_appalto")
-			->where('l.status','=',0)
-			->groupby('l.id_lav_ref')
-			->get();
-			$num_send=0;
-			foreach ($list_push as $list ){
-				$send=false;
-				$id_ref=$list->id_lav_ref;
-				$nominativo="";
-				$user_ref=candidati::select('id_user','nominativo')
-				->where('id','=',$id_ref)->get()->first();
-				if ($user_ref->id_user!=null) {
-					$nominativo=$user_ref->nominativo;
-					$push=user::select('push_id')
-					->where('id','=',$user_ref->id_user)->get()->first();
-					$push_id=$push->push_id;
-					if ($push_id==null || strlen($push_id)==0) $send=false;
-					else $send=true;
-					if ($send==true) {
-						$num_send++;
-						$this->send_push($push_id,"alert","");
-					}	
-				}
-				
-				//Invio push a chi ha creato l'appalto per notificare che
-				//l'utente corrente della lista, non ha ancora accettato
-				$id_appalto=$list->id_appalto;
-				$info_app=appalti::select('u.name','u.push_id')
-				->join('users as u','appalti.id_creator','u.id')
-				->where('appalti.id', "=",$id_appalto)
-				->first();
-				if ($info_app->push_id) {
-					$push_id=$info_app->push_id;
-					$name=$info_app->name;
-					
-					//test push
-					//$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
-					
-					if ($push_id==null || strlen($push_id)==0) $send=false;
-					else $send=true;
-					
-					if ($send==true && strlen($nominativo)>0) {
-						$message="L'utente $nominativo ($name) non ha ancora accettato/rifiutato la richiesta per la partecipazione all'appalto $id_appalto";
-						$this->send_push($push_id,"alert_creator",$message);
-					}
-				}
-				
-			}
-			$this->info("Inviate ".$num_send." notifiche push di sollecito!");			
-		
+    {   
+		/*
+			Lista di push_id riferiti a lavoratori che non
+			hanno ancora accettato la/e richiesta/e
+		*/
+		$list_push=$this->send_list_push_mail(0,"alert",array());
+		$num_send_mail=$list_push['num_send_mail'];
+		$num_send=$list_push['num_send'];
+		$this->info("Inviate ".$num_send." notifiche push e ".$num_send_mail." mail di sollecito!");			
+	
     }
 	
+	public function send_list_push_mail($id_app,$type,$only_send=array()) {
+		$list_push=appalti::select('appalti.*','l.id_lav_ref','appalti.id')
+		->join("lavoratoriapp as l","appalti.id","l.id_appalto")
+		->where('l.status','=',0)
+		->when($id_app!="0", function ($list_push) {
+			return $list_push->where('appalti.id', $id_app);
+		})
+		->groupby('l.id_lav_ref')
+		->get();
+
+		$ids_lav=array();
+		foreach($list_push as $list) {
+			if (!in_array($list->id_lav_ref,$ids_lav))  
+				$ids_lav[]=$list->id_lav_ref;
+		}	
+
+
+		$lavs=candidati::select('id','nominativo')->get();
+		$lav_id=array();
+		foreach($lavs as $lav) {
+			$lav_id[$lav->id]=$lav->nominativo;
+		}
+		$list_rest=array();
+		foreach ($list_push as $list ){
+			$ditta_ref="";
+			$id_ditta=$list->id_ditta;
+			$ditta_info=ditte::select('denominazione')->where('id', "=",$id_ditta)->get()->first();
+			if ($ditta_info->denominazione!=null) $ditta_ref=$ditta_info->denominazione;
+			$list->ditta_ref=$ditta_ref;
+			$list->lav_id=$lav_id;
+			$list->ids_lav=$ids_lav;
+			$list_rest[]=$list;
+		}
+
+
+		$lavs=candidati::select('id','nominativo')->get();
+		$lav_id=array();
+		foreach($lavs as $lav) {
+			$lav_id[$lav->id]=$lav->nominativo;
+		}
+		$num_send_mail=0;$num_send=0;
+		foreach ($list_push as $list ){
+			$send=false;$send_m=false;
+			$id_ref=$list->id_lav_ref;
+			if (count($only_send)>0) {
+				if (!in_array($id_ref,$only_send)) continue;
+			}
+			$user_ref=candidati::select('id_user','email','email_az','nominativo')->where('id','=',$id_ref)->get()->first();
+			if ($user_ref->id_user!=null) {
+				$push=user::select('push_id')
+				->where('id','=',$user_ref->id_user)->get()->first();
+				$push_id=$push->push_id;
+				if ($push_id==null || strlen($push_id)==0) $send=false;
+				else $send=true;
+
+				
+				$email=$user_ref->email;
+				$email_az=$user_ref->email_az;
+				$list->nominativo=$user_ref->nominativo;
+
+				if ($email_az!=null) $email=$email_az;
+
+		
+				if ($email==null || strlen($email)==0) $send_m=false;
+				else $send_m=true;
+				
+				if ($send_m==true) {
+					$num_send_mail++;
+					$this->send_mail($email,$type,$list);
+				}
+
+				if ($send==true) {
+					$num_send++;
+					$this->send_push($push_id,$type,"");
+				}	
+			}
+
+
+/*da implementare...		
+//Invio push a chi ha creato l'appalto per notificare che
+//l'utente corrente della lista, non ha ancora accettato
+$id_appalto=$list->id_appalto;
+$info_app=appalti::select('u.name','u.push_id')
+->join('users as u','appalti.id_creator','u.id')
+->where('appalti.id', "=",$id_appalto)
+->first();
+if ($info_app->push_id) {
+	$push_id=$info_app->push_id;
+	$name=$info_app->name;
+	
+	//test push
+	//$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
+	
+	if ($push_id==null || strlen($push_id)==0) $send=false;
+	else $send=true;
+	
+	if ($send==true && strlen($nominativo)>0) {
+		$message="L'utente $nominativo ($name) non ha ancora accettato/rifiutato la richiesta per la partecipazione all'appalto $id_appalto";
+		$this->send_push($push_id,"alert_creator",$message);
+	}
+}
+*/
+				
+						
+		}		
+		$arr['num_send_mail']=$num_send_mail;
+		$arr['num_send']=$num_send;
+		return $arr;
+	}
+
 	public function send_push($userId,$tipo="new",$message_extra="") {
 		//$userId="90cab005-1db0-4f7e-9ab0-d68b5a9f9e60";
 		if (strlen($userId)==0) return;
@@ -138,5 +205,46 @@ class DailyQuote extends Command
 		//$params['delivery_time_of_day'] = "2:30PM"; // Delivery time
 
 		$resp=OneSignal::sendNotificationCustom($params);		
+	}
+	public function send_mail($email,$tipo="new",$appalto) {
+
+		$titolo="Nuova richiesta accettazione Servizio";
+		if ($tipo=="new")
+			$titolo="Nuova richiesta accettazione Servizio";
+
+		if ($tipo=="alert")
+			$titolo="Sollecito accettazione Servizio";
+
+		if ($tipo=="edit")
+			$titolo="Segnalazione di variazione su appalto";
+
+		if ($tipo=="dele")
+			$titolo="Estromissione da appalto"; 
+
+		$body_msg="Appalto ID: ".$appalto->id;
+
+		try {
+			
+			
+			$data["title"] = $titolo;
+			$data["appalto"] = $appalto;
+			
+
+			Mail::send('emails.misapp_notif', $data, function($message)use($data,$email) {
+				$message->to($email, $email)
+				->subject($data["title"]);
+			});
+
+	
+			
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo";
+			return $status;
+			
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+			return $status;
+		}		
 	}	
 }

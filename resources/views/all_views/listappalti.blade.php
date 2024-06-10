@@ -66,6 +66,13 @@
 					  echo "<b>$num_send</b> $txt";
 					echo "</div>";
 				}
+				if (!empty($num_send_mail) && $num_send_mail>0) {
+					$txt="Mail inviate!";
+					if ($num_send_mail==1) $txt="Mail inviata!";
+					echo "<div class='alert alert-success' role='alert'>";
+					  echo "<b>$num_send_mail</b> $txt";
+					echo "</div>";
+				}				
 			?>
 		</div>
 	  

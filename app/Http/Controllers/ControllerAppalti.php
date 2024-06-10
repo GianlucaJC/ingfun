@@ -423,7 +423,7 @@ public function __construct()
 
 		
 
-		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta);
+		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('num_send_mail',$num_send_mail)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta);
 
 	}
 
