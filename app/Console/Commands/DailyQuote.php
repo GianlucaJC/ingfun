@@ -51,6 +51,7 @@ class DailyQuote extends Command
 		$list_push=appalti::select('appalti.*','l.id_lav_ref','appalti.id')
 		->join("lavoratoriapp as l","appalti.id","l.id_appalto")
 		->where('l.status','=',0)
+		->where('appalti.dele','=','0')
 		->when($id_app!="0", function ($list_push) {
 			return $list_push->where('appalti.id', $id_app);
 		})
@@ -69,17 +70,6 @@ class DailyQuote extends Command
 		foreach($lavs as $lav) {
 			$lav_id[$lav->id]=$lav->nominativo;
 		}
-		$list_rest=array();
-		foreach ($list_push as $list ){
-			$ditta_ref="";
-			$id_ditta=$list->id_ditta;
-			$ditta_info=ditte::select('denominazione')->where('id', "=",$id_ditta)->get()->first();
-			if ($ditta_info->denominazione!=null) $ditta_ref=$ditta_info->denominazione;
-			$list->ditta_ref=$ditta_ref;
-			$list->lav_id=$lav_id;
-			$list->ids_lav=$ids_lav;
-			$list_rest[]=$list;
-		}
 
 
 		$lavs=candidati::select('id','nominativo')->get();
@@ -89,6 +79,16 @@ class DailyQuote extends Command
 		}
 		$num_send_mail=0;$num_send=0;
 		foreach ($list_push as $list ){
+
+			$ditta_ref="";
+			$id_ditta=$list->id_ditta;
+			$ditta_info=ditte::select('denominazione')->where('id', "=",$id_ditta)->get()->first();
+			if ($ditta_info->denominazione!=null) $ditta_ref=$ditta_info->denominazione;
+			$list->ditta_ref=$ditta_ref;
+			$list->lav_id=$lav_id;
+			$list->ids_lav=$ids_lav;
+			
+
 			$send=false;$send_m=false;
 			$id_ref=$list->id_lav_ref;
 			if (count($only_send)>0) {
@@ -102,6 +102,10 @@ class DailyQuote extends Command
 				if ($push_id==null || strlen($push_id)==0) $send=false;
 				else $send=true;
 
+				if ($send==true) {
+					$num_send++;
+					$this->send_push($push_id,$type,"");
+				}					
 				
 				$email=$user_ref->email;
 				$email_az=$user_ref->email_az;
@@ -116,40 +120,45 @@ class DailyQuote extends Command
 				if ($send_m==true) {
 					$num_send_mail++;
 					$this->send_mail($email,$type,$list);
+					//invio notifica a chi ha creato l'appalto per informare che l'utente corrente 
+					//non ha ancora accettato
+					$id_appalto=$list->id;
+					$creator=appalti::select('appalti.id_creator')->where('appalti.id', "=",$id_appalto)->first();
+						
+					if ($creator->id_creator) {
+						$info_app=candidati::select('id_user','email','email_az')->where('id_user', "=",$creator->id_creator)->first();
+
+						if (isset($info_app->id_user)) {
+							$push=user::select('push_id')->where('id','=',$info_app->id_user)->get()->first();
+							$push_id=null;
+							if (isset($info_app->push_id)) $push_id=$push->push_id;
+							if ($push_id==null || strlen($push_id)==0) $send=false;
+							else $send=true;
+
+							if ($send==true) {
+								$num_send++;
+								$this->send_push($push_id,"alert_creator","");
+							}
+							
+							if ($info_app->email || $info_app->email_az) { 
+								$email=$user_ref->email;
+								$email_az=$user_ref->email_az;
+								if ($email_az!=null) $email=$email_az;
+				
+								$num_send_mail++;
+								$this->send_mail($email,"alert_creator",$list);
+							}
+						}
+					}
+
 				}
 
-				if ($send==true) {
-					$num_send++;
-					$this->send_push($push_id,$type,"");
-				}	
+
+
 			}
 
 
-/*da implementare...		
-//Invio push a chi ha creato l'appalto per notificare che
-//l'utente corrente della lista, non ha ancora accettato
-$id_appalto=$list->id_appalto;
-$info_app=appalti::select('u.name','u.push_id')
-->join('users as u','appalti.id_creator','u.id')
-->where('appalti.id', "=",$id_appalto)
-->first();
-if ($info_app->push_id) {
-	$push_id=$info_app->push_id;
-	$name=$info_app->name;
-	
-	//test push
-	//$push_id="a06dd418-1884-4233-8736-4beb3d51b783";
-	
-	if ($push_id==null || strlen($push_id)==0) $send=false;
-	else $send=true;
-	
-	if ($send==true && strlen($nominativo)>0) {
-		$message="L'utente $nominativo ($name) non ha ancora accettato/rifiutato la richiesta per la partecipazione all'appalto $id_appalto";
-		$this->send_push($push_id,"alert_creator",$message);
-	}
-}
-*/
-				
+
 						
 		}		
 		$arr['num_send_mail']=$num_send_mail;
@@ -212,6 +221,9 @@ if ($info_app->push_id) {
 		if ($tipo=="new")
 			$titolo="Nuova richiesta accettazione Servizio";
 
+		if ($tipo=="alert_creator")
+			$titolo="Servizio non ancora accettato/rifiutato";			
+			
 		if ($tipo=="alert")
 			$titolo="Sollecito accettazione Servizio";
 
