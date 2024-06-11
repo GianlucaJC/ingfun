@@ -27,11 +27,13 @@ public function __construct()
 		$this->middleware('auth')->except(['index']);
 	}		
 
-	public function send_list_push_mail($id_app,$type,$only_send=array()) {
+	public function send_list_push_mail($id_app,$type,$only_send=array(),$stato=true) {
 		$list_push=appalti::select('appalti.*','l.id_lav_ref','appalti.id')
 		->join("lavoratoriapp as l","appalti.id","l.id_appalto")
 		->where('appalti.id', $id_app)
-		->where('l.status','=',0)
+		->when($stato==true, function ($list_push) {
+			return $list_push->where('l.status','=',0);
+		})
 		->groupby('l.id_lav_ref')
 		->get();
 
@@ -184,7 +186,7 @@ public function __construct()
 				]);
 				//in caso di nuovi lavoratori inseriti, invio push
 				$only_send[]=$id_lav_ref;
-				$list_push=$this->send_list_push_mail($id_app,"new",$only_send);
+				$list_push=$this->send_list_push_mail($id_app,"new",$only_send,true);
 
 			} else {
 				$data=['to_delete' => 0];
@@ -214,7 +216,7 @@ public function __construct()
 				$id_lav_ref=$single->id_lav_ref;
 				$only_send[]=$id_lav_ref;
 			}					
-			$list_push=$this->send_list_push_mail($id_app,"dele",$only_send);
+			$list_push=$this->send_list_push_mail($id_app,"dele",$only_send,false);
 
 		}		
 		$deleted = lavoratoriapp::where('to_delete','=',1)
@@ -223,7 +225,7 @@ public function __construct()
 		//push per eventuale variazione
 		$flag_variazione=$request->input('flag_variazione');
 		if ($flag_variazione=="1" && $estr==false && strlen($request->input('variazione'))!=0) {
-			$list_push=$this->send_list_push_mail($id_app,"edit",array());			
+			$list_push=$this->send_list_push_mail($id_app,"edit",array(),false);
 		}
 
 			
@@ -394,7 +396,7 @@ public function __construct()
 		$num_send=0;$num_send_mail=0;
 		if (strlen($push_appalti)!=0) {
 			//invio push e mail
-			$list_push=$this->send_list_push_mail($push_appalti,"alert",array());
+			$list_push=$this->send_list_push_mail($push_appalti,"alert",array(),true);
 			$num_send=$list_push['num_send'];
 			$num_send_mail=$list_push['num_send_mail'];
 		}
