@@ -37,7 +37,7 @@ class DailyQuote extends Command
     public function handle()
     {   
 		/*
-			Lista di push_id riferiti a lavoratori che non
+			Lista di lavoratori che non
 			hanno ancora accettato la/e richiesta/e
 		*/
 		$list_push=$this->send_list_push_mail(0,"alert",array());
@@ -71,12 +71,6 @@ class DailyQuote extends Command
 			$lav_id[$lav->id]=$lav->nominativo;
 		}
 
-
-		$lavs=candidati::select('id','nominativo')->get();
-		$lav_id=array();
-		foreach($lavs as $lav) {
-			$lav_id[$lav->id]=$lav->nominativo;
-		}
 		$num_send_mail=0;$num_send=0;
 		foreach ($list_push as $list ){
 
@@ -131,7 +125,7 @@ class DailyQuote extends Command
 						if (isset($info_app->id_user)) {
 							$push=user::select('push_id')->where('id','=',$info_app->id_user)->get()->first();
 							$push_id=null;
-							if (isset($info_app->push_id)) $push_id=$push->push_id;
+							if (isset($push->push_id)) $push_id=$push->push_id;
 							if ($push_id==null || strlen($push_id)==0) $send=false;
 							else $send=true;
 
@@ -141,8 +135,8 @@ class DailyQuote extends Command
 							}
 							
 							if ($info_app->email || $info_app->email_az) { 
-								$email=$user_ref->email;
-								$email_az=$user_ref->email_az;
+								$email=$info_app->email;
+								$email_az=$info_app->email_az;
 								if ($email_az!=null) $email=$email_az;
 				
 								$num_send_mail++;
