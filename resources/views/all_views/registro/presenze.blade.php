@@ -252,7 +252,7 @@
 					</tr>
 				</tfoot>					
 			</table>
-				
+				<input type='text' id='c_page' name='c_page' value='{{$c_page}}'>
 				<input type='hidden' id='dele_contr' name='dele_contr'>
 				<input type='hidden' id='restore_contr' name='restore_contr'>
 			
@@ -420,6 +420,6 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 	<script src="{{ URL::asset('/') }}plugins/moment/moment.min.js"></script>
 	<script src="{{ URL::asset('/') }}plugins/daterangepicker/daterangepicker.js"></script>	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.533"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.543"></script>
 
 @endsection
