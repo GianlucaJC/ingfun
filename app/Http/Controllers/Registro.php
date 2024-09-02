@@ -66,6 +66,7 @@ class Registro extends Controller
 	public function presenze(Request $request){
 		$save_edit=$this->save_edit_giustificativi($request);
 		$view_dele=$request->input("view_dele");
+		$old_cerca=$request->input("old_cerca");
 		$c_page=$request->input("c_page");
 		$periodi=$this->periodi();
 		$periodo=$request->input("periodo");
@@ -225,7 +226,7 @@ class Registro extends Controller
 			else 7 end')
 		->orderBy('nominativo')	
 		->get();
-		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi)->with('zoom_tbl',$zoom_tbl)->with('servizi_custom',$servizi_custom)->with('lavoratori',$lavoratori)->with('c_page',$c_page);
+		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi)->with('zoom_tbl',$zoom_tbl)->with('servizi_custom',$servizi_custom)->with('lavoratori',$lavoratori)->with('c_page',$c_page)->with('old_cerca',$old_cerca);
 		
 	}	
 	

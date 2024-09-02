@@ -6,8 +6,12 @@ $(document).ready( function () {
 		if (title.length!=0)
 			$(this).html('<input type="text" placeholder="" />');
     });	
+	old_cerca=$("#old_cerca").val()
 	
     table=$('#tbl_list_presenze').DataTable({
+		"search": {
+			"search": old_cerca
+		},
         scrollX:        false,
         scrollCollapse: true,
         "pageLength": 35,
@@ -43,6 +47,13 @@ $(document).ready( function () {
 
 		
     });
+
+	$('#tbl_list_presenze').on('search.dt', function() {
+		var old_cerca = $('.dataTables_filter input').val();
+		$("#old_cerca").val(old_cerca)
+	}); 
+
+	
 	c_page=$("#c_page").val()
 	if (!c_page || c_page.length==0) c_page=0
 	c_page=parseInt(c_page)

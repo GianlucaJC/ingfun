@@ -71,7 +71,7 @@
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 
-
+			<input type='hidden' name='old_cerca' id='old_cerca' value='{{$old_cerca}}'>
 			
 
 
@@ -420,6 +420,6 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 	<script src="{{ URL::asset('/') }}plugins/moment/moment.min.js"></script>
 	<script src="{{ URL::asset('/') }}plugins/daterangepicker/daterangepicker.js"></script>	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.543"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.552"></script>
 
 @endsection
