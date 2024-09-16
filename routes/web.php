@@ -133,6 +133,8 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('registro', [ 'as' => 'registro', 'uses' => 'App\Http\Controllers\Registro@presenze']);
 
+	
+
 	Route::get('giustificativi', [ 'as' => 'giustificativi', 'uses' => 'App\Http\Controllers\Registro@giustificativi']);
 
 	Route::post('giustificativi', [ 'as' => 'giustificativi', 'uses' => 'App\Http\Controllers\Registro@giustificativi']);
@@ -359,6 +361,7 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::put('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 	Route::post('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 	
+	Route::post('cerca_servizi', [ 'as' => 'cerca_servizi', 'uses' => 'App\Http\Controllers\Registro@cerca_servizi']);
 	
 
 	Route::post('lavori_rep', [ 'as' => 'lavori_rep', 'uses' => 'App\Http\Controllers\ApiController@lavori_rep']);

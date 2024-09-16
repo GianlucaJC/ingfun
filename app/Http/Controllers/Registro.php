@@ -15,6 +15,29 @@ class Registro extends Controller
 		$this->middleware('auth')->except(['index']);
 	}
 
+	public function cerca_servizi()	{
+		$resp=array();
+		$servizi=DB::table('servizi as s1')
+		->select("s1.descrizione","s1.acronimo")
+		->orderBy('s1.descrizione')->get();
+		
+		foreach($servizi as $s) {
+			$resp[$s->acronimo]=$s->descrizione;
+		}
+
+		$servizi_custom=DB::table('servizi_custom as s1')
+		->select("s1.descrizione","s1.alias_ref")
+		->orderBy('s1.descrizione')->get();
+		
+		
+		foreach($servizi_custom as $s) {
+			$resp[$s->alias_ref]=$s->descrizione;
+		}
+
+		return json_encode($resp);
+	}	
+
+
 	private function mese_descr($mese) {
 		$mese=intval($mese);$descr_b="";$descr_e="";
 		if ($mese==1) {$descr_b="Gen";$descr_e="Gennaio";}
@@ -226,7 +249,10 @@ class Registro extends Controller
 			else 7 end')
 		->orderBy('nominativo')	
 		->get();
-		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi)->with('zoom_tbl',$zoom_tbl)->with('servizi_custom',$servizi_custom)->with('lavoratori',$lavoratori)->with('c_page',$c_page)->with('old_cerca',$old_cerca);
+		$reopen_service=$request->input('reopen_service');
+		$reopen_dati=$request->input('reopen_dati');
+
+		return view('all_views/registro/presenze')->with('lavoratori_mov', $lavoratori_mov)->with('lav_all', $lav_all)->with('lav_lista',$lav_lista)->with('servizi',$servizi)->with('servizi_lav',$servizi_lav)->with("giorni",$giorni)->with('mese',$mese)->with('mese_num',$mese_num)->with('periodo',$periodo)->with('periodi',$periodi)->with('zoom_tbl',$zoom_tbl)->with('servizi_custom',$servizi_custom)->with('lavoratori',$lavoratori)->with('c_page',$c_page)->with('old_cerca',$old_cerca)->with('reopen_service',$reopen_service)->with('reopen_dati',$reopen_dati);
 		
 	}	
 	

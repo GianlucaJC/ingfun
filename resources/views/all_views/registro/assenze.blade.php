@@ -3,6 +3,7 @@
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 
 		<input type="hidden" value="{{url('/')}}" id="url" name="url">
+		<input type='hidden' name='old_cerca' id='old_cerca' value='{{$old_cerca}}'>
 		<div class="container-fluid">
 
 

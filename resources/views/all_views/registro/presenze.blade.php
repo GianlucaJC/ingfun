@@ -73,6 +73,9 @@
 
 			<input type='hidden' name='old_cerca' id='old_cerca' value='{{$old_cerca}}'>
 			
+			<input type='hidden' name='reopen_service' id='reopen_service' value="{{$reopen_service}}">
+			<input type='hidden' name='reopen_dati' id='reopen_dati' value="{{$reopen_dati}}">
+
 
 
 			<div class="row mb-3">
@@ -119,7 +122,25 @@
 				</div>			
 			</div>
 			
-	
+		<?php
+			$servizi_js="";
+			foreach($servizi as $index=>$servizio) {
+				$id_s=$servizio['id'];
+				if ($id_s=="5002") continue;
+
+				$acr="?";
+				if (isset($servizio['acronimo'])) $acr=$servizio['acronimo'];
+				elseif (isset($servizio['alias_ref'])) $acr=$servizio['alias_ref'];
+				if ($acr=="?") continue;
+				$descr_s=$servizio['descrizione'];
+				if (strlen($servizi_js)!=0) $servizi_js.=";";
+				$servizi_js.="$id_s|$descr_s|$acr";
+			}
+			echo "<input type='hidden' id='servizi_js' value='$servizi_js'>";
+			
+			
+		?>
+
         <div class="row">
           <div class="col-md-12" id='div_tb' style='display:none'>
 			<table id='tbl_list_presenze' class="display cell-border" width="100%">
@@ -156,7 +177,7 @@
 						@foreach($servizi as $index=>$servizio)
 						
 							<?php
-								
+								//attenzione! Se si inviano altri parametri, vedere anche change_serv() in JS
 								$js="";
 								$js.="ins_value.periodo='$periodo';";
 								$js.="ins_value.giorni=$giorni;";
@@ -252,7 +273,7 @@
 					</tr>
 				</tfoot>					
 			</table>
-				<input type='text' id='c_page' name='c_page' value='{{$c_page}}'>
+				<input type='hidden' id='c_page' name='c_page' value='{{$c_page}}'>
 				<input type='hidden' id='dele_contr' name='dele_contr'>
 				<input type='hidden' id='restore_contr' name='restore_contr'>
 			
@@ -282,7 +303,7 @@
       </div>
 	  <div id='div_wait' class='mb-3'></div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal" id='btn_close' onclick=''>Chiudi</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal" id='btn_close' onclick='close_reg()'>Chiudi</button>
         <div id='div_save'></div>
       </div>
 	  
@@ -355,12 +376,13 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 					$view.="<span id='imp_$id_ref' class='dati_presenze'>";
 						//senza formattazione, altrimenti in casi di dati 
 						//assenti ma con formattazione inserisce l'informazione nel db
-						if ($value==0) 
+						if ($value==0) {
 							if (isset($servizio['acronimo'])) $view.=$servizio['acronimo'];
 							elseif (isset($servizio['alias_ref'])) $view.=$servizio['alias_ref'];
 							else {
 								if ($value!="-1") $view.=$value;
 							}	
+						}
 						else if ($value!="-1") $view.=$value;
 					$view.="</span>";
 				$view.="</div>";
@@ -420,6 +442,6 @@ function view_main($giorni,$lav_lista,$lavoratore,$servizio,$js) {
 	<script src="{{ URL::asset('/') }}plugins/moment/moment.min.js"></script>
 	<script src="{{ URL::asset('/') }}plugins/daterangepicker/daterangepicker.js"></script>	
 
-	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.552"></script>
+	<script src="{{ URL::asset('/') }}dist/js/registro.js?ver=1.614"></script>
 
 @endsection
