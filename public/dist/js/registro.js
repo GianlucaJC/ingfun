@@ -51,7 +51,7 @@ $(document).ready( function () {
 
 	$('#tbl_list_presenze').on('search.dt', function() {
 		var old_cerca = $('.dataTables_filter input').val();
-		$("#old_cerca").val(old_cerca)
+		$(".old_cerca").val(old_cerca)
 	}); 
 
 	
@@ -214,6 +214,8 @@ function close_reg() {
 }
 
 function change_serv(value,giorno){
+	old_cerca = $('.dataTables_filter input').val();
+	$('.old_cerca').val(old_cerca);
 	//attenzione! Se si inviano altri parametri, vedere anche costruzione tabella in presenze.blade
 	serv=value.split("|")[0]
 	$("#reopen_service").val(serv)
@@ -263,7 +265,7 @@ function ins_value(giorno) {
 		if (id_servizio!="5002") {
 			html+=`<div class='mb-2'>
 				<label for='scelta_ins'>Scelta servizio</label>
-				<select class="form-select form-select-sm" id='scelta_ins' onchange='change_serv(this.value,`+giorno+`)'>		
+				<select class="form-select form-select-sm" id='scelta_ins' onchange="change_serv(this.value,`+giorno+`);">		
 			`
 					arr_s=servizi_js.split(";")
 					for (sca=0;sca<arr_s.length;sca++)  {
