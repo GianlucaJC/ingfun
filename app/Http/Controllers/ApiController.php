@@ -456,6 +456,7 @@ class ApiController extends Controller
 	}	
 	
 	public function countappalti(Request $request) {
+		
 		if (Auth::user()) {
 			$id=Auth::user()->id;
 			
@@ -467,8 +468,10 @@ class ApiController extends Controller
 			else
 				$id_lav_ref=0;
 			$check=array();
+
 		}
 		else {
+			
 			$check=$this->check_log($request); 
 			if ($check['esito']=="KO") {
 				$risp['header']=$check;
@@ -477,7 +480,7 @@ class ApiController extends Controller
 			} 
 			$id_lav_ref=$check['id_user'];
 		}
-		
+
 		if ($id_lav_ref==0) return array();
 		/*
 		$count=appalti::select('appalti.id','appalti.dele','appalti.descrizione_appalto','appalti.data_ref','appalti.id_ditta','d.denominazione')
@@ -656,14 +659,17 @@ class ApiController extends Controller
 			$info[$sc]['lavoratori']=$lav;
 			
 			$r_mezzo=appalti::from('appalti as a')
-			->select('c.nominativo','c.id')
+			->select('c.nominativo','c.id','a.targa')
 			->join('candidatis as c','a.responsabile_mezzo','c.id')
 			->where('a.id', "=",$id_appalto)
 			->get()->first();
 			$responsabile_mezzo="";
 			if (isset($r_mezzo->nominativo)) 
 				$responsabile_mezzo=$r_mezzo->nominativo;
-		
+
+			$targa=$r_mezzo->targa;
+	
+			$info[$sc]['targa']=$targa;
 			$info[$sc]['responsabile_mezzo']=$responsabile_mezzo;
 			$info[$sc]['id_appalto']=$id_appalto;
 		

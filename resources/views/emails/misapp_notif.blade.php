@@ -54,6 +54,12 @@
             ?>
             <th {{$st1}}>{{$sq}}</th>
         </tr>
+
+        <tr>
+            <td {{$st}}>Targa mezzo</td>
+            <th {{$st1}}>{{ $appalto->targa }}</th>
+        </tr>
+        
         <tr>
             <td {{$st}}>Responsabile mezzo</td>
             <?php

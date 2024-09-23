@@ -469,7 +469,7 @@ public function __construct()
 
 		try {
 			
-			
+		
 			$data["title"] = $titolo;
 			$data["appalto"] = $appalto;
 			
