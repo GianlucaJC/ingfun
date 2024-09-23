@@ -144,7 +144,13 @@
 		</div>
 		
 		<div class='row mb-3'>
-			<div class="col-md-12">
+			<div class="col-md-6">
+				<div class="form-floating mb-3 mb-md-0">
+					<input class="form-control" id="testo_libero" name='testo_libero' type="text"  value="{{$appalti[0]->testo_libero ?? ''}}"  />
+					<label for="testo_libero">Testo libero che sarà riportato in fattura (es. nominativo salma)</label>
+				</div>
+			</div>			
+			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
 					<option value=''>Select...</option>

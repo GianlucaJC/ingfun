@@ -263,5 +263,11 @@ if (file_exists("allegati/sezionali/".$sezionale.".jpg")) {?>
             </td>
         </tr>
     </table>
+    @if (strlen($testo_libero)!=0)
+            <hr>
+            {{$testo_libero}}
+    @endif
+    <br>
+
 </div>
 </html>

@@ -106,7 +106,7 @@ public function __construct()
 		
 				$appalti=DB::table('appalti as a')
 				->join("serviziapp as s","a.id","s.id_appalto")
-				->select("a.id_ditta",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"),"s.id_servizio","a.km_percorrenza","a.orario_fine_servizio")
+				->select("a.id_ditta",DB::raw("DATE_FORMAT(a.data_ref,'%d-%m-%Y') as data_ref"),"s.id_servizio","a.km_percorrenza","a.orario_fine_servizio","a.testo_libero")
 				->where('a.id', "=",$id_app)	
 				->get();
 
@@ -117,7 +117,7 @@ public function __construct()
 					$id_ditta=$appalto->id_ditta;
 					$id_servizio=$appalto->id_servizio;
 					$km=$appalto->km_percorrenza;
-					
+					$testo_libero=$appalto->testo_libero;					
 					$servizi_ditte=DB::table('servizi_ditte as sd')
 					->join('servizi as s','sd.id_servizio','s.id')
 					->select("s.descrizione","sd.importo_ditta","sd.aliquota")
@@ -147,7 +147,9 @@ public function __construct()
 							'subtotale' =>$subtotale,
 							'created_at'=>now(),
 							'updated_at'=>now()
-						]);							
+						]);
+						fatture::where('id', $id_doc)
+						->update(['testo_libero' => $testo_libero]);	
 					}	
 				}
 			}
@@ -256,12 +258,13 @@ public function __construct()
 		$tipo_pagamento=$dati['tipo_pagamento'];
 		$elenco_pagamenti_presenti=$dati['elenco_pagamenti_presenti'];
 		
-		$load_fattura=fatture::select('id_ditta',DB::raw("DATE_FORMAT(data_invito,'%d-%m-%Y') as data_invito"),"id_sezionale")
+		$load_fattura=fatture::select('id_ditta',DB::raw("DATE_FORMAT(data_invito,'%d-%m-%Y') as data_invito"),"id_sezionale","testo_libero")
 		->where('id','=',$id_doc)
 		->get();
 		$ditta=$load_fattura[0]->id_ditta;
 		$data_invito=$load_fattura[0]->data_invito;
 		$sezionale=$load_fattura[0]->id_sezionale;
+		$testo_libero=$load_fattura[0]->testo_libero;
 
 		$info=DB::table('societa')
 		->select('descrizione')
@@ -321,6 +324,7 @@ public function __construct()
 		
 		$data['id_doc']=$id_doc;
 		$data['sezionale']=$sezionale;
+		$data['testo_libero']=$testo_libero;
 		$data['data_invito']=$data_invito;
 		$data['denominazione']=$denominazione;
 		$data['piva']=$piva;

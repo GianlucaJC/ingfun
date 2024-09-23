@@ -128,6 +128,7 @@ public function __construct()
 		$appalti->km_percorrenza = $request->input('km_percorrenza');
 		$appalti->orario_incontro = $request->input('orario_incontro');
 		$appalti->chiesa = $request->input('chiesa');
+		$appalti->testo_libero = $request->input('testo_libero');
 		$appalti->data_ref = $request->input('data_app');
 		$appalti->orario_ref = $request->input('ora_app');
 		$appalti->orario_fine_servizio = $request->input('orario_fine_servizio');
