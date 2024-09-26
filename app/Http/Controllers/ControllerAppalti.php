@@ -307,6 +307,7 @@ public function __construct()
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('dele', "=","0");
 		})
+		->whereNotNull('piva','<>',0)
 		->orderBy('denominazione')	
 		->get();				
 

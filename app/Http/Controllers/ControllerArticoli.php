@@ -232,6 +232,7 @@ class ControllerArticoli extends Controller
 			$old_p=$pr;
 		}		
 
+
 		$fornitori=fornitori::select('id','ragione_sociale')
 		->orderBy('ragione_sociale')
 		->get();
