@@ -58,7 +58,7 @@ public function __construct()
 
 
 		$info=DB::table('ditte as d')
-		->select('d.denominazione','d.piva','d.cf','d.cap','d.comune','d.provincia','d.sdi','d.pec')
+		->select('d.denominazione','d.piva','d.indirizzo','d.cf','d.cap','d.comune','d.provincia','d.sdi','d.pec')
 		->where("d.id","=",$ditta)
 		->get();
 		$denominazione="";;$piva="";$cf="";
@@ -67,6 +67,7 @@ public function __construct()
 		if (isset($info[0])) {
 			$denominazione=$info[0]->denominazione;
 			$piva=$info[0]->piva;
+			$indirizzo=$info[0]->indirizzo;
 			$cf=$info[0]->cf;
 			$cap=$info[0]->cap;
 			$provincia=$info[0]->provincia;
@@ -97,6 +98,7 @@ public function __construct()
 		$data['note']=$note;
 		$data['denominazione']=$denominazione;
 		$data['piva']=$piva;
+		$data['indirizzo']=$indirizzo;
 		$data['cf']=$cf;
 		$data['cap']=$cap;
 		$data['comune']=$comune;

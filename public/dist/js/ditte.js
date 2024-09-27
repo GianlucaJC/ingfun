@@ -164,6 +164,7 @@ function edit_elem(id_ditta) {
 			$("#comune").val(info[0].comune)
 			$("#cap").val(info[0].cap)
 			$("#provincia").val(info[0].provincia)
+			$("#indirizzo").val(info[0].indirizzo)
 			$("#piva").val(info[0].piva)
 			$("#cf").val(info[0].cf)
 			$("#email").val(info[0].email)

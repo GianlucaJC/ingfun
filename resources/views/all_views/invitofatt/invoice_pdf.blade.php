@@ -119,6 +119,7 @@ if (file_exists("allegati/sezionali/".$sezionale.".jpg")) {?>
                     <p><b>{{$denominazione}}</b></p>
 					<p>P.iva {{$piva}} CF {{$cf}}</p>
 					<p>{{$cap}} {{$comune}} {{$provincia}}</p>
+                    <p>{{$indirizzo}}</p>
 					 <?php
 						$altro="";
 						if(strlen($sdi)!=0) 

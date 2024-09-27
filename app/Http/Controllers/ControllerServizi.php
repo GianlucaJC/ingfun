@@ -102,6 +102,7 @@ public function __construct()
 		$cap=$request->input("cap");
 		$comune=$request->input("comune");
 		$provincia=$request->input("provincia");
+		$indirizzo=$request->input("indirizzo");
 		$piva=$request->input("piva");
 		$cf=$request->input("cf");
 		$email=$request->input("email");
@@ -125,7 +126,7 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['dele'=>0,'pf_pi'=>$pf_pi, 'denominazione' => $descr_contr,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
+		$data=['dele'=>0,'pf_pi'=>$pf_pi, 'denominazione' => $descr_contr,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'indirizzo'=>$indirizzo, 'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
 
 		$id_ref=0;
 		//Creazione nuovo elemento

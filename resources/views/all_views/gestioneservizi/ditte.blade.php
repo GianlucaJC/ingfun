@@ -201,6 +201,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2090"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2091"></script>
 
 @endsection

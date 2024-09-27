@@ -107,7 +107,18 @@
 				</div>
 
 			</div>
-			
+
+			<div class="row mb-3">
+				<div class="col-md-12">
+					<div class="input-group mb-3">
+					  <div class="input-group-prepend">
+						<span class="input-group-text" id="basic-addon1">Indirizzo</span>
+					  </div>
+					  <input type="text" class="form-control" placeholder="Via/Piazza" id="indirizzo" name='indirizzo'>
+					</div>			
+				</div>	
+			</div>			
+
 			<div class="row mb-3">
 				<div class="col-md-4">
 					<div class="input-group mb-3">
