@@ -57,9 +57,20 @@
 		<form method='post' action="{{ route('ditte') }}" id='frm_ditte' name='frm_ditte' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
 			
+		<label for='filtro_cli'>Filtro clienti</label>
+		<select class="form-select form-select-sm" id='filtro_cli' name='filtro_cli' style='width:300px' onchange="$('#frm_ditte').submit()">
+			<option value="1"
+			@if ($filtro_cli=="1") selected @endif
+			>Tutti</option>
+			<option value="2"
+			@if ($filtro_cli=="2") selected @endif
+			>Solo Partite Iva</option>
+			<option value="3"
+			@if ($filtro_cli=="3") selected @endif
+			>Solo persone fisiche</option>
+		</select>
 
-	
-        <div class="row">
+        <div class="row mt-2">
           <div class="col-md-12">
 		  
 				<table id='tbl_list_ditte' class="display">

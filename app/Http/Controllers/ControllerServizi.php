@@ -156,6 +156,7 @@ public function __construct()
 		$id_ref=$this->save_edit($request);
 			
 		$refr=$request->input("refr");
+		$filtro_cli=$request->input("filtro_cli");
 		if ($id_ref!=0) $refr=$id_ref;
 		
 		$view_dele=$request->input("view_dele");
@@ -172,10 +173,16 @@ public function __construct()
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('d.dele', "=","0");
 		})
+		->when($filtro_cli=="2", function ($ditte) {
+			return $ditte->WhereNotNull('d.piva');
+		})
+		->when($filtro_cli=="3", function ($ditte) {
+			return $ditte->whereRaw('length(cf) > 0');
+		})		
 		->orderBy('denominazione')->get();
 
 
-		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('lista_pagamenti',$lista_pagamenti)->with('refr',$refr);		
+		return view('all_views/gestioneservizi/ditte')->with('view_dele',$view_dele)->with('ditte', $ditte)->with('all_comuni',$all_comuni)->with('lista_pagamenti',$lista_pagamenti)->with('refr',$refr)->with('filtro_cli',$filtro_cli);		
 	}	
 
 
