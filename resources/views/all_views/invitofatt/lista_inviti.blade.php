@@ -1,3 +1,9 @@
+<?php
+use App\Models\User;
+	$id = Auth::user()->id;
+	$user = User::find($id);
+
+?>
 @extends('all_views.viewmaster.index')
 
 @section('title', 'IngFUN')
@@ -107,29 +113,37 @@
 								<td style='width:200px' class='sum'>
 									
 									@if ($fattura->dele=="0") 
-										<a href="{{ route('invito',['id'=>$fattura->id]) }}">
-											<button type="button" class="btn btn-info" alt='Edit' title='Modifica fattura'><i class="fas fa-edit"></i></button>
-										</a>
+										@if ($user->hasRole('admin') || $user->hasRole('coord') || $user->hasRole('admin'))
+											<a href="{{ route('invito',['id'=>$fattura->id]) }}">
+												<button type="button" class="btn btn-info" alt='Edit' title='Modifica fattura'><i class="fas fa-edit"></i></button>
+											</a>
+										@endif
 										@if ($fattura->status>0)
 										<a href="allegati/fatture/{{$fattura->id}}.pdf?ver=<?php echo time();?>" target='_blank'>
 											<button type="button" class="btn btn-secondary" alt='Pdf' title='apri file pdf'><i class="fas fa-file-pdf" ></i></button>
 										</a>
-											@if ($fattura->status>=2)
-												<a href='javascript:void(0)'  onclick='change_state({{$fattura->id}})'>
-												<button type="button" class="btn btn-warning" alt='Status' title='Cambio stato'><i class="fas fa-cog"></i></button>
-												</a>
+											@if ($user->hasRole('admin') || $user->hasRole('coord') || $user->hasRole('admin'))
+												@if ($fattura->status>=2)
+													<a href='javascript:void(0)'  onclick='change_state({{$fattura->id}})'>
+													<button type="button" class="btn btn-warning" alt='Status' title='Cambio stato'><i class="fas fa-cog"></i></button>
+													</a>
+												@endif
 											@endif
-
-										
 										@endif
-										<a href='#' onclick="dele_element({{$fattura->id}})">
-											<button type="submit" name='dele_ele' class="btn btn-danger" title='Elimina Fattura'><i class="fas fa-trash"></i></button>	
-										</a>
+
+										@if ($user->hasRole('admin') || $user->hasRole('coord') || $user->hasRole('admin'))
+											<a href='#' onclick="dele_element({{$fattura->id}})">
+												<button type="submit" name='dele_ele' class="btn btn-danger" title='Elimina Fattura'><i class="fas fa-trash"></i></button>	
+											</a>
+										@endif
 									@endif
+
 									@if ($fattura->dele=="1") 
-										<a href='#'onclick="restore_element({{$fattura->id}})" >
-											<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
-										</a>
+										@if ($user->hasRole('admin') || $user->hasRole('coord') || $user->hasRole('admin'))
+											<a href='#'onclick="restore_element({{$fattura->id}})" >
+												<button type="submit" class="btn btn-warning" alt='Restore'><i class="fas fa-trash-restore"></i></button>
+											</a>
+										@endif
 									@endif
 									
 									
@@ -176,11 +190,13 @@
 		?>
 			<div class="row">
 			    <div class="col-lg-12">
-					<a href="{{ route('invito') }}">
-						<button type="button" class="btn btn-primary" >
-							<i class="fa fa-plus-circle"></i> Nuovo Invito a fatturare
-						</button>
-					</a>
+					@if ($user->hasRole('admin') || $user->hasRole('coord') || $user->hasRole('admin'))
+						<a href="{{ route('invito') }}">
+							<button type="button" class="btn btn-primary" >
+								<i class="fa fa-plus-circle"></i> Nuovo Invito a fatturare
+							</button>
+						</a>
+					@endif
 					<div class="form-check form-switch mt-3 ml-3">
 					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_servizi').submit()" {{ $check }}>
 					  <label class="form-check-label" for="view_dele">Mostra anche elementi eliminati</label>

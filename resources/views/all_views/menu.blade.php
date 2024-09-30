@@ -67,7 +67,6 @@ use App\Models\User;
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-
 		@foreach($voci as $voce)
 
 	
