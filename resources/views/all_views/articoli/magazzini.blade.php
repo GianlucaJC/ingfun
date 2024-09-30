@@ -70,28 +70,36 @@
 							<tr>
 								<td>{{ $magazzino->id }}</td>	
 								<td>
-								 @if ($magazzino->dele=="1") 
-									<font color='red'><del> 
-								 @endif
-									<span id='id_descr{{$magazzino->id}}' data-descr='{{ $magazzino->descrizione }}' data-sezionale='{{$magazzino->id_sezionale}}'>
-										{{ $magazzino->descrizione }}
-									</span>	
-								 @if ($magazzino->dele=="1") 
-									 </del></font>
-								 @endif	
+								
+									@if ($magazzino->dele=="1") 
+										<font color='red'><del> 
+									@endif
+										<span id='id_descr{{$magazzino->id}}' data-descr='{{ $magazzino->descrizione }}' data-sezionale='{{$magazzino->id_sezionale}}'>
+											{{ $magazzino->descrizione }}
+										</span>	
+									@if ($magazzino->dele=="1") 
+										</del></font>
+									@endif	
 								</td>
 								<td>
 									{{ $magazzino->sezionale }}
 								</td>
 								
 								<td>
+									
 									@if ($magazzino->dele=="0") 
-										<a href='#' onclick="edit_elem({{$magazzino->id}})">
-											<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
-										</a>
-										<a href='#' onclick="dele_element({{$magazzino->id}})">
-											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
-										</a>
+											<a href='#' onclick="edit_elem({{$magazzino->id}})">
+												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+											</a>
+											@if ($magazzino->giacenza==null || $magazzino->giacenza==0) 
+											<a href='#' onclick="dele_element({{$magazzino->id}})">
+												<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>	
+											</a>
+											@else
+												<a href='#' onclick="alert('Impossibile cancellare per via degli articoli movimentati su di esso!')">
+													<button type="button"  name='dele_ele' class="btn btn-secondary"><i class="fas fa-trash"></i></button>	
+												</a>
+											@endif
 									@endif
 									@if ($magazzino->dele=="1") 
 										<a href='#'onclick="restore_element({{$magazzino->id}})" >

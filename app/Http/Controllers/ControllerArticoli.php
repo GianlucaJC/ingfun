@@ -250,7 +250,10 @@ class ControllerArticoli extends Controller
 			$info_giacenze[$giacenza->id_prodotto][$giacenza->id_magazzino]=$giacenza->giacenza;
 		}
 		
-		$magazzini=prod_magazzini::select('id','descrizione')->orderBy('descrizione')->get();
+		$magazzini=prod_magazzini::select('id','descrizione')
+		->where('dele','=',0)
+		->orderBy('descrizione')
+		->get();
 
 		return view('all_views/articoli/elenco_articoli')->with("view_dele",$view_dele)->with("elenco_articoli",$elenco_articoli)->with("magazzini",$magazzini)->with('info_giacenze',$info_giacenze)->with("info_prod",$info_prod)->with('arr_forn',$arr_forn)->with("sede_magazzino",$sede_magazzino);
 
@@ -395,11 +398,13 @@ class ControllerArticoli extends Controller
 		$sezionali=societa::select("id","descrizione")->orderBy("descrizione")->get();
 		
 		$magazzini=DB::table('prod_magazzini as p')
-		->select("p.id","p.descrizione","p.dele","s.descrizione as sezionale","s.id as id_sezionale")
+		->select("p.id","p.descrizione","p.dele","s.descrizione as sezionale","s.id as id_sezionale","g.giacenza")
 		->leftjoin("societa as s","p.id_sezionale","s.id")
+		->leftjoin("prod_giacenze as g","p.id","g.id_magazzino")
 		->when($view_dele=="0", function ($magazzini) {
 			return $magazzini->where('p.dele', "=","0");
 		})
+		->groupBy('p.id')
 		->orderBy('p.descrizione')->get();
 
 		return view('all_views/articoli/magazzini')->with('magazzini',$magazzini)->with('sezionali',$sezionali)->with("view_dele",$view_dele);
