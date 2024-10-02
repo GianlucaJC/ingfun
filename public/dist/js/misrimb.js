@@ -30,7 +30,7 @@ var app = Vue.component('Rimb',{
 					
 					<div class="form-group">
 						<label>Importo</label>
-						<input type="text" class="form-control" v-model='importo' placeholder="Importo">
+						<input type="number" @keydown="checkDigit" class="form-control" v-model='importo' placeholder="Importo">
 					</div>					
 
 
@@ -145,8 +145,14 @@ var app = Vue.component('Rimb',{
 			this.sendko=false;
 			document.querySelector('#fileInput').value = ''
 		},
-
-
+		
+		checkDigit (event) {
+			if (event.key!=".") {
+				if (event.key.length === 1 && isNaN(Number(event.key))) {
+				event.preventDefault();
+				}
+			}
+		},
 
 		send_new_rimb() {
 			
