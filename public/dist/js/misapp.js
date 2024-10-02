@@ -46,7 +46,8 @@ var app = Vue.component('App',{
 		};
 	},
     mounted: function () {
-        window.appalti=this;
+		window.appalti=this;
+
     },	
 	methods: {
 

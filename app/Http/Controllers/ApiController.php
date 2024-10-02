@@ -260,7 +260,7 @@ class ApiController extends Controller
 			$id_lav_ref=$check['id_user'];
 		}		
 
-		$filename=uniqid()."jpg";
+		$filename=uniqid().".jpg";
 		
 		//$filename = $request->header('filename');
 

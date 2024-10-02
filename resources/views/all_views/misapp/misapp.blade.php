@@ -103,6 +103,10 @@
 				<Rif></Rif>
 			</div>
 
+			<div id="rimb">
+				<Rimb></Rimb>
+			</div>
+
 			<?php
 				$disp="";
 				if (!isset($result['count'])) {
@@ -221,6 +225,72 @@
 			</a>			  
               
 
+			<a href="#" class="list-group-item list-group-item-action">
+				<div class="d-flex w-100 justify-content-between">
+				  <h4 class="mb-1">Rimborsi</h4>
+				  <i class="fas fa-euro-sign fa-2x"></i>
+				</div>
+				<p class="mb-1"><i>Gestisci i tuoi rimborsi</i></p>
+				<?php
+					
+					
+					$trigger="onclick=\"clickitrimb('New')\"";
+					/*
+					if (!isset($result['count_newrep']) ||  $result['count_newrep']==0) {
+						$trigger="disabled onclick=\"clickitr('New')\"";
+					}
+					*/
+					
+				?>
+                <button type="button" <?php echo $trigger; ?>  class="btn btn-warning position-relative">
+                    Nuovo
+                    <span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						<?php
+						
+						//	if (isset($result['count_newrep'])) echo $result['count_newrep'];
+
+						?>
+                    </span>
+                </button>  
+
+				<?php
+					$trigger="";
+					/*
+					$trigger="onclick=\"clickitr('Rif')\"";
+					if (!isset($result['numrepno']) ||  $result['numrepno']==0) {
+						$trigger="disabled onclick=\"clickitr('Rif')\"";
+					}
+					*/
+				?>
+                <button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-danger position-relative">
+					In attesa
+					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						<?php
+							//if (isset($result['numrepno'])) echo $result['numrepno'];
+						?>
+					</span>
+				</button>                
+				
+				<?php
+					$trigger="";
+					/*
+					$trigger="onclick=\"clickitr('Acc')\"";
+					if (!isset($result['numrepsi']) ||  $result['numrepsi']==0) {
+						$trigger="disabled onclick=\"clickitr('Acc')\"";
+					}
+					*/
+				?>
+                <button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-success position-relative">
+					Storico
+					<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+						<?php
+							//if (isset($result['numrepsi'])) echo $result['numrepsi'];
+						?>
+					</span>
+				</button> 
+
+			</a>				
+
               
 
 
@@ -244,6 +314,7 @@
 	<script src="{{ URL::asset('/') }}dist/js/misapp.js?ver=<?php echo time(); ?>"></script>
 	<script src="{{ URL::asset('/') }}dist/js/misrep.js?ver=<?php echo time(); ?>"></script>
 	<script src="{{ URL::asset('/') }}dist/js/misref.js?ver=<?php echo time(); ?>"></script>
+	<script src="{{ URL::asset('/') }}dist/js/misrimb.js?ver=<?php echo time(); ?>"></script>
 	
 
 @endsection

@@ -360,7 +360,14 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('mezzi', [ 'as' => 'login', 'uses' => 'App\Http\Controllers\ApiController@elenco_mezzi']);
 	Route::put('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 	Route::post('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
-	
+	//rimborsi misapp-user
+	Route::post('elenco_rimborsi', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ControllerRimborsi@elenco_rimborsi']);
+
+	Route::put('send_rimborso', [ 'as' => 'send_rimborso', 'uses' => 'App\Http\Controllers\ControllerRimborsi@send_rimborso']);
+	Route::post('send_rimborso', [ 'as' => 'send_rimborso', 'uses' => 'App\Http\Controllers\ControllerRimborsi@send_rimborso']);
+
+
+	//
 	Route::post('cerca_servizi', [ 'as' => 'cerca_servizi', 'uses' => 'App\Http\Controllers\Registro@cerca_servizi']);
 	
 
