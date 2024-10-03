@@ -30,6 +30,7 @@
 							<thead>
 								<tr>
 									<th>ID</th>
+									<th>Utente</th>
 									<th>Descrizione</th>
 									<th>Data</th>
 									<th>Importo</th>
@@ -41,6 +42,7 @@
 								@foreach($elenco_rimborsi as $rimborso)    
 									<tr>
 										<td>{{$rimborso->id}}</td>
+										<td>{{$rimborso->name}}</td>
 										<td>{{$rimborso->descrizione}}</td>
 										<td>{{$rimborso->dataora}}</td>
 										<td>{{$rimborso->importo}}</td>

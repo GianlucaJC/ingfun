@@ -87,8 +87,10 @@ class ControllerRimborsi extends Controller
    }
 
    public function rimborsi_coord(Request $request) {
-		$elenco_rimborsi=rimborsi::select('rimborsi.id','rimborsi.id_rimborso','r.descrizione','rimborsi.dataora','rimborsi.importo','rimborsi.stato','rimborsi.filename')
+		$elenco_rimborsi=rimborsi::select('u.name','rimborsi.id','rimborsi.id_rimborso','r.descrizione','rimborsi.dataora','rimborsi.importo','rimborsi.stato','rimborsi.filename')
 		->join('rimborsi_tipologie as r','rimborsi.id_rimborso','r.id')
+		->join('users as u','rimborsi.id_user','u.id')
+		->groupBy('rimborsi.id')
 		->orderBy('id','desc')
 		->get();
 		return view('all_views/rimborsi/rimborsi_coord')->with('elenco_rimborsi',$elenco_rimborsi);			
