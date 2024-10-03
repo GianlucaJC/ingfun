@@ -29,10 +29,13 @@ public function __construct()
 
 		
 		$id_lav=Auth::user()->id;
-
+		
+		//N.B: ultimi 100 rimborsi
 		$elenco_rimborsi=rimborsi::select('rimborsi.id','rimborsi.id_rimborso','r.descrizione','rimborsi.dataora','rimborsi.importo','rimborsi.stato','rimborsi.filename')
 		->join('rimborsi_tipologie as r','rimborsi.id_rimborso','r.id')
 		->where('rimborsi.id_user', "=",$id_lav)
+		->orderBy('id','desc')
+		->limit(100)
 		->get();
 
 		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user)->with('elenco_rimborsi',$elenco_rimborsi);

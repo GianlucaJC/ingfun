@@ -341,6 +341,11 @@ Route::group(['only_log' => ['auth']], function () {
 	
 	Route::post('telepass', [ 'as' => 'telepass', 'uses' => 'App\Http\Controllers\ControllerArchiviParco@telepass']);
 
+	Route::get('rimborsi_coord', [ 'as' => 'rimborsi_coors', 'uses' => 'App\Http\Controllers\ControllerRimborsi@rimborsi_coord']);
+	
+	Route::post('rimborsi_coord', [ 'as' => 'rimborsi_coord', 'uses' => 'App\Http\Controllers\ControllerRimborsi@rimborsi_coord']);
+
+
 });
 
 
