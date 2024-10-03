@@ -43,7 +43,10 @@ var app = Vue.component('Rimb',{
 					<div>
 						<button v-show="!sendreal" type="button" class="btn btn-success" :disabled="sendko" @click='send_new_rimb()'>Salva richiesta</button>
 											
-						<button type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);rimborsi.view_root=false;rimborsi.new_form_rimb()">Esci</button>
+						<button v-show="!sendreal" type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);rimborsi.view_root=false;rimborsi.new_form_rimb()">Esci</button>
+
+						<button v-show="sendreal" type="button" class="btn btn-secondary" onclick="location.reload(); ">Esci (con refresh)</button>
+
 						<span class='ml-3' v-show="sendko"><i class="fas fa-spinner fa-spin"></i></span>
 
 						<div v-show="sendreal" class="alert alert-success mt-2" role="alert">

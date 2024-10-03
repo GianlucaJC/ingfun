@@ -16,15 +16,25 @@
                         <tr>
                             <td>{{$rimborso->id}}</td>
                             <td>{{$rimborso->descrizione}}</td>
-                            <td></td>
-                            <td></td>
-                            <td></td>
+                            <td>{{$rimborso->dataora}}</td>
+                            <td>{{$rimborso->importo}}</td>
+							<?php
+								$stato_rimb=$rimborso->stato;
+								$stato_view="In Attesa";$back="yellow";$colo="black";
+								if ($stato_rimb=="0") {$stato_view="In Attesa";$back="yellow";$colo="black";}
+								if ($stato_rimb=="1") {$stato_view="Approvato";$back="green";$colo="white";}
+								if ($stato_rimb=="2") {$stato_view="Scartato";$back="red";$colo="white";}
+							?>
+							<td style="background-color:{{$back}}">
+								<font color='{{$colo}}'>{{$stato_view}}</font>
+							</td>
                         </tr>
                     @endforeach
                 </tbody>
 			</table>						
 		</div>
-	</div>	
+	</div>
+	<button type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);$('#div_lista_rimborsi').hide()">Esci</button>
 </div>
 
 

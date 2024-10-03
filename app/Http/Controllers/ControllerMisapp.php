@@ -30,7 +30,7 @@ public function __construct()
 		
 		$id_lav=Auth::user()->id;
 
-		$elenco_rimborsi=rimborsi::select('rimborsi.id','rimborsi.id_rimborso','r.descrizione')
+		$elenco_rimborsi=rimborsi::select('rimborsi.id','rimborsi.id_rimborso','r.descrizione','rimborsi.dataora','rimborsi.importo','rimborsi.stato','rimborsi.filename')
 		->join('rimborsi_tipologie as r','rimborsi.id_rimborso','r.id')
 		->where('rimborsi.id_user', "=",$id_lav)
 		->get();
