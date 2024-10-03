@@ -105,9 +105,9 @@
 				<Rimb></Rimb>
 			</div>
 			
-			<!-- in questa altra view ci sono impostazioni iniziali (es bottoni e tabelle) e altre cose non gestite da vue !-->
+			<!-- altre view non gestite completamente da vue !-->
+			@include('all_views.misapp.storico_rimborsi')
 			@include('all_views.misapp.misapp_menu')
-
 
 		</form>
       </div><!-- /.container-fluid -->
