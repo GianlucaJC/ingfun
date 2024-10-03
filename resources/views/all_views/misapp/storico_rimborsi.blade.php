@@ -27,12 +27,14 @@
 								if ($stato_rimb=="2") {$stato_view="Scartato";$back="red";$colo="white";}
 							?>
                         
-              
+                            
                             <td style='width:100px'>
-                                <span id='id_foto{{$rimborso->id}}' data-foto='{{$rimborso->filename}}'>
-                                <a href='javascript:void(0)' onclick=''>
-                                    <img class="rounded float-left img-fluid img-thumbnail"  src='{{ URL::asset('/') }}dist/upload/rimborsi/thumbnail/small/{{$rimborso->filename}}'>
-                                </a>
+                                @if ($rimborso->filename!=null && strlen($rimborso->filename)!=0)
+                                    <span id='id_foto{{$rimborso->id}}' data-foto='{{$rimborso->filename}}'>
+                                    <a href='javascript:void(0)' onclick=''>
+                                        <img class="rounded float-left img-fluid img-thumbnail"  src='{{ URL::asset('/') }}dist/upload/rimborsi/thumbnail/small/{{$rimborso->filename}}'>
+                                    </a>
+                                @endif
                             </td>                                
                         
 							<td style="background-color:{{$back}}">

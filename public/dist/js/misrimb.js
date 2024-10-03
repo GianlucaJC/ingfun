@@ -13,9 +13,9 @@ var app = Vue.component('Rimb',{
 						
 						<!-- v-on:change="change_mezzo($event)"!-->
 
-						<select class="form-control"  v-model="tipo_rimborso">
+						<select class="form-control"  v-model="tipo_rimborso" @change="check_obbligo($event)">
 							<option value=''>Select...</option>
-							<option v-for="tipo in tipo_rimborsi" :value="tipo.id">
+							<option v-for="(tipo) in tipo_rimborsi" :value="tipo.id_ref">
 								{{tipo.descrizione}}
 							</option>
 						</select>
@@ -34,12 +34,14 @@ var app = Vue.component('Rimb',{
 					</div>					
 
 
-					<div class="form-group">
+					<div class="form-group" v-if="obbligo_foto==1">
 						<label>Scegli un file o scatta foto</label>
 						<div class="input-group mb-3">
 							<input type="file" id='fileInput' class="form-control" @change="uploadFile($event)">
 				  		</div>
 					</div>
+
+
 					<div>
 						<button v-show="!sendreal" type="button" class="btn btn-success" :disabled="sendko" @click='send_new_rimb()'>Salva richiesta</button>
 											
@@ -62,6 +64,7 @@ var app = Vue.component('Rimb',{
 	`,
 	
 	data() {
+		let obbligo_foto=0;
 		let view_root=false;
 		let mezzi= null; 
 		let tipo_rimborsi=null
@@ -73,6 +76,7 @@ var app = Vue.component('Rimb',{
 		let file=null
 		
 		return {
+			obbligo_foto,
 			view_root,
 			mezzi,
 			tipo_rimborsi,
@@ -97,6 +101,12 @@ var app = Vue.component('Rimb',{
 			this.mezzo=mezzo
 		},
 		*/
+		check_obbligo(event) {
+			info=event.target.value
+			if (info.length>0) {
+				this.obbligo_foto=info.split("|")[1]
+			}
+		},
 
 		check_ins() {
 			file=this.file
@@ -105,7 +115,9 @@ var app = Vue.component('Rimb',{
 			data_ora=this.data_ora
 			
 			if (!importo || !tipo_rimborso || !importo || !data_ora) return false
-			if (file==null) return "nofile"
+			if (this.obbligo_foto==1) {
+				if (file==null) return "nofile"
+			}	
 		},
 
 		elenco_rimborsi() {
@@ -158,7 +170,6 @@ var app = Vue.component('Rimb',{
 		},
 
 		send_new_rimb() {
-			
 			check=this.check_ins()
 			if (check=="nofile") {
 				alert("Scattare una foto o sceglierne una dalla galleria")	
@@ -171,10 +182,14 @@ var app = Vue.component('Rimb',{
 			if (!confirm("Sicuri di inviare la segnalazioni dei rimborso?")) return false;
 			this.sendko=true
 			var data = new FormData()
-			data.append('tipo_rimborso', this.tipo_rimborso)
+			
+			tipo_r=this.tipo_rimborso.split("|")[0]
+			
+			data.append('tipo_rimborso', tipo_r)
 			data.append('data_ora', this.data_ora)
 			data.append('importo', this.importo)
 			data.append('file', file)
+			data.append('obbligo_foto', this.obbligo_foto)
 
 			//<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
 			const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
