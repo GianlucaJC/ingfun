@@ -30,20 +30,7 @@ class ControllerRimborsi extends Controller
 
 	public function send_rimborso(Request $request) {
 		
-		$id=Auth::user()->id;
-		$candidati=candidati::select("id")
-		->where('id_user', "=", $id)->get();
-		
-		if (!isset($candidati[0])) {
-			$risp['header']="KO";
-			$risp['message']="Attenzione - Dati non riversati per errore riscontrato";
-			echo json_encode($risp);
-			exit;
-		}
-
-		$id_lav_ref=$candidati[0]['id'];
-	
-
+		$id_lav=Auth::user()->id;
 		$filename=uniqid().".jpg";
 		
 		//$filename = $request->header('filename');
@@ -71,7 +58,7 @@ class ControllerRimborsi extends Controller
 			$data_ora = $request->input('data_ora');
 
 			$rimborsi = new rimborsi;
-			$rimborsi->id_user = $id_lav_ref;
+			$rimborsi->id_user = $id_lav;
 			$rimborsi->id_rimborso=$tipo_rimborso;
 			$rimborsi->dataora=$data_ora;
 			$rimborsi->importo=$importo;
@@ -84,6 +71,8 @@ class ControllerRimborsi extends Controller
 
 		}
 		$risp['header']="KO";
+		$risp['temp']=$temp;
+		$risp['target_file']=$target_file;
 		$risp['message']="Attenzione - Dati non riversati per errore riscontrato";
 		echo json_encode($risp);
 		

@@ -21,7 +21,7 @@ return new class extends Migration
 			$table->dateTime('dataora')->nullable();
             $table->double('importo',10,2)->nullable();
             $table->string('filename',20)->nullable();
-            $table->integer('stato')->nullable();
+            $table->integer('stato');
         });
     }
 

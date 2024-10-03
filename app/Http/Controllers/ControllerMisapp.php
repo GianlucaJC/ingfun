@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Http\Controllers\ApiController;
+use App\Models\candidati;
+use App\Models\rimborsi;
 use OneSignal;
 
 use DB;
@@ -24,8 +26,16 @@ public function __construct()
 		$view_dele="";
 		$id_user=Auth::user()->id;
 		$result = (new ApiController)->countappalti($request);
+
 		
-		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user);
+		$id_lav=Auth::user()->id;
+
+		$elenco_rimborsi=rimborsi::select('rimborsi.id','rimborsi.id_rimborso','r.descrizione')
+		->join('rimborsi_tipologie as r','rimborsi.id_rimborso','r.id')
+		->where('rimborsi.id_user', "=",$id_lav)
+		->get();
+
+		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user)->with('elenco_rimborsi',$elenco_rimborsi);
 
 	}
 
