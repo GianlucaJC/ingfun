@@ -267,7 +267,9 @@ public function __construct()
 		->select('sm.id','mm.marca','mom.modello','sm.targa')
 		->join('parco_marca_mezzo as mm','sm.marca','mm.id')
 		->join('parco_modello_mezzo as mom','sm.modello','mom.id')
-		->where('sm.dele','=',0)
+		->when($id=="0", function ($mezzi) {
+			return $mezzi->where('sm.dele', "=","0");
+		})		
 		->orderBy('mm.marca')
 		->orderBy('sm.targa')
 		->groupBy('sm.id')
