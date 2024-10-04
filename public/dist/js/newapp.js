@@ -11,6 +11,7 @@
     .forEach(function (form) {
       form.addEventListener('submit', function (event) {
         if (!form.checkValidity()) {
+		  alert("Controllare i campi obbligatori richiesti!")
           event.preventDefault()
           event.stopPropagation()
         }

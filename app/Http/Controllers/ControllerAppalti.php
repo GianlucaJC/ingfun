@@ -39,9 +39,11 @@ public function __construct()
 
 		$ids_lav=array();
 		foreach($list_push as $list) {
+
 			if (!in_array($list->id_lav_ref,$ids_lav))  
 				$ids_lav[]=$list->id_lav_ref;
 		}	
+
 
 		$ditta_ref="";
 		if (isset($list_push[0])) {
@@ -208,6 +210,10 @@ public function __construct()
 		->where("l.to_delete","=", 1)
 		->where("l.id_appalto","=", $id_app)
 		->groupBy('candidatis.id');
+
+		$deleted = lavoratoriapp::where('to_delete','=',1)
+		->where('id_appalto','=',$id_app)->delete();
+				
 		$estr=false;
 		if ($resp->count()!=0){
 			$estr=true;
@@ -220,8 +226,7 @@ public function __construct()
 			$list_push=$this->send_list_push_mail($id_app,"dele",$only_send,false);
 
 		}		
-		$deleted = lavoratoriapp::where('to_delete','=',1)
-		->where('id_appalto','=',$id_app)->delete();
+
 		
 		//push per eventuale variazione
 		$flag_variazione=$request->input('flag_variazione');
