@@ -87,8 +87,8 @@
 			
 			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
-					<input class="form-control" id="luogo_incontro" name='luogo_incontro' type="text" placeholder="Luogo dell'incontro" required value="{{$appalti[0]->luogo_incontro ?? ''}}"  />
-					<label for="nome">Luogo incontro*</label>
+					<input class="form-control" id="luogo_incontro" name='luogo_incontro' type="text" placeholder="Luogo e ora dell'incontro" required value="{{$appalti[0]->luogo_incontro ?? ''}}"  />
+					<label for="nome">Luogo e ora incontro*</label>
 				</div>
 			</div>
 			<div class="col-md-2">
@@ -100,7 +100,7 @@
 			<div class="col-md-2">
 				<div class="form-floating">
 					<input class="form-control" id="orario_incontro" name='orario_incontro' type="time" required value="{{$appalti[0]->orario_incontro ?? ''}}" maxlength=5 />
-					<label for="orario_incontro">Orario incontro*</label>
+					<label for="orario_incontro">Orario Destinazione*</label>
 				</div>
 			</div>	
 		</div>			

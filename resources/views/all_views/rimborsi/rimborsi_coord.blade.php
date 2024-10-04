@@ -24,12 +24,17 @@
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<div id="div_lista_rimborsi">
+				<small><b>R</b> - Richiedi rettifica</small>
+				<small><b>A</b> - Approva rimborso</small>
+				<small><b>S</b> - Scarta rimborso</small>
+				<hr>
 				<div class="row">
 					<div class="col-md-12">
 						<table id='tbl_rimborsi' class="display">
 							<thead>
 								<tr>
 									<th>ID</th>
+									<th style='width:80px'>Operazioni</th>									
 									<th>Utente</th>
 									<th>Descrizione</th>
 									<th>Data</th>
@@ -42,16 +47,25 @@
 								@foreach($elenco_rimborsi as $rimborso)    
 									<tr>
 										<td>{{$rimborso->id}}</td>
+										<td style='width:80px'>
+											@if($rimborso->stato=="0")
+												<button type="button" class="btn btn-warning btn-sm" onclick="azione('R',{{$rimborso->id}})">R</button>
+												<button type="button" class="btn btn-success btn-sm" onclick="azione('A',{{$rimborso->id}})">A</button>
+												<button type="button" class="btn btn-danger btn-sm" onclick="azione('S',{{$rimborso->id}},this)">S</button>
+											@endif
+
+										</td>
+
 										<td>{{$rimborso->name}}</td>
 										<td>{{$rimborso->descrizione}}</td>
 										<td>{{$rimborso->dataora}}</td>
 										<td>{{$rimborso->importo}}</td>
 										<?php
 											$stato_rimb=$rimborso->stato;
-											$stato_view="In Attesa";$back="yellow";$colo="black";
-											if ($stato_rimb=="0") {$stato_view="In Attesa";$back="yellow";$colo="black";}
-											if ($stato_rimb=="1") {$stato_view="Approvato";$back="green";$colo="white";}
-											if ($stato_rimb=="2") {$stato_view="Scartato";$back="red";$colo="white";}
+											$stato_view="In Attesa";$back="warning";$colo="black";
+											if ($stato_rimb=="0") {$stato_view="In Attesa";$back="warning";}
+											if ($stato_rimb=="1") {$stato_view="Approvato";$back="success";}
+											if ($stato_rimb=="2") {$stato_view="Scartato";$back="danger";}
 										?>
 									
 										
@@ -64,8 +78,10 @@
 											@endif
 										</td>                                
 									
-										<td style="background-color:{{$back}}">
-											<font color='{{$colo}}'>{{$stato_view}}</font>
+										<td  id='td_status{{$rimborso->id}}'>
+											<div class="alert alert-{{$back}}" role="alert">
+												<center>{{$stato_view}}</center>
+											</div>
 										</td>
 									</tr>
 								@endforeach

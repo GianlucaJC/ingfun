@@ -52,3 +52,54 @@ function zoom(id_foto) {
 	$('#modal_img').modal('show')
 	$("#body_modal").html(html)	
 }
+
+function azione(value,id_ref,obj){
+    testo=""
+    if (value=="R") testo="Sicuri di inviare una richiesta di rettifica?"
+    if (value=="A") testo="Sicuri di accettare il rimborso?"
+    if (value=="S") testo="Sicuri di scartare il rimborso?"
+    if (!confirm(testo)) return false;
+    html="<center><i class='fas fa-spinner fa-spin'></i></center>"
+    $( obj ).prop( "disabled", true );
+    $( obj).text("...");
+    $("#td_status"+id_ref).html(html)
+
+    //<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
+    const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
+    const csrf = metaElements.length > 0 ? metaElements[0].content : "";			
+    
+    fetch('risposta_rimborso', {
+      method: 'POST',
+      headers: {
+        //"Content-type": "multipart/form-data",
+        "X-CSRF-Token": csrf
+      },
+      body: "value="+value+"&id_ref="+id_ref,
+    })
+    .then(response => {
+        if (response.ok) {
+           return response.json();
+        }
+    })
+    .then(response=>{
+        if (response.header=="KO") 
+            alert (response.message)
+        else  {
+            $( obj ).prop( "disabled", false );
+            $( obj).text(value);
+            html=""
+            testo="";back=""
+            if (value=="R") {testo="In attesa";back='warning'}
+            if (value=="A") {testo="Accettato";back='success'}
+            if (value=="S") {testo="Scartato";back='danger'}
+            html+=`<div class="alert alert-`+back+`" role="alert">
+                <center>`+testo+`</center>
+            </div>`
+            $("#td_status"+id_ref).html(html)            
+        }	
+        this.sendko=false
+    })
+    .catch(status, err => {
+        return console.log(status, err);
+    })    
+}

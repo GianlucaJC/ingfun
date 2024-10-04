@@ -370,8 +370,9 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::put('send_rimborso', [ 'as' => 'send_rimborso', 'uses' => 'App\Http\Controllers\ControllerRimborsi@send_rimborso']);
 	Route::post('send_rimborso', [ 'as' => 'send_rimborso', 'uses' => 'App\Http\Controllers\ControllerRimborsi@send_rimborso']);
-
-
+	
+	//ajax rimborsi coord
+	Route::post('risposta_rimborso', [ 'as' => 'risposta_rimborso', 'uses' => 	'App\Http\Controllers\ControllerRimborsi@risposta_rimborso']);
 	//
 	Route::post('cerca_servizi', [ 'as' => 'cerca_servizi', 'uses' => 'App\Http\Controllers\Registro@cerca_servizi']);
 	

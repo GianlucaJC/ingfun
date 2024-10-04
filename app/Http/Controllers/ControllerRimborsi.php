@@ -95,5 +95,10 @@ class ControllerRimborsi extends Controller
 		->get();
 		return view('all_views/rimborsi/rimborsi_coord')->with('elenco_rimborsi',$elenco_rimborsi);			
    }
+   public function risposta_rimborso(Request $request){
+	$risp=array();
+	$risp['header']="OK";
+	echo json_encode($risp);
+   }
 
 }
