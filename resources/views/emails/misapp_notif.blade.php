@@ -21,11 +21,11 @@
     ?>
     <table role="presentation" border="1" cellspacing="0" width="100%">
         <tr>
-            <td {{$st}}>Luogo Incontro</td>
+            <td {{$st}}>Luogo e ora incontro</td>
             <th {{$st1}}>{{$appalto->luogo_incontro}}</th>
         </tr>    
         <tr>
-            <td {{$st}}>Orario Incontro</td>
+            <td {{$st}}>Orario Destinazione</td>
             <th {{$st1}}>{{$appalto->orario_incontro}}</th>
         </tr>          
         <tr>
