@@ -35,3 +35,20 @@ $(document).ready( function () {
     });
 	
 } );
+
+function zoom(id_foto) {
+	url=$("#url").val()
+	filename=$("#id_foto"+id_foto).data("foto")	
+	html="";
+	html+="<div>";
+		html+="<a href='"+url+"/dist/upload/rimborsi/"+filename+"' 	target='_blank'>";
+			html+="<img src='"+url+"/dist/upload/rimborsi/thumbnail/medium/"+filename+"'>";
+		html+="</a>";	
+	html+="</div>"
+	html+="<hr>";
+	html+="<a href='"+url+"/dist/upload/rimborsi/"+filename+"' target='_blank'>";
+		html+="<button type='button' class='btn btn-primary'>Zoom</button>";
+	html+="</a>"
+	$('#modal_img').modal('show')
+	$("#body_modal").html(html)	
+}

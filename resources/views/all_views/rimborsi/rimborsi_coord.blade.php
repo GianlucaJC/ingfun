@@ -22,7 +22,7 @@
 
 		<form method='post' action="{{ route('rimborsi_coord') }}" id='frm_rimborsi' name='frm_rimborsi' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
-
+			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<div id="div_lista_rimborsi">
 				<div class="row">
 					<div class="col-md-12">
@@ -58,7 +58,7 @@
 										<td style='width:100px'>
 											@if ($rimborso->filename!=null && strlen($rimborso->filename)!=0)
 												<span id='id_foto{{$rimborso->id}}' data-foto='{{$rimborso->filename}}'>
-												<a href='javascript:void(0)' onclick=''>
+												<a href='javascript:void(0)' onclick='zoom({{$rimborso->id}})'>
 													<img class="rounded float-left img-fluid img-thumbnail"  src='{{ URL::asset('/') }}dist/upload/rimborsi/thumbnail/small/{{$rimborso->filename}}'>
 												</a>
 											@endif
@@ -82,6 +82,27 @@
   </div>
   <!-- /.content-wrapper -->
   
+
+	<!-- Modal -->
+	<div class="modal fade" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true" id="modal_img">
+	  <div class="modal-dialog modal-dialog-centered">
+		<div class="modal-content">
+		  <div class="modal-header">
+			<h5 class="modal-title" id="title_modal">Foto inviata</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			  <span aria-hidden="true">&times;</span>
+			</button>
+		  </div>
+		  <div class="modal-body" id='body_modal'>
+			...
+		  </div>
+		  <div class="modal-footer">
+			<div id='altri_btn'></div>
+			<button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+		  </div>
+		</div>
+	  </div>
+	</div>  
  @endsection
  
  @section('content_plugin')
