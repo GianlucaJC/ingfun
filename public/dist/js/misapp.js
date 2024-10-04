@@ -229,6 +229,11 @@ Vue.component('Detail',{
 				<p class="h6 opacity-25">Orario Destinazione</p>
 				<p class="h5">{{infoappalto.info[0].orario_incontro}}</p>
 			</div>
+			
+			<div v-if="infoappalto.info[0].luogo_destinazione">
+				<p class="h6 opacity-25">Luogo Destinazione</p>
+				<p class="h5">{{infoappalto.info[0].luogo_destinazione}}</p>
+			</div>
 
 			<div v-if="infoappalto.info[0].chiesa">
 				<p class="h6 opacity-25">Chiesa</p>

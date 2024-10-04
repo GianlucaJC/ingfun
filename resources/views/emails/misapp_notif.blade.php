@@ -27,7 +27,11 @@
         <tr>
             <td {{$st}}>Orario Destinazione</td>
             <th {{$st1}}>{{$appalto->orario_incontro}}</th>
-        </tr>          
+        </tr>    
+        <tr>
+            <td {{$st}}>Luogo Destinazione</td>
+            <th {{$st1}}>{{$appalto->luogo_destinazione}}</th>
+        </tr>                  
         <tr>
             <td {{$st}}>Chiesa</td>
             <th {{$st1}}>{{$appalto->chiesa}}</th>

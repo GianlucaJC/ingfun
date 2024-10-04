@@ -85,12 +85,13 @@
 
 
 			
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<div class="form-floating mb-3 mb-md-0">
 					<input class="form-control" id="luogo_incontro" name='luogo_incontro' type="text" placeholder="Luogo e ora dell'incontro" required value="{{$appalti[0]->luogo_incontro ?? ''}}"  />
 					<label for="nome">Luogo e ora incontro*</label>
 				</div>
 			</div>
+
 			<div class="col-md-2">
 				<div class="form-floating">
 					<input class="form-control" id="km_percorrenza" name='km_percorrenza' type="text"  value="{{$appalti[0]->km_percorrenza ?? ''}}" maxlength=10 />
@@ -103,6 +104,12 @@
 					<label for="orario_incontro">Orario Destinazione*</label>
 				</div>
 			</div>	
+			<div class="col-md-3">
+				<div class="form-floating mb-3 mb-md-0">
+					<input class="form-control" id="luogo_destinazione" name='luogo_destinazione' type="text" placeholder="Luogo Destinazione" required value="{{$appalti[0]->luogo_destinazione ?? ''}}"  />
+					<label for="nome">Luogo Destinazione*</label>
+				</div>
+			</div>			
 		</div>			
 		
 		

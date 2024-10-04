@@ -129,6 +129,7 @@ public function __construct()
 		$appalti->luogo_incontro = $request->input('luogo_incontro');
 		$appalti->km_percorrenza = $request->input('km_percorrenza');
 		$appalti->orario_incontro = $request->input('orario_incontro');
+		$appalti->luogo_destinazione = $request->input('luogo_destinazione');
 		$appalti->chiesa = $request->input('chiesa');
 		$appalti->testo_libero = $request->input('testo_libero');
 		$appalti->data_ref = $request->input('data_app');
@@ -272,9 +273,7 @@ public function __construct()
 		->select('sm.id','mm.marca','mom.modello','sm.targa')
 		->join('parco_marca_mezzo as mm','sm.marca','mm.id')
 		->join('parco_modello_mezzo as mom','sm.modello','mom.id')
-		->when($id=="0", function ($mezzi) {
-			return $mezzi->where('sm.dele', "=","0");
-		})		
+		->where('sm.dele', "=","0")
 		->orderBy('mm.marca')
 		->orderBy('sm.targa')
 		->groupBy('sm.id')
