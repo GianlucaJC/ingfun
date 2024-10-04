@@ -89,7 +89,7 @@
 						</table>						
 					</div>
 				</div>
-				<button type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);$('#div_lista_rimborsi').hide()">Esci</button>
+				
 			</div>
 		</form>
       </div><!-- /.container-fluid -->
