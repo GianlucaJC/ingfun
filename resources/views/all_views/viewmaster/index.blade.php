@@ -109,6 +109,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 			
 		?>
 	</li>	
+	@yield('extra_button_home')  
 	<li class="nav-item  d-sm-inline-block">	
         <a href="{{ route('menu') }}" class="nav-link">
 			<button type="button" class="btn btn-primary btn-sm">Homepage</button>	

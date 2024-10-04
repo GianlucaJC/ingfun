@@ -17,8 +17,16 @@
 
 @endsection
 
+@section('extra_button_home')
+	<li class="nav-item  d-sm-inline-block">	
+        <a href="{{ route('listapp') }}" class="nav-link">
+			<button type="button" class="btn btn-success btn-sm">Elenco appalti</button>	
+		</a>
+     </li>
+@endsection
 
 @section('content_main')
+
 <form method='post' action="{{ route('save_newapp') }}" id='save_newapp' name='save_newapp' autocomplete="off" class="needs-validation" novalidate>
 
 <input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
@@ -389,19 +397,15 @@
 		
 
 
-        <div class="row">
+        <div class="row mb-3">
 
-			<button type="submit" name='sub_newcand_onlysave' id='sub_newcand_onlysave' onclick='check_save()' class="btn btn-success btn-lg btn-block">SALVA</button>  
+			<button type="submit" name='sub_newcand_onlysave' id='sub_newcand_onlysave' onclick='check_save()' class="btn btn-success btn-lg btn-block">SALVA</button> 
 			
-			<a href="{{ route('listapp') }}">
-				<button type="button"  id='back_appalti' class="btn btn-info btn-lg btn-block mt-3">TORNA AD ELENCO APPALTI</button> 
-			</a>
-
-
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			
 			<input type="hidden" name="id_app" id="id_app" value="{{$id_app}}">
 		</div>
+		<hr>
 		
 			
 		
