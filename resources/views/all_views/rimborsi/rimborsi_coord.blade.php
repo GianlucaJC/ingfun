@@ -49,9 +49,11 @@
 										<td>{{$rimborso->id}}</td>
 										<td style='width:80px'>
 											@if($rimborso->stato=="0")
-												<button type="button" class="btn btn-warning btn-sm" onclick="azione('R',{{$rimborso->id}})">R</button>
-												<button type="button" class="btn btn-success btn-sm" onclick="azione('A',{{$rimborso->id}})">A</button>
-												<button type="button" class="btn btn-danger btn-sm" onclick="azione('S',{{$rimborso->id}},this)">S</button>
+												<div id='azioni{{$rimborso->id}}'>
+													<button type="button" class="btn btn-warning btn-sm" onclick="azione('R',{{$rimborso->id}},this,0,'')">R</button>
+													<button type="button" class="btn btn-success btn-sm" onclick="azione('A',{{$rimborso->id}},this,'{{$rimborso->importo}}','{{$rimborso->dataora}}')">A</button>
+													<button type="button" class="btn btn-danger btn-sm" onclick="azione('S',{{$rimborso->id}},this,0,'')">S</button>
+												</div>
 											@endif
 
 										</td>

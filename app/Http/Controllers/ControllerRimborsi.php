@@ -7,6 +7,7 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\candidati;
 use App\Models\rimborsi;
+use App\Models\presenze;
 use App\Models\rimborsi_tipologie;
 use DB;
 use Image;
@@ -96,9 +97,112 @@ class ControllerRimborsi extends Controller
 		return view('all_views/rimborsi/rimborsi_coord')->with('elenco_rimborsi',$elenco_rimborsi);			
    }
    public function risposta_rimborso(Request $request){
+	$id_coord=Auth::user()->id;
+	$value = $request->input('value');
+	$id_ref = $request->input('id_ref');
+	$importo = $request->input('importo');
+	$dataora = $request->input('dataora');
+
 	$risp=array();
+	$v=0;
+	if ($value=="A") $v=1;
+	if ($value=="S") $v=2;
+	$risp_send=array();
+
+	if ($value=="A" || $value=="S")	{
+		//In caso di accettazione del rimborso, creo una nuovo record (con id_servizio statico 5006-rimborsi vari) nel registro presenze
+		if ($value=="A") {
+			$info=rimborsi::select('c.id')
+			->join('candidatis as c','c.id_user','rimborsi.id_user')
+			->where('rimborsi.id', $id_ref)
+			->first();
+			if($info) {
+				$periodo=substr($dataora,0,7);
+				$data_r=substr($dataora,0,10);
+				$id_lav=$info->id;
+
+				//se nel registro esiste già un rimborso per il periodo e per il lavoratore...
+				$info=presenze::select('id','importo')
+				->where('id_servizio', '=',5006)
+				->where('data','=',$data_r)
+				->where('id_lav','=',$id_lav)
+				->first();
+				
+				if($info) {
+					$pre_importo=$info->importo;
+					$importo_tot=floatval($pre_importo)+floatval($importo);
+					$id_pre=$info->id;
+					presenze::where('id','=',$id_pre)->update(['importo' => $importo_tot]);
+				}
+				else {	
+					//..altrimenti crea un nuovo rimborso nel registro
+					$presenze = new presenze;
+					$presenze->id_lav = $id_lav;
+					$presenze->id_servizio = 5006; //statico: rimborsi vari (tabella servizi_custom)
+					$presenze->importo=floatval($importo);
+					$presenze->periodo=$periodo;
+					$presenze->data=$data_r;
+					$presenze->save();
+				}
+			}
+		}
+
+		//invio mail di accettazione/diniego rimborso
+		rimborsi::where('id', $id_ref)->update(['stato' => $v,'sign_coord'=>$id_coord]);
+		$info=rimborsi::select('c.email')
+			->join('candidatis as c','c.id_user','rimborsi.id_user')
+			->where('rimborsi.id',"=", $id_ref)
+			->first();
+		if($info) {
+			$email=$info->email;
+			$risp_send=$this->send_mail($email,$value,$id_ref);
+		}	
+	}	
+
+
 	$risp['header']="OK";
+	$risp['risp_send']=$risp_send;
 	echo json_encode($risp);
    }
+
+   public function send_mail($email,$tipo,$id_richiesta) {
+
+	$titolo="";$stato_r="";
+	if ($tipo=="A") {
+		$titolo="Richiesta di rimborso accettata";
+		$stato_r="accettata";
+	}
+
+	if ($tipo=="S"){
+		$titolo="Richiesta di rimborso respinta";
+		$stato_r="respinta";
+	}
+
+	$body_msg="Caro lavoratore,\nla presente per informarti che la tua richiesta (ID: $id_richiesta) di rimborso è stata $stato_r";
+
+	try {
+		
+	
+		$data["title"] = $titolo;
+		$data["body_msg"] = $body_msg;
+		
+
+		Mail::send('emails.rimborsi_notif', $data, function($message)use($data,$email) {
+			$message->to($email, $email)
+			->subject("Risposta alla richiesta di rimborso");
+		});
+
+
+		
+		$status['status']="OK";
+		$status['message']="Mail inviata con successo";
+		return $status;
+		
+	} catch (Throwable $e) {
+		$status['status']="KO";
+		$status['message']="Errore occorso durante l'invio! $e";
+		return $status;
+	}		
+}   
 
 }
