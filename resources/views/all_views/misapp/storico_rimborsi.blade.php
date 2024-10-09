@@ -48,3 +48,45 @@
 	</div>
 	<button type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);$('#div_lista_rimborsi').hide()">Esci</button>
 </div>
+
+
+<div id="div_lista_rimborsi_attesa" style='display:none'>
+	<div class="row">
+		<div class="col-md-12">
+			<table id='tbl_rimborsi_attesa' class="display">
+				<thead>
+					<tr>
+						<th>ID</th>
+						<th>Descrizione</th>
+						<th>Data</th>
+						<th>Importo</th>
+                        <th>Foto</th>
+					</tr>
+				</thead>
+				<tbody>
+                    @foreach($elenco_rimborsi_attesa as $rimborso)    
+                        <tr>
+                            <td>{{$rimborso->id}}</td>
+                            <td>{{$rimborso->descrizione}}</td>
+                            <td>{{$rimborso->dataora}}</td>
+                            <td>{{$rimborso->importo}}</td>
+                       
+                            
+                            <td style='width:100px'>
+                                @if ($rimborso->filename!=null && strlen($rimborso->filename)!=0)
+                                    <span id='id_foto{{$rimborso->id}}' data-foto='{{$rimborso->filename}}'>
+                                    <a href='javascript:void(0)' onclick=''>
+                                        <img class="rounded float-left img-fluid img-thumbnail"  src='{{ URL::asset('/') }}dist/upload/rimborsi/thumbnail/small/{{$rimborso->filename}}'>
+                                    </a>
+                                @endif
+                            </td>                                
+                        
+
+                        </tr>
+                    @endforeach
+                </tbody>
+			</table>						
+		</div>
+	</div>
+	<button type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);$('#div_lista_rimborsi_attesa').hide()">Esci</button>
+</div>

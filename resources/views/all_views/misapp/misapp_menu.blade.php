@@ -145,7 +145,9 @@
 	</button>  
 
 	<?php
+		
 		$trigger="";
+		$trigger="onclick=\"$('#div_servizi').hide(150);$('#div_lista_rimborsi_attesa').show(150);\"";
 		/*
 		$trigger="onclick=\"clickitr('Rif')\"";
 		if (!isset($result['numrepno']) ||  $result['numrepno']==0) {

@@ -39,7 +39,16 @@ public function __construct()
 		->limit(100)
 		->get();
 
-		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user)->with('elenco_rimborsi',$elenco_rimborsi)->with('id_edit_rimborso',$id_edit_rimborso);
+		
+		$elenco_rimborsi_attesa=rimborsi::select('rimborsi.id','rimborsi.id_rimborso','r.descrizione','rimborsi.dataora','rimborsi.importo','rimborsi.stato','rimborsi.filename')
+		->join('rimborsi_tipologie as r','rimborsi.id_rimborso','r.id')
+		->where('rimborsi.id_user', "=",$id_lav)
+		->where('rimborsi.stato','=',0)
+		->orderBy('id','desc')
+		->limit(100)
+		->get();		
+
+		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user)->with('elenco_rimborsi',$elenco_rimborsi)->with('elenco_rimborsi_attesa',$elenco_rimborsi_attesa)->with('id_edit_rimborso',$id_edit_rimborso);
 
 	}
 
