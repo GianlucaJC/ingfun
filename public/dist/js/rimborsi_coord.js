@@ -158,7 +158,7 @@ function azione(value,id_ref,obj,importo,dataora){
             if (value=="R") {testo="In attesa";back='warning'}
             if (value=="A") {testo="Accettato";back='success'}
             if (value=="S") {testo="Scartato";back='danger'}
-            if (value=="SR") {testo="In attesa";back='warning'}
+            if (value=="SR") {testo="In attesa rettifica";back='secondary'}
             html+=`<div class="alert alert-`+back+`" role="alert">
                 <center>`+testo+`</center>
             </div>`            
