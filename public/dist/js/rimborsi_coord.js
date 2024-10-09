@@ -88,6 +88,9 @@ function save_rettifica(id_ref){
     })     
 }
 
+function sollecito_rettifica(id_ref){
+    
+}
 function rettifica(id_ref) {
     $("#title_modal").html("Richiesta di rettifica")
     html=`
@@ -115,6 +118,7 @@ function azione(value,id_ref,obj,importo,dataora){
         rettifica(id_ref)
         return false
     }
+    if (value=="SR") testo="Sicuri di sollecitare la rettifica?"
     if (!confirm(testo)) return false;
 
     html="<center><i class='fas fa-spinner fa-spin'></i></center>"
@@ -146,17 +150,21 @@ function azione(value,id_ref,obj,importo,dataora){
             alert (response.message)
         else  {
             $( obj ).prop( "disabled", false );
-            $( obj).text(value);
+            v_text=value
+            if (value=="SR") v_text="Sollecito rettifica"
+            $( obj).text(v_text);
             html=""
             testo="";back=""
             if (value=="R") {testo="In attesa";back='warning'}
             if (value=="A") {testo="Accettato";back='success'}
             if (value=="S") {testo="Scartato";back='danger'}
+            if (value=="SR") {testo="In attesa";back='warning'}
             html+=`<div class="alert alert-`+back+`" role="alert">
                 <center>`+testo+`</center>
             </div>`            
             $("#td_status"+id_ref).html(html)
-            if (value!="R") $("#azioni"+id_ref).empty();
+            if (value!="R" && value!="SR") $("#azioni"+id_ref).empty();
+            if (value=="SR") alert("Sollecito inviato!")
 
         }	
         this.sendko=false

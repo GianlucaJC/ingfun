@@ -147,6 +147,22 @@ class ControllerRimborsi extends Controller
 	if ($value=="A") $v=1;
 	if ($value=="S") $v=2;
 	$risp_send=array();
+	
+	if ($value=="SR") {
+		//sollecito rettifica
+		$info=rimborsi::select('c.email')
+			->join('candidatis as c','c.id_user','rimborsi.id_user')
+			->where('rimborsi.id',"=", $id_ref)
+			->first();
+		if($info) {
+			$email=$info->email;
+			$risp_send=$this->send_mail($email,$value,$id_ref,"");
+		}
+		$risp['header']="OK";
+		$risp['risp_send']=$risp_send;
+		echo json_encode($risp);		
+		exit;
+	}
 
 	if ($value=="A" || $value=="S")	{
 		//In caso di accettazione del rimborso, creo una nuovo record (con id_servizio statico 5006-rimborsi vari) nel registro presenze
@@ -216,9 +232,12 @@ class ControllerRimborsi extends Controller
 		$titolo="Richiesta di rimborso respinta";
 		$stato_r="respinta";
 	}
-
-	$body_msg="Caro lavoratore,\nla presente per informarti che la tua richiesta (ID: $id_richiesta) di rimborso è stata $stato_r";
+	if ($tipo=="SR"){
+		$titolo="Sollecito rettifica";
+	}	
 	
+	$body_msg="Caro lavoratore,\nla presente per informarti che la tua richiesta (ID: $id_richiesta) di rimborso è stata $stato_r";
+
 	try {
 		$data["tipo"] = $tipo;
 		$data["title"] = $titolo;

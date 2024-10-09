@@ -26,7 +26,8 @@
 			<div id="div_lista_rimborsi">
 				<small><b>R</b> - Richiedi rettifica</small>
 				<small><b>A</b> - Approva rimborso</small>
-				<small><b>S</b> - Scarta rimborso</small>
+				<small><b>S</b> - Scarta il rimborso</small>
+
 				<hr>
 				<div class="row">
 					<div class="col-md-12">
@@ -48,13 +49,18 @@
 									<tr>
 										<td>{{$rimborso->id}}</td>
 										<td style='width:80px'>
+											<div id='azioni{{$rimborso->id}}'  style='text-align:center'>
 											@if($rimborso->stato=="0")
-												<div id='azioni{{$rimborso->id}}'>
 													<button type="button" class="btn btn-warning btn-sm" onclick="azione('R',{{$rimborso->id}},this,0,'')">R</button>
 													<button type="button" class="btn btn-success btn-sm" onclick="azione('A',{{$rimborso->id}},this,'{{$rimborso->importo}}','{{$rimborso->dataora}}')">A</button>
 													<button type="button" class="btn btn-danger btn-sm" onclick="azione('S',{{$rimborso->id}},this,0,'')">S</button>
-												</div>
+												
+											@else	
+												@if($rimborso->stato=="3")
+													<button type="button" class="btn btn-primary btn-sm" onclick="azione('SR',{{$rimborso->id}},this,0,'')">Sollecito rettifica</button>
+												@endif
 											@endif
+											</div>
 
 										</td>
 
