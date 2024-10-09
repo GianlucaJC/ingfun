@@ -21,7 +21,8 @@ public function __construct()
 
 	
 
-	public function misapp($id_appalto=0) {
+	public function misapp($id_appalto=0,$id_edit_rimborso=0) {
+		//$id_edit_rimborso popolato eventualmente dalla mail---vedi view/emails/rimborsi_notif
 		$request=request();
 		$view_dele="";
 		$id_user=Auth::user()->id;
@@ -38,9 +39,10 @@ public function __construct()
 		->limit(100)
 		->get();
 
-		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user)->with('elenco_rimborsi',$elenco_rimborsi);
+		return view('all_views/misapp/misapp')->with('result',$result)->with('id_user',$id_user)->with('elenco_rimborsi',$elenco_rimborsi)->with('id_edit_rimborso',$id_edit_rimborso);
 
 	}
+
 
 	public function send_push($userId,$tipo="new",$message_extra="") {
 		//$userId="3863803b-eb7e-4ad4-aafd-958b85dff83f";

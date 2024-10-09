@@ -29,9 +29,18 @@ class ControllerRimborsi extends Controller
 		echo json_encode($elenco);
 	}
 
+	public function load_rimborso($id_rimborso=0) {
+		$elenco=rimborsi::select('id_user','id_rimborso','dataora','importo')
+		->when($id_rimborso!="0", function ($elenco) use ($id_rimborso) {
+			return $elenco->where('id', "=",$id_rimborso);
+		})
+		->get();		
+		echo json_encode($elenco);
+	}
+
 	public function send_rimborso(Request $request) {
-		
 		$id_lav=Auth::user()->id;
+		$id_rimborso = $request->input('id_rimborso');
 		$obbligo_foto = $request->input('obbligo_foto');
 		$filename=null;
 		if ($obbligo_foto=="1") {
@@ -65,13 +74,16 @@ class ControllerRimborsi extends Controller
 		$tipo_rimborso = $request->input('tipo_rimborso');
 		$importo = $request->input('importo');
 		$data_ora = $request->input('data_ora');
-
-		$rimborsi = new rimborsi;
+		if ($id_rimborso!="0" && $id_rimborso!=0) 
+			$rimborsi = rimborsi::find($id_rimborso);
+		else
+			$rimborsi = new rimborsi;
 		$rimborsi->id_user = $id_lav;
 		$rimborsi->id_rimborso=$tipo_rimborso;
 		$rimborsi->dataora=$data_ora;
 		$rimborsi->importo=$importo;
 		$rimborsi->filename=$filename;
+		if ($id_rimborso!="0" && $id_rimborso!=0) $rimborsi->stato=0;
 		$rimborsi->save();
 		$risp['header']="OK";
 		$risp['message']="File e dati riversati sul server";
@@ -96,6 +108,33 @@ class ControllerRimborsi extends Controller
 		->get();
 		return view('all_views/rimborsi/rimborsi_coord')->with('elenco_rimborsi',$elenco_rimborsi);			
    }
+   
+ 
+   public function save_rettifica(Request $request){
+	$id_coord=Auth::user()->id;
+	$id_ref = $request->input('id_ref');
+	$testo_rettifica = $request->input('testo_rettifica');
+	
+
+	//invio mail di accettazione/diniego rimborso
+	$info=rimborsi::select('c.email')
+		->join('candidatis as c','c.id_user','rimborsi.id_user')
+		->where('rimborsi.id',"=", $id_ref)
+		->first();
+	
+	$risp_send=array();	
+	if($info) {
+		$email=$info->email;
+		$risp_send=$this->send_mail($email,"R",$id_ref,$testo_rettifica);
+	}	
+	rimborsi::where('id','=',$id_ref)->update(['testo_rettifica' => $testo_rettifica, 'stato'=>3]);
+	
+	$risp['header']="OK";
+	$risp['risp_send']=$risp_send;
+	echo json_encode($risp);
+
+   }
+
    public function risposta_rimborso(Request $request){
 	$id_coord=Auth::user()->id;
 	$value = $request->input('value');
@@ -155,7 +194,7 @@ class ControllerRimborsi extends Controller
 			->first();
 		if($info) {
 			$email=$info->email;
-			$risp_send=$this->send_mail($email,$value,$id_ref);
+			$risp_send=$this->send_mail($email,$value,$id_ref,"");
 		}	
 	}	
 
@@ -165,7 +204,7 @@ class ControllerRimborsi extends Controller
 	echo json_encode($risp);
    }
 
-   public function send_mail($email,$tipo,$id_richiesta) {
+   public function send_mail($email,$tipo,$id_richiesta,$testo_rettifica) {
 
 	$titolo="";$stato_r="";
 	if ($tipo=="A") {
@@ -179,11 +218,12 @@ class ControllerRimborsi extends Controller
 	}
 
 	$body_msg="Caro lavoratore,\nla presente per informarti che la tua richiesta (ID: $id_richiesta) di rimborso è stata $stato_r";
-
-	try {
-		
 	
+	try {
+		$data["tipo"] = $tipo;
 		$data["title"] = $titolo;
+		$data["id_richiesta"] = $id_richiesta;
+		$data["testo_rettifica"] = $testo_rettifica;
 		$data["body_msg"] = $body_msg;
 		
 

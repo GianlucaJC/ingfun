@@ -9,20 +9,7 @@ $(document).ready( function () {
 		buttons: [
 			'excel', 'pdf'
 		],		
-        initComplete: function () {
-            // Apply the search
-            this.api()
-                .columns()
-                .every(function () {
-                    var that = this;
- 
-                    $('input', this.footer()).on('keyup change clear', function () {
-                        if (that.search() !== this.value) {
-                            that.search(this.value).draw();
-                        }
-                    });
-                });
-        },
+
         language: {
             lengthMenu: 'Visualizza _MENU_ records per pagina',
             zeroRecords: 'Nessun Rimborso trovato',
@@ -38,6 +25,8 @@ $(document).ready( function () {
 
 function zoom(id_foto) {
 	url=$("#url").val()
+    $("#title_modal").html("Foto inviata")
+    $("#altri_btn").empty();
 	filename=$("#id_foto"+id_foto).data("foto")	
 	html="";
 	html+="<div>";
@@ -53,16 +42,86 @@ function zoom(id_foto) {
 	$("#body_modal").html(html)	
 }
 
+
+function save_rettifica(id_ref){
+    testo_rettifica=$("#testo_rettifica").val()
+    if (testo_rettifica.length==0) {
+        alert("Definire correttamente il testo da inviare!")
+        return false
+    }
+    //<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
+    const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
+    const csrf = metaElements.length > 0 ? metaElements[0].content : "";			
+    $("#altri_btn").html("<i class='fas fa-sync fa-spin'></i> Attendere...");
+    
+    fetch('save_rettifica', {
+      method: 'POST',
+      headers: {
+        //"Content-type": "multipart/form-data",
+        "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+      },
+      body: 'testo_rettifica='+testo_rettifica+'&id_ref='+id_ref
+    })
+    .then(response => {
+        if (response.ok) {
+           return response.json();
+        }
+    })
+    .then(response=>{
+        if (response.header=="KO") 
+            alert (response.message)
+        else  {
+            html=""
+            testo="In attesa rettifica";back='secondary'
+            html+=`<div class="alert alert-`+back+`" role="alert">
+                <center>`+testo+`</center>
+            </div>`            
+            $("#td_status"+id_ref).html(html)
+            $("#azioni"+id_ref).empty();
+            $('#modal_img').modal('hide')
+
+        }	
+        this.sendko=false
+    })
+    .catch(status, err => {
+        return console.log(status, err);
+    })     
+}
+
+function rettifica(id_ref) {
+    $("#title_modal").html("Richiesta di rettifica")
+    html=`
+        <button type="button" class="btn btn-success" onclick='save_rettifica(`+id_ref+`)'>Salva ed invia rettifica</button>
+    `;
+    $("#altri_btn").html(html);
+
+    html=""
+	html+=`<h3>Rettifica rimborso ID:`+id_ref+`</h3><hr>
+        <div class="form-group">
+            <label for="testo_rettifica">Testo rettifica</label>
+            <textarea class="form-control" id="testo_rettifica" rows="3"></textarea>
+        </div>
+    `;
+
+    $('#modal_img').modal('show')
+	$("#body_modal").html(html)	    
+}
+
 function azione(value,id_ref,obj,importo,dataora){
     testo=""
-    if (value=="R") testo="Sicuri di inviare una richiesta di rettifica?"
     if (value=="A") testo="Sicuri di accettare il rimborso?\n(L'operazione è irreversibile)"
     if (value=="S") testo="Sicuri di scartare il rimborso?\n(L'operazione è irreversibile)"
+    if (value=="R") {
+        rettifica(id_ref)
+        return false
+    }
     if (!confirm(testo)) return false;
+
     html="<center><i class='fas fa-spinner fa-spin'></i></center>"
     $( obj ).prop( "disabled", true );
     $( obj).text("...");
     $("#td_status"+id_ref).html(html)
+
 
     //<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
     const metaElements = document.querySelectorAll('meta[name="csrf-token"]');

@@ -4,7 +4,15 @@ $(document).ready( function () {
 		value=$(this).html()
 		if (value.trim()==0) $(this).hide()
 	})	
-	$("#id_back").hide();
+
+	if ($("#id_edit_rimborso").val()!="0") {
+		$("#id_back").hide();
+		$("#div_servizi").hide(150)
+
+		window.rimborsi.id_edit_rimborso=$("#id_edit_rimborso").val()
+		window.rimborsi.view_root=true
+	}
+		
 } );
 
 

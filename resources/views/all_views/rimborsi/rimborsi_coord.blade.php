@@ -68,6 +68,7 @@
 											if ($stato_rimb=="0") {$stato_view="In Attesa";$back="warning";}
 											if ($stato_rimb=="1") {$stato_view="Approvato";$back="success";}
 											if ($stato_rimb=="2") {$stato_view="Scartato";$back="danger";}
+											if ($stato_rimb=="3") {$stato_view="In attesa rettifica";$back="secondary";}
 										?>
 									
 										
@@ -81,9 +82,11 @@
 										</td>                                
 									
 										<td  id='td_status{{$rimborso->id}}'>
-											<div class="alert alert-{{$back}}" role="alert">
-												<center>{{$stato_view}}</center>
+											
+											<div class="alert alert-{{$back}}" role="alert" style='text-align:center'>
+												{{$stato_view}}
 											</div>
+											
 										</td>
 									</tr>
 								@endforeach

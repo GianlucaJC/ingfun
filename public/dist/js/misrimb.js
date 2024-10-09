@@ -7,13 +7,21 @@ var app = Vue.component('Rimb',{
 				<p v-if="mezzi">
 					<button type="button" class="btn btn-primary" onclick="$('#rif').hide(); $('#app').show();">Torna su elenco appalti</button>
                    
-					<h5>DEFINIZIONE NUOVO RIMBORSO</h5>
+					<div v-show='id_edit_rimborso==0'>
+						<h5>DEFINIZIONE NUOVO RIMBORSO</h5>
+					</div>
+
+					<div v-show='id_edit_rimborso!=0'>
+						<h5>MODIFICA RIMBORSO COME DA RICHIESTA DI RETTIFICA</h5>
+					</div>
+
+					
 					<div class="form-group">
 						<label for='tipo_rimborso' >Scegli tipologia*</label>
 						
 						<!-- v-on:change="change_mezzo($event)"!-->
 
-						<select class="form-control"  v-model="tipo_rimborso" @change="check_obbligo($event)">
+						<select class="form-control"  v-model="tipo_rimborso"  @change="check_obbligo($event)">
 							<option value=''>Select...</option>
 							<option v-for="(tipo) in tipo_rimborsi" :value="tipo.id_ref">
 								{{tipo.descrizione}}
@@ -43,17 +51,19 @@ var app = Vue.component('Rimb',{
 
 
 					<div>
-						<button v-show="!sendreal" type="button" class="btn btn-success" :disabled="sendko" @click='send_new_rimb()'>Salva richiesta</button>
+						<button v-show="!sendreal" type="button" class="btn btn-success" :disabled="sendko || wait_send" @click='send_new_rimb()'>Salva richiesta</button>
 											
-						<button v-show="!sendreal" type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);rimborsi.view_root=false;rimborsi.new_form_rimb()">Esci</button>
+						<button v-show="!sendreal && id_edit_rimborso==0" type="button" class="btn btn-secondary"  onclick="$('#div_servizi').show(150);rimborsi.view_root=false;rimborsi.new_form_rimb()">Esci</button>
 
-						<button v-show="sendreal" type="button" class="btn btn-secondary" onclick="location.reload(); ">Esci (con refresh)</button>
+						<button v-show="sendreal && id_rimborso==0" type="button" class="btn btn-secondary" onclick="location.reload(); ">Esci (con refresh)</button>
 
 						<span class='ml-3' v-show="sendko"><i class="fas fa-spinner fa-spin"></i></span>
 
 						<div v-show="sendreal" class="alert alert-success mt-2" role="alert">
 							Segnalazione rimborso inviata con successo!<hr>
-							<button type="button" class="btn btn-primary" @click='new_form_rimb()'>Nuovo rimborso</button>
+							<div v-show="id_rimborso==0">
+								<button type="button" class="btn btn-primary" @click='new_form_rimb()'>Nuovo rimborso</button>
+							</div>
 					  	</div>						
 						
 
@@ -64,11 +74,14 @@ var app = Vue.component('Rimb',{
 	`,
 	
 	data() {
+		let id_rimborso=0;
+		let id_edit_rimborso=0;
 		let obbligo_foto=0;
 		let view_root=false;
 		let mezzi= null; 
 		let tipo_rimborsi=null
 		let tipo_rimborso=null
+		let wait_send=false;
 		let sendko=false;
 		let sendreal=false;
 		let data_ora=null
@@ -76,12 +89,15 @@ var app = Vue.component('Rimb',{
 		let file=null
 		
 		return {
+			id_rimborso,
+			id_edit_rimborso,
 			obbligo_foto,
 			view_root,
 			mezzi,
 			tipo_rimborsi,
 			tipo_rimborso,
 			file,
+			wait_send,
 			sendko,
 			sendreal,
 			data_ora,
@@ -92,6 +108,23 @@ var app = Vue.component('Rimb',{
 		window.rimborsi=this;
 		this.elenco_rimborsi()
     },	
+	watch:{
+		id_edit_rimborso(newval,oldval) {
+			if (newval!="0") {
+				/*
+					modifica rimborso come da rettifica richiesta
+					id_edit_rimborso viene triggerato in misapp.js
+					il tutto proviene da una mail che contiene l'id nella URL
+					Quindi con una chiamata fetch recupero le info legate all'id e precarico la scheda del rimborso
+				*/
+				
+				this.rettifica(newval)
+
+			}
+		}
+	},	
+
+
 	methods: {
 
 		/*
@@ -101,6 +134,45 @@ var app = Vue.component('Rimb',{
 			this.mezzo=mezzo
 		},
 		*/
+
+		rettifica(id_rimborso) {
+			this.id_rimborso=id_rimborso
+			this.wait_send=true
+			base_path = $("#url").val();
+			//<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
+			const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
+			const csrf = metaElements.length > 0 ? metaElements[0].content : "";			
+			fetch(base_path+"/load_rimborso/"+id_rimborso, {
+			  method: 'POST',
+			  headers: {
+				//"Content-type": "multipart/form-data",
+				"X-CSRF-Token": csrf
+			  },
+			  body: "id_rimborso="+id_rimborso,
+			})
+			.then(response => {
+				if (response.ok) {
+				   return response.json();
+				}
+			})
+			.then(response=>{
+				if (!response) {
+					
+				}
+				else {
+					this.wait_send=false
+
+					//this.tipo_rimborso=response[0].id_rimborso
+					this.importo=response[0].importo
+					this.data_ora=response[0].dataora
+					//this.tipo_rimborsi=response
+				}
+			})
+			.catch(status, err => {
+				return console.log(status, err);
+			})			
+			
+		},
 		check_obbligo(event) {
 			info=event.target.value
 			if (info.length>0) {
@@ -119,13 +191,13 @@ var app = Vue.component('Rimb',{
 				if (file==null) return "nofile"
 			}	
 		},
-
+		
 		elenco_rimborsi() {
+			base_path = $("#url").val();
 			//<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
 			const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
 			const csrf = metaElements.length > 0 ? metaElements[0].content : "";			
-			
-			fetch('elenco_rimborsi', {
+			fetch(base_path+"/elenco_rimborsi", {
 			  method: 'POST',
 			  headers: {
 				//"Content-type": "multipart/form-data",
@@ -185,17 +257,18 @@ var app = Vue.component('Rimb',{
 			
 			tipo_r=this.tipo_rimborso.split("|")[0]
 			
+			data.append('id_rimborso', this.id_rimborso)
 			data.append('tipo_rimborso', tipo_r)
 			data.append('data_ora', this.data_ora)
 			data.append('importo', this.importo)
 			data.append('file', file)
 			data.append('obbligo_foto', this.obbligo_foto)
-
+			base_path = $("#url").val();
 			//<meta name="csrf-token" content="{{{ csrf_token() }}}"> //da inserire in html
 			const metaElements = document.querySelectorAll('meta[name="csrf-token"]');
 			const csrf = metaElements.length > 0 ? metaElements[0].content : "";			
 			
-			fetch('send_rimborso', {
+			fetch(base_path+'/send_rimborso', {
 			  method: 'POST',
 			  headers: {
 				//"Content-type": "multipart/form-data",

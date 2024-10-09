@@ -88,7 +88,7 @@
 
 		<form method='post' action="{{ route('misapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
-
+			<input type="hidden" value="{{url('/')}}" id="url" name="url">
 			<div id="app">
 				<App></App>
 			</div>
@@ -104,7 +104,7 @@
 			<div id="rimb">
 				<Rimb></Rimb>
 			</div>
-			
+			<input type='hidden' id='id_edit_rimborso' value='{{$id_edit_rimborso}}'>
 			<!-- altre view non gestite completamente da vue !-->
 			@include('all_views.misapp.storico_rimborsi')
 			@include('all_views.misapp.misapp_menu')

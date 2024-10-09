@@ -225,9 +225,8 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('newapp/{id?}/{from?}/{num_send?}', [ 'as' => 'newapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@newapp']);
 
 
-	Route::get('misapp/{id?}', [ 'as' => 'misapp', 'uses' => 'App\Http\Controllers\ControllerMisapp@misapp']);
-	
-	Route::post('misapp/{id?}', [ 'as' => 'misapp', 'uses' => 'App\Http\Controllers\ControllerMisapp@misapp']);
+	Route::get('misapp/{id?}/{id_edit_rimborso?}', [ 'as' => 'misapp', 'uses' => 'App\Http\Controllers\ControllerMisapp@misapp']);
+	Route::post('misapp/{id?}/{id_edit_rimborso?}', [ 'as' => 'misapp', 'uses' => 'App\Http\Controllers\ControllerMisapp@misapp']);
 
 
 	Route::get('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@listapp']);
@@ -366,14 +365,20 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::put('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 	Route::post('send_foto', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ApiController@send_foto']);
 	//rimborsi misapp-user
-	Route::post('elenco_rimborsi', [ 'as' => 'send_foto', 'uses' => 'App\Http\Controllers\ControllerRimborsi@elenco_rimborsi']);
+	Route::post('elenco_rimborsi', [ 'as' => 'elenco_rimborsi', 'uses' => 'App\Http\Controllers\ControllerRimborsi@elenco_rimborsi']);
 
 	Route::put('send_rimborso', [ 'as' => 'send_rimborso', 'uses' => 'App\Http\Controllers\ControllerRimborsi@send_rimborso']);
 	Route::post('send_rimborso', [ 'as' => 'send_rimborso', 'uses' => 'App\Http\Controllers\ControllerRimborsi@send_rimborso']);
 	
 	//ajax rimborsi coord
 	Route::post('risposta_rimborso', [ 'as' => 'risposta_rimborso', 'uses' => 	'App\Http\Controllers\ControllerRimborsi@risposta_rimborso']);
+
+	Route::post('save_rettifica', [ 'as' => 'save_rettifica', 'uses' => 	'App\Http\Controllers\ControllerRimborsi@save_rettifica']);
+
+	Route::post('load_rimborso/{id?}', [ 'as' => 'load_rimborso', 'uses' => 	'App\Http\Controllers\ControllerRimborsi@load_rimborso']);
+	
 	//
+
 	Route::post('cerca_servizi', [ 'as' => 'cerca_servizi', 'uses' => 'App\Http\Controllers\Registro@cerca_servizi']);
 	
 
