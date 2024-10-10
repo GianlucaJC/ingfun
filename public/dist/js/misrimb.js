@@ -161,11 +161,15 @@ var app = Vue.component('Rimb',{
 				}
 				else {
 					this.wait_send=false
-
-					//this.tipo_rimborso=response[0].id_rimborso
-					this.importo=response[0].importo
-					this.data_ora=response[0].dataora
-					//this.tipo_rimborsi=response
+					if (response[0].stato=="3" || response[0].importo==3){
+						//this.tipo_rimborso=response[0].id_rimborso
+						this.importo=response[0].importo
+						this.data_ora=response[0].dataora
+						//this.tipo_rimborsi=response
+					} else {
+						$("#div_rimb").hide()
+						alert("Questo rimborso non può essere più modificato!")
+					}
 				}
 			})
 			.catch(status, err => {

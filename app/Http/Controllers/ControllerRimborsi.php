@@ -30,11 +30,12 @@ class ControllerRimborsi extends Controller
 	}
 
 	public function load_rimborso($id_rimborso=0) {
-		$elenco=rimborsi::select('id_user','id_rimborso','dataora','importo')
+		$elenco=rimborsi::select('id_user','id_rimborso','dataora','importo','stato')
 		->when($id_rimborso!="0", function ($elenco) use ($id_rimborso) {
 			return $elenco->where('id', "=",$id_rimborso);
 		})
 		->get();		
+		
 		echo json_encode($elenco);
 	}
 
@@ -116,7 +117,7 @@ class ControllerRimborsi extends Controller
 	$testo_rettifica = $request->input('testo_rettifica');
 	
 
-	//invio mail di accettazione/diniego rimborso
+	
 	$info=rimborsi::select('c.email')
 		->join('candidatis as c','c.id_user','rimborsi.id_user')
 		->where('rimborsi.id',"=", $id_ref)
@@ -223,6 +224,7 @@ class ControllerRimborsi extends Controller
    public function send_mail($email,$tipo,$id_richiesta,$testo_rettifica) {
 
 	$titolo="";$stato_r="";
+	//tipo R - rettifica gestito direttamente nella view della mail
 	if ($tipo=="A") {
 		$titolo="Richiesta di rimborso accettata";
 		$stato_r="accettata";
@@ -237,11 +239,12 @@ class ControllerRimborsi extends Controller
 	}	
 	
 	$body_msg="Caro lavoratore,\nla presente per informarti che la tua richiesta (ID: $id_richiesta) di rimborso è stata $stato_r";
-
+	$id_mask=base64_encode("xzx".$id_richiesta);
 	try {
 		$data["tipo"] = $tipo;
 		$data["title"] = $titolo;
 		$data["id_richiesta"] = $id_richiesta;
+		$data["id_mask"] = $id_mask;
 		$data["testo_rettifica"] = $testo_rettifica;
 		$data["body_msg"] = $body_msg;
 		

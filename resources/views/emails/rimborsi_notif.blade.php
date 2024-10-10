@@ -13,7 +13,7 @@
     @if ($tipo=="SR")
       Caro lavoratore, la presente per informarti che un Coordinatore/Responsabile ha richiesto un sollecito di rettifica per la tua richiesta  di rimborso (ID: {{$id_richiesta}}):<br>      
       Clicca sul link per loggarti e modificare il rimborso 
-      <a href='https://217.18.125.177/ingfun/public/misapp/0/{{$id_richiesta}}'>link rimborso</a>      
+      <a href='https://217.18.125.177/ingfun/public/misapp/0/{{$id_mask}}'>link rimborso</a>      
     @elseif ($tipo=="R")
 	  	Richiesta di rettifica per il rimborso <b>{{$id_richiesta}}</b><br>
 		  Caro lavoratore, la presente per informarti che un Coordinatore/Responsabile ha richiesto una rettifica per la tua richiesta  di rimborso (ID: {{$id_richiesta}}):<br>
@@ -21,7 +21,7 @@
       <p><i>{{$testo_rettifica}}</i></p>
 
       Clicca sul link per loggarti e modificare il rimborso 
-      <a href='https://217.18.125.177/ingfun/public/misapp/0/{{$id_richiesta}}'>link rimborso</a>
+      <a href='https://217.18.125.177/ingfun/public/misapp/0/{{$id_mask}}'>link rimborso</a>
     @else
       <p>{{$body_msg}}</p>
     @endif 

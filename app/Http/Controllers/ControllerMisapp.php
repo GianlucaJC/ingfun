@@ -23,6 +23,11 @@ public function __construct()
 
 	public function misapp($id_appalto=0,$id_edit_rimborso=0) {
 		//$id_edit_rimborso popolato eventualmente dalla mail---vedi view/emails/rimborsi_notif
+		if ($id_edit_rimborso!="0" && $id_edit_rimborso!=0) {
+			$id_edit_rimborso=base64_decode($id_edit_rimborso);
+			$id_edit_rimborso=trim(substr($id_edit_rimborso,3));
+		}
+		
 		$request=request();
 		$view_dele="";
 		$id_user=Auth::user()->id;
