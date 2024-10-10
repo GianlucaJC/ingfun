@@ -86,7 +86,11 @@ class ControllerRimborsi extends Controller
 		$rimborsi->filename=$filename;
 		if ($id_rimborso!="0" && $id_rimborso!=0) $rimborsi->stato=0;
 		$rimborsi->save();
-		$id_rimborso=$rimborsi->id; //in caso di new viene generato
+		$tipo_mail="edit";
+		if ($id_rimborso=="0" || $id_rimborso==0) {
+			$tipo_mail="new";
+			$id_rimborso=$rimborsi->id; //in caso di new viene generato
+		}
 
 		//invio mail ai coordinatori
 		$info=candidati::select('candidatis.email_az')
@@ -97,7 +101,7 @@ class ControllerRimborsi extends Controller
 		$risp_send=array();
 		if($info) {
 			$email=$info->email_az;
-			$risp_send=$this->send_mail($email,"new",$id_rimborso,"");
+			$risp_send=$this->send_mail($email,$tipo_mail,$id_rimborso,"");
 		}	
 
 		$risp['header']="OK";
@@ -245,8 +249,11 @@ class ControllerRimborsi extends Controller
 		$titolo="Richiesta di rimborso accettata";
 		$stato_r="accettata";
 	}
-	if ($tipo=="newR") {
+	if ($tipo=="new") {
 		$titolo="Nuova richiesta di rimborso";
+	}	
+	if ($tipo=="edit") {
+		$titolo="Modifica richiesta di rimborso dopo rettifica";
 	}	
 	if ($tipo=="R") {
 		$titolo="Richiesta di rettifica rimborso";
