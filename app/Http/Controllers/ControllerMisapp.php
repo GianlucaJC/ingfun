@@ -48,8 +48,10 @@ public function __construct()
 		$elenco_rimborsi_attesa=rimborsi::select('rimborsi.id','rimborsi.id_rimborso','r.descrizione','rimborsi.dataora','rimborsi.importo','rimborsi.stato','rimborsi.filename')
 		->join('rimborsi_tipologie as r','rimborsi.id_rimborso','r.id')
 		->where('rimborsi.id_user', "=",$id_lav)
-		->where('rimborsi.stato','=',0)
-		->OrWhere('rimborsi.stato','=',3)
+		->where(function ($elenco_rimborsi_attesa){
+			$elenco_rimborsi_attesa->where('rimborsi.stato','=',0)
+			->OrWhere('rimborsi.stato','=',3);
+		})
 		->orderBy('id','desc')
 		->limit(100)
 		->get();		
