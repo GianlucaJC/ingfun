@@ -49,6 +49,7 @@ public function __construct()
 		->join('rimborsi_tipologie as r','rimborsi.id_rimborso','r.id')
 		->where('rimborsi.id_user', "=",$id_lav)
 		->where('rimborsi.stato','=',0)
+		->OrWhere('rimborsi.stato','=',3)
 		->orderBy('id','desc')
 		->limit(100)
 		->get();		

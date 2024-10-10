@@ -86,8 +86,23 @@ class ControllerRimborsi extends Controller
 		$rimborsi->filename=$filename;
 		if ($id_rimborso!="0" && $id_rimborso!=0) $rimborsi->stato=0;
 		$rimborsi->save();
+		$id_rimborso=$rimborsi->id; //in caso di new viene generato
+
+		//invio mail ai coordinatori
+		$info=candidati::select('candidatis.email_az')
+			->join('model_has_roles as m','candidatis.id_user','m.model_id')
+			->where('m.role_id',"=",4)
+			->where("m.role_id","<>", null)
+			->first();
+		$risp_send=array();
+		if($info) {
+			$email=$info->email_az;
+			$risp_send=$this->send_mail($email,"new",$id_rimborso,"");
+		}	
+
 		$risp['header']="OK";
 		$risp['message']="File e dati riversati sul server";
+		$risp['risp_send']=$risp_send;
 		echo json_encode($risp);
 
    }
@@ -224,12 +239,18 @@ class ControllerRimborsi extends Controller
    public function send_mail($email,$tipo,$id_richiesta,$testo_rettifica) {
 
 	$titolo="";$stato_r="";
+	//tipo new - nuovo rimborso - gestito nella view della mail
 	//tipo R - rettifica gestito direttamente nella view della mail
 	if ($tipo=="A") {
 		$titolo="Richiesta di rimborso accettata";
 		$stato_r="accettata";
 	}
-
+	if ($tipo=="newR") {
+		$titolo="Nuova richiesta di rimborso";
+	}	
+	if ($tipo=="R") {
+		$titolo="Richiesta di rettifica rimborso";
+	}
 	if ($tipo=="S"){
 		$titolo="Richiesta di rimborso respinta";
 		$stato_r="respinta";

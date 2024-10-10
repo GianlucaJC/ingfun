@@ -10,7 +10,12 @@
 
 <body>
     <h1>{{ $title }}</h1>
-    @if ($tipo=="SR")
+    @if ($tipo=="new")
+      <u>All'attenzione del Coordinatore</u><br><br>
+      la presente per informare che un lavoratore ha richiesto un rimborso (ID: {{$id_richiesta}}):<br>      
+      Cliccare sul link per loggarsi e gestire il rimborso 
+      <a href='https://217.18.125.177/ingfun/public/rimborsi_coord'>link rimborso</a>              
+    @elseif ($tipo=="SR")
       Caro lavoratore, la presente per informarti che un Coordinatore/Responsabile ha richiesto un sollecito di rettifica per la tua richiesta  di rimborso (ID: {{$id_richiesta}}):<br>      
       Clicca sul link per loggarti e modificare il rimborso 
       <a href='https://217.18.125.177/ingfun/public/misapp/0/{{$id_mask}}'>link rimborso</a>      
