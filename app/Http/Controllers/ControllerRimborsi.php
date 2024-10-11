@@ -96,12 +96,13 @@ class ControllerRimborsi extends Controller
 		$info=candidati::select('candidatis.email_az')
 			->join('model_has_roles as m','candidatis.id_user','m.model_id')
 			->where('m.role_id',"=",4)
-			->where("m.role_id","<>", null)
+			->where("candidatis.email_az","<>", null)
 			->first();
 		$risp_send=array();
 		if($info) {
 			$email=$info->email_az;
-			$risp_send=$this->send_mail($email,$tipo_mail,$id_rimborso,"");
+			if ($email!=null && strlen($email)>0)
+				$risp_send=$this->send_mail($email,$tipo_mail,$id_rimborso,"");
 		}	
 
 		$risp['header']="OK";
