@@ -81,7 +81,8 @@ public function __construct()
 			if ($user_ref->id_user!=null) {
 				$push=user::select('push_id')
 				->where('id','=',$user_ref->id_user)->get()->first();
-				$push_id=$push->push_id;
+				$push_id=null;
+				if ($push->push_id!=null) $push_id=$push->push_id;
 				if ($push_id==null || strlen($push_id)==0) $send=false;
 				else $send=true;
 

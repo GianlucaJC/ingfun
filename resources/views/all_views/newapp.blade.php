@@ -166,8 +166,8 @@
 				</div>
 			</div>			
 			<div class="col-md-6">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
+				
+					<select class="form-select select2" name="ditta" id="ditta"  required onchange='popola_servizi(this.value)'>
 					<option value=''>Select...</option>
 					<?php
 						foreach ($ditte as $ditta_ref) {
@@ -180,7 +180,7 @@
 					?>						
 					</select>
 					<label for="ditta">Ditta*</label>
-				</div>
+				
 			</div>			
 		</div>		
 		
