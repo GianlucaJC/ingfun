@@ -192,7 +192,7 @@ function btnlav(curr) {
 	if (btnlav.changetipo==true) {
 		if (btnlav.flx==1) html+=`</div>`
 		html+=`
-			<div class="alert alert-secondary mt-3" role="alert">
+			<div class="alert alert-secondary mt-3" role="alert" id='`+tipo_contratto+`'>
 			  `+btnlav.descr_t+`
 			</div>		
 		`
@@ -300,17 +300,19 @@ function lista_lavoratori(id_sezionale) {
 			})	
 			console.warn("reperibili",reperibili)
 			
-			html+=`<button type='button' class='btn btn-outline-primary btn_filtro' id='filtro1'
-			onclick="filtro(1)" aria-pressed='false'>
-			FULL TIME</button>`;
+			html+=`
+				<a href='#FULL'>
+					<button type='button' class='btn btn-outline-primary'>FULL TIME</button>
+				</a>
+				<a href='#PART'>
+					<button type='button' class='btn btn-outline-primary'>PART TIME</button>
+				</a>
+				<a href='#INTER'>
+					<button type='button' class='btn btn-outline-primary'>INTERMITTENTI</button>
+				</a>
+			
+			`;
 
-			html+=`<button type='button' class='ml-2 btn btn-outline-primary btn_filtro' id='filtro2'
-			onclick="filtro(2)" aria-pressed='false'>
-			PART TIME</button>`;
-
-			html+=`<button type='button' class='ml-2 btn btn-outline-primary btn_filtro' id='filtro3'
-			onclick="filtro(3)" aria-pressed='false'>
-			INTERMITTENTI</button><hr>`;
 
 
 			
@@ -336,8 +338,9 @@ function lista_lavoratori(id_sezionale) {
 				descr_t="Altro";
 				
 				descr_t="Altro"
-				if (tipo_contr==2) descr_t="Indeterminati";
-				if(tipo_contr==1) descr_t="Determinati";
+				if (tipo_contratto==1) descr_t="FULL TIME";
+				if(tipo_contratto==2) descr_t="PARTIME";
+				if(tipo_contratto==3) descr_t="INTERMITTENTI";
 				ref_tipo=descr_t
 
 

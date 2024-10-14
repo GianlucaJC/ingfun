@@ -147,12 +147,14 @@ class AjaxControllerServ extends Controller
 			return $lavoratori->where('soc_ass','=',$id_sezionale);
 		})
 		->orderByRaw('case 
-			when `tipo_contr` = "2" then 1 
-			when `tipo_contr` = "1" then 2
-			else 3 end')
+			when `tipo_contratto` = "1" then 1 
+			when `tipo_contratto` = "2" then 2
+			when `tipo_contratto` = "3" then 3
+			else 4 end')
 		->orderBy('nominativo')	
 		->get();
-		
+		//sono dovuto ricorrere alla when e non orderby tipo_contratto per via dei null
+
 		//11.10.2024: modifica query su richiesta di Giovanni
 		/*ordinamento previsto prima di questa data
 		->orderByRaw('case 
