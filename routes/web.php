@@ -447,6 +447,7 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('refresh_sotto_tipo_doc', 'App\Http\Controllers\AjaxControllerCand@refresh_sotto_tipo_doc');
 
 
+	Route::post('hide_appalti', 'App\Http\Controllers\AjaxControllerCand@hide_appalti');
 
 	Route::post('storia_campo', 'App\Http\Controllers\AjaxControllerCand@storia_campo');
 	

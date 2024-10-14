@@ -48,7 +48,9 @@
     <div class="content">
       <div class="container-fluid">
 		<form method='post' action="{{ route('listpers') }}" id='frm_listc' name='frm_listc' autocomplete="off">
-			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
+			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
+			<input type="hidden" value="{{url('/')}}" id="url" name="url">
+
 			<div class="row">
 			  <div class="col-lg-12">
 					<h5>TOTALE {{$count}} ASSUNTI - {{$all_ris}} RISULTATI</h5>
@@ -58,7 +60,7 @@
 					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
-								<th style='min-width:180px'>Operazioni/impostazioni</th>
+								<th style='min-width:220px'>Operazioni/impostazioni</th>
 								<th>Dipendente</th>
 								<th>Stato</th>
 								<th>Inizio</th>
@@ -93,10 +95,10 @@
 							@foreach($scadenze as $scadenza)
 								<tr>
 
-									<td style='min-width:180px'>
+									<td style='min-width:220px'>
 										@if ($scadenza->dele=="0") 
 											<a href="#" onclick="if (!confirm('Sicuri di duplicare?')) event.preventDefault()">
-											<button type="submit" class="btn btn-primary" name='clona' value="{{$scadenza->id}}" alt='Duplica' title="Duplica nominativo"><i class="fas fa-clone"></i></button>
+											<button type="submit" class="btn btn-primary" name='clona' value="{{$scadenza->id}}" title='Duplica' title="Duplica nominativo"><i class="fas fa-clone"></i></button>
 											</a>
 										
 											<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1,'setuser'=>1]) }}" target='_blank' >
@@ -105,13 +107,26 @@
 										@endif
 										@if ($scadenza->dele=="0") 
 											<a href="{{ route('newcand',['id'=>$scadenza->id,'from'=>1]) }}" >
-												<button type="button" class="btn btn-info" alt='Edit'><i class="fas fa-edit"></i></button>
+												<button type="button" class="btn btn-info" title='Edit'><i class="fas fa-edit"></i></button>
 											</a>
+											@if ($scadenza->hide_appalti=="0") 
+												<?php 
+													$cl_hide="btn btn-outline-warning"; 
+													$set_hide=1;
+												?>
+											@else 
+												<?php $cl_hide="btn btn-warning";
+													$set_hide=0;
+												 ?>
+											@endif
+											<a href='#' onclick="hide_appalti({{$scadenza->id}},{{$set_hide}})">
+												<button id='hide_a{{$scadenza->id}}' type="button" class="{{$cl_hide}}" title='Nascondi nominativo nella formazione degli Appalti'><i class="far fa-eye-slash"></i></button>
+											</a>											
 										@endif
 
 										@if ($scadenza->dele=="0") 
 										<a href='#' onclick="dele_element({{$scadenza->id}})">
-											<button type="submit" name='dele_ele' class="btn btn-danger"><i class="fas fa-trash"></i></button>
+											<button type="submit" name='dele_ele' title='Elimina nominativo' class="btn btn-danger"><i class="fas fa-trash"></i></button>
 										</a>
 										@endif
 										@if ($scadenza->dele=="1") 
@@ -402,6 +417,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listpers.js?ver=2.03"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listpers.js?ver=2.039"></script>
 
 @endsection

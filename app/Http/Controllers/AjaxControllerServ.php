@@ -143,6 +143,7 @@ class AjaxControllerServ extends Controller
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('status_candidatura','=',3)
 		->where('area_impiego','=',1)
+		->where('hide_appalti','=',0)
 		->when($id_sezionale!="all", function ($lavoratori) use ($id_sezionale) {
 			return $lavoratori->where('soc_ass','=',$id_sezionale);
 		})

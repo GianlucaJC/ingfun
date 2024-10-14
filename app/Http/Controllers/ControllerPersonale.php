@@ -533,7 +533,7 @@ class ControllerPersonale extends Controller
 		$all_ris = candidati::count();
 		
 		
-		$scadenze=candidati::select('id', 'dele', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc')
+		$scadenze=candidati::select('id', 'dele', 'nominativo','status_candidatura', 'data_inizio', 'data_fine','soc_ass','area_impiego','centro_costo','appartenenza','contratto','livello','tipo_contr','categoria_legale','ore_sett','codice_qualifica','qualificato','titolo_studio','codfisc','datanasc','pro_nasc','indirizzo','cap','comune','comunenasc','hide_appalti')
 		->when($view_dele=="0", function ($scadenze) {
 			return $scadenze->where('dele', "=","0");
 		})		

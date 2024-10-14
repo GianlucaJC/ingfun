@@ -44,7 +44,14 @@ class AjaxControllerCand extends Controller
 			//return json_encode($status);			
 		}
 		
-
+		public function hide_appalti(Request $request){
+			$id_ref=$request->input('id_ref');
+			$stato=$request->input('stato');
+			candidati::where('id', $id_ref)->update(['hide_appalti' => $stato]);
+			$status['status']="OK";
+			$status['message']="azione ok";
+			return json_encode($status);		
+		}
 
 		public function azione(Request $request) {
 			$id_cand=$request->input('id_cand');
