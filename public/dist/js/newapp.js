@@ -174,10 +174,14 @@ function btnlav(curr) {
 		btnlav.closediv==false
 		btnlav.opendiv==false
 		btnlav.changetipo==false
+		btnlav.tipo_contratto=""
 	}	
 	
-	
-	
+	tipo_contratto="";
+	if (btnlav.tipo_contratto==1) tipo_contratto="FULL"
+	if (btnlav.tipo_contratto==2) tipo_contratto="PART"
+	if (btnlav.tipo_contratto==3) tipo_contratto="INTER"
+
 	html="";
 	
 	if (btnlav.changetipo==false) {
@@ -198,7 +202,7 @@ function btnlav(curr) {
 	html+=
 	`	
 		<div class="col-sm-3">
-			<button style='height:80px;' type="button" class="btn btn-lg btn-block btn-outline-info btn_lav" data-id_lav="`+btnlav.id_lav+`" data-lavoratore="`+btnlav.lavoratore+`">
+			<button style='height:80px;' type="button" class="btn btn-lg btn-block btn-outline-info btn_lav `+tipo_contratto+`" data-id_lav="`+btnlav.id_lav+`" data-lavoratore="`+btnlav.lavoratore+`">
 				`+btnlav.lavoratore+`
 			</button>
 		</div>
@@ -207,6 +211,34 @@ function btnlav(curr) {
 	return html
 }
 
+function filtro(from) {
+	$(".btn_filtro").removeClass("btn-primary")
+	$(".btn_filtro").addClass("btn-outline-primary")
+
+	if (from!=1) {el = document.getElementById("filtro1");el.ariaPressed = "false";}
+	if (from!=2) {el = document.getElementById("filtro2");el.ariaPressed = "false";}
+	if (from!=3) {el = document.getElementById("filtro3");el.ariaPressed = "false";}
+
+	let el_sel = document.getElementById("filtro"+from);
+	id_ref="filtro"+from
+	
+	$('.btn_lav').hide()
+	if ($("#"+id_ref).attr('aria-pressed')=="false") {
+		el_sel.ariaPressed = "true";
+		$("#"+id_ref).removeClass("btn-outline-primary")
+		$("#"+id_ref).addClass("btn-primary")
+		$('.btn_lav').hide();
+		if (from=="1") $('.FULL').show()
+		if (from=="2") $('.PART').show()
+		if (from=="3") $('.INTER').show()
+	} else {
+		el_sel.ariaPressed = "false";
+		$("#"+id_ref).removeClass("btn-primary")
+		$("#"+id_ref).addClass("btn-outline-primary")
+		$('.btn_lav').show();	
+	}
+	
+}
 function lista_lavoratori(id_sezionale) {
 	data_app=$("#data_app").val();
 	ora_app=$("#ora_app").val();
@@ -268,6 +300,19 @@ function lista_lavoratori(id_sezionale) {
 			})	
 			console.warn("reperibili",reperibili)
 			
+			html+=`<button type='button' class='btn btn-outline-primary btn_filtro' id='filtro1'
+			onclick="filtro(1)" aria-pressed='false'>
+			FULL TIME</button>`;
+
+			html+=`<button type='button' class='ml-2 btn btn-outline-primary btn_filtro' id='filtro2'
+			onclick="filtro(2)" aria-pressed='false'>
+			PART TIME</button>`;
+
+			html+=`<button type='button' class='ml-2 btn btn-outline-primary btn_filtro' id='filtro3'
+			onclick="filtro(3)" aria-pressed='false'>
+			INTERMITTENTI</button><hr>`;
+
+
 			
 			$.each(lavoratori, function (i, item) {	
 				curr++
@@ -287,31 +332,22 @@ function lista_lavoratori(id_sezionale) {
 				btnlav.lavoratore=item.nominativo
 				tipo_contratto=item.tipo_contratto
 				tipo_contr=item.tipo_contr
-				ref_tipo=tipo_contr+tipo_contratto;
+				//ref_tipo=tipo_contr+tipo_contratto;
 				descr_t="Altro";
+				
+				descr_t="Altro"
+				if (tipo_contr==2) descr_t="Indeterminati";
+				if(tipo_contr==1) descr_t="Determinati";
+				ref_tipo=descr_t
 
-					
-				if (tipo_contr==2 && tipo_contratto==1)
-					descr_t="Indeterminati - Full Time";
-				else if (tipo_contr==2 && tipo_contratto==2)
-					descr_t="Indeterminati - Part Time";
-				else if (tipo_contr==2 && (tipo_contratto>2))
-					descr_t="Indeterminati - Altro";
-				
-				if (tipo_contr==1 && tipo_contratto==1)
-					descr_t="Determinati - Full Time";
-				else if (tipo_contr==1 && tipo_contratto==2)
-					descr_t="Determinati - Part Time";
-				else if (tipo_contr==1 && (tipo_contratto>2))
-					descr_t="Determinati - Altro";
-				
-				
+
 				btnlav.changetipo=false		
 				btnlav.descr_t="";
 				btnlav.flx=flx
+				btnlav.tipo_contratto=tipo_contratto
 				if (old_t!=ref_tipo) {
 					btnlav.changetipo=true
-					btnlav.descr_t=descr_t
+					btnlav.descr_t=descr_t					
 					curr=1
 				}
 				flx=1
@@ -321,6 +357,7 @@ function lista_lavoratori(id_sezionale) {
 			});
 			if (curr>0) html+="</div>";
 			$("#div_lavoratori").html(html)
+
 			
 			const arr_l=[]
 			arr_ref=$("#lavoratori").val().split(";")

@@ -157,7 +157,7 @@
 						echo ">Mattutina</option>";
 						echo "<option value='2' ";
 						if (!empty($edit_rep) && $edit_rep[0]->fascia=="2") echo "selected";
-						echo ">Serale</option>";
+						echo ">Pomeridiana</option>";
 						echo "<option value='3' ";
 						if (!empty($edit_rep) && $edit_rep[0]->fascia=="3") echo "selected";
 						echo ">Notturna</option>";						

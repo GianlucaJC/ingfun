@@ -9,9 +9,9 @@ $(document).ready( function () {
 		lengthMenu: [10, 15, 20, 50, 100, 200, 500],
 
 		pagingType: 'full_numbers',
-		//dom: 'Bfrtip',
+		dom: 'Bfrtip',
 		buttons: [
-			'excel', 'pdf'
+			'excel'
 		],		
         initComplete: function () {
             // Apply the search

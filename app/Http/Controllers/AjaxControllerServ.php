@@ -147,6 +147,15 @@ class AjaxControllerServ extends Controller
 			return $lavoratori->where('soc_ass','=',$id_sezionale);
 		})
 		->orderByRaw('case 
+			when `tipo_contr` = "2" then 1 
+			when `tipo_contr` = "1" then 2
+			else 3 end')
+		->orderBy('nominativo')	
+		->get();
+		
+		//11.10.2024: modifica query su richiesta di Giovanni
+		/*ordinamento previsto prima di questa data
+		->orderByRaw('case 
 			when `tipo_contr` = "2" and `tipo_contratto`="1"  then 1 
 			when `tipo_contr` = "2" and `tipo_contratto`="2"  then 2
 			when `tipo_contr` = "2" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 3
@@ -154,8 +163,10 @@ class AjaxControllerServ extends Controller
 			when `tipo_contr` = "1" and `tipo_contratto`="2"  then 5
 			when `tipo_contr` = "1" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 6
 			else 7 end')
-		->orderBy('nominativo')	
-		->get();
+
+		*/
+
+
 		$dati['lavoratori']=$lavoratori;
 		$dati['impegnati']=$impegnati;
 		$dati['reperibili']=$reperibili;

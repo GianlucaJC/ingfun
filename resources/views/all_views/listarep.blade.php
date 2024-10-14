@@ -141,7 +141,7 @@
 										if ($reper->fascia==1)
 											echo "Mattutina";
 										if ($reper->fascia==2)
-											echo "Serale";
+											echo "Pomeridiana";
 										if ($reper->fascia==3)
 											echo "Notturna";
 									?>
