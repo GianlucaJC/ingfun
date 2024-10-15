@@ -27,13 +27,12 @@ public function __construct()
 		$this->middleware('auth')->except(['index']);
 	}		
 
-	public function send_list_push_mail($id_app,$type,$only_send=array(),$stato=true) {
+	public function send_list_push_mail($id_app,$type,$only_send=array(),$con_delete=0) {
 		$list_push=appalti::select('appalti.*','l.id_lav_ref','appalti.id')
 		->join("lavoratoriapp as l","appalti.id","l.id_appalto")
 		->where('appalti.id', $id_app)
-		->when($stato==true, function ($list_push) {
-			return $list_push->where('l.status','=',0);
-		})
+		->where('l.status','=',0)
+		->where('l.to_delete','=',$con_delete)
 		->groupby('l.id_lav_ref')
 		->get();
 
@@ -173,9 +172,11 @@ public function __construct()
 		
 		
 		$to_delete = lavoratoriapp::where('id_appalto', $id_app)->update(['to_delete'=>1]);
+
+
 		$info_lavoratori=$request->input('lavoratori');
 		$lavoratori=explode(";",$info_lavoratori);
-		$num_send=0;
+		$num_send=0;$only_send=array();
 		for ($sca=0;$sca<=count($lavoratori)-1;$sca++) {
 			$send=false;
 			$id_lav_ref=$lavoratori[$sca];
@@ -189,9 +190,9 @@ public function __construct()
 					'created_at'=>now(),
 					'updated_at'=>now()
 				]);
-				//in caso di nuovi lavoratori inseriti, invio push
+				//in caso di nuovi lavoratori inseriti, popolo l'array per invio mail
 				$only_send[]=$id_lav_ref;
-				$list_push=$this->send_list_push_mail($id_app,"new",$only_send,true);
+				
 
 			} else {
 				$data=['to_delete' => 0];
@@ -205,37 +206,41 @@ public function __construct()
 		}
 
 
-		//push per eventuali estromessi dall'appalto
+
+		//mail per eventuali estromessi dall'appalto
 		$resp=candidati::select('u.push_id','l.id_lav_ref')
 		->join('users as u','candidatis.id_user','u.id')
 		->join('lavoratoriapp as l','l.id_lav_ref','candidatis.id')		
 		->where("l.to_delete","=", 1)
 		->where("l.id_appalto","=", $id_app)
-		->groupBy('candidatis.id');
+		->groupBy('candidatis.id')->get();
 
-		$deleted = lavoratoriapp::where('to_delete','=',1)
-		->where('id_appalto','=',$id_app)->delete();
-				
+		$con_delete=0;		
+		if (count($only_send)>0)
+			$list_push=$this->send_list_push_mail($id_app,"new",$only_send,$con_delete);
+		
+			
 		$estr=false;
-		if ($resp->count()!=0){
-			$estr=true;
+		$con_delete=1;
+		if (isset($resp)){
 			$only_send=array();
-			$all_push=$resp->get();
-			foreach($all_push as $single) {
+			foreach($resp as $single) {
+				$estr=true;
 				$id_lav_ref=$single->id_lav_ref;
 				$only_send[]=$id_lav_ref;
 			}					
-			$list_push=$this->send_list_push_mail($id_app,"dele",$only_send,false);
-
+			if (count($only_send)>0)
+				$list_push=$this->send_list_push_mail($id_app,"dele",$only_send,$con_delete);
 		}		
 
 		
 		//push per eventuale variazione
 		$flag_variazione=$request->input('flag_variazione');
 		if ($flag_variazione=="1" && $estr==false && strlen($request->input('variazione'))!=0) {
-			$list_push=$this->send_list_push_mail($id_app,"edit",array(),false);
+			$list_push=$this->send_list_push_mail($id_app,"edit",array());
 		}
 
+		$deleted = lavoratoriapp::where('to_delete','=',1)->where('id_appalto','=',$id_app)->delete();
 			
 		//
 		
@@ -257,15 +262,7 @@ public function __construct()
 		->get();
 		
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
-		->where('status_candidatura','=',3)		
-		->orderByRaw('case 
-			when `tipo_contr` = "2" and `tipo_contratto`="1"  then 1 
-			when `tipo_contr` = "2" and `tipo_contratto`="2"  then 2
-			when `tipo_contr` = "2" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 3
-			when `tipo_contr` = "1" and `tipo_contratto`="1"  then 4
-			when `tipo_contr` = "1" and `tipo_contratto`="2"  then 5
-			when `tipo_contr` = "1" and (`tipo_contratto`<>"1" and `tipo_contratto`<>"2")  then 6
-			else 7 end')
+		
 		->orderBy('nominativo')	
 		->get();
 		
@@ -406,7 +403,7 @@ public function __construct()
 		$num_send=0;$num_send_mail=0;
 		if (strlen($push_appalti)!=0) {
 			//invio push e mail
-			$list_push=$this->send_list_push_mail($push_appalti,"alert",array(),true);
+			$list_push=$this->send_list_push_mail($push_appalti,"alert",array());
 			$num_send=$list_push['num_send'];
 			$num_send_mail=$list_push['num_send_mail'];
 		}

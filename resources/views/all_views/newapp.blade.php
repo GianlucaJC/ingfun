@@ -290,41 +290,7 @@
 				<div class="col-md-12">
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select select2" id="lavoratoria" disabled aria-label="Lavoratori"  multiple="multiple" required>
-							@php ($old_t="?")
 							@foreach ($lavoratori as $lavoratore)
-							
-							<?php
-								
-
-							$tipo_contr=$lavoratore->tipo_contr;
-							$tipo_contratto=$lavoratore->tipo_contratto;
-							$ref_tipo=$tipo_contr.$tipo_contratto;
-							$descr_t="";
-
-								
-							if ($tipo_contr==2 && $tipo_contratto==1)
-								$descr_t="Indeterminati - Full Time";
-							elseif ($tipo_contr==2 && $tipo_contratto==2)
-								$descr_t="Indeterminati - Part Time";
-							elseif ($tipo_contr==2 && ($tipo_contratto>2))
-								$descr_t="Indeterminati - Altro";
-							if ($tipo_contr==1 && $tipo_contratto==1)
-								$descr_t="Determinati - Full Time";
-							elseif ($tipo_contr==1 && $tipo_contratto==2)
-								$descr_t="Determinati - Part Time";
-							elseif ($tipo_contr==1 && ($tipo_contratto>2))
-								$descr_t="Determinati - Altro";
-							
-
-									
-							if ($old_t!=$ref_tipo) {
-								if ($old_t!="?") echo "</optgroup>";
-								echo "<optgroup label='$descr_t'>"; 
-							}
-							$old_t=$ref_tipo;
-								
-							?>
-							
 								<option value='{{$lavoratore->id}}'
 								<?php
 									$status=0;
@@ -340,7 +306,6 @@
 								@if ($status==2) (Rifiutato) @endif
 								</option>
 							@endforeach
-							</optgroup>
 						</select>
 						<b>Squadra</b>
 					</div>
