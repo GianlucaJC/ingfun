@@ -462,7 +462,7 @@ class ApiController extends Controller
 			
 			$candidati=candidati::select("id")
 			->where('id_user', "=", $id)
-			->orderBy('id_user','desc')
+			->orderBy('id','desc')
 			->get();
 			
 			if (isset($candidati[0]))
