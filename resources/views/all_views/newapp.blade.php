@@ -75,13 +75,13 @@
 
 
 		<div class="row mb-3">
-			<!-- div disattivato !-->		
-			<div class="col-md-6" style='display:none'>
-				<div class="form-floating">
-					<input class="form-control" id="descrizione_appalto" name='descrizione_appalto' type="text" placeholder="Definizione"  maxlength=150 value="{{$appalti[0]->descrizione_appalto ?? ''}}" />
-					<label for="descrizione_appalto">Descrizione Appalto</label>
-				</div>
-			</div>			
+					<!-- div disattivato !-->		
+					<div class="col-md-6" style='display:none'>
+						<div class="form-floating">
+							<input class="form-control" id="descrizione_appalto" name='descrizione_appalto' type="text" placeholder="Definizione"  maxlength=150 value="{{$appalti[0]->descrizione_appalto ?? ''}}" />
+							<label for="descrizione_appalto">Descrizione Appalto</label>
+						</div>
+					</div>			
 
 			
 			<div class="col-md-2">
@@ -93,13 +93,23 @@
 
 
 			
-			<div class="col-md-3">
+			<div class="col-md-8">
 				<div class="form-floating mb-3 mb-md-0">
 					<input class="form-control" id="luogo_incontro" name='luogo_incontro' type="text" placeholder="Luogo e ora dell'incontro" required value="{{$appalti[0]->luogo_incontro ?? ''}}"  />
-					<label for="nome">Luogo e ora incontro*</label>
+					<label for="nome">Luogo incontro*</label>
 				</div>
 			</div>
 
+
+			<div class="col-md-2">
+				<div class="form-floating mb-3 mb-md-0">
+					<input class="form-control" id="ora_incontro" name='ora_incontro'  type="time" placeholder="Ora dell'incontro" required value="{{$appalti[0]->ora_incontro ?? ''}}" maxlength=5  />
+					<label for="nome">Ora incontro*</label>
+				</div>
+			</div>
+		</div>	
+		
+		<div class="row mb-3">
 			<div class="col-md-2">
 				<div class="form-floating">
 					<input class="form-control" id="km_percorrenza" name='km_percorrenza' type="text"  value="{{$appalti[0]->km_percorrenza ?? ''}}" maxlength=10 />
@@ -112,7 +122,7 @@
 					<label for="orario_incontro">Orario Destinazione*</label>
 				</div>
 			</div>	
-			<div class="col-md-3">
+			<div class="col-md-8">
 				<div class="form-floating mb-3 mb-md-0">
 					<input class="form-control" id="luogo_destinazione" name='luogo_destinazione' type="text" placeholder="Luogo Destinazione" required value="{{$appalti[0]->luogo_destinazione ?? ''}}"  />
 					<label for="nome">Luogo Destinazione*</label>
