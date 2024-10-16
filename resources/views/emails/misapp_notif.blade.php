@@ -21,8 +21,12 @@
     ?>
     <table role="presentation" border="1" cellspacing="0" width="100%">
         <tr>
-            <td {{$st}}>Luogo e ora incontro</td>
+            <td {{$st}}>Luogo incontro</td>
             <th {{$st1}}>{{$appalto->luogo_incontro}}</th>
+        </tr>    
+        <tr>
+            <td {{$st}}>Ora incontro</td>
+            <th {{$st1}}>{{$appalto->ora_incontro}}</th>
         </tr>    
         <tr>
             <td {{$st}}>Orario Destinazione</td>
