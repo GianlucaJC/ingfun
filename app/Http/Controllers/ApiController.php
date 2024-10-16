@@ -461,7 +461,9 @@ class ApiController extends Controller
 			$id=Auth::user()->id;
 			
 			$candidati=candidati::select("id")
-			->where('id_user', "=", $id)->get();
+			->where('id_user', "=", $id)
+			->orderBy('id_user','desc')
+			->get();
 			
 			if (isset($candidati[0]))
 				$id_lav_ref=$candidati[0]['id'];
