@@ -128,9 +128,9 @@ class AjaxControllerServ extends Controller
 		$fascia=$sca;
 		
 		
-		$cond="a.data_ref='$data_app' and TIME_FORMAT ( str_to_date ( replace (`a`.`orario_ref`,':',''),'%H%i' ),'%H:%i' ) between '$hh1' and '$hh2' and l.status='1' ";
+		$cond="a.dele=0 and a.data_ref='$data_app' and TIME_FORMAT ( str_to_date ( replace (`a`.`orario_ref`,':',''),'%H%i' ),'%H:%i' ) between '$hh1' and '$hh2'";
 		$impegnati=appalti::from('appalti as a')
-		->select('a.id','l.id_lav_ref')
+		->select('a.id','l.id_lav_ref','l.status')
 		->join('lavoratoriapp as l','a.id','l.id_appalto')
 		->whereRaw($cond)
 		->get();

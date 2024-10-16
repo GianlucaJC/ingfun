@@ -177,10 +177,11 @@ function btnlav(curr) {
 		btnlav.tipo_contratto=""
 	}	
 	
-	tipo_contratto="";
+	tipo_contratto="ALTRO";
 	if (btnlav.tipo_contratto==1) tipo_contratto="FULL"
 	if (btnlav.tipo_contratto==2) tipo_contratto="PART"
 	if (btnlav.tipo_contratto==3) tipo_contratto="INTER"
+	
 
 	html="";
 	
@@ -193,16 +194,22 @@ function btnlav(curr) {
 		if (btnlav.flx==1) html+=`</div>`
 		html+=`
 			<div class="alert alert-secondary mt-3" role="alert" id='`+tipo_contratto+`'>
-			  `+btnlav.descr_t+`
-			</div>		
-		`
+			  `+btnlav.descr_t
+			  
+			if (tipo_contratto!="FULL") {
+				html+=`<span class='ml-3'>
+			  			<a href='#div_ditta'>Torna su</a>
+			  		</span>`
+			}
+			html+="</div>"
+		
 		html+=`<div class="row mb-3">`
 	}
 		
 	html+=
 	`	
 		<div class="col-sm-3">
-			<button style='height:80px;' type="button" class="btn btn-lg btn-block btn-outline-info btn_lav `+tipo_contratto+`" data-id_lav="`+btnlav.id_lav+`" data-lavoratore="`+btnlav.lavoratore+`">
+			<button style='height:80px;' type="button" class="btn btn-lg btn-block  btn_lav `+tipo_contratto+`" data-id_lav="`+btnlav.id_lav+`" data-lavoratore="`+btnlav.lavoratore+`">
 				`+btnlav.lavoratore+`
 			</button>
 		</div>
@@ -283,12 +290,17 @@ function lista_lavoratori(id_sezionale) {
 			dati=JSON.parse(data)
 			lavoratori=dati.lavoratori
 			impegnati=dati.impegnati
-			impegni=new Array()
+			impegni_att=new Array()
+			impegni_acc=new Array()
+			impegni_rif=new Array()
+			
 			$.each(impegnati, function (i,item) {
 				id_a=item.id
 				id_l=item.id_lav_ref
-				//impegni[id_l]=id_a
-				impegni.push(id_l)
+				if (item.status=="0") impegni_att.push(id_l)
+				if (item.status=="1") impegni_acc.push(id_l)
+				if (item.status=="2") impegni_rif.push(id_l)
+
 			})
 			
 			reperibilita=dati.reperibili
@@ -302,14 +314,31 @@ function lista_lavoratori(id_sezionale) {
 			
 			html+=`
 				<a href='#FULL'>
-					<button type='button' class='btn btn-outline-primary'>FULL TIME</button>
+					<button type='button' class='btn btn-outline-secondary'>FULL TIME</button>
 				</a>
 				<a href='#PART'>
-					<button type='button' class='btn btn-outline-primary'>PART TIME</button>
+					<button type='button' class='btn btn-outline-secondary'>PART TIME</button>
 				</a>
 				<a href='#INTER'>
-					<button type='button' class='btn btn-outline-primary'>INTERMITTENTI</button>
+					<button type='button' class='btn btn-outline-secondary'>INTERMITTENTI</button>
 				</a>
+				<a href='#ALTRO'>
+					<button type='button' class='btn btn-outline-secondary'>ALTRO</button>
+				</a>
+				<div style="display:inline" class='ml-3'>
+					<div class="ml-3 alert alert-success" role="alert" style="display:inline">
+						Accettati
+					</div>					
+					<div class="ml-3 alert alert-warning" role="alert" style="display:inline">
+						In attesa
+					</div>					
+					<div class="ml-3 alert alert-danger" role="alert" style="display:inline">
+						Rifiutati
+					</div>					
+					<div class="ml-3 alert alert-primary" role="alert" style="display:inline">
+						Reperibili
+					</div>					
+				</div>	
 			
 			`;
 
@@ -335,9 +364,7 @@ function lista_lavoratori(id_sezionale) {
 				tipo_contratto=item.tipo_contratto
 				tipo_contr=item.tipo_contr
 				//ref_tipo=tipo_contr+tipo_contratto;
-				descr_t="Altro";
-				
-				descr_t="Altro"
+				descr_t="ALTRO";
 				if (tipo_contratto==1) descr_t="FULL TIME";
 				if(tipo_contratto==2) descr_t="PARTIME";
 				if(tipo_contratto==3) descr_t="INTERMITTENTI";
@@ -367,6 +394,16 @@ function lista_lavoratori(id_sezionale) {
 			for (sca=0;sca<=arr_ref.length-1;sca++) {
 				arr_l.push(parseInt(arr_ref[sca]))
 			}
+
+			all_class=new Array();
+			all_class[0]="btn-outline-info"
+
+			all_class[1]="btn-info"
+			all_class[2]="btn-warning"
+			all_class[3]="btn-success"
+			all_class[4]="btn-danger"
+			all_class[5]="btn-primary"
+
 			$('.btn_lav').each(function () {
 				ref=$(this).attr('data-id_lav');
 				ref=parseInt(ref)
@@ -381,30 +418,39 @@ function lista_lavoratori(id_sezionale) {
 				
 				
 				check_r=reperibili.includes(ref)
-				class_btn1="btn-info";class_btn2="btn-outline-info";
+				class_btn1="btn-outline-info";class_btn2="btn-outline-info";
+				
 				if (check_r==true) {
-					class_btn1="btn-warning";class_btn2="btn-outline-warning";
-				} else {				
-
-					//check_i=Object.keys(impegni).indexOf(ref)
-					check_i=impegni.includes(ref)
-					
-					class_btn1="btn-info";class_btn2="btn-outline-info";
-					if (check_i==true) {
-						class_btn1="btn-danger";class_btn2="btn-outline-danger";
-					}
+					class_btn1="btn-primary";class_btn2="btn-primary";
 				}
+
+				//check_i=Object.keys(impegni_acc).indexOf(ref)
+				check_i=impegni_acc.includes(ref)
+				if (check_i==true) {
+					class_btn1="btn-success";class_btn2="btn-success";
+				}
+				check_i=impegni_att.includes(ref)
+				if (check_i==true) {
+					class_btn1="btn-warning";class_btn2="btn-warning";
+				}
+				check_i=impegni_rif.includes(ref)
+				if (check_i==true) {
+					class_btn1="btn-danger";class_btn2="btn-danger";
+				}
+
 
 
 				
 				check_pres=arr_l.includes(ref)
+				
 				if (check_pres==true) {
 				//if ($.inArray( ref, arr_l )!== -1) {
-					$( this ).removeClass(class_btn2).addClass(class_btn1).addClass('sele')
+					$( this ).addClass(class_btn2).addClass('sele')
 				}
 				else {
-					$( this ).removeClass('sele').removeClass(class_btn1).addClass(class_btn2)
+					$( this ).addClass(class_btn1)
 				}
+			
 			});	
 
 
@@ -414,16 +460,27 @@ function lista_lavoratori(id_sezionale) {
 				ref=$(this).attr('data-id_lav');
 				ref=parseInt(ref)
 				
-				check_i=impegni.includes(ref)
+				check_i=impegni_acc.includes(ref)
 				check_r=reperibili.includes(ref)
-				if ($( this ).hasClass('btn-outline-info')) {
+
+				if (!$( this ).hasClass('sele')) {
+				//if ($( this ).hasClass('btn-outline-info')) {
 					if (check_i==true || check_r==true) {
-						if (!confirm("Sei sicuro? Il lavoratore risulta già reperibile o impegnato in altro appalto")) return false;
-					}					
-					$( this ).removeClass('btn-outline-info').addClass('btn-info').addClass('sele')
+						
+						if (!confirm("Sei sicuro? Il lavoratore risulta già reperibile o impegnato in altro appalto")) 
+							return false;
+					}
+					for (sca=0;sca<all_class.length;sca++) {
+						$( this ).removeClass(all_class[sca])
+					}
+					$( this ).addClass('btn-info').addClass('sele')
 				}	
-				else 
-					$( this ).removeClass('sele').removeClass('btn-info').addClass('btn-outline-info')
+				else { 
+					for (sca=0;sca<all_class.length;sca++) {
+						$( this ).removeClass(all_class[sca])
+					}
+					$( this ).removeClass('sele').addClass('btn-outline-info')
+				}
 				
 				update_list()
 
