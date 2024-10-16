@@ -242,7 +242,9 @@ class ApiController extends Controller
 			$id=Auth::user()->id;
 			
 			$candidati=candidati::select("id")
-			->where('id_user', "=", $id)->get();
+			->where('id_user', "=", $id)
+			->orderBy('id','desc')
+			->get();
 			
 			if (isset($candidati[0]))
 				$id_lav_ref=$candidati[0]['id'];
@@ -402,7 +404,9 @@ class ApiController extends Controller
 			$id=Auth::user()->id;
 			$from=$request->input('from');
 			$candidati=candidati::select("id")
-			->where('id_user', "=", $id)->get();
+			->where('id_user', "=", $id)
+			->orderBy('id','desc')
+			->get();
 			
 			if (isset($candidati[0]))
 				$id_lav_ref=$candidati[0]['id'];
@@ -556,7 +560,9 @@ class ApiController extends Controller
 			$id=Auth::user()->id;
 			
 			$candidati=candidati::select("id")
-			->where('id_user', "=", $id)->get();
+			->where('id_user', "=", $id)
+			->orderBy('id','desc')
+			->get();
 			
 			if (isset($candidati[0]))
 				$id_lav_ref=$candidati[0]['id'];
@@ -696,7 +702,9 @@ class ApiController extends Controller
 			$id=Auth::user()->id;
 			$from=$request->input('from');
 			$candidati=candidati::select("id")
-			->where('id_user', "=", $id)->get();
+			->where('id_user', "=", $id)
+			->orderBy('id','desc')
+			->get();
 			
 			if (isset($candidati[0]))
 				$id_lav_ref=$candidati[0]['id'];
@@ -807,7 +815,9 @@ class ApiController extends Controller
 			$id=Auth::user()->id;
 			
 			$candidati=candidati::select("id")
-			->where('id_user', "=", $id)->get();
+			->where('id_user', "=", $id)
+			->orderBy('id','desc')
+			->get();
 			
 			if (isset($candidati[0]))
 				$id_lav_ref=$candidati[0]['id'];
@@ -851,7 +861,9 @@ class ApiController extends Controller
 			$id=Auth::user()->id;
 			
 			$candidati=candidati::select("id")
-			->where('id_user', "=", $id)->get();
+			->where('id_user', "=", $id)
+			->orderBy('id','desc')
+			->get();
 			
 			if (isset($candidati[0]))
 				$id_lav_ref=$candidati[0]['id'];
