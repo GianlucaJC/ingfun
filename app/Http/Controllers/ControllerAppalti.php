@@ -332,15 +332,23 @@ public function __construct()
 		if (request()->has("view_dele")) $view_dele=request()->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;
 
-		$mezzi=mezzi::select('id','tipologia','marca','modello','targa')
-		->orderBy('marca')
-		->orderBy('targa')
+
+		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as sm')
+		->select('sm.id','mm.marca','mom.modello','sm.targa')
+		->join('parco_marca_mezzo as mm','sm.marca','mm.id')
+		->join('parco_modello_mezzo as mom','sm.modello','mom.id')
+		->where('sm.dele', "=","0")
+		->orderBy('mm.marca')
+		->orderBy('sm.targa')
+		->groupBy('sm.id')
 		->get();
+
 		$targhe=array();
 		foreach($mezzi as $mezzo) {
 			$targhe[$mezzo->targa]=$mezzo->marca." - ".$mezzo->modello." - ".$mezzo->targa;
 		}	
 
+		
 		$restore_cand=request()->input("restore_cand");
 		
 		if (request()->has("clona")) {

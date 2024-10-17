@@ -244,7 +244,9 @@
 							
 							</td>
 							<td>
+								{{$gest->targa}}
 								<?php
+								
 								
 									if (isset($targhe[$gest->targa]))
 										echo $targhe[$gest->targa];
