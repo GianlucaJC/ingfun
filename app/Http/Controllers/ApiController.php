@@ -637,6 +637,7 @@ class ApiController extends Controller
 			$info[$sc]['descrizione_appalto']=$record->descrizione_appalto;
 			
 			$info[$sc]['luogo_incontro']=$record->luogo_incontro;
+			$info[$sc]['ora_incontro']=$record->ora_incontro;
 			$info[$sc]['luogo_destinazione']=$record->luogo_destinazione;
 			$info[$sc]['orario_incontro']=$record->orario_incontro;
 			$info[$sc]['chiesa']=$record->chiesa;

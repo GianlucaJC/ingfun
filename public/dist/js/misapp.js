@@ -229,10 +229,13 @@ Vue.component('Detail',{
 			</div>
 			<hr>
 			<div v-if="infoappalto.info[0].luogo_incontro">
-				<p class="h6 opacity-25">Luogo e ora incontro</p>
+				<p class="h6 opacity-25">Luogo incontro</p>
 				<p class="h5">{{infoappalto.info[0].luogo_incontro}}</p>
 			</div>
-
+			<div v-if="infoappalto.info[0].ora_incontro">
+				<p class="h6 opacity-25">Ora incontro</p>
+				<p class="h5">{{infoappalto.info[0].ora_incontro}}</p>
+			</div>
 			<div v-if="infoappalto.info[0].orario_incontro">
 				<p class="h6 opacity-25">Orario Destinazione</p>
 				<p class="h5">{{infoappalto.info[0].orario_incontro}}</p>
