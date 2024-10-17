@@ -268,7 +268,7 @@ Vue.component('Detail',{
 			
 			<div v-if="infoappalto.info[0].targa">
 				<p class="h6 opacity-25">Targa mezzo</p>
-				<p class="h5">{{infoappalto.info[0].targa}}</p>
+				<p class="h5">{{infoappalto.targhe[infoappalto.info[0].targa]}}</p>
 			</div>
 			<div v-if="infoappalto.info[0].responsabile_mezzo">
 				<p class="h6 opacity-25">Responsabile mezzo</p>
