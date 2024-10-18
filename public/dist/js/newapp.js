@@ -209,7 +209,7 @@ function btnlav(curr) {
 	html+=
 	`	
 		<div class="col-sm-3">
-			<button style='height:80px;' type="button" class="btn btn-lg btn-block  btn_lav `+tipo_contratto+`" data-id_lav="`+btnlav.id_lav+`" data-lavoratore="`+btnlav.lavoratore+`">
+			<button style='height:80px;' type="button" class="btn btn-lg btn-block  btn_lav `+tipo_contratto+`" data-id_lav="`+btnlav.id_lav+`" data-lavoratore="`+btnlav.lavoratore+`" title='`+btnlav.id_lav+`'>
 				`+btnlav.lavoratore+`
 			</button>
 		</div>

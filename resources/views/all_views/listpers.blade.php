@@ -60,6 +60,7 @@
 					<table id='tbl_list_pers' class="display">
 						<thead>
 							<tr>
+								<th style='max-width:30px'>ID</th>
 								<th style='min-width:220px'>Operazioni/impostazioni</th>
 								<th>Dipendente</th>
 								<th>Stato</th>
@@ -94,7 +95,7 @@
 				
 							@foreach($scadenze as $scadenza)
 								<tr>
-
+									<td style='max-width:30px;text-align:center'>{{$scadenza->id}}</td>
 									<td style='min-width:220px'>
 										@if ($scadenza->dele=="0") 
 											<a href="#" onclick="if (!confirm('Sicuri di duplicare?')) event.preventDefault()">
@@ -325,6 +326,7 @@
 						</tbody>
 						<tfoot>
 							<tr>
+								<th style='max-width:30px'>ID</th>
 								<th style='min-width:180px'></th>
 								<th>Nominativo</th>
 								<th>Stato</th>
