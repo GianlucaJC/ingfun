@@ -723,6 +723,7 @@ class ApiController extends Controller
 			$from=$request->input('from');
 			$candidati=candidati::select("id")
 			->where('id_user', "=", $id)
+			->where('dele','=',0)
 			->orderBy('id','desc')
 			->get();
 			
@@ -836,6 +837,7 @@ class ApiController extends Controller
 			
 			$candidati=candidati::select("id")
 			->where('id_user', "=", $id)
+			->where('dele','=',0)
 			->orderBy('id','desc')
 			->get();
 			
@@ -882,6 +884,7 @@ class ApiController extends Controller
 			
 			$candidati=candidati::select("id")
 			->where('id_user', "=", $id)
+			->where('dele','=',0)
 			->orderBy('id','desc')
 			->get();
 			
