@@ -309,21 +309,24 @@ class ApiController extends Controller
 			$risp['message']="File e dati riversati sul server";
 			
 			
-			//aggiornamenti per eventuale noleggio
-			$info_id=parco_scheda_mezzo::select('id','km_alert_mail','notifica_alert_noleggio')
+			//aggiornamenti per eventuale km noleggio o chilometraggio per mezzo di proprietà
+			$info_id=parco_scheda_mezzo::select('id','km_alert_mail','notifica_alert_noleggio','proprieta')
 			->where('targa', "=",$targa)
-			->where('proprieta','=',1)
 			->get()->first();
+			//->where('proprieta','=',1)
 			if (isset($info_id->id)) {
 				$id_mezzo=$info_id->id;
 				
 				if ($id_mezzo!=null && strlen($id_mezzo)!=0) {
 					$psm=parco_scheda_mezzo::find($id_mezzo);
-					$psm->km_noleggio_remote=$km;
+					if ($info_id->proprieta=="1")
+					 	$psm->km_noleggio_remote=$km;
+					else
+						$psm->chilometraggio=$km;
 					$psm->save();
 					
 					$notifica_alert_noleggio=$info_id->notifica_alert_noleggio;
-					if ($notifica_alert_noleggio==NULL) {
+					if ($notifica_alert_noleggio==NULL && $info_id->proprieta=="1") {
 						$km_alert_mail=$info_id->km_alert_mail;
 						if ($km>=$km_alert_mail) {
 							/*
