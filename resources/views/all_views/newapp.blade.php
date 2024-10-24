@@ -234,7 +234,7 @@
 		<div class="row mb-3">
 			<div class="col-md-12">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" style='height:auto' name="mezzo" id="mezzo" required>
+					<select class="form-select" style='height:auto' name="mezzo" id="mezzo">
 					<option value=''>Select...</option>
 					<?php
 						foreach ($mezzi as $mezzo) {
@@ -250,7 +250,7 @@
 						}
 					?>						
 					</select>
-					<label for="mezzi">Mezzo*</label>
+					<label for="mezzi">Mezzo</label>
 				</div>
 			</div>	
 		</div>
@@ -328,7 +328,7 @@
 
 				<div class="col-md-4">
 					<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" name="responsabile_mezzo" id="responsabile_mezzo"  required >
+						<select class="form-select" name="responsabile_mezzo" id="responsabile_mezzo" >
 						<option value=''>Select...</option>
 						<?php
 							foreach ($lavoratori as $lavoratore) {
@@ -431,7 +431,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.378"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newapp.js?ver=1.379"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

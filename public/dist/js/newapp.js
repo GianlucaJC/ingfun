@@ -10,10 +10,20 @@
   Array.prototype.slice.call(forms)
     .forEach(function (form) {
       form.addEventListener('submit', function (event) {
+		mezzo=$("#mezzo").val()
+		if (mezzo.length!=0) {
+			responsabile_mezzo=$("#responsabile_mezzo").val()
+			if (responsabile_mezzo.length==0) {
+				alert("Definire il responsabile del mezzo!")
+				event.preventDefault()
+				event.stopPropagation()
+			}
+		}
+
         if (!form.checkValidity()) {
-		  alert("Controllare i campi obbligatori richiesti!")
-          event.preventDefault()
-          event.stopPropagation()
+		  	alert("Controllare i campi obbligatori richiesti!")
+          	event.preventDefault()
+          	event.stopPropagation()
         }
 		/*
 		var cf=$("#codfisc").val()
