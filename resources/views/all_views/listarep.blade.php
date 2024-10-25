@@ -54,8 +54,8 @@
 			<?php
 			
 				if (!empty($num_send) && $num_send>0) {
-					$txt="Notifiche push inviate!";
-					if ($num_send==1) $txt="Notifica push inviata!";
+					$txt="Solleciti inviati!";
+					if ($num_send==1) $txt="Sollecito inviato!";
 					echo "<div class='alert alert-success' role='alert'>";
 					  echo "<b>$txt</b>";
 					echo "</div>";
@@ -103,8 +103,8 @@
 
 									
 									
-									<a href='#' onclick="push_rep({{$reper->id}})" >
-										<button type="submit" class="btn btn-warning" alt='Sollecito'><i class="fas fa-share-square" title="Invia Sollecito Push solo a chi non ha risposto"></i></button>
+									<a href='#' onclick="push_rep({{$reper->id_user}})" >
+										<button type="submit" class="btn btn-warning" alt='Sollecito'><i class="fas fa-share-square" title="Invia Sollecito"></i></button>
 									</a>
 
 
@@ -222,6 +222,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listrep.js?ver=1.03"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listrep.js?ver=1.04"></script>
 
 @endsection

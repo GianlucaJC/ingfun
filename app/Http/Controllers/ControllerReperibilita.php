@@ -7,6 +7,7 @@ use App\Models\candidati;
 use App\Models\user;
 use App\Models\reperibilita;
 use OneSignal;
+use Mail;
 
 use DB;
 
@@ -45,30 +46,17 @@ public function __construct()
 		
 		$num_send=0;
 		if (strlen($push_reper)!=0) {
-			$list_push=reperibilita::select('c.id_user as id_lav_ref')
-			->join("candidatis as c","c.id","reperibilita.id_user")
-			->where('reperibilita.id', $push_reper)
-			->where('status','=',0)
-			->get();
-			foreach ($list_push as $list ){
-				$send=false;
-				$id_ref=$list->id_lav_ref;
-				if ($id_ref!=null) {
-					$push=user::select('push_id')
-					->where('id','=',$id_ref)->get()->first();
-					$push_id=$push->push_id;
-					if ($push_id==null || strlen($push_id)==0) $send=false;
-					else $send=true;
-					if ($send==true) {
-						$num_send++;
-						$this->send_push($push_id,"alert_ref","");
-					}	
-				}
+			$info=candidati::select('email')->where('id','=',$push_reper)->get();
+			$email="";
+			if (isset($info[0]->email)) $email=$info[0]->email;
+			if (strlen($email)!=0) {
+				$num_send=1;
+			 	@$this->send_mail($email,$tipo="alert",$info);
 			}
 			
 		}
 
-		$reperibilita=reperibilita::select('reperibilita.*',DB::raw("DATE_FORMAT(reperibilita.data,'%d-%m-%Y') as data_it"),'c.nominativo')
+		$reperibilita=reperibilita::select('reperibilita.*',DB::raw("DATE_FORMAT(reperibilita.data,'%d-%m-%Y') as data_it"),'c.nominativo','reperibilita.id_user')
 		->join('candidatis as c','c.id','reperibilita.id_user')
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('reperibilita.dele', "=","0");
@@ -117,12 +105,15 @@ public function __construct()
 			$lavoratori=$request->input('lavoratori');
 			for ($sca=0;$sca<=count($lavoratori)-1;$sca++) {
 				$lavoratore=$lavoratori[$sca];
+				$info=candidati::select('email')->where('id','=',$lavoratore)->get();
+				$email="";
+				if (isset($info[0]->email)) $email=$info[0]->email;
 				$reper = new reperibilita;
 				$reper->id_user = $lavoratore;
 				$reper->data = $request->input('data_reper');
 				$reper->fascia= $request->input('fascia');
 				$reper->save();
-				$id_ref_push=$reper->id;
+				if (strlen($email)!=0) @$this->send_mail($email,$tipo="new",$info);
 			}
 		} else {
 			$reper = reperibilita::find($id_reper);
@@ -131,25 +122,7 @@ public function __construct()
 			$reper->save();
 		}
 
-		if ($id_ref_push!=0) {
-		//push per eventuale variazione (max una)
-		
 
-			$resp=reperibilita::select('u.push_id')
-			->join('candidatis as c','c.id','reperibilita.id_user')
-			->join('users as u','c.id_user','u.id')
-			->where("reperibilita.id","=", $id_ref_push);
-
-			if ($resp->count()!=0){
-				$all_push=$resp->get();
-				foreach($all_push as $single) {
-					$push_id=$single->push_id;
-					$this->send_push($push_id,"new_rep","");
-				}					
-
-			}
-		}
-		//
 		return redirect()->route("listrep");
 
 	}	
@@ -274,5 +247,35 @@ public function __construct()
 		return view('all_views/newapp')->with("appalti",$appalti)->with("ditte",$ditte)->with("servizi",$servizi)->with('id_app',$id)->with('id_servizi',$id_servizi)->with('id_servizi',$id_servizi)->with("lavoratori",$lavoratori)->with("ids_lav",$ids_lav)->with("num_send",$num_send)->with('mezzi',$mezzi);
 
 	}
+
+
+	public function send_mail($email,$tipo="new",$info) {
+
+		$titolo="Nuova richiesta accettazione reperibilità";
+		if ($tipo=="new")
+			$titolo="Nuova richiesta accettazione reperibilità";
+
+		if ($tipo=="alert")
+			$titolo="Sollecito accettazione Reperibilità";
+		
+		try {
+			$data["title"] = $titolo;
+			
+
+			Mail::send('emails.reper_notif', $data, function($message)use($data,$email) {
+				$message->to($email, $email)
+				->subject($data["title"]);
+			});
+			
+			$status['status']="OK";
+			$status['message']="Mail inviata con successo";
+			return $status;
+			
+		} catch (Throwable $e) {
+			$status['status']="KO";
+			$status['message']="Errore occorso durante l'invio! $e";
+			return $status;
+		}		
+	}	
 
 }

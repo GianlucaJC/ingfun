@@ -54,7 +54,7 @@ function restore_element(value) {
 }
 
 function push_rep(value) {
-	if(!confirm("Sicuri di sollecitare tutti i lavoratori della reperibilità (che non hanno risposto)?")) 
+	if(!confirm("Sicuri di sollecitare il lavoratore per la reperibilità?")) 
 		event.preventDefault() 
 	else 
 		$('#push_reper').val(value)	
