@@ -142,7 +142,8 @@ Vue.component("box-reper",{
                 <h5>Fascia {{item.fascia}} - 
                     <span v-if="item.fascia==1">Mattutina</span>
                     <span v-if="item.fascia==2">Serale</span>
-                    <span v-if="item.fascia==3">Notturna</span>
+                    <span v-if="item.fascia==3">Prima Fascia Notturna</span>
+                    <span v-if="item.fascia==4">Seconda Fascia Notturna</span>
                 </h5>
 			</div>
 

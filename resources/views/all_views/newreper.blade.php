@@ -160,7 +160,10 @@
 						echo ">Pomeridiana</option>";
 						echo "<option value='3' ";
 						if (!empty($edit_rep) && $edit_rep[0]->fascia=="3") echo "selected";
-						echo ">Notturna</option>";						
+						echo ">Prima Fascia Notturna</option>";						
+						echo "<option value='3' ";
+						if (!empty($edit_rep) && $edit_rep[0]->fascia=="3") echo "selected";
+						echo ">Seconda Fascia Notturna</option>";						
 					?>						
 					</select>
 					<label for="ditta">Fascia*</label>
