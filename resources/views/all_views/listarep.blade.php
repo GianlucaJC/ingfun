@@ -143,7 +143,9 @@
 										if ($reper->fascia==2)
 											echo "Pomeridiana";
 										if ($reper->fascia==3)
-											echo "Notturna";
+											echo "Prima Fascia Notturna";
+										if ($reper->fascia==4)
+											echo "Seconda Fascia Notturna";
 									?>
 								</td>
 		
