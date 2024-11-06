@@ -683,8 +683,9 @@ class ApiController extends Controller
 			$responsabile_mezzo="";
 			if (isset($r_mezzo->nominativo)) 
 				$responsabile_mezzo=$r_mezzo->nominativo;
-
-			$targa=$r_mezzo->targa;
+			$targa="";
+			if (isset($r_mezzo->targa)) 
+				$targa=$r_mezzo->targa;
 	
 			$info[$sc]['targa']=$targa;
 			$info[$sc]['responsabile_mezzo']=$responsabile_mezzo;
