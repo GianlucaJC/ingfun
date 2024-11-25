@@ -111,7 +111,7 @@
 						@endforeach
 						</optgroup>
 					</select>
-					<b>Lavororatore/i</b>
+					<b>Lavoratore/i</b>
 				</div>
 			</div>
 			@else
