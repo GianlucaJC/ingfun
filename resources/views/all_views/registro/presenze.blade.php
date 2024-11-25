@@ -118,7 +118,7 @@
 					</div>
 				</div>	
 				<div class="col-md-3">
-					<button type="button" onclick="$('#div_definition').show(150)"  class="btn btn-primary btn-lg" >Definisci periodo assenza</button>
+					<button type="button" onclick="$('#div_definition').show(150)"  class="btn btn-primary btn-lg" >Definisci un periodo di assenza</button>
 				</div>			
 			</div>
 			

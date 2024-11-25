@@ -74,6 +74,7 @@ public function __construct()
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('status_candidatura','=',3)		
 		->where('dele','=',0)
+		->where('hide_appalti','=',0)
 		->orderBy('nominativo')	
 		->get();
 		
