@@ -161,7 +161,7 @@
 						echo "<option value='3' ";
 						if (!empty($edit_rep) && $edit_rep[0]->fascia=="3") echo "selected";
 						echo ">Prima Fascia Notturna</option>";						
-						echo "<option value='3' ";
+						echo "<option value='4' ";
 						if (!empty($edit_rep) && $edit_rep[0]->fascia=="4") echo "selected";
 						echo ">Seconda Fascia Notturna</option>";						
 					?>						

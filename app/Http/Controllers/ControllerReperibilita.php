@@ -116,7 +116,7 @@ public function __construct()
 			$reper->save();
 		}
 
-
+		
 		return redirect()->route("listrep");
 
 	}	
