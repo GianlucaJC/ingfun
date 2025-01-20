@@ -58,12 +58,15 @@ $(document).ready( function () {
 
 		
     });
-	
+    
 
 	
 } );
 
-
+function check_export() {
+    event.preventDefault()
+  
+}
 
 function change_state(id_fatt) {
 	$("#modal_body").modal('show');

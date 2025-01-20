@@ -15,7 +15,7 @@ use App\Models\servizi;
 use App\Models\appalti;
 use App\Models\prod_prodotti;
 use App\Models\prod_magazzini;
-
+use Illuminate\Support\Facades\Storage;
 use DB;
 use PDF;
 
@@ -759,6 +759,166 @@ public function __construct()
 	}
 	
 	public function lista_inviti(Request $request) {
+		$export=false;
+		if ($request->has("sele_fatt")) {
+			$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+			->get();			
+			$arr_aliquota=array();
+			foreach ($aliquote_iva as $aliquota) {
+				if (isset($aliquota->id))
+					$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
+			}
+	
+			$sele_fatt=$request->input('sele_fatt');
+			$ids=array();
+			for ($sca=0;$sca<count($sele_fatt);$sca++) {
+				$ids[]=$sele_fatt[$sca];
+			}
+			$intestazioni=DB::table('fatture as f')
+			->join('ditte as d','f.id_ditta','d.id')
+			->select("d.id","d.denominazione","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli","d.sdi","d.pec")
+			->whereIn('f.id',$ids)
+			->groupBy('d.id')
+			->get();
+			foreach ($intestazioni as $intestazione) {
+				$id_ditta=$intestazione->id;
+				$filename="allegati/export/cli_".$id_ditta.".csv";
+				$dest_file="cli_".$id_ditta.".csv";
+				
+				$denominazione=$intestazione->denominazione;
+				$indirizzo=$intestazione->indirizzo;
+				$cap=$intestazione->cap;
+				$comune=$intestazione->comune;
+				$provincia=$intestazione->provincia;
+				$cf=$intestazione->cf;
+				$piva=$intestazione->piva;
+				$codpag="";
+				$sdi=$intestazione->sdi;
+				$pec=$intestazione->pec;
+				$telefono=$intestazione->telefono;
+				$email=$intestazione->email;
+
+				
+				$file = fopen($filename,"w");
+				$row=array("codditt","an_conto","an_tipo","an_descr1","an_indir","an_cap","an_citta","an_prov","an_codfis","an_pariva","an_codpag","an_sdi","an_pec","an_tel","an_email");
+				fputcsv($file, $row);
+				$row=array("STD",$id_ditta,"C",$denominazione,$indirizzo,$cap,$comune,$provincia,$cf,$piva,$codpag,$sdi,$pec,$telefono,$email);
+				fputcsv($file, $row);
+				fclose($file);
+
+				$fp = fopen($filename,"r");
+				//Storage::disk('ftp')->move($filename, $filename);
+				$host=env('HOST_FTP');
+				$port=env('HOST_PORT');
+				$user=env('HOST_USER');
+				$pw=env('HOST_PASSWORD');
+				$connId = ftp_connect($host, $port);
+				$loginResult = ftp_login($connId, $user, $pw);
+				ftp_pasv($connId, true) or die("Unable switch to passive mode");
+				if ($loginResult) {
+					echo "test";
+					$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
+					if (!$upload) {
+						die('Failed to upload the file');
+					}
+				} 
+				fclose($fp);
+				$export=true;			
+			}
+
+
+			$fatture=DB::table('fatture as f')
+			->join('articoli_fattura as a','f.id','a.id_doc')
+			->join('ditte as d','f.id_ditta','d.id')
+			->select("f.id",DB::raw("DATE_FORMAT(f.data_invito,'%Y-%m-%d') as data_invito"),"a.codice","a.quantita","a.prezzo_unitario","a.aliquota","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli")
+			->whereIn('f.id',$ids)
+			->orderBy('id_doc')
+			->orderBy('ordine')
+			->groupBy('a.id')
+			->get();
+
+
+			$riga=0;
+			$old=0;$entr=false;$file="";
+			foreach ($fatture as $fattura) {
+				$riga++;
+				$id_f=$fattura->id;
+				if ($old!=$id_f) {
+					if ($entr==true) {
+						fclose($file);
+						$fp = fopen($filename,"r");
+						//Storage::disk('ftp')->move($filename, $filename);
+						$host=env('HOST_FTP');
+						$port=env('HOST_PORT');
+						$user=env('HOST_USER');
+						$pw=env('HOST_PASSWORD');
+						$connId = ftp_connect($host, $port);
+						$loginResult = ftp_login($connId, $user, $pw);
+						ftp_pasv($connId, true) or die("Unable switch to passive mode");
+						if ($loginResult) {
+							$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
+							if (!$upload) {
+								die('Failed to upload the file');
+							}
+						} 
+						fclose($fp);						
+					}	
+					$filename="allegati/export/ordini_".$id_f.".csv";
+					$dest_file="ordini_".$id_f.".csv";
+					$file = fopen($filename,"w");
+
+					$riga=1;
+		
+					$row=array("Nr","N_Riga","Data","Barcode","CodArt","QTA_Impegnata","Prezzo","Al_iva","Raee","Imballo/Bancale","cf","piva","mobile","email","peso","des_nome","des_cognome","des_indir","des_citta","des_cap","des_prov","codfor");
+					fputcsv($file, $row);
+
+					$entr=true;
+					$old=$id_f;
+				}
+				$codice=$fattura->codice;
+				$data_invito=$fattura->data_invito;
+				$quantita=$fattura->quantita;
+				$prezzo_unitario=$fattura->prezzo_unitario;
+				$prezzo_unitario=number_format($prezzo_unitario,2,"","");
+				$aliquota=$fattura->aliquota;
+				$value_aliquota=0;
+				if (isset($arr_aliquota[$aliquota])) $value_aliquota=$arr_aliquota[$aliquota];
+				$cf=$fattura->cf;
+				$piva=$fattura->piva;
+				$email=$fattura->email;
+				$telefono=$fattura->telefono;
+				$nome=$fattura->nome;
+				$cognome=$fattura->cognome;
+				$indirizzo=$fattura->indirizzo;
+				$comune=$fattura->comune;
+				$cap=$fattura->cap;
+				$provincia=$fattura->provincia;
+				$id_cli=$fattura->id_cli;
+				$peso="";
+				$row=array($id_f,$riga,$data_invito,$codice,$codice,$quantita,$prezzo_unitario,$value_aliquota,0,0,$cf,$piva,$email,$telefono,$peso,$nome,$cognome,$indirizzo,$comune,$cap,$provincia,$id_cli);
+				fputcsv($file, $row);
+			}
+			if ($entr==true) {
+				fclose($file);
+				$fp = fopen($filename,"r");
+				//Storage::disk('ftp')->move($filename, $filename);
+				$host=env('HOST_FTP');
+				$port=env('HOST_PORT');
+				$user=env('HOST_USER');
+				$pw=env('HOST_PASSWORD');
+				$connId = ftp_connect($host, $port);
+				$loginResult = ftp_login($connId, $user, $pw);
+				ftp_pasv($connId, true) or die("Unable switch to passive mode");
+				if ($loginResult) {
+					$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
+					if (!$upload) {
+						die('Failed to upload the file');
+					}
+				} 
+				fclose($fp);						
+			}
+			
+		}
 		if ($request->has("btn_change_state")) {
 			$btn_change_state=$request->input("btn_change_state");
 			if ($btn_change_state=="change") {
@@ -797,7 +957,7 @@ public function __construct()
 		->orderBy('f.id','desc')->get();
 		
 
-		return view('all_views/invitofatt/lista_inviti')->with("view_dele",$view_dele)->with('fatture',$fatture);
+		return view('all_views/invitofatt/lista_inviti')->with("view_dele",$view_dele)->with('fatture',$fatture)->with('export',$export);
 
 		
 	}	

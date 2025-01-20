@@ -50,7 +50,11 @@ use App\Models\User;
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
-
+		@if($export==true)
+			<div class="alert alert-success mb-2" role="alert">
+				Esportazion effettuata!
+			</div>
+		@endif
 		<form method='post' action="{{ route('lista_inviti') }}" id='frm_servizi' name='frm_servizi' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>
         <div class="row">
@@ -60,6 +64,7 @@ use App\Models\User;
 					<thead>
 						<tr>
 							<th style='text-align:center'>ID</th>
+							<th style='max-width:40px;text-align:center'>Sel</th>
 							<th>Data</th>
 							<th>Sezionale</th>
 							<th>Cliente</th>
@@ -72,6 +77,11 @@ use App\Models\User;
 						@foreach($fatture as $fattura)
 							<tr>
 								<td style='text-align:center'>{{$fattura->id}}</td>
+								<td style='max-width:40px;text-align:center'>
+									<div class="form-check">
+										<input class="form-check-input sele_fatt" type="checkbox" value="{{$fattura->id}}" name='sele_fatt[]'>
+									</div>										
+								</td>
 								<td>
 									{{$fattura->data_invito}}
 								</td>
@@ -156,6 +166,7 @@ use App\Models\User;
 						<tr>
 							
 							<th>ID</th>
+							<th style='max-width:40px;text-align:center'></th>
 							<th>Data</th>
 							<th>Sezionale</th>
 							<th>Cliente</th>
@@ -165,6 +176,7 @@ use App\Models\User;
 						</tr>
 						
 						<tr>
+							<td></td>
 							<td></td>
 							<td></td>
 							<td></td>
@@ -196,6 +208,12 @@ use App\Models\User;
 								<i class="fa fa-plus-circle"></i> Nuovo Invito a fatturare
 							</button>
 						</a>
+
+						<a href="#">
+							<button type="submit" class="btn btn-secondary ml-2" >
+								<i class="fas fa-file-export"></i> Esporta selezionati su FTP
+							</button>
+						</a>						
 					@endif
 					<div class="form-check form-switch mt-3 ml-3">
 					  <input class="form-check-input" type="checkbox" id="view_dele" name="view_dele" onchange="$('#frm_servizi').submit()" {{ $check }}>
@@ -264,6 +282,6 @@ use App\Models\User;
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.190"></script>
+	<script src="{{ URL::asset('/') }}dist/js/lista_inviti.js?ver=1.199"></script>
 
 @endsection
