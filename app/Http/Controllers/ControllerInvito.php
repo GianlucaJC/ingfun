@@ -801,9 +801,9 @@ public function __construct()
 				
 				$file = fopen($filename,"w");
 				$row=array("codditt","an_conto","an_tipo","an_descr1","an_indir","an_cap","an_citta","an_prov","an_codfis","an_pariva","an_codpag","an_sdi","an_pec","an_tel","an_email");
-				fputcsv($file, $row);
+				fputcsv($file, $row,";");
 				$row=array("STD",$id_ditta,"C",$denominazione,$indirizzo,$cap,$comune,$provincia,$cf,$piva,$codpag,$sdi,$pec,$telefono,$email);
-				fputcsv($file, $row);
+				fputcsv($file, $row,";");
 				fclose($file);
 
 				$fp = fopen($filename,"r");
@@ -870,7 +870,7 @@ public function __construct()
 					$riga=1;
 		
 					$row=array("Nr","N_Riga","Data","Barcode","CodArt","QTA_Impegnata","Prezzo","Al_iva","Raee","Imballo/Bancale","cf","piva","mobile","email","peso","des_nome","des_cognome","des_indir","des_citta","des_cap","des_prov","codfor");
-					fputcsv($file, $row);
+					fputcsv($file, $row,";");
 
 					$entr=true;
 					$old=$id_f;
@@ -896,7 +896,7 @@ public function __construct()
 				$id_cli=$fattura->id_cli;
 				$peso="";
 				$row=array($id_f,$riga,$data_invito,$codice,$codice,$quantita,$prezzo_unitario,$value_aliquota,0,0,$cf,$piva,$email,$telefono,$peso,$nome,$cognome,$indirizzo,$comune,$cap,$provincia,$id_cli);
-				fputcsv($file, $row);
+				fputcsv($file, $row,";");
 			}
 			if ($entr==true) {
 				fclose($file);
