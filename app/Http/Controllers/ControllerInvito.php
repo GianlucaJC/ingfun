@@ -120,12 +120,13 @@ public function __construct()
 					$testo_libero=$appalto->testo_libero;					
 					$servizi_ditte=DB::table('servizi_ditte as sd')
 					->join('servizi as s','sd.id_servizio','s.id')
-					->select("s.descrizione","sd.importo_ditta","sd.aliquota")
+					->select("s.id_cod_servizi_ext","s.descrizione","sd.importo_ditta","sd.aliquota")
 					->where('sd.id_ditta', "=",$id_ditta)	
 					->where('sd.id_servizio', "=",$id_servizio)	
 					->get(); 
 					foreach ($servizi_ditte as $servizio) {
 						$importo_ditta=$servizio->importo_ditta;
+						$codice=$servizio->id_cod_servizi_ext;
 						$aliquota=$servizio->aliquota;
 						$descr=$servizio->descrizione."($data_ref)";
 						$subtotale=$importo_ditta;
@@ -139,17 +140,18 @@ public function __construct()
 							
 						DB::table('articoli_fattura')->insert([
 							'id_appalto' => $id_app,
+							'codice' =>$codice,
 							'id_doc' => $id_doc,
 							'descrizione' =>$descr,
 							'quantita' => 1,
 							'prezzo_unitario' =>$importo_ditta,
 							'aliquota' =>$aliquota,
 							'subtotale' =>$subtotale,
+							'testo_libero_appalti'=>$testo_libero,
 							'created_at'=>now(),
 							'updated_at'=>now()
 						]);
-						fatture::where('id', $id_doc)
-						->update(['testo_libero' => $testo_libero]);	
+	
 					}	
 				}
 			}
@@ -258,13 +260,13 @@ public function __construct()
 		$tipo_pagamento=$dati['tipo_pagamento'];
 		$elenco_pagamenti_presenti=$dati['elenco_pagamenti_presenti'];
 		
-		$load_fattura=fatture::select('id_ditta',DB::raw("DATE_FORMAT(data_invito,'%d-%m-%Y') as data_invito"),"id_sezionale","testo_libero")
+		$load_fattura=fatture::select('id_ditta',DB::raw("DATE_FORMAT(data_invito,'%d-%m-%Y') as data_invito"),"id_sezionale")
 		->where('id','=',$id_doc)
 		->get();
 		$ditta=$load_fattura[0]->id_ditta;
 		$data_invito=$load_fattura[0]->data_invito;
 		$sezionale=$load_fattura[0]->id_sezionale;
-		$testo_libero=$load_fattura[0]->testo_libero;
+
 
 		$info=DB::table('societa')
 		->select('descrizione')
@@ -309,7 +311,7 @@ public function __construct()
 		}	
 		
 		$articoli_fattura=DB::table('articoli_fattura as a')
-		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota')
+		->select('a.id','a.id_doc','a.ordine','a.id_temp','a.codice','a.descrizione','a.quantita','a.um','a.prezzo_unitario','a.sconto','a.subtotale','a.aliquota','a.testo_libero_appalti')
 		->where('a.id_doc', "=",$id_doc)
 		->orderBy('a.ordine')
 		->get();
@@ -325,7 +327,7 @@ public function __construct()
 		
 		$data['id_doc']=$id_doc;
 		$data['sezionale']=$sezionale;
-		$data['testo_libero']=$testo_libero;
+		
 		$data['data_invito']=$data_invito;
 		$data['denominazione']=$denominazione;
 		$data['indirizzo']=$indirizzo;
@@ -759,6 +761,7 @@ public function __construct()
 	}
 	
 	public function lista_inviti(Request $request) {
+		$send_up=true;
 		$export=false;
 		if ($request->has("sele_fatt")) {
 			$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
@@ -792,6 +795,14 @@ public function __construct()
 				$provincia=$intestazione->provincia;
 				$cf=$intestazione->cf;
 				$piva=$intestazione->piva;
+				if (strlen($piva)<11) {
+					$num_z=11-strlen($piva);
+					$zeri="";
+					for ($zz=1;$zz<=$num_z;$zz++) {
+						$zeri.="0";
+					}
+					$piva=$zeri.$piva;
+				}
 				$codpag="";
 				$sdi=$intestazione->sdi;
 				$pec=$intestazione->pec;
@@ -806,23 +817,25 @@ public function __construct()
 				fputcsv($file, $row,";");
 				fclose($file);
 
-				$fp = fopen($filename,"r");
-				//Storage::disk('ftp')->move($filename, $filename);
-				$host=env('HOST_FTP');
-				$port=env('HOST_PORT');
-				$user=env('HOST_USER');
-				$pw=env('HOST_PASSWORD');
-				$connId = ftp_connect($host, $port);
-				$loginResult = ftp_login($connId, $user, $pw);
-				ftp_pasv($connId, true) or die("Unable switch to passive mode");
-				if ($loginResult) {
-					echo "test";
-					$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
-					if (!$upload) {
-						die('Failed to upload the file');
-					}
-				} 
-				fclose($fp);
+				if ($send_up==true) {
+					$fp = fopen($filename,"r");
+					//Storage::disk('ftp')->move($filename, $filename);
+				
+					$host=env('HOST_FTP');
+					$port=env('HOST_PORT');
+					$user=env('HOST_USER');
+					$pw=env('HOST_PASSWORD');
+					$connId = ftp_connect($host, $port);
+					$loginResult = ftp_login($connId, $user, $pw);
+					ftp_pasv($connId, true) or die("Unable switch to passive mode");
+					if ($loginResult) {
+						$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
+						if (!$upload) {
+							die('Failed to upload the file');
+						}
+					} 
+					fclose($fp);
+				}
 				$export=true;			
 			}
 
@@ -830,7 +843,7 @@ public function __construct()
 			$fatture=DB::table('fatture as f')
 			->join('articoli_fattura as a','f.id','a.id_doc')
 			->join('ditte as d','f.id_ditta','d.id')
-			->select("f.id",DB::raw("DATE_FORMAT(f.data_invito,'%Y-%m-%d') as data_invito"),"a.codice","a.quantita","a.prezzo_unitario","a.aliquota","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli")
+			->select("f.id",DB::raw("DATE_FORMAT(f.data_invito,'%Y-%m-%d') as data_invito"),"a.codice","a.quantita","a.prezzo_unitario","a.aliquota","a.testo_libero_appalti","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli")
 			->whereIn('f.id',$ids)
 			->orderBy('id_doc')
 			->orderBy('ordine')
@@ -846,22 +859,25 @@ public function __construct()
 				if ($old!=$id_f) {
 					if ($entr==true) {
 						fclose($file);
-						$fp = fopen($filename,"r");
-						//Storage::disk('ftp')->move($filename, $filename);
-						$host=env('HOST_FTP');
-						$port=env('HOST_PORT');
-						$user=env('HOST_USER');
-						$pw=env('HOST_PASSWORD');
-						$connId = ftp_connect($host, $port);
-						$loginResult = ftp_login($connId, $user, $pw);
-						ftp_pasv($connId, true) or die("Unable switch to passive mode");
-						if ($loginResult) {
-							$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
-							if (!$upload) {
-								die('Failed to upload the file');
-							}
-						} 
-						fclose($fp);						
+						
+						if ($send_up==true) {
+							$fp = fopen($filename,"r");
+							//Storage::disk('ftp')->move($filename, $filename);
+							$host=env('HOST_FTP');
+							$port=env('HOST_PORT');
+							$user=env('HOST_USER');
+							$pw=env('HOST_PASSWORD');
+							$connId = ftp_connect($host, $port);
+							$loginResult = ftp_login($connId, $user, $pw);
+							ftp_pasv($connId, true) or die("Unable switch to passive mode");
+							if ($loginResult) {
+								$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
+								if (!$upload) {
+									die('Failed to upload the file');
+								}
+							} 
+							fclose($fp);
+						}						
 					}	
 					$filename="allegati/export/ordini_".$id_f.".csv";
 					$dest_file="ordini_".$id_f.".csv";
@@ -887,7 +903,7 @@ public function __construct()
 				$piva=$fattura->piva;
 				$email=$fattura->email;
 				$telefono=$fattura->telefono;
-				$nome=$fattura->nome;
+				$nome=$fattura->testo_libero_appalti;
 				$cognome=$fattura->cognome;
 				$indirizzo=$fattura->indirizzo;
 				$comune=$fattura->comune;
@@ -900,22 +916,24 @@ public function __construct()
 			}
 			if ($entr==true) {
 				fclose($file);
-				$fp = fopen($filename,"r");
-				//Storage::disk('ftp')->move($filename, $filename);
-				$host=env('HOST_FTP');
-				$port=env('HOST_PORT');
-				$user=env('HOST_USER');
-				$pw=env('HOST_PASSWORD');
-				$connId = ftp_connect($host, $port);
-				$loginResult = ftp_login($connId, $user, $pw);
-				ftp_pasv($connId, true) or die("Unable switch to passive mode");
-				if ($loginResult) {
-					$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
-					if (!$upload) {
-						die('Failed to upload the file');
-					}
-				} 
-				fclose($fp);						
+				if ($send_up==true) {
+					$fp = fopen($filename,"r");
+					//Storage::disk('ftp')->move($filename, $filename);
+					$host=env('HOST_FTP');
+					$port=env('HOST_PORT');
+					$user=env('HOST_USER');
+					$pw=env('HOST_PASSWORD');
+					$connId = ftp_connect($host, $port);
+					$loginResult = ftp_login($connId, $user, $pw);
+					ftp_pasv($connId, true) or die("Unable switch to passive mode");
+					if ($loginResult) {
+						$upload = ftp_fput($connId , $dest_file, $fp, FTP_ASCII);
+						if (!$upload) {
+							die('Failed to upload the file');
+						}
+					} 
+					fclose($fp);						
+				}
 			}
 			
 		}

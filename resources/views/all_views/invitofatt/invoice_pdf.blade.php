@@ -231,7 +231,13 @@ if (file_exists("allegati/sezionali/".$sezionale.".jpg")) {?>
 		?>
 			<tr align="center">
 				<td>{{$articolo->codice}}</td>
-				<td>{{$articolo->descrizione}}</td>
+				<td>
+                    {{$articolo->descrizione}}
+                    <?php
+                        if ($articolo->testo_libero_appalti!=null)
+                            echo " - ".$articolo->testo_libero_appalti;
+                    ?>
+                </td>
 				<td>{{$articolo->quantita}}</td>
 				<td>{{$articolo->um}}</td>
 				<td><?php echo number_format($articolo->prezzo_unitario,2)." €"?></td>
@@ -264,10 +270,7 @@ if (file_exists("allegati/sezionali/".$sezionale.".jpg")) {?>
             </td>
         </tr>
     </table>
-    @if (strlen($testo_libero)!=0)
-            <hr>
-            {{$testo_libero}}
-    @endif
+
     <br>
 
 </div>
