@@ -911,7 +911,7 @@ public function __construct()
 				$provincia=$fattura->provincia;
 				$id_cli=$fattura->id_cli;
 				$peso="";
-				$row=array($id_f,$riga,$data_invito,$codice,$codice,$quantita,$prezzo_unitario,$value_aliquota,0,0,$cf,$piva,$email,$telefono,$peso,$nome,$cognome,$indirizzo,$comune,$cap,$provincia,$id_cli);
+				$row=array($id_f,$riga,$data_invito,$codice,$codice,$quantita,$prezzo_unitario,$value_aliquota,0,0,$cf,$piva,$telefono,$email,$peso,$nome,$cognome,$indirizzo,$comune,$cap,$provincia,$id_cli);
 				fputcsv($file, $row,";");
 			}
 			if ($entr==true) {
