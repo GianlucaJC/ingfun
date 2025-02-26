@@ -207,33 +207,38 @@ public function __construct()
 		}
 
 
-
-		//mail per eventuali estromessi dall'appalto
-		$resp=candidati::select('u.push_id','l.id_lav_ref')
-		->join('users as u','candidatis.id_user','u.id')
-		->join('lavoratoriapp as l','l.id_lav_ref','candidatis.id')		
-		->where("l.to_delete","=", 1)
-		->where("l.id_appalto","=", $id_app)
-		->groupBy('candidatis.id')->get();
-
-		$con_delete=0;		
-		if (count($only_send)>0)
-			$list_push=$this->send_list_push_mail($id_app,"new",$only_send,$con_delete);
+		//calcolo eventuali estromessi dall'appalto
 		
+			$resp=candidati::select('u.push_id','l.id_lav_ref')
+			->join('users as u','candidatis.id_user','u.id')
+			->join('lavoratoriapp as l','l.id_lav_ref','candidatis.id')		
+			->where("l.to_delete","=", 1)
+			->where("l.id_appalto","=", $id_app)
+			->groupBy('candidatis.id')->get();
 			
-		$estr=false;
-		$con_delete=1;
-		if (isset($resp)){
-			$only_send=array();
-			foreach($resp as $single) {
-				$estr=true;
-				$id_lav_ref=$single->id_lav_ref;
-				$only_send[]=$id_lav_ref;
-			}					
+			//invio notifica disattivata nel contesto della creazione/modifica appalto
+			//inserita nell'elenco degli appalti come funzionalità esterna
+			/*			
+			$con_delete=0;		
 			if (count($only_send)>0)
-				$list_push=$this->send_list_push_mail($id_app,"dele",$only_send,$con_delete);
-		}		
-
+				$list_push=$this->send_list_push_mail($id_app,"new",$only_send,$con_delete);
+			*/
+			
+				
+			$estr=false;
+			$con_delete=1;
+			if (isset($resp)){
+				$only_send=array();
+				foreach($resp as $single) {
+					$estr=true;
+					$id_lav_ref=$single->id_lav_ref;
+					$only_send[]=$id_lav_ref;
+				}					
+				if (count($only_send)>0)
+					$list_push=$this->send_list_push_mail($id_app,"dele",$only_send,$con_delete);
+			}	
+		
+		
 		
 		//push per eventuale variazione
 		$flag_variazione=$request->input('flag_variazione');
@@ -241,6 +246,7 @@ public function __construct()
 			$list_push=$this->send_list_push_mail($id_app,"edit",array());
 		}
 
+		
 		$deleted = lavoratoriapp::where('to_delete','=',1)->where('id_appalto','=',$id_app)->delete();
 			
 		//
@@ -323,6 +329,27 @@ public function __construct()
 
 	}
 
+	public function send_notif_today() {
+		$today = date("Y-m-d");
+		$tomorrow=date('Y-m-d', strtotime($today. ' + 1 days'));
+		$elenco=appalti::select('appalti.id','appalti.id_azienda_proprieta','appalti.status','stato_appalto','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
+		->join('ditte as d', 'd.id','=','appalti.id_ditta')
+		->where('appalti.dele', "=","0")
+		->where('appalti.stato_appalto', "=","0")
+		->where('appalti.data_ref','=',$tomorrow)
+		->get();
+		$arr=array();
+		$num_notif=0;
+		foreach ($elenco as $row) {
+			$num_notif++;
+			$id_app=$row->id;
+			//update stato appalto in inviato!
+			appalti::where('id', $id_app)->update(['stato_appalto' => 1]);			
+			$list_push=$this->send_list_push_mail($id_app,"new",$arr,0);
+		}
+		return $num_notif;
+	}
+
 	public function listapp($id_appalto=0) {
 		
 
@@ -331,7 +358,9 @@ public function __construct()
 		$view_dele=0;
 		if (request()->has("view_dele")) $view_dele=request()->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;
-
+		$num_notif=0;
+		if (request()->has("send_notif_today")) $num_notif=$this->send_notif_today();
+			
 
 		$mezzi=parco_scheda_mezzo::from('parco_scheda_mezzo as sm')
 		->select('sm.id','mm.marca','mom.modello','sm.targa')
@@ -428,7 +457,7 @@ public function __construct()
 		}
 
 
-		$gestione=appalti::select('appalti.id','appalti.id_azienda_proprieta','appalti.status','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
+		$gestione=appalti::select('appalti.id','appalti.id_azienda_proprieta','appalti.status','stato_appalto','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->when($view_dele=="0", function ($gestione) {
 			return $gestione->where('appalti.dele', "=","0");
@@ -441,7 +470,7 @@ public function __construct()
 
 		
 
-		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('num_send_mail',$num_send_mail)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta);
+		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('num_send_mail',$num_send_mail)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta)->with('num_notif',$num_notif);
 
 	}
 

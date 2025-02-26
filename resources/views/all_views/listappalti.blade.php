@@ -55,6 +55,11 @@
     <!-- Main content -->
     <div class="content">
       <div class="container-fluid">
+		@if ($num_notif>0)
+		<div class="alert alert-success" role="alert">
+			<b>{{$num_notif}}</b> notifiche inviate!
+		</div>
+		@endif
 
 		<div class="row">
 			<?php
@@ -118,7 +123,7 @@
 							<th style='min-width:190px'>Operazioni</th>
 							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
-							<th>Azienda di proprietà</th>
+							<th>Stato appalto</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
@@ -186,10 +191,19 @@
 							
 							<td>
 								<?php
+									/*
 									if (isset($azienda_proprieta[$gest->id_azienda_proprieta])) {
 										echo $azienda_proprieta[$gest->id_azienda_proprieta];
 									}
+									*/
 								?>
+								@if ($gest->stato_appalto==0)
+									<i>Bozza</i>
+								@endif
+								@if ($gest->stato_appalto==1)
+									<i>Inviato</i>
+								@endif
+
 							</td>
 
 							<td>
@@ -275,7 +289,7 @@
 							<th style='min-width:190px'></th>
 							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
-							<th>Azienda di proprietà</th>
+							<th>Stato appalto</th>
 							<th>Ditta</th>
 							<th>Lavoratori coinvolti</th>
 							<th>Servizi</th>
@@ -300,6 +314,15 @@
 					</a>
 				</div>
 			</div>
+	
+			<div class="row">
+				<div class="col-lg-12">
+					<a href="#" class="nav-link active" onclick="send_notif()" >
+						<button type="sumbit" name='send_notif_today' id='send_notif_today' class="btn btn-success btn-lg btn-block">Invio notifica per tutti gli appalti (oggi+1)</button>
+					</a>
+				</div>
+			</div>			
+
 			<?php
 				$check="";
 				if ($view_dele=="1") $check="checked";
@@ -345,6 +368,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.09"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.10"></script>
 
 @endsection

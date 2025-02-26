@@ -42,6 +42,12 @@ $(document).ready( function () {
 	
 } );
 
+function send_notif() {
+    if (!confirm("Sicuri di inviare le notifiche? (Gli appalti coinvolti passeranno dallo stato Bozza a Inviato)")) {
+        event.preventDefault() 
+        return false;
+    }
+}
 
 function dele_element(value) {
 	if(!confirm('Sicuri di eliminare l\'elemento?')) 
