@@ -234,8 +234,14 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('listapp/{id?}', [ 'as' => 'listapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@listapp']);
 
 	Route::get('listrep/{id?}', [ 'as' => 'listrep', 'uses' => 'App\Http\Controllers\ControllerReperibilita@listrep']);
-	
 	Route::post('listrep/{id?}', [ 'as' => 'listrep', 'uses' => 'App\Http\Controllers\ControllerReperibilita@listrep']);
+
+	Route::get('listurg/{id?}', [ 'as' => 'listurg', 'uses' => 'App\Http\Controllers\ControllerUrgenze@listurg']);
+	Route::post('listurg/{id?}', [ 'as' => 'listurg', 'uses' => 'App\Http\Controllers\ControllerUrgenze@listurg']);
+	Route::get('newurg/{id?}', [ 'as' => 'newurg', 'uses' => 'App\Http\Controllers\ControllerUrgenze@newurg']);
+	Route::post('save_urg', [ 'as' => 'save_urg', 'uses' => 'App\Http\Controllers\ControllerUrgenze@save_urg']);
+
+
 
 	Route::get('rifornimenti/{id?}', [ 'as' => 'rifornimenti', 'uses' => 'App\Http\Controllers\ControllerRifornimenti@rifornimenti']);
 	
