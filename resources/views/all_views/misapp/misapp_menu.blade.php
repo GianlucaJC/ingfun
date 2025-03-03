@@ -62,7 +62,7 @@
 
 
 
-	<a href="#" class="list-group-item list-group-item-action">
+<a href="#" class="list-group-item list-group-item-action">
 	<div class="d-flex w-100 justify-content-between">
 		<h4 class="mb-1">Storico Reperibilità</h4>
 		<i class="fas fa-list-alt fa-2x"></i>
@@ -115,6 +115,59 @@
 
 </a>			  
 	
+<a href="#" class="list-group-item list-group-item-action">
+	<div class="d-flex w-100 justify-content-between">
+		<h4 class="mb-1">Storico urgenze</h4>
+		<i class="fas fa-list-alt fa-2x"></i>
+	</div>
+	<p class="mb-1"><i>Visiona storico delle urgenze</i></p>
+	<?php
+		$trigger="onclick=\"clickitu('New')\"";
+		if (!isset($result['count_newurg']) ||  $result['count_newurg']==0) {
+			$trigger="disabled onclick=\"clickitu('New')\"";
+		}
+	?>
+	<button type="button" <?php echo $trigger; ?>  class="btn btn-warning position-relative">
+		Nuove
+		<span id='new_job1' class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+			<?php
+				if (isset($result['count_newurg'])) echo $result['count_newurg'];
+			?>
+		</span>
+	</button>  
+
+	<?php
+		$trigger="onclick=\"clickitu('Rif')\"";
+		if (!isset($result['numurgno']) ||  $result['numurgno']==0) {
+			$trigger="disabled onclick=\"clickitu('Rif')\"";
+		}
+	?>
+	<button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-danger position-relative">
+		Rifiutate
+		<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+			<?php
+				if (isset($result['numurgno'])) echo $result['numurgno'];
+			?>
+		</span>
+	</button>                
+	
+	<?php
+		$trigger="onclick=\"clickitu('Acc')\"";
+		if (!isset($result['numurgsi']) ||  $result['numurgsi']==0) {
+			$trigger="disabled onclick=\"clickitu('Acc')\"";
+		}
+	?>
+	<button type="button" <?php echo $trigger; ?>  class="ml-3 btn btn-success position-relative">
+		Accettate
+		<span class="notif position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+			<?php
+				if (isset($result['numurgsi'])) echo $result['numurgsi'];
+			?>
+		</span>
+	</button> 
+
+</a>
+
 
 <a href="#" class="list-group-item list-group-item-action">
 	<div class="d-flex w-100 justify-content-between">

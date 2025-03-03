@@ -104,6 +104,11 @@
 			<div id="rimb">
 				<Rimb></Rimb>
 			</div>
+			
+			<div id="urg">
+				<Urg></Urg>
+			</div>		
+
 			<input type='hidden' id='id_edit_rimborso' value='{{$id_edit_rimborso}}'>
 			<!-- altre view non gestite completamente da vue !-->
 			@include('all_views.misapp.storico_rimborsi')
@@ -139,6 +144,7 @@
 	<script src="{{ URL::asset('/') }}dist/js/misrep.js?ver=<?php echo time(); ?>"></script>
 	<script src="{{ URL::asset('/') }}dist/js/misref.js?ver=<?php echo time(); ?>"></script>
 	<script src="{{ URL::asset('/') }}dist/js/misrimb.js?ver=<?php echo time(); ?>"></script>
+	<script src="{{ URL::asset('/') }}dist/js/misurg.js?ver=<?php echo time(); ?>"></script>
 	
 	<script src="{{ URL::asset('/') }}dist/js/rimborsi.js?ver=<?php echo time(); ?>"></script>
 	

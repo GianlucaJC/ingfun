@@ -12,6 +12,7 @@ use App\Models\lavoratoriapp;
 use App\Models\mezzi;
 use App\Models\rifornimenti;
 use App\Models\reperibilita;
+use App\Models\urgenze;
 use App\Models\parco_scheda_mezzo;
 use App\Models\set_global;
 use App\Models\support_sinistri;
@@ -555,6 +556,31 @@ class ApiController extends Controller
 		$risp['numrepsi']=$numrepsi;
 		$risp['numrepno']=$numrepno;
 		
+
+		////////////urgenze
+		$count_newurg=urgenze::select('urgenze.id')
+		->where('urgenze.dele', "=","0")
+		->where('urgenze.status', "=","0")
+		->where('urgenze.id_user',"=",$id_lav_ref)
+		->count();
+		
+		$numurgsi=urgenze::select('urgenze.id')
+		->where('urgenze.dele', "=","0")
+		->where('urgenze.status', "=","1")
+		->where('urgenze.id_user',"=",$id_lav_ref)
+		->count();
+
+		$numurgno=urgenze::select('urgenze.id')
+		->where('urgenze.dele', "=","0")
+		->where('urgenze.status', "=","2")
+		->where('urgenze.id_user',"=",$id_lav_ref)
+		->count();
+
+		
+		$risp['count_newurg']=$count_newurg;
+		$risp['numurgsi']=$numurgsi;
+		$risp['numurgno']=$numurgno;		
+
 		if (Auth::user()) return $risp;
 		else echo json_encode($risp);
 		
@@ -635,11 +661,14 @@ class ApiController extends Controller
 			->where('id', "=",$id_ditta)
 			->get()
 			->first();
+			
 			$info_ditta="";
-			if ($ditta->denominazione) $info_ditta.=$ditta->denominazione;
-			if ($ditta->cap) $info_ditta.=" - ".$ditta->cap;
-			if ($ditta->comune) $info_ditta.=" - ".$ditta->comune;
-			if ($ditta->provincia) $info_ditta.=" - ".$ditta->provincia;
+			if(!is_null($ditta)) {
+				if ($ditta->denominazione) $info_ditta.=$ditta->denominazione;
+				if ($ditta->cap) $info_ditta.=" - ".$ditta->cap;
+				if ($ditta->comune) $info_ditta.=" - ".$ditta->comune;
+				if ($ditta->provincia) $info_ditta.=" - ".$ditta->provincia;
+			}
 			$info[$sc]['ditta']=$info_ditta;
 			$info[$sc]['descrizione_appalto']=$record->descrizione_appalto;
 			
@@ -719,6 +748,67 @@ class ApiController extends Controller
 		
 	}
 	
+	public function lavori_urg(Request $request) {
+		$from="ALL";
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			$from=$request->input('from');
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)
+			->where('dele','=',0)
+			->orderBy('id','desc')
+			->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}
+		
+		if ($id_lav_ref==0) return array();		
+
+
+
+		$lavori=urgenze::select(DB::raw("DATE_FORMAT(urgenze.dataora,'%d-%m-%Y %H:%i:%s') as data"),'urgenze.id','urgenze.id_ditta','urgenze.status','d.denominazione')
+		->join('ditte as d','urgenze.id_ditta','d.id')
+		->where('urgenze.dele', "=","0")
+		->where('urgenze.id_user',"=",$id_lav_ref)
+		->when($from=="New", function ($lavori) {			
+			return $lavori->where('status', "=","0");
+		})
+		->when($from=="Acc", function ($lavori) {			
+			return $lavori->where('status', "=","1");
+		})
+		->when($from=="Rif", function ($lavori) {			
+			return $lavori->where('status', "=","2");
+		})		
+		->orderBy('urgenze.id','desc')
+		->get();
+
+		if (Auth::user()) {
+			$lav_new=array();$indice=0;
+			foreach($lavori as $lavoro) {
+				$lavoro['indice']=$indice;
+				$lav_new[]=$lavoro;
+				$indice++;
+			}
+			$lavori=$lav_new;
+		}			
+		$risp['header']=$check;
+		$risp['lavori']=$lavori;
+		echo json_encode($risp);
+		
+	}
 
 	public function lavori_rep(Request $request) {
 		$from="ALL";
@@ -881,7 +971,49 @@ class ApiController extends Controller
 		
 		
 	}
-	
+
+	public function risposta_user_urg(Request $request) {
+		if (Auth::user()) {
+			$id=Auth::user()->id;
+			
+			$candidati=candidati::select("id")
+			->where('id_user', "=", $id)
+			->where('dele','=',0)
+			->orderBy('id','desc')
+			->get();
+			
+			if (isset($candidati[0]))
+				$id_lav_ref=$candidati[0]['id'];
+			else
+				$id_lav_ref=0;
+			$check=array();
+		}
+		else {
+			$check=$this->check_log($request); 
+			if ($check['esito']=="KO") {
+				$risp['header']=$check;
+				 echo json_encode($risp);
+				 exit;
+			} 
+			$id_lav_ref=$check['id_user'];
+		}
+
+
+		$id_urg=$request->input("id_urg");
+		$sn=$request->input("sn");
+		$status=0;
+		if ($sn=="S") $status=1;
+		if ($sn=="N") $status=2;
+		
+		
+		urgenze::where('id', $id_urg)->update(['status' => $status]);
+		$risp['header']=$check;
+		$risp['info']="Set risposta: $sn";
+		echo json_encode($risp);
+		
+		
+	}	
+
 	public function risposta_user_rep(Request $request) {
 		if (Auth::user()) {
 			$id=Auth::user()->id;

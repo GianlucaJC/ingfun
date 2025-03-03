@@ -386,8 +386,10 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::post('cerca_servizi', [ 'as' => 'cerca_servizi', 'uses' => 'App\Http\Controllers\Registro@cerca_servizi']);
 	
-
+	Route::post('lavori_urg', [ 'as' => 'lavori_urg', 'uses' => 'App\Http\Controllers\ApiController@lavori_urg']);
 	Route::post('lavori_rep', [ 'as' => 'lavori_rep', 'uses' => 'App\Http\Controllers\ApiController@lavori_rep']);
+	Route::post('risposta_user_urg', [ 'as' => 'risposta_user_urg', 'uses' => 'App\Http\Controllers\ApiController@risposta_user_urg']);
+
 	//chiamate ajax prodotti
 	
 	Route::post('check_disp_maga', 'App\Http\Controllers\AjaxControllerAcquisti@check_disp_maga');
