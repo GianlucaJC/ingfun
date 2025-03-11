@@ -40,3 +40,32 @@ $(document).ready( function () {
 
 
 
+function sel_service(id_ditta) {
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/popola_servizi",
+		data: {_token: CSRF_TOKEN,id_ditta:id_ditta},
+		success: function (data) {
+			$("#id_servizio")
+			.find('option')
+			.remove()
+			.end();	
+		
+			$('#id_servizio').append("<option value=''>Select...</option>");
+			$.each(JSON.parse(data), function (i, item) {
+				
+				$('#id_servizio').append('<option value="' + item.id_servizio + '">' + item.descrizione + '</option>');
+						
+			});
+		}
+	});		
+
+}
+

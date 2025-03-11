@@ -67,7 +67,7 @@
 
 		<div class="row mb-3">
 			@if($id_urg==0)
-			<div class="col-md-6">
+			<div class="col-md-3">
 				<div class="form-floating mb-3 mb-md-0">
 					<select class="form-select select2" id="lavoratori" aria-label="Lavoratori" name='lavoratori[]' multiple="multiple" required  >
 						@php ($old_t="?")
@@ -115,7 +115,7 @@
 				</div>
 			</div>
 			@else
-				<div class="col-md-6">
+				<div class="col-md-3">
 				  <div class="form-floating mb-3 mb-md-0">
 					
 					<select class="form-select" id="lavoratore" aria-label="Lavoratore" name='lavoratore' disabled>
@@ -139,6 +139,17 @@
 
 			@endif
 
+
+			<div class="col-md-9">
+				<div class="form-floating">
+					<input type='text' class="form-control" id="descrizione" name='descrizione' value="{{$edit_urg[0]->descrizione ?? ''}}"/>
+					<label for="data_app">Descrizione </label>
+				</div>
+			</div>	
+
+		</div>
+		<div class="row mb-3">
+
 			<div class="col-md-3">
 				<div class="form-floating">
 					<input class="form-control" id="data_urg" name='data_urg' type="datetime-local" required value="{{$edit_urg[0]->dataora ?? ''}}"/>
@@ -149,29 +160,34 @@
 				
 			<div class="col-md-3">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" name="ditta" id="ditta"  required>
-					<option value=''>Select...</option>
-                    @foreach ($info_d as $id_ditta=>$denominazione)
-                        <option value='{{$id_ditta}}'
-                        <?php
-                        if (isset($edit_urg[0]->id_ditta)) {
-                            if ($id_ditta==$edit_urg[0]->id_ditta) echo " selected ";
-                        }
-                        ?>  
-                        >{{$denominazione}}</option>
-                    @endforeach
+					<select class="form-select" name="ditta" id="ditta" onchange='sel_service(this.value)' required>
+						<option value=''>Select...</option>
+						@foreach ($info_d as $id_ditta=>$denominazione)
+							<option value='{{$id_ditta}}'
+							<?php
+							if (isset($edit_urg[0]->id_ditta)) {
+								if ($id_ditta==$edit_urg[0]->id_ditta) echo " selected ";
+							}
+							?>  
+							>{{$denominazione}}</option>
+						@endforeach
 					</select>
 					<label for="ditta">Ditta*</label>
 				</div>
+
 			</div>	
+			<div class="col-md-6">
+				<div class="form-floating mb-3 mb-md-0">
+					<select class="form-select" name='id_servizio' id='id_servizio' required>
+						<option value=''>Select</option>
+						<option value='{{$id_servizio}}' selected>{{$servizio_ref}}</option>
+					</select>
+					<label for="id_servizio">Servizio associato*</label>
+				</div>
+			</div>				
 		
-
-
-
 		</div>
-		
-
-				<hr>
+		<hr>
 
         <div class="row">
 
@@ -236,7 +252,7 @@
 	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
-	<script src="{{ URL::asset('/') }}dist/js/newurg.js?ver=1.11"></script>
+	<script src="{{ URL::asset('/') }}dist/js/newurg.js?ver=1.14"></script>
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	

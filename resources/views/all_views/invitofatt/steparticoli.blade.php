@@ -4,7 +4,7 @@
 
 	<?php
 		$st1="";
-		if ($filtroa==true) $st1="display:none";
+		if ($filtroa==true || $filtrou==true) $st1="display:none";
 	?>	
 	<div id='div_lista_articoli' style='{{$st1}}'>
 		<hr>

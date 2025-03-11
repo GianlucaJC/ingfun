@@ -15,6 +15,7 @@
 	  <a class="dropdown-item" href="javascript:void(0)"  onclick="metodo_ins(3)" >c) Importazione da Servizi</a>
 	  
 	  <a class="dropdown-item" href="#" onclick="metodo_ins(4)">d) Importazione da preventivi</a>
+	  <a class="dropdown-item" href="#" onclick="metodo_ins(6)">e) Importazione da urgenze</a>
 	  
 	  <!--
 	  <a class="dropdown-item" href="#" onclick="metodo_ins(3)">c) Servizi associati alla ditta selezionata</a>
@@ -56,6 +57,89 @@
 	</div>	
 </div>	
 
+<?php
+	$style="display:none";
+	if ($filtrou==true) $style="";
+?>	
+
+
+<div id='div_from_urgenze' style='{{$style}}' class='metodi mt-3'>
+
+<h4>Composizione da lista urgenze</h4>
+
+<div class="row">
+	  <div class="col-md-12">
+	  <?php
+		$ditta_ref="?";
+		$num_urg=0;
+		foreach($urgenze as $urgenza) {
+			$ditta_ref=$urgenza->denominazione;
+		}
+
+		if ($ditta_ref!="?") {
+			echo "<div class='alert alert-info' role='alert'>";
+				echo "Ditta selezionata: <b>$ditta_ref</b>";
+			echo "</div>";
+		} else {
+			echo "<div class='alert alert-warning' role='alert'>";
+				echo "<b>Attenzione</b>: Nel periodo impostato non risultano urgenze associate alla ditta selezionata. <i>Selezionare un periodo diverso</i>";
+			echo "</div>";
+		}
+		 
+	  ?>
+
+			<div class="row mb-3">
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="range_da_u" name='range_da_u' type="date"  value="{{$range_da_u}}" />
+						<label for="range_da_u">Da data</label>
+					</div>
+				</div>
+				<div class="col-md-4">
+					<div class="form-floating">
+						<input class="form-control" id="range_a_u" name='range_a_u' type="date"  value="{{$range_a_u}}" />
+						<label for="range_a_u">A data</label>
+					</div>
+				</div>
+			</div>
+			
+			<button type="submit" name='btn_filtro_u' id='btn_filtro_u' onclick='' class="btn btn-success btn-sm mb-3" value='filtro_urgenze'>Filtro data</button>
+		
+			
+			<table id='tbl_list_urgenze' class="display">
+				<thead>
+					<tr>
+						<th>Data ora urgenza</th>
+						<th>Descrizione</th>
+						<th>Selezione</th>
+					</tr>
+				</thead>
+				<tbody>
+					@foreach ($urgenze as $urgenza)
+						<tr>
+							<td>
+								{{$urgenza->data_urgenza}}
+							</td>
+							<td>
+								{{$urgenza->descrizione}}
+							</td>
+							<td>
+								<div class="form-check">
+									<input class="form-check-input" type="checkbox" value="{{$urgenza->id}}|{{$urgenza->id_servizio}}|{{$urgenza->id_ditta}}" id="urg_sel" name="urg_sel[]" checked>
+									<label class="form-check-label" for="urg_sel">
+									</label>
+								</div>								
+							</td>
+						</tr>
+					@endforeach
+				</tbody>
+					
+			</table>	
+			<button type="submit" name='btn_import_urg' id='btn_import_urg' onclick='' class="btn btn-primary btn-sm mb-3 mt-2" value='import_urg'>Importa urgenze selezionate</button>
+	</div>
+  </div>	
+<!-- fine urgenze !-->
+</div>
 <?php
 	$style="display:none";
 	if ($filtroa==true) $style="";
@@ -114,87 +198,87 @@
 					</tr>
 				</thead>
 				<tbody>
-<!-- Indentazione a sx per comodità !-->				
-@php ($num_art=0)
-@php ($old_ida=0)
-@foreach($ditteinapp as $ditta)
-<?php 
-if ($old_ida==$ditta->id_appalto) continue;
-$old_ida=$ditta->id_appalto;
-?>
-	
-<tr>
-	@php ($num_art++)
-	<td style='text-align:center'>
-		{{$ditta->id_appalto}}
-	</td>	
-
-	<td>
-		{{$ditta->data_ref}}
-	</td>	
-
-	<td>
-		<?php
-
-		if (isset($ids_lav[$ditta->id_appalto])) {
-			for ($sca=0;$sca<count($ids_lav[$ditta->id_appalto]);$sca++) {
-				$value=$ids_lav[$ditta->id_appalto][$sca];
-				if (isset($all_lav[$value])) 
-					if ($sca>0) echo ", ";
-					echo $all_lav[$value];
-			}
-		}
-
-		?>
-	</td>
-	<td>
-	<?php			
-
-		if (isset($id_servizi[$ditta->id_appalto])) {
-			for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
-				$value=$id_servizi[$ditta->id_appalto][$sca];
-				if (isset($all_servizi[$value])) {
-					if ($sca>0) echo ", ";
-					$descr_servizio=$all_servizi[$value]['descrizione'];
-					echo $descr_servizio.":";
-					
-					if ($all_servizi[$value]['da_moltiplicare']==1) {
-						if(strpos($descr_servizio,'RIMBORSO KM') !== false) 
-							$km=$ditta->km_percorrenza;
-						else 
-							$km=1;
-						$importo=$all_servizi[$value]['importo_ditta'];
+				
+					@php ($num_art=0)
+					@php ($old_ida=0)
+					@foreach($ditteinapp as $ditta)
+					<?php 
+					if ($old_ida==$ditta->id_appalto) continue;
+					$old_ida=$ditta->id_appalto;
+					?>
 						
-						$num_pers_appalto=1;
-						if ($all_servizi[$value]['da_moltiplicare']==1) $num_pers_appalto=count($ids_lav[$ditta->id_appalto]);
-						
-						if ($num_pers_appalto==0) $num_pers_appalto=1;
-						
-						$new_imp=floatval($km)*floatval($importo)*$num_pers_appalto;
-						$all_servizi[$value]['importo_ditta']=$new_imp;
-						if(strpos($descr_servizio,'RIMBORSO KM') !== false) 
-							echo "$km*$importo*$num_pers_appalto=";
-						else
-							echo "$importo*$num_pers_appalto=";
-					
-					}
-						
-					echo $all_servizi[$value]['importo_ditta']."€";
-				}
-			}
-		}		
-	?>								
-	</td>
-	<td style='text-align:center'>
-		<div class="form-check">
-		  <input class="form-check-input" type="checkbox" value="{{$ditta->id_appalto}}" id="app_sel" name="app_sel[]" checked>
-		  <label class="form-check-label" for="app_sel">
-		   
-		  </label>
-		</div>								
-	</td>
-</tr>
-@endforeach
+					<tr>
+						@php ($num_art++)
+						<td style='text-align:center'>
+							{{$ditta->id_appalto}}
+						</td>	
+
+						<td>
+							{{$ditta->data_ref}}
+						</td>	
+
+						<td>
+							<?php
+
+							if (isset($ids_lav[$ditta->id_appalto])) {
+								for ($sca=0;$sca<count($ids_lav[$ditta->id_appalto]);$sca++) {
+									$value=$ids_lav[$ditta->id_appalto][$sca];
+									if (isset($all_lav[$value])) 
+										if ($sca>0) echo ", ";
+										echo $all_lav[$value];
+								}
+							}
+
+							?>
+						</td>
+						<td>
+						<?php			
+
+							if (isset($id_servizi[$ditta->id_appalto])) {
+								for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
+									$value=$id_servizi[$ditta->id_appalto][$sca];
+									if (isset($all_servizi[$value])) {
+										if ($sca>0) echo ", ";
+										$descr_servizio=$all_servizi[$value]['descrizione'];
+										echo $descr_servizio.":";
+										
+										if ($all_servizi[$value]['da_moltiplicare']==1) {
+											if(strpos($descr_servizio,'RIMBORSO KM') !== false) 
+												$km=$ditta->km_percorrenza;
+											else 
+												$km=1;
+											$importo=$all_servizi[$value]['importo_ditta'];
+											
+											$num_pers_appalto=1;
+											if ($all_servizi[$value]['da_moltiplicare']==1) $num_pers_appalto=count($ids_lav[$ditta->id_appalto]);
+											
+											if ($num_pers_appalto==0) $num_pers_appalto=1;
+											
+											$new_imp=floatval($km)*floatval($importo)*$num_pers_appalto;
+											$all_servizi[$value]['importo_ditta']=$new_imp;
+											if(strpos($descr_servizio,'RIMBORSO KM') !== false) 
+												echo "$km*$importo*$num_pers_appalto=";
+											else
+												echo "$importo*$num_pers_appalto=";
+										
+										}
+											
+										echo $all_servizi[$value]['importo_ditta']."€";
+									}
+								}
+							}		
+						?>								
+						</td>
+						<td style='text-align:center'>
+							<div class="form-check">
+							<input class="form-check-input" type="checkbox" value="{{$ditta->id_appalto}}" id="app_sel" name="app_sel[]" checked>
+							<label class="form-check-label" for="app_sel">
+							
+							</label>
+							</div>								
+						</td>
+					</tr>
+					@endforeach
 					@if ($num_art>100) 
 						<div class="alert alert-warning" role="alert">
 						  <b>Attenzione!</b> Limite massimo di righe visualizzabili superato (100). Impostare un filtro per ridurle

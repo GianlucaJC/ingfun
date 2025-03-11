@@ -13,6 +13,7 @@ use App\Models\candidati;
 use App\Models\servizi_ditte;
 use App\Models\servizi;
 use App\Models\appalti;
+use App\Models\urgenze;
 use App\Models\prod_prodotti;
 use App\Models\prod_magazzini;
 use Illuminate\Support\Facades\Storage;
@@ -78,7 +79,73 @@ public function __construct()
 		return view('all_views/invitofatt/aliquote')->with('aliquote', $aliquote)->with("view_dele",$view_dele)->with('esito_saves',$esito_saves);		
 	}
 	
-	
+	public function import_from_urgenze() {
+		$request=request();
+		$urg_sel=$request->input('urg_sel');
+		$id_doc=$request->input('id_doc');
+		$importi=array();
+		$range_da_u=$request->input('range_da_u');
+		$range_a_u=$request->input('range_a_u');
+
+		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
+		->get();
+		
+		$arr_aliquota=array();
+		foreach ($aliquote_iva as $aliquota) {
+			if (isset($aliquota->id))
+				$arr_aliquota[$aliquota->id]=$aliquota->aliquota;
+		}
+
+		if (is_array($urg_sel)) {
+			$indice=0;
+			for ($sca=0;$sca<=count($urg_sel)-1;$sca++) {
+				
+				$info_urg=$urg_sel[$sca];
+				$arr_urg=explode("|",$info_urg);
+				$id_urg=$arr_urg[0];
+				$id_servizio=$arr_urg[1];
+				$id_ditta=$arr_urg[2];
+				$deleted = articoli_fattura::where('id_urgenza', $id_urg)
+				->where('id_doc',$id_doc)
+				->delete();
+		
+				$info_servizio=DB::table('servizi_ditte as sd')
+				->join('servizi as s','sd.id_servizio','s.id')
+				->select('sd.importo_ditta','sd.aliquota','s.descrizione','s.id_cod_servizi_ext')
+				->where('sd.id_servizio', "=",$id_servizio)	
+				->where('sd.id_ditta', "=",$id_ditta)	
+				->first();
+				if ($info_servizio) {
+					$descr = $info_servizio->descrizione;
+					$importo_ditta = $info_servizio->importo_ditta;
+					$aliquota = $info_servizio->aliquota;
+					$id_cod_servizi_ext = $info_servizio->id_cod_servizi_ext;
+					if (isset($arr_aliquota[$aliquota])) 
+						$subtotale=$importo_ditta*(($arr_aliquota[$aliquota]/100)+1);
+						
+					DB::table('articoli_fattura')->insert([
+						'id_doc' => $id_doc,
+						'codice' => $id_cod_servizi_ext,
+						'id_urgenza' => $id_urg,
+						'descrizione' =>$descr,
+						'quantita' => 1,
+						'prezzo_unitario' =>$importo_ditta,
+						'aliquota' =>$aliquota,
+						'subtotale' =>$subtotale,
+						'created_at'=>now(),
+						'updated_at'=>now()
+					]);					
+				}
+				//segna l'id urgenza come fatturata per non ripresentarla
+				urgenze::where('id', $id_urg)->update(['fatturato' => 1]);					
+
+			}
+		}
+		return $importi;		
+	}		
+
+
+
 	public function import_from_appalti() {
 		$request=request();
 		$app_sel=$request->input('app_sel');
@@ -401,12 +468,18 @@ public function __construct()
 		$range_a = $request->input('range_a');
 
 		$btn_filtro=$request->input('btn_filtro');
+
+		$range_da_u = $request->input('range_da_u');
+		$range_a_u = $request->input('range_a_u');
+		$btn_filtro_u=$request->input('btn_filtro_u');
 		$import_prev=$request->input('import_prev');
 		
 		if ($import_prev=="importa") $this->import_prev();
 		
 		$filtroa=false;
 		if ($btn_filtro=="filtro_appalti") $filtroa=true;
+		$filtrou=false;
+		if ($btn_filtro_u=="filtro_urgenze") $filtrou=true;
 
 		$id_doc=$request->input('id_doc');
 		if ($id!=0) {
@@ -433,9 +506,27 @@ public function __construct()
 		$btn_import_app=$request->input('btn_import_app');
 		if ($btn_import_app=="import_a") $this->import_from_appalti();
 
+		$btn_import_urg=$request->input('btn_import_urg');
+		if ($btn_import_urg=="import_urg") $this->import_from_urgenze();
+
 		$btn_pagamenti=$request->input('btn_pagamenti');
 		if ($btn_pagamenti=="btn_pagamenti") $this->pagamenti();
 
+		$urgenze=DB::table('urgenze as u')
+		->join('ditte as d','u.id_ditta','d.id')
+		->select("u.id","u.descrizione",DB::raw("DATE_FORMAT(u.dataora,'%d-%m-%Y %H:%i:%s') as data_urgenza"),"d.denominazione","u.id_servizio","u.id_ditta")
+		->where('u.dele', "=","0")
+		->where('u.id_ditta','=',$ditta)
+		//->where('u.status','=',1)
+		->when(strlen($range_da_u)!=0, function ($urgenze) use($range_da_u) {
+			return $urgenze->where(DB::raw("(DATE_FORMAT(u.dataora,'%Y-%m-%d'))"), ">=", $range_da_u);
+		})
+		->when(strlen($range_a_u)!=0, function ($urgenze) use($range_a_u) {
+			return $urgenze->where(DB::raw("(DATE_FORMAT(u.dataora,'%Y-%m-%d'))"), "<=", $range_a_u);
+		})		
+		->where('u.fatturato','=',0)
+		->groupBy('u.id')
+		->orderBy('u.id','desc')->get();
 
 
 		$preventivi=DB::table('preventivi as p')
@@ -617,7 +708,7 @@ public function __construct()
 		if ($preview_pdf=="preview") return $this->Invoice($dati);
 		if ($genera_pdf=="genera") $this->Invoice($dati);
 	
-		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi)->with('all_s',$all_s)->with('sezionali',$sezionali)->with('sezionale',$sezionale)->with('codici',$codici)->with('magazzini',$magazzini);
+		return view('all_views/invitofatt/invito')->with('id_doc',$id_doc)->with("ditte",$ditte)->with("ditteinapp",$ditteinapp)->with('ditta',$ditta)->with('data_invito',$data_invito)->with('step_active',$step_active)->with('articoli_fattura',$articoli_fattura)->with('aliquote_iva',$aliquote_iva)->with('range_da',$range_da)->with('range_a',$range_a)->with('filtroa',$filtroa)->with('arr_aliquota',$arr_aliquota)->with('lista_pagamenti',$lista_pagamenti)->with('elenco_pagamenti_presenti',$elenco_pagamenti_presenti)->with('id_fattura',$id)->with('info_iban',$info_iban)->with('genera_pdf',$genera_pdf)->with('ids_lav',$ids_lav)->with('id_servizi',$id_servizi)->with('all_lav',$all_lav)->with('all_servizi',$all_servizi)->with('preventivi',$preventivi)->with('all_s',$all_s)->with('sezionali',$sezionali)->with('sezionale',$sezionale)->with('codici',$codici)->with('magazzini',$magazzini)->with('urgenze',$urgenze)->with('range_da_u',$range_da_u)->with('range_a_u',$range_a_u)->with('filtrou',$filtrou);
 	}
 
 	function lista_pagamenti() {

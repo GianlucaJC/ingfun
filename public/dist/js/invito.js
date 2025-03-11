@@ -99,6 +99,16 @@ function set_table() {
         },
     });	
 	
+    var t1=$('#tbl_list_urgenze').DataTable({
+		"pageLength": 100,
+        language: {
+            lengthMenu: 'Visualizza _MENU_ records per pagina',
+            zeroRecords: 'Nessuna urgenza trovato',
+            info: 'Pagina _PAGE_ di _PAGES_',
+            infoEmpty: 'Non sono presenti urgenze',
+            infoFiltered: '(Filtrati da _MAX_ urgenze totali)',
+        },
+    });		
 
 
 
@@ -726,14 +736,18 @@ function metodo_ins(value) {
 		return false;
 	}
 
+	$("#div_lista_articoli").hide(100)
+	$("#div_from_urgenze").hide(100)
 	
+
 	if (value=="2") $('#div_from_appalti').show(150)
 	else if (value=="3") edit_product(0,0,1)
 	else if (value=="4") import_prev()
 	else if (value=="5")
 		$("#div_lista_articoli").show(100)
-	else
-		$("#div_lista_articoli").hide(100)
+	else if (value=="6")
+		$("#div_from_urgenze").show(100)
+		
 }
 
 function check_save() {

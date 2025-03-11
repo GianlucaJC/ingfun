@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use App\Models\candidati;
 use App\Models\user;
+use App\Models\servizi;
 use App\Models\urgenze;
 use OneSignal;
 use Mail;
@@ -55,7 +56,7 @@ public function __construct()
 			}
 		}
 
-		$urgenze=urgenze::select('urgenze.*',DB::raw("DATE_FORMAT(urgenze.dataora,'%d-%m-%Y %H:%i:%s') as data_it"),'c.nominativo','urgenze.id_user')
+		$urgenze=urgenze::select('urgenze.*',DB::raw("DATE_FORMAT(urgenze.dataora,'%d-%m-%Y %H:%i:%s') as data_it"),'c.nominativo','urgenze.id_user','urgenze.id_servizio')
 		->join('candidatis as c','c.id','urgenze.id_user')
 		->when($view_dele=="0", function ($urg) {
 			return $urg->where('urgenze.dele', "=","0");
@@ -73,9 +74,24 @@ public function __construct()
 		foreach ($ditte as $arr_d) {
 			$info_d[$arr_d->id]=$arr_d->denominazione;
 		}
+        
+		$servizi=DB::table('servizi as s')
+		->select("s.id","s.descrizione","s.id_cod_servizi_ext")
+		->where('s.dele', "=","0")
+		->orderBy('s.descrizione')
+		->get();
+		
+		$info_s=array();
+		foreach ($servizi as $arr_s) {
+			$info_s[$arr_s->id]['id']=$arr_s->id;
+			$info_s[$arr_s->id]['descrizione']=$arr_s->descrizione;
+			$info_s[$arr_s->id]['id_cod_servizi_ext']=$arr_s->id_cod_servizi_ext;
+		}
+
+		
   
 
-		return view('all_views/listurg')->with('view_dele',$view_dele)->with('urgenze',$urgenze)->with("num_send",$num_send)->with('info_d',$info_d);
+		return view('all_views/listurg')->with('view_dele',$view_dele)->with('urgenze',$urgenze)->with("num_send",$num_send)->with('info_d',$info_d)->with('info_s',$info_s);
 
 	}
 	
@@ -89,11 +105,22 @@ public function __construct()
 		->get();
 		
 		$edit_urg=array();
+		$id_servizio=0;$servizio_ref="";
 		if ($id_urg!=0) {
 			$edit_urg=urgenze::select('urgenze.*','c.nominativo')
 			->join('candidatis as c','c.id','urgenze.id_user')
 			->where('urgenze.id','=',$id_urg)
 			->get();
+			
+			if (isset($edit_urg[0]->id_servizio))  {
+				$id_servizio=$edit_urg[0]->id_servizio;
+				$servizio_ref=DB::table('servizi as s')
+				->select("s.descrizione")
+				->where('s.id', "=",$id_servizio)
+				->first()->descrizione;
+				if ($servizio_ref==null || strlen($servizio_ref)==0) $servizio_ref="";
+		
+			}
 		}			
         $ditte=DB::table('ditte as d')
 		->select("*")
@@ -105,7 +132,7 @@ public function __construct()
 		foreach ($ditte as $arr_d) {
 			$info_d[$arr_d->id]=$arr_d->denominazione;
 		}
-		return view('all_views/newurg')->with("lavoratori",$lavoratori)->with('id_urg',$id_urg)->with('edit_urg',$edit_urg)->with('info_d',$info_d);
+		return view('all_views/newurg')->with("lavoratori",$lavoratori)->with('id_urg',$id_urg)->with('edit_urg',$edit_urg)->with('info_d',$info_d)->with('id_servizio',$id_servizio)->with('servizio_ref',$servizio_ref);
 
 	}
 	
@@ -124,14 +151,18 @@ public function __construct()
 				$urg = new urgenze;
 				$urg->id_user = $lavoratore;
 				$urg->dataora = $request->input('data_urg');
+				$urg->descrizione= $request->input('descrizione');
 				$urg->id_ditta= $request->input('ditta');
+				$urg->id_servizio= $request->input('id_servizio');
 				$urg->save();
 				if (strlen($email)!=0) @$this->send_mail($email,$tipo="new",$info);
 			}
 		} else {
 			$urg = urgenze::find($id_urg);
 			$urg->dataora= $request->input('data_urg');
+			$urg->descrizione= $request->input('descrizione');
 			$urg->id_ditta= $request->input('ditta');
+			$urg->id_servizio= $request->input('id_servizio');
 			$urg->save();
 		}
 

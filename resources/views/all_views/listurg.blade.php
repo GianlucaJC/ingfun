@@ -74,8 +74,10 @@
 						<tr>
 							<th>Operazioni</th>
 							<th>Nominativo</th>
+							<th>Descrizione</th>
 							<th>DataOra</th>
 							<th>Ditta</th>
+							<th>Servizio</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -130,7 +132,9 @@
 									</div>								
 									
 								</td>
-									
+								<td>
+									{{$urgenza->descrizione}}
+								</td>									
 								<td>
 									{{$urgenza->data_it}}
 								</td>
@@ -139,10 +143,16 @@
 								<td>
                                     <?php
                                         if (isset($info_d[$urgenza->id_ditta]))
-                                            echo $info_d[$urgenza->id_ditta];                                  ?>    
+                                            echo $info_d[$urgenza->id_ditta];                                  
+									?>    
 								</td>
 		
-								
+								<td>
+                                    <?php
+                                        if (isset($info_s[$urgenza->id_servizio]))
+                                            echo $info_s[$urgenza->id_servizio]['descrizione'];                                  
+									?>
+								</td>								
 
 							</tr>
 						@endforeach
@@ -152,8 +162,10 @@
 						<tr>
 							<th></th>
 							<th>Nominativo</th>
+							<th>Descrizione</th>
 							<th>Data</th>
 							<th>Ditta</th>
+							<th>Servizio</th>
 						</tr>
 					</tfoot>					
 				</table>
