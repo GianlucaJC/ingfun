@@ -302,9 +302,9 @@ public function __construct()
 					$ids_lav[$appalto->id_lav_ref]=$appalto->status;
 
 			}	
-			
-
-			$id_ditta=$appalti[0]->id_ditta;
+			$id_ditta=0;
+			if (isset($appalti[0]))
+				$id_ditta=$appalti[0]->id_ditta;
 			
 			$servizi=DB::table('servizi as s')
 			->join('servizi_ditte as d','s.id','d.id_servizio')

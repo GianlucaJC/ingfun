@@ -234,8 +234,10 @@ if (file_exists("allegati/sezionali/".$sezionale.".jpg")) {?>
 				<td>
                     {{$articolo->descrizione}}
                     <?php
+                    /* incluso in riga articolo durante importazione appalto!
                         if ($articolo->testo_libero_appalti!=null)
                             echo " - ".$articolo->testo_libero_appalti;
+                    */        
                     ?>
                 </td>
 				<td>{{$articolo->quantita}}</td>

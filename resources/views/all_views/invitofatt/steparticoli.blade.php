@@ -1,4 +1,4 @@
-<div id='div_sez_2' class="sezioni mb-5" style='display:none'> 
+<div id='div_sez_2' class="sezioni mb-5" style='display:block'> 
 	<div class="card-body">
 	@include('all_views.invitofatt.metodocomposizione')	
 

@@ -71,7 +71,8 @@
 				<!-- nel primo step 
 					i campi [ditta] [data_invito] [sezionale] vengono valorizzati all'interno della view stepditte, per gli altri form (view) vengono passati in POST in modalità hidden
 				!-->
-				
+
+
 				@include('all_views.invitofatt.stepditte')
 				
 			</form>
@@ -89,7 +90,6 @@
 			
 					@include('all_views.invitofatt.stepdoc')
 			</form>	
-			
 
 
 			<form class="needs-validation3" id='needs-validation3' novalidate autocomplete="off" method="post" enctype="multipart/form-data">
@@ -101,11 +101,12 @@
 				<input type='hidden' name='data_invito' id='data_invito' value='{{$data_invito}}'>
 
 				<input type='hidden' name='ditta' id='ditta' value='{{$ditta}}'>
-			
+
 					@include('all_views.invitofatt.steparticoli')
 			</form>		
 			
 		</div>	
+
 		<!-- fine card stepper !-->		
 	
 

@@ -209,7 +209,7 @@ public function __construct()
 							'id_appalto' => $id_app,
 							'codice' =>$codice,
 							'id_doc' => $id_doc,
-							'descrizione' =>$descr,
+							'descrizione' =>$descr."($testo_libero)",
 							'quantita' => 1,
 							'prezzo_unitario' =>$importo_ditta,
 							'aliquota' =>$aliquota,
@@ -528,7 +528,7 @@ public function __construct()
 		->groupBy('u.id')
 		->orderBy('u.id','desc')->get();
 
-
+		
 		$preventivi=DB::table('preventivi as p')
 		->join('ditte as d','p.id_ditta','d.id')
 		->select("p.status","p.id","p.dele",DB::raw("DATE_FORMAT(p.data_preventivo,'%d-%m-%Y') as data_preventivo"),"p.totale","d.denominazione")
@@ -603,7 +603,7 @@ public function __construct()
 		//->toSql() - dd($appalti);exit;
 
 
-
+		
 
 		$ditte=DB::table('ditte as d')
 		->select('d.id','d.denominazione')
@@ -626,7 +626,7 @@ public function __construct()
 		$info_iban="";
 		if (isset($info[0])) $info_iban=$info[0]->info_iban;
 		
-
+		
 
 		$aliquote_iva=aliquote_iva::select('id','aliquota','descrizione')
 		->get();
@@ -659,6 +659,7 @@ public function __construct()
 			fatture::where('id', $id_doc)->update(['totale'=>$totale]);
 		}
 		//
+		
 		
 		$lista_pagamenti=$this->lista_pagamenti();
 		

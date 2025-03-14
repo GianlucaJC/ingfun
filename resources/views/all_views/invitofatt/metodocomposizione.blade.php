@@ -28,7 +28,6 @@
 </div>	
 
 
-
 <div id='div_from_servizi' class='metodi mt-3' style='display:none'>
 	<div class="row mb-3">
 		<div class="col-md-12">
@@ -66,6 +65,7 @@
 <div id='div_from_urgenze' style='{{$style}}' class='metodi mt-3'>
 
 <h4>Composizione da lista urgenze</h4>
+						
 
 <div class="row">
 	  <div class="col-md-12">
@@ -203,8 +203,10 @@
 					@php ($old_ida=0)
 					@foreach($ditteinapp as $ditta)
 					<?php 
+					
 					if ($old_ida==$ditta->id_appalto) continue;
 					$old_ida=$ditta->id_appalto;
+					
 					?>
 						
 					<tr>
@@ -219,20 +221,24 @@
 
 						<td>
 							<?php
-
+							
 							if (isset($ids_lav[$ditta->id_appalto])) {
 								for ($sca=0;$sca<count($ids_lav[$ditta->id_appalto]);$sca++) {
 									$value=$ids_lav[$ditta->id_appalto][$sca];
-									if (isset($all_lav[$value])) 
+									
+									if (isset($all_lav[$value])) {
 										if ($sca>0) echo ", ";
 										echo $all_lav[$value];
+									}
 								}
+								
 							}
-
+							
 							?>
 						</td>
 						<td>
-						<?php			
+						<?php		
+						
 
 							if (isset($id_servizi[$ditta->id_appalto])) {
 								for ($sca=0;$sca<count($id_servizi[$ditta->id_appalto]);$sca++) {
@@ -266,7 +272,8 @@
 										echo $all_servizi[$value]['importo_ditta']."€";
 									}
 								}
-							}		
+							}	
+								
 						?>								
 						</td>
 						<td style='text-align:center'>
