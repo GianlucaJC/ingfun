@@ -140,8 +140,18 @@ class AjaxControllerServ extends Controller
 		->whereRaw($cond)
 		->get();		
 
+		$today=date("Y-m-d");
+		
+
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
-		->where('status_candidatura','=',3)
+		->where(function ($lavoratori) {
+			$lavoratori->where('status_candidatura','=',3)
+			->orWhere('status_candidatura','=',4);
+		})
+		->where(function ($lavoratori) use($today) {
+			$lavoratori->where("data_fine","<=", $today)
+			->orWhere("data_fine","=", null);
+		})
 		->where('area_impiego','=',1)
 		->where('hide_appalti','=',0)
 		->when($id_sezionale!="all", function ($lavoratori) use ($id_sezionale) {
