@@ -42,6 +42,14 @@ $(document).ready( function () {
 	
 } );
 
+function check_100() {
+    if ($('#last_100').val()=="1") 
+        $('#last_100').val('0');
+    else 
+        $('#last_100').val('1');
+
+    $('#frm_appalti').submit()
+}
 function send_notif() {
     if (!confirm("Sicuri di inviare le notifiche? (Gli appalti coinvolti passeranno dallo stato Bozza a Inviato)")) {
         event.preventDefault() 

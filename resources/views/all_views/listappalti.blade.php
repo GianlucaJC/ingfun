@@ -110,13 +110,26 @@
         </div>
 		<?php } ?>
 
-			
+			<?php
+			$out_v="";
+			if ($last_100=="0") $out_v="outline-";
+			?>
+			<input type='hidden' name='last_100' id='last_100' value='{{$last_100}}'>
+			<div class="row mb-2">
+				<div class="col-lg-12">
+					
+					<button type="button" class="btn btn-{{$out_v}}primary" onclick="check_100()">
+						Mostra solo ultimi 100 appalti
+					</button>
+					</div>
+				</div>
+			</div>			
+					
+
+				
 			<div class="row">
 			  <div class="col-lg-12">
 				<h5>TOTALE  APPALTI</h5>
-				
-				
-				
 				<table id='tbl_list_pers' class="display">
 					<thead>
 						<tr>
@@ -368,6 +381,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.10"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.13"></script>
 
 @endsection

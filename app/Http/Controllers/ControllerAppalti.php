@@ -358,6 +358,10 @@ public function __construct()
 		$view_dele=0;
 		if (request()->has("view_dele")) $view_dele=request()->input("view_dele");
 		if ($view_dele=="on") $view_dele=1;
+		$last_100=1;
+		if (request()->has("last_100")) $last_100=request()->input("last_100");
+
+
 		$num_notif=0;
 		if (request()->has("send_notif_today")) $num_notif=$this->send_notif_today();
 			
@@ -466,11 +470,14 @@ public function __construct()
 			return $gestione->where('appalti.id', "=",$id_appalto);
 		})
 		->orderByDesc('appalti.id')	
+		->when($last_100=="1", function ($gestione) {
+			return $gestione->take(100);
+		})
 		->get();		
 
 		
 
-		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('num_send_mail',$num_send_mail)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta)->with('num_notif',$num_notif);
+		return view('all_views/listappalti')->with('view_dele',$view_dele)->with('gestione',$gestione)->with('num_send',$num_send)->with('num_send_mail',$num_send_mail)->with('targhe',$targhe)->with('azienda_proprieta',$azienda_proprieta)->with('num_notif',$num_notif)->with('last_100',$last_100);
 
 	}
 
