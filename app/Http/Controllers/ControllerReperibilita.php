@@ -77,7 +77,7 @@ public function __construct()
 			->orWhere('status_candidatura','=',4);
 		})
 		->where(function ($lavoratori) use($today) {
-			$lavoratori->where("data_fine","<=", $today)
+			$lavoratori->where("data_fine",">=", $today)
 			->orWhere("data_fine","=", null);
 		})
 		->where('dele','=',0)

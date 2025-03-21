@@ -149,7 +149,7 @@ class AjaxControllerServ extends Controller
 			->orWhere('status_candidatura','=',4);
 		})
 		->where(function ($lavoratori) use($today) {
-			$lavoratori->where("data_fine","<=", $today)
+			$lavoratori->where("data_fine",">=", $today)
 			->orWhere("data_fine","=", null);
 		})
 		->where('area_impiego','=',1)

@@ -195,21 +195,22 @@ public function __construct()
 						$importo_ditta=$servizio->importo_ditta;
 						$codice=$servizio->id_cod_servizi_ext;
 						$aliquota=$servizio->aliquota;
-						$descr=$servizio->descrizione."($data_ref)";
+						$descr=$servizio->descrizione."($data_ref) ";
 						$subtotale=$importo_ditta;
 						if(strpos($descr,'RIMBORSO KM') !== false) {
 							$descr.=" ".$km."*".$importo_ditta;
 							$importo_ditta=floatval($km)*floatval($importo_ditta);
 							$subtotale=$importo_ditta;
 						}
+						$descr.=" ($testo_libero)";
 						if (isset($arr_aliquota[$aliquota])) 
 							$subtotale=$importo_ditta*(($arr_aliquota[$aliquota]/100)+1);
-							
+						
 						DB::table('articoli_fattura')->insert([
 							'id_appalto' => $id_app,
 							'codice' =>$codice,
 							'id_doc' => $id_doc,
-							'descrizione' =>$descr."($testo_libero)",
+							'descrizione' =>$descr,
 							'quantita' => 1,
 							'prezzo_unitario' =>$importo_ditta,
 							'aliquota' =>$aliquota,
