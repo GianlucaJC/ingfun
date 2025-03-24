@@ -13,6 +13,7 @@ use App\Models\candidati;
 use App\Models\servizi_ditte;
 use App\Models\servizi;
 use App\Models\appalti;
+use App\Models\lavoratoriapp;
 use App\Models\urgenze;
 use App\Models\prod_prodotti;
 use App\Models\prod_magazzini;
@@ -179,6 +180,8 @@ public function __construct()
 
 				appalti::where('id', $id_app)->update(['status' => 1]);					
 				
+				$num_lav=lavoratoriapp::where('id_appalto',$id_app)->where('status','=',1)->count();
+
 				foreach ($appalti as $appalto) {
 					$data_ref=$appalto->data_ref;
 					$id_ditta=$appalto->id_ditta;
@@ -202,7 +205,14 @@ public function __construct()
 							$importo_ditta=floatval($km)*floatval($importo_ditta);
 							$subtotale=$importo_ditta;
 						}
-						$descr.=" ($testo_libero)";
+						if ($codice=="S") {
+							//SERVIZI FUNEBRI ANNESSI E DISGIUNTI DA QUELLI DI ONORANZE FUNEBRI
+							$descr.=" ".$num_lav."*".$importo_ditta;
+							$importo_ditta=floatval($num_lav)*floatval($importo_ditta);
+							$subtotale=$importo_ditta;
+
+						}						
+						if (strlen($testo_libero)!=0) $descr.=" ($testo_libero)";
 						if (isset($arr_aliquota[$aliquota])) 
 							$subtotale=$importo_ditta*(($arr_aliquota[$aliquota]/100)+1);
 						
@@ -876,10 +886,12 @@ public function __construct()
 			->whereIn('f.id',$ids)
 			->groupBy('d.id')
 			->get();
+			$orario = date('H:i:s');
+			$orario=str_replace(":","",$orario);
 			foreach ($intestazioni as $intestazione) {
 				$id_ditta=$intestazione->id;
 				$filename="allegati/export/cli_".$id_ditta.".csv";
-				$dest_file="cli_".$id_ditta.".csv";
+				$dest_file="cli_".$id_ditta."_".$orario.".csv";
 				
 				$denominazione=$intestazione->denominazione;
 				$indirizzo=$intestazione->indirizzo;

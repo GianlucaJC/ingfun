@@ -104,7 +104,7 @@
 
 				<div class="col-md-2">
 					<div class="form-floating mb-3 mb-md-0">
-						<select class="form-select" name="mag_sca" id="mag_sca" aria-label="Magazzino di scarico" required>
+						<select class="form-select" name="mag_sca" id="mag_sca" aria-label="Magazzino di scarico" >
 							<option value=''>Select...</option>
 							@foreach ($magazzini as $magazzino) 
 								<option value='{{$magazzino->id}}'
