@@ -15,6 +15,7 @@ use App\Models\servizi;
 use App\Models\appalti;
 use App\Models\lavoratoriapp;
 use App\Models\urgenze;
+use App\Models\italy_cities;
 use App\Models\prod_prodotti;
 use App\Models\prod_magazzini;
 use Illuminate\Support\Facades\Storage;
@@ -26,6 +27,16 @@ class ControllerInvito extends Controller
 public function __construct()
 	{
 		$this->middleware('auth')->except(['index']);
+		$lista_c=italy_cities::select("comune","cap","provincia")->get();
+		$comuni_ref=array();
+		foreach ($lista_c as $l) {
+			$c=$l->cap;
+			$p=$l->provincia;
+			$chiave="$c|$p";
+			$com=$l->comune;
+			$comuni_ref[$chiave]=$com;
+		}
+		$this->comuni_ref=$comuni_ref;
 	}		
 
 	public function save_edit_aliquote($request) {
@@ -864,6 +875,7 @@ public function __construct()
 	}
 	
 	public function lista_inviti(Request $request) {
+		$comuni_ref=$this->comuni_ref;
 		$send_up=true;
 		$export=false;
 		if ($request->has("sele_fatt")) {
@@ -897,6 +909,8 @@ public function __construct()
 				$indirizzo=$intestazione->indirizzo;
 				$cap=$intestazione->cap;
 				$comune=$intestazione->comune;
+				
+				if (array_key_exists($comune,$comuni_ref)) $comune=$comuni_ref[$comune];
 				$provincia=$intestazione->provincia;
 				$cf=$intestazione->cf;
 				$piva=$intestazione->piva;
@@ -1012,6 +1026,7 @@ public function __construct()
 				$cognome=$fattura->cognome;
 				$indirizzo=$fattura->indirizzo;
 				$comune=$fattura->comune;
+				if (array_key_exists($comune,$comuni_ref)) $comune=$comuni_ref[$comune];
 				$cap=$fattura->cap;
 				$provincia=$fattura->provincia;
 				$id_cli=$fattura->id_cli;
