@@ -159,8 +159,8 @@
 
 				
 			<div class="col-md-3">
-				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" name="ditta" id="ditta" onchange='sel_service(this.value)' required>
+				
+					<select class="form-select select2" name="ditta" id="ditta" onchange='sel_service(this.value)' required>
 						<option value=''>Select...</option>
 						@foreach ($info_d as $id_ditta=>$denominazione)
 							<option value='{{$id_ditta}}'
@@ -173,7 +173,7 @@
 						@endforeach
 					</select>
 					<label for="ditta">Ditta*</label>
-				</div>
+				
 
 			</div>	
 			<div class="col-md-6">

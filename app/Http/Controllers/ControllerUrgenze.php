@@ -96,9 +96,16 @@ public function __construct()
 	}
 	
 	public function newurg($id_urg=0) {
-
+		$today=date("Y-m-d");
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
-		->where('status_candidatura','=',3)		
+		->where(function ($lavoratori) {
+			$lavoratori->where('status_candidatura','=',3)
+			->orWhere('status_candidatura','=',4);
+		})
+		->where(function ($lavoratori) use($today) {
+			$lavoratori->where("data_fine",">=", $today)
+			->orWhere("data_fine","=", null);
+		})
 		->where('dele','=',0)
 		->where('hide_appalti','=',0)
 		->orderBy('nominativo')	
