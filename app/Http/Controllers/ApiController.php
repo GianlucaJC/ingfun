@@ -510,7 +510,7 @@ class ApiController extends Controller
 		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 		->where('appalti.dele', "=","0")
 		->where('l.status', "=","0")
-		->where('a.stato_appalto',"=",1)
+		->where('appalti.stato_appalto',"=",1)
 		->where('l.id_lav_ref',"=",$id_lav_ref)
 		->count();
 
@@ -518,7 +518,7 @@ class ApiController extends Controller
 		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 		->where('appalti.dele', "=","0")
 		->where('l.status', "=","1")
-		->where('a.stato_appalto',"=",1)
+		->where('appalti.stato_appalto',"=",1)
 		->where('l.id_lav_ref',"=",$id_lav_ref)
 		->count();
 
@@ -526,7 +526,7 @@ class ApiController extends Controller
 		->join('lavoratoriapp as l','appalti.id','l.id_appalto')
 		->where('appalti.dele', "=","0")
 		->where('l.status', "=","2")
-		->where('a.stato_appalto',"=",1)
+		->where('appalti.stato_appalto',"=",1)
 		->where('l.id_lav_ref',"=",$id_lav_ref)
 		->count();
 			
