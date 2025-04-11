@@ -381,6 +381,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.13"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.14"></script>
 
 @endsection

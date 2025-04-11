@@ -55,25 +55,34 @@ function send_notif() {
         event.preventDefault() 
         return false;
     }
+    $("#frm_appalti").submit();
 }
 
 function dele_element(value) {
 	if(!confirm('Sicuri di eliminare l\'elemento?')) 
 		event.preventDefault() 
-	else 
+	else {
 		$('#dele_cand').val(value)	
+        $("#frm_appalti").submit();        
+    }
+
+    
 }
 
 function restore_element(value) {
 	if(!confirm('Sicuri di ripristinare l\'elemento?')) 
 		event.preventDefault() 
-	else 
+	else {
 		$('#restore_cand').val(value)	
+        $("#frm_appalti").submit();        
+    }
 }
 
 function push_appalti(value) {
 	if(!confirm("Sicuri di sollecitare tutti i lavoratori dell'appalto (che non hanno risposto)?")) 
 		event.preventDefault() 
-	else 
+	else {
 		$('#push_appalti').val(value)	
+        $("#frm_appalti").submit();        
+    }
 }
