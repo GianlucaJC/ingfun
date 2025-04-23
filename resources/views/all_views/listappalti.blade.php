@@ -110,20 +110,7 @@
         </div>
 		<?php } ?>
 
-			<?php
-			$out_v="";
-			if ($last_100=="0") $out_v="outline-";
-			?>
-			<input type='hidden' name='last_100' id='last_100' value='{{$last_100}}'>
-			<div class="row mb-2">
-				<div class="col-lg-12">
-					
-					<button type="button" class="btn btn-{{$out_v}}primary" onclick="check_100()">
-						Mostra solo ultimi 100 appalti
-					</button>
-					</div>
-				</div>
-			</div>			
+
 					
 
 				
@@ -319,6 +306,60 @@
 
 			</div>
 			<!-- /.row -->
+        <div class="row">
+          <div class="col-12">
+            <div class="card">
+              <div class="card-header">
+                <h3 class="card-title">Periodi selezionabili</h3>
+              </div>
+
+
+			
+				  <div class="card-body">				  
+				    <?php
+						$y=intval(date("Y"));
+						$y1=$y-4;$y2=$y+1;
+						$mese_vis="";
+						echo "<center>";
+							echo "<select class='form-control mb-2' aria-label='Seleziona periodo' onchange=\"$('#frm_appalti').submit()\" name='periodo_custom'>";
+							  echo "<option selected>Scegli altro periodo</option>";
+							  for ($sca=$y1;$sca<=$y2;$sca++) {
+								echo "<optgroup label='$sca'>";
+									for ($mm=1;$mm<=12;$mm++) {  
+										if (strlen($mm)==1) $m2="0$mm";
+										else $m2=$mm;
+										$perx="$sca$m2";
+										if ($mm==1) $mese_vis="GENNAIO";
+										if ($mm==2) $mese_vis="FEBBRAIO";
+										if ($mm==3) $mese_vis="MARZO";
+										if ($mm==4) $mese_vis="APRILE";
+										if ($mm==5) $mese_vis="MAGGIO";
+										if ($mm==6) $mese_vis="GIUGNO";
+										if ($mm==7) $mese_vis="LUGLIO";
+										if ($mm==8) $mese_vis="AGOSTO";
+										if ($mm==9) $mese_vis="SETTEMBRE";
+										if ($mm==10) $mese_vis="OTTOBRE";
+										if ($mm==11) $mese_vis="NOVEMBRE";
+										if ($mm==12) $mese_vis="DICEMBRE";
+										//if ($mm==13) $mese_vis="TUTTI";
+										echo "<option value='$perx' ";
+										if ($periodo_custom==$perx) echo " selected ";
+										echo ">$mese_vis $sca</option>";
+									}
+								echo "</optgroup>";								
+							  }
+							echo "</select>";
+						echo "</center>";
+					?>
+				
+					
+			
+				  </div>
+            </div>
+          </div>
+        </div>
+
+
 
 			<div class="row">
 				<div class="col-lg-12">
