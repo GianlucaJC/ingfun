@@ -464,11 +464,10 @@ public function __construct()
 			if (strlen($mm)==1) $mm="0$mm";
 			$periodo_custom="$aa$mm";
 		}
-		$pp=substr($periodo_custom,0,4)."-".substr($periodo_custom,5,2);
+		$pp=substr($periodo_custom,0,4)."-".substr($periodo_custom,4,2);
 
 		$d_i=$pp."-01";
 		$d_f=date("Y-m-t", strtotime($pp));
-
 		$gestione=appalti::select('appalti.id','appalti.id_azienda_proprieta','appalti.status','stato_appalto','appalti.dele','appalti.descrizione_appalto','appalti.targa','appalti.data_ref','orario_ref','appalti.id_ditta','d.denominazione')
 		->join('ditte as d', 'd.id','=','appalti.id_ditta')
 		->where('appalti.data_ref','>=',$d_i)
