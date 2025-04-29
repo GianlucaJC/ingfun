@@ -82,6 +82,7 @@
 		</div>
 	  
 		<form method='post' action="{{ route('listapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
+		<input type="hidden" value="{{url('/')}}" id="url" name="url">
 		<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	  
 			<?php if (1==2) {?>
 			<div class="container">
@@ -121,6 +122,7 @@
 					<thead>
 						<tr>
 							<th style='min-width:190px'>Operazioni</th>
+							<th style='max-width:30px'>#</th>
 							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
 							<th>Stato appalto</th>
@@ -169,6 +171,10 @@
 
 								
 							</td>	
+							<td style='max-width:30px;text-align:center'>								
+								<input class="form-check-input" type="checkbox" name='selapp[]' id='sendi{{$gest->id}}' onchange="set_send({{$gest->id}})">
+							</td>
+
 							<td style='max-width:60px'>
 								@if ($gest->status==0)
 									<i>Aperto</i>
@@ -287,6 +293,7 @@
 					<tfoot>
 						<tr>
 							<th style='min-width:190px'></th>
+							<th style='max-width:30px'></th>
 							<th style='max-width:60px'>Stato</th>
 							<th style='max-width:40px'>ID</th>
 							<th>Stato appalto</th>
@@ -318,12 +325,12 @@
 				  <div class="card-body">				  
 				    <?php
 						$y=intval(date("Y"));
-						$y1=$y-4;$y2=$y+1;
+						$y1=$y-4;$y2=$y;
 						$mese_vis="";
 						echo "<center>";
 							echo "<select class='form-control mb-2' aria-label='Seleziona periodo' onchange=\"$('#frm_appalti').submit()\" name='periodo_custom'>";
 							  echo "<option selected>Scegli altro periodo</option>";
-							  for ($sca=$y1;$sca<=$y2;$sca++) {
+							  for ($sca=$y2;$sca>=$y1;$sca--) {
 								echo "<optgroup label='$sca'>";
 									for ($mm=1;$mm<=12;$mm++) {  
 										if (strlen($mm)==1) $m2="0$mm";
@@ -359,7 +366,11 @@
           </div>
         </div>
 
+<?php
 
+	//$value="734|2047";
+	//$request->session()->push('onlysel', $value);
+?>	
 
 			<div class="row">
 				<div class="col-lg-12">
@@ -375,7 +386,16 @@
 						<button type="sumbit" name='send_notif_today' id='send_notif_today' class="btn btn-success btn-lg btn-block">Invio notifica per tutti gli appalti (oggi+1)</button>
 					</a>
 				</div>
-			</div>			
+			</div>	
+			<hr>
+			<div class="row" style='display:none' id='div_send_invito'>
+				<div class="col-lg-12">
+					<a href="javascript:void(0)" class="nav-link active">
+						<button type="button" onclick='new_invito()' class="btn btn-info btn-lg btn-block">Crea invito a fatturare dagli elementi selezionati</button>
+					</a>
+				</div>
+			</div>
+
 
 			<?php
 				$check="";
@@ -422,6 +442,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.14"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listapp.js?ver=1.165"></script>
 
 @endsection

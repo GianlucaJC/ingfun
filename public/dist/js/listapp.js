@@ -1,3 +1,4 @@
+send_i=new Array()
 $(document).ready( function () {
     $('#tbl_list_pers tfoot th').each(function () {
         var title = $(this).text();
@@ -56,6 +57,43 @@ function send_notif() {
         return false;
     }
     $("#frm_appalti").submit();
+}
+
+function new_invito() {
+    lista=send_i.join("|")
+	base_path = $("#url").val();
+	$.ajaxSetup({
+		headers: {
+			'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+		}
+	});
+	let CSRF_TOKEN = $("#token_csrf").val();
+	$.ajax({
+		type: 'POST',
+		url: base_path+"/set_invio_invito",
+		data: {_token: CSRF_TOKEN,lista:lista},
+		success: function (data) {
+        console.log(data)
+           window.location.href = "invito";
+		}
+	});	    
+    
+}
+
+function removeItem(arr, value) {
+  var index = arr.indexOf(value);
+  if (index > -1) {
+    arr.splice(index, 1);
+  }
+  return arr;
+}
+function set_send(element) {
+    sel=$("#sendi"+element).is(':checked')
+    var index = send_i.indexOf(element);
+    if (index==-1 && sel==true) send_i.push(element);
+    if (index>-1 && sel==false) send_i=removeItem(send_i,element);
+    $("#div_send_invito").hide()
+    if (send_i.length>0) $("#div_send_invito").show(200)
 }
 
 function dele_element(value) {

@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-
+use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use App\Models\appalti;
 use App\Models\ditte;
@@ -588,6 +588,15 @@ class ApiController extends Controller
 		else echo json_encode($risp);
 		
 	}	
+	
+	public function set_invio_invito(Request $request) {
+		$lista=$request->input('lista');
+		Storage::disk('local')->put('lista.txt', $lista);
+		$risp=array();
+		$risp['header']="OK";
+		echo json_encode($risp);
+		
+	}
 
 	public function infoappalti(Request $request) {
 

@@ -144,6 +144,8 @@
 	$style="display:none";
 	if ($filtroa==true) $style="";
 ?>	
+
+
 <div id='div_from_appalti' style='{{$style}}' class='metodi mt-3'>
 
 
@@ -186,7 +188,7 @@
 			
 			<button type="submit" name='btn_filtro' id='btn_filtro' onclick='' class="btn btn-success btn-sm mb-3" value='filtro_appalti'>Filtro data</button>
 		
-			
+	
 			<table id='tbl_list_appalti' class="display">
 				<thead>
 					<tr>
@@ -198,7 +200,7 @@
 					</tr>
 				</thead>
 				<tbody>
-				
+
 					@php ($num_art=0)
 					@php ($old_ida=0)
 					@foreach($ditteinapp as $ditta)

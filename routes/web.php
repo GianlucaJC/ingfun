@@ -364,6 +364,9 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
 	Route::get('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
 	Route::post('risposta_user', [ 'as' => 'risposta_user', 'uses' => 'App\Http\Controllers\ApiController@risposta_user']);
+
+	Route::post('set_invio_invito', [ 'as' => 'set_invio_invito', 'uses' => 'App\Http\Controllers\ApiController@set_invio_invito']);
+		
 	Route::post('infoappalti', [ 'as' => 'infoappalti', 'uses' => 'App\Http\Controllers\ApiController@infoappalti']);
 	Route::post('risposta_user_rep', [ 'as' => 'risposta_user_rep', 'uses' => 'App\Http\Controllers\ApiController@risposta_user_rep']);
 	Route::post('mezzi', [ 'as' => 'login', 'uses' => 'App\Http\Controllers\ApiController@elenco_mezzi']);

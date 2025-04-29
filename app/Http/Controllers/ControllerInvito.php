@@ -580,7 +580,19 @@ public function __construct()
 			$all_servizi[$single->id_servizio]['da_moltiplicare']=$single->da_moltiplicare;
 		}	
 		
+
+		//questo array, se valorizzato, proviene dalla lista appalti:
+		//l'utente tramite una serie di check valorizza degli ID appalti da fatturare rapidamente
+		$arr_app=array();
+
+		$exists = Storage::disk('local')->exists('lista.txt');
+		if ($exists==true) {
+			$v = Storage::get('lista.txt');
+			if (strlen($v)!=0) $arr_app=explode("|",$v);
+		}
+
 		
+
 		$ditteinapp=DB::table('appalti as a')
 		->join("ditte as d","a.id_ditta","d.id")
 		->join('serviziapp as sa','a.id','sa.id_appalto')
@@ -589,17 +601,31 @@ public function __construct()
 		->where(function ($query) use($ditta){	
 			$query->where('a.id_ditta', "=",$ditta);	
 		})
-		->where('a.dele','=',0)
-		->where('a.status','<>',1)
-		->when(strlen($range_da)!=0, function ($ditteinapp) use($range_da) {
-			return $ditteinapp->where('a.data_ref','>=',"$range_da");
-		})
-		->when(strlen($range_a)!=0, function ($ditteinapp) use($range_a) {
-			return $ditteinapp->where('a.data_ref','<=',"$range_a");
-		})
-		->orderBy('a.id')
-		->get();
+		->where('a.dele','=',0);
+		if (count($arr_app)>0) {
+			$ditteinapp=$ditteinapp->where(function ($query) use ($arr_app)  {
+				for ($sca=0;$sca<count($arr_app);$sca++) {
+					$ref=$arr_app[$sca];
+					if ($sca==0) 
+						$query->where('a.id','=',$ref);
+					else
+						$query->orWhere('a.id','=',$ref);
+				}
+			});
+		} else {
 
+			$ditteinapp=$ditteinapp->where('a.status','<>',1)
+			->when(strlen($range_da)!=0, function ($ditteinapp) use($range_da) {
+				return $ditteinapp->where('a.data_ref','>=',"$range_da");
+			})
+			->when(strlen($range_a)!=0, function ($ditteinapp) use($range_a) {
+				return $ditteinapp->where('a.data_ref','<=',"$range_a");
+			});
+			
+		}
+		$ditteinapp=$ditteinapp->orderBy('a.id')
+		->get();
+		
 		$id_servizi=array();$ids_lav=array();
 		$indice_s=1;
 		

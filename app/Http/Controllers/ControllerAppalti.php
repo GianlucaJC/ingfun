@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Illuminate\Http\Request;
 use App\Models\servizi;
 use App\Models\serviziapp;
@@ -351,7 +352,9 @@ public function __construct()
 	}
 
 	public function listapp($id_appalto=0) {
-		
+		//per cancellare eventuali liste di ID inviati per fatturare
+		$exists = Storage::disk('local')->exists('lista.txt');
+		if ($exists==true) Storage::disk('local')->delete('lista.txt');
 
 		$dx=date("Y-m-d");
 		
