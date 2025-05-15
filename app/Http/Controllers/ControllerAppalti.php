@@ -255,6 +255,14 @@ public function __construct()
 		return redirect()->route("newapp",['id'=>$id_app,'from'=>1,'num_send'=>$num_send]);
 
 	}
+	public function makeappalti() {
+		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
+		->orderBy('nominativo')	
+		->get();
+	
+		return view('all_views/makeappalti',compact('lavoratori'));
+	}
+
 
 	public function newapp($id=0,$from=0,$num_send) {
 		$appalti=array();

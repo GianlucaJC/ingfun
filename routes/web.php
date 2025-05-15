@@ -57,6 +57,13 @@ Route::group(['only_log' => ['auth']], function () {
 		blocco di rotte presenti nella tabella main_menu ma riservate (reserved=1) quindi non mostrate nella gestione menu.
 		Per aggiungere altre route nel DB, aggiungere alla tabella main_menu specificando il ruolo o in alternativa inserirle solo qui in web.php indicando il ruolo nella middleware
 	*/
+		Route::post('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
+
+		Route::get('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
+
+		Route::post('load_modello', [ 'as' => 'load_modello', 'uses' => 'App\Http\Controllers\ControllerAppalti@load_modello']);
+
+
 		Route::post('update_doc_sinistro', 'App\Http\Controllers\AjaxControllerParco@update_doc_sinistro');
 
 		Route::get('invoice/{id_doc?}', [ 'as' => 'invoice', 'uses' => 'App\Http\Controllers\ControllerInvito@invoice']);
@@ -358,7 +365,9 @@ Route::group(['only_log' => ['auth']], function () {
 Route::group(['only_log' => ['auth']], function () {
 	
 	//chiamate per misapp-web
+
 	
+
 	Route::post('register_push', [ 'as' => 'register_push', 'uses' => 'App\Http\Controllers\ApiController@register_push']);
 	Route::get('register_push', [ 'as' => 'register_push', 'uses' => 'App\Http\Controllers\ApiController@register_push']);
 	Route::post('lavori', [ 'as' => 'lavori', 'uses' => 'App\Http\Controllers\ApiController@lavori']);
