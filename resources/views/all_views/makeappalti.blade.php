@@ -134,7 +134,7 @@
 
 
 
-	<script src="{{ URL::asset('/') }}dist/js/makeappalti.js?ver=2.043"></script>
+	<script src="{{ URL::asset('/') }}dist/js/makeappalti.js?ver=2.051"></script>
 
 
 	
