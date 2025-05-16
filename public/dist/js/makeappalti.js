@@ -69,7 +69,7 @@
         locale: 'it', // the initial locale. if not specified, uses the first one
     // initialView: 'timeGridWeek',
     // duration: { days: 7 },
-
+    dayHeaders:false,
     initialView: 'dayGrid',
     customButtons: {
       myCustomButton: {

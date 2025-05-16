@@ -19,7 +19,11 @@
 	<link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
 	<link rel="stylesheet" href="{{ URL::asset('/') }}plugins/fullcalendar/main.css">
 @endsection
-
+<style>
+th, td {
+   padding-right: 18px;
+}
+</style>
 
 @section('content_main')
 
