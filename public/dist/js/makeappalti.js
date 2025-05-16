@@ -108,7 +108,18 @@
           // if so, remove the element from the "Draggable Events" list
           info.draggedEl.parentNode.removeChild(info.draggedEl);
         }
-      }
+      },
+
+  eventClick: function(info) {
+    /*
+      alert('Event: ' + info.event.title);
+      alert('Coordinates: ' + info.jsEvent.pageX + ',' + info.jsEvent.pageY);
+      alert('View: ' + info.view.type);
+      info.el.style.borderColor = 'red';
+    */
+    if (confirm("Eliminare il lavoratore "+info.event.title+" dall'appalto?")) info.event.remove()
+  }
+
     });
 
     calendar.render();
