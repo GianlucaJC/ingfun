@@ -40,7 +40,8 @@
 
     var containerEl = document.getElementById('external-events');
     var checkbox = document.getElementById('drop-remove');
-    var calendarEl = document.getElementById('calendar');
+
+    
 
     // initialize the external events
     // -----------------------------------------------------------------
@@ -58,18 +59,33 @@
       }
     });
 
+  for (sca=1;sca<=14;sca++){
+    ref=sca
+    if (sca>7) ref="s"+(sca-7)
+    console.log("ref",ref)
+    var calendarEl = document.getElementById('calendar'+ref);
+
     var calendar = new Calendar(calendarEl, {
         locale: 'it', // the initial locale. if not specified, uses the first one
     // initialView: 'timeGridWeek',
     // duration: { days: 7 },
 
-      initialView: 'dayGridWeek',
-      headerToolbar: {
-        left: 'prev,next',
-        center: 'title',
-        right: 'dayGridWeek,dayGridDay' // user can switch between the two
-      },    
-      height: 420,
+    initialView: 'dayGrid',
+    customButtons: {
+      myCustomButton: {
+        text: 'Info Appalto',
+        click: function() {
+          alert('Da implementare!');
+        }
+      }
+    },
+    headerToolbar: {
+      left: 'myCustomButton',
+      center: '',
+      right: ''
+    },   
+      height: 320,
+
 
       eventClick: function(info) {
         //alert('Event: ' + info.event.title);
@@ -96,6 +112,7 @@
     });
 
     calendar.render();
+  } 
     // $('#calendar').fullCalendar()
 
     /* ADDING EVENTS */

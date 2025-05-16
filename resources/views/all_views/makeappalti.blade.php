@@ -93,14 +93,40 @@
 					</div>
 					<!-- /.col -->
 					<div class="col-md-9">
-						<div class="card card-primary">
-						<div class="card-body p-0">
+						
 							<!-- THE CALENDAR -->
-							<div id="calendar"></div>
-						</div>
-						<!-- /.card-body -->
-						</div>
-						<!-- /.card -->
+						<table>	
+							<tr>
+								<td colspan='7' style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+									<div style='padding:10px'>APPALTI DELLA MATTINA</div>
+								</td>
+							</tr>
+							<tr>
+								<td><div id="calendar1"></div></td>
+								<td><div id="calendar2"></div></td>
+								<td><div id="calendar3"></div></td>
+								<td><div id="calendar4"></div></td>
+								<td><div id="calendar5"></div></td>
+								<td><div id="calendar6"></div></td>
+								<td><div id="calendar7"></div></td>
+							</tr>
+							<tr><td colspan='7'> </td></tr>
+							<tr><td colspan='7'> </td></tr>
+							<tr>
+								<td colspan='7' style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+									<div style='padding:10px'>APPALTI DEL POMERIGGIO</div>
+								</td>
+							</tr>							
+							<tr>
+								<td><div id="calendars1"></div></td>
+								<td><div id="calendars2"></div></td>
+								<td><div id="calendars3"></div></td>
+								<td><div id="calendars4"></div></td>
+								<td><div id="calendars5"></div></td>
+								<td><div id="calendars6"></div></td>
+								<td><div id="calendars7"></div></td>
+							</tr>							
+						</table>	
 					</div>
 					<!-- /.col -->
 					</div>
@@ -134,7 +160,7 @@
 
 
 
-	<script src="{{ URL::asset('/') }}dist/js/makeappalti.js?ver=2.051"></script>
+	<script src="{{ URL::asset('/') }}dist/js/makeappalti.js?ver=2.054"></script>
 
 
 	
