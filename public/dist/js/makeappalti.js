@@ -110,6 +110,7 @@
         }
       },
 
+
   eventClick: function(info) {
     /*
       alert('Event: ' + info.event.title);

@@ -57,9 +57,22 @@ Route::group(['only_log' => ['auth']], function () {
 		blocco di rotte presenti nella tabella main_menu ma riservate (reserved=1) quindi non mostrate nella gestione menu.
 		Per aggiungere altre route nel DB, aggiungere alla tabella main_menu specificando il ruolo o in alternativa inserirle solo qui in web.php indicando il ruolo nella middleware
 	*/
-		Route::post('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
+		
+		////////////////////// nuova gestione appalti
+		///route test
+				Route::post('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
 
-		Route::get('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
+				Route::get('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
+		/////////////
+		Route::post('makeapp/{id_giorno_appalto?}', [ 'as' => 'makeapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeapp']);
+
+		Route::get('makeapp/{id_giorno_appalto?}', [ 'as' => 'makeapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeapp']);
+
+		Route::post('check_allestimento', [ 'as' => 'check_allestimento', 'uses' => 'App\Http\Controllers\ControllerAppalti@check_allestimento']);		
+
+		Route::post('save_infoapp', [ 'as' => 'save_infoapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@save_infoapp']);	
+		////////////////////////////	
+
 
 		Route::post('load_modello', [ 'as' => 'load_modello', 'uses' => 'App\Http\Controllers\ControllerAppalti@load_modello']);
 

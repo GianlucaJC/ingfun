@@ -13,7 +13,11 @@ use App\Models\candidati;
 use App\Models\user;
 use App\Models\societa;
 use App\Models\mezzi;
+use App\Models\appaltibox;
+use App\Models\appaltinew_info;
 use App\Models\parco_scheda_mezzo;
+use App\Models\parco_marca_mezzo;
+use App\Models\parco_modello_mezzo;
 use OneSignal;
 use Twilio\Rest\Client;
 use Mail;
@@ -262,7 +266,6 @@ public function __construct()
 	
 		return view('all_views/makeappalti',compact('lavoratori'));
 	}
-
 
 	public function newapp($id=0,$from=0,$num_send) {
 		$appalti=array();
@@ -606,4 +609,114 @@ public function __construct()
 
 		$resp=OneSignal::sendNotificationCustom($params);		
 	}
+
+
+	////////////new_function appalti
+
+	public function makeapp($id_giorno_appalto=0) {
+		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
+		->orderBy('nominativo')	
+		->get();
+
+		$info_box=appaltinew_info::from('appaltinew_info as a')
+		->select('a.m_e','a.id_box')
+		->where('a.id_appalto','=',$id_giorno_appalto)
+		->get();
+	
+		$appaltibox=appaltibox::from('appaltibox as a')
+		->select('a.m_e','a.id_box','a.id_lav','a.rowbox','responsabile_mezzo')
+		->where('a.idapp','=',$id_giorno_appalto)
+		->get();		
+
+		$ditte=DB::table('ditte as d')
+		->select("d.id","d.dele","d.denominazione","d.cognome","d.nome")
+		->where('d.dele', "=","0")
+		->orderBy('denominazione')->get();
+
+
+		$marche_db=parco_marca_mezzo::select('id','marca')->get();
+		$marche=array();
+		foreach($marche_db as $mx) {
+			$marche[$mx->id]=$mx->marca;
+		}
+		$modelli_db=parco_modello_mezzo::select('id','modello')->get();		
+		$modelli=array();
+		foreach($modelli_db as $mx) {
+			$modelli[$mx->id]=$mx->modello;
+		}
+
+		$inventario=DB::table('parco_scheda_mezzo')		
+		->where('dele', "=","0")	
+		->orderBy('targa')->get();
+
+		return view('all_views/makeapp',compact('lavoratori','id_giorno_appalto','info_box','appaltibox','ditte','marche','modelli','inventario'));
+	}
+
+	public function check_allestimento(Request $request) {
+		$id_giorno_appalto=$request->input('id_giorno_appalto');
+		$m_e=$request->input('m_e');
+		$box=$request->input('box');
+
+		$info_appalto=appaltinew_info::from('appaltinew_info as a')
+		->select('a.id','a.id_box','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note')
+		->join('appaltinew as an','a.id_appalto','an.id')
+		->where('a.id_appalto','=',$id_giorno_appalto)
+		->where('a.m_e','=',$m_e)
+		->where('a.id_box','=',$box)
+		->get();
+		$info_appalto['header']="KO";
+		if (isset($info_appalto)) $info_appalto['header']="OK";
+		return json_encode($info_appalto);
+	}
+
+	public function save_infoapp(Request $request) {
+		$id_giorno_appalto=$request->input('id_giorno_appalto');
+		$m_e=$request->input('m_e');
+		$box=$request->input('box');
+		$info_appalto=appaltinew_info::where('id_appalto','=',$id_giorno_appalto)
+		->where('m_e','=',$m_e)
+		->where('id_box','=',$box)
+		->delete();
+		$appalto=new appaltinew_info;
+		$appalto->id_appalto=$id_giorno_appalto;
+		$appalto->m_e=$m_e;
+		$appalto->id_box=$box;
+		
+		$appalto->luogo_incontro=$request->input('luogo_incontro');
+		$appalto->orario_incontro=$request->input('orario_incontro');
+		$appalto->luogo_destinazione=$request->input('luogo_destinazione');
+		$appalto->ora_destinazione=$request->input('ora_destinazione');
+		$appalto->data_servizio=$request->input('data_servizio');
+		$appalto->numero_persone=$request->input('numero_persone');
+		$appalto->servizi_svolti=$request->input('servizi_svolti');
+		$appalto->nome_salma=$request->input('nome_salma');
+		$appalto->note=$request->input('note');
+
+		$appalto->save();
+		
+		$all_id_box=$request->input('all_id_box');
+		$arr_id=explode(";",$all_id_box);
+		
+		$info_appalto=appaltibox::where('idapp','=',$id_giorno_appalto)
+		->where('m_e','=',$m_e)
+		->where('id_box','=',$box)
+		->delete();
+
+		for ($sca=0;$sca<count($arr_id);$sca++) {
+			$id_lav=$arr_id[$sca];
+			$appalto=new appaltibox;
+			$appalto->idapp=$id_giorno_appalto;
+			$appalto->m_e=$m_e;
+			$appalto->id_box=$box;
+			$appalto->rowbox=$sca;
+			$appalto->id_lav=$id_lav;
+			$appalto->save();
+		}
+
+		$info_appalto=array();
+		$info_appalto['header']="OK";
+		return json_encode($info_appalto);		
+	}
+	///////////////////
+
 }

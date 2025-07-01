@@ -164,7 +164,7 @@ th, td {
 
 
 
-	<script src="{{ URL::asset('/') }}dist/js/makeappalti.js?ver=2.061"></script>
+	<script src="{{ URL::asset('/') }}dist/js/makeappalti.js?ver=2.068"></script>
 
 
 	

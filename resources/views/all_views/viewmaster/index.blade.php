@@ -75,10 +75,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 	@yield('extra_style')  
 
-	@vite(['resources/css/app.css', 'resources/js/app.js'])
+	
   <!-- Theme style -->
   <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/styles.css">
   <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/adminlte.min.css">
+
+  
 </head>
 
 

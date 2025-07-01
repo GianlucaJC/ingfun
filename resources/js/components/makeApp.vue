@@ -3,7 +3,9 @@
     <div >
 
         <div class="tabella">
+
             <table border="1" cellspacing="0">
+			<tbody>
                 <tr>
                     <td class="nomi" rowspan="3">
 						<div class="drop-zone" @drop="onDrop($event, 1)"  @dragover.prevent  @dragenter.prevent>
@@ -24,6 +26,7 @@
 						</div>
 					</td>
                 </tr>
+			</tbody>	
             </table>
         </div>
     </div>
