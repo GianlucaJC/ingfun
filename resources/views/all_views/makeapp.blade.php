@@ -18,9 +18,13 @@
 	</script>	
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
-	<link rel="stylesheet" href="{{ URL::asset('/') }}plugins/fullcalendar/main.css">
+	
 @endsection
 <style>
+.itemlist {
+    padding:0.4rem !important;
+}
+
 .box {
     
 }
@@ -36,7 +40,8 @@ th, td {
   <div class="content-wrapper" style='background-color:white'>
 
     <!-- Main content -->
-    <div class="content">
+    <div class="content" id='div_tb'>
+    
       <div class="container-fluid mt-4">
 	  <!--<div class='onesignal-customlink-container'></div>!-->
 
@@ -82,87 +87,115 @@ th, td {
 
 				<section class="content">
 				<div class="container-fluid">
+
 					<div class="row">
                     
 					<div class="col-md-2">
-                    
+                                        
+                        <label for="zoomlevel" class="form-label">Zoom level</label>
+                        <input type="range" class="form-range" min="0.50" max="1.05" step="0.05" id="zoomlevel" value='1' onchange="setZoom(this.value)">
+
+
                         <div class="card-body">
-                            
-                            <ul class="nav nav-tabs" id="custom-content-below-tab" role="tablist">
-                                <li class="nav-item">
-                                    <a class="nav-link active" id="custom-content-below-home-tab" data-toggle="pill" href="#custom-content-below-home" role="tab" aria-controls="custom-content-below-home" aria-selected="true">Ditte</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="custom-content-below-profile-tab" data-toggle="pill" href="#custom-content-below-profile" role="tab" aria-controls="custom-content-below-profile" aria-selected="false">Persone</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" id="custom-content-below-messages-tab" data-toggle="pill" href="#custom-content-below-messages" role="tab" aria-controls="custom-content-below-messages" aria-selected="false">mezzi</a>
-                                </li>
 
-                            </ul>
-                            <div class="tab-content" id="custom-content-below-tabContent">
-                            <div class="tab-pane fade show active" id="custom-content-below-home" role="tabpanel" aria-labelledby="custom-content-below-home-tab">
-                                    <!--testo ditte !-->
-                                    <input type='text' class='form-control mt-2' id='cerca_ditta' placeholder='Cerca Ditta'>
-                                    <div id="div_dit" class='mt-2' style='max-height:800px;overflow-y:scroll'>
-                                        <div class="d-grid gap-1" style="padding:10px">
-                                            @foreach ($ditte as $ditta)
-                                                <button type="button" class="btn btn-outline-success allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' onclick='impegnadit({{$ditta->id}})'>              
-                                                {{$ditta->denominazione}}
-                                                </button>
-                                            @endforeach	
-                                        </div>
-                                    </div>                                    
-                            </div>
-
-                       
-                            <div class="tab-pane fade" id="custom-content-below-profile" role="tabpanel" aria-labelledby="custom-content-below-profile-tab">
-                                    <!--testo persone!-->
-                                    <input type='text' class='form-control mt-2' id='cerca_nome' placeholder='Cerca Nominativo'>
-                                    <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
-                                        <div class="d-grid gap-1" style="padding:10px">
-                                            @foreach ($lavoratori as $lavoratore)
-                                                <button type="button" class="btn btn-outline-success allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})'>              
-                                                {{$lavoratore->nominativo}}
-                                                </button>
-                                                <div style='display:none' id='unlock{{$lavoratore->id}}'>
-                                                    <a href='#' onclick="unlock({{$lavoratore->id}})">
-                                                        <i class="fa-solid fa-unlock"></i>
-                                                    </a>   
-                                                    <hr>
+                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                                <!--accordion ditte !-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                                    Ditte
+                                    </button>
+                                    </h2>
+                                    <div id="flush-collapseOne" class="accordion-collapse collapse" >
+                                        <div class="accordion-body">
+                                            <!--testo ditte !-->
+                                            <input type='text' class='form-control mt-2' id='cerca_ditta' placeholder='Cerca Ditta'>
+                                            <div id="div_dit" class='mt-2' style='max-height:800px;overflow-y:scroll'>
+                                                <div class="d-grid gap-1" style="padding:10px">
+                                                    @foreach ($ditte as $ditta)
+                                                        <button type="button" class="btn btn-outline-success allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' onclick='impegnadit({{$ditta->id}})'>              
+                                                        {{$ditta->denominazione}}
+                                                        </button>
+                                                    @endforeach	
                                                 </div>
-                                            @endforeach	
+                                            </div>          
                                         </div>
                                     </div>
-                            </div>
-                            <div class="tab-pane fade" id="custom-content-below-messages" role="tabpanel" aria-labelledby="custom-content-below-messages-tab">
-                                <!--testo mezzi!-->
-                                    <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo'>
-                                    <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
-                                        <div class="d-grid gap-1" style="padding:10px">
-                                            @foreach($inventario as $flotta)
-                                                <?php
-                                                    $mezzo=$flotta->targa;
-                                                    if (isset($marche[$flotta->marca]))
-                                                        $mezzo.=" - ".$marche[$flotta->marca];
-                                                    if (isset($modelli[$flotta->modello]))
-                                                        $mezzo.=" - ".$modelli[$flotta->modello];
-                                                ?>        
-                                                <button type="button" class="btn btn-outline-success allmezzi" data-nome='{{$mezzo}}' id='btnlav{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' onclick='impegnamezzo({{$flotta->id}})'>              
-                                                {{$mezzo}}
-                                                </button>
-                                            @endforeach	
+                                </div>
+                                <!-- fine accordion ditte !-->
+
+                                <!--accordion mezzi !-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                                        Mezzi
+                                    </button>
+                                    </h2>
+                                    <div id="flush-collapseThree" class="accordion-collapse collapse" >
+                                        <div class="accordion-body">
+                                            <!--testo mezzi!-->
+                                                <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo'>
+                                                <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
+                                                    <div class="d-grid gap-1" style="padding:10px">
+                                                        @foreach($inventario as $flotta)
+                                                            <?php
+                                                                $mezzo=$flotta->targa;
+                                                                if (isset($marche[$flotta->marca]))
+                                                                    $mezzo.=" - ".$marche[$flotta->marca];
+                                                                if (isset($modelli[$flotta->modello]))
+                                                                    $mezzo.=" - ".$modelli[$flotta->modello];
+                                                            ?>        
+                                                            <button type="button" class="btn btn-outline-success allmezzi" data-nome='{{$mezzo}}' id='btnlav{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' onclick='impegnamezzo({{$flotta->id}})'>              
+                                                            {{$mezzo}}
+                                                            </button>
+                                                        @endforeach	
+                                                    </div>
+                                                </div>       
                                         </div>
-                                    </div>                                
-                                
-                            </div>
-                    
+                                    </div>
+                                </div>
+                                <!--fine accordion mezzi !-->
+
+                                <!--accordion persone !-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                        Persone
+                                    </button>
+                                    </h2>
+                                    <div id="flush-collapseTwo" class="accordion-collapse collapse" >
+                                        <div class="accordion-body">
+                                            <!--testo persone!-->
+                                            <input type='text' class='form-control mt-2' id='cerca_nome' placeholder='Cerca Nominativo'>
+                                            <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
+                                                <div class="d-grid gap-1" style="padding:10px">
+                                                    @foreach ($lavoratori as $lavoratore)
+                                                        <button type="button" class="btn btn-outline-success allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)">              
+                                                        {{$lavoratore->nominativo}}
+                                                        </button>
+                                                        <div style='display:none' id='unlock{{$lavoratore->id}}'>
+                                                            <a href='#' onclick="unlock({{$lavoratore->id}})">
+                                                                <i class="fa-solid fa-unlock"></i>
+                                                            </a>   
+                                                            <hr>
+                                                        </div>
+                                                    @endforeach	
+                                                </div>
+                                            </div>      
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- fine accordion persone !-->
+
                             </div>
                         </div>
 
 					</div>
 					<!-- /.col -->
-					<div class="col-md-10" style='overflow-x:scroll;max-height:800px'>
+					<div class="col-md-10" style='max-height:1200px'>
+
+
+
                         <a href='#' onclick="newapp('M','man')">Aggiungi appalto mattutino</a>						
 						<table id='tbAppM' class='table'>	
                             <tbody>
@@ -227,16 +260,13 @@ th, td {
 	<!-- jQuery -->
 	<script src="{{ URL::asset('/') }}plugins/jquery/jquery.min.js"></script>
 	<!-- Bootstrap 4 -->
-	<script src="{{ URL::asset('/') }}plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
+	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<!-- jQuery UI -->
 	<script src="{{ URL::asset('/') }}plugins/jquery-ui/jquery-ui.min.js"></script>
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 
 
-	<!-- fullCalendar 2.2.5 -->
-	<script src="{{ URL::asset('/') }}plugins/moment/moment.min.js"></script>
-	<script src="{{ URL::asset('/') }}plugins/fullcalendar/main.js"></script>
 
 
 

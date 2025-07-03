@@ -1,7 +1,8 @@
 const numBox=6
-const elemBox=9
+const elemBox=6
 const maxI=2
 
+var _m_e="?";var _box="?";var _el="?"
  $(function () {
     $('body').addClass("sidebar-collapse");
     $('#cerca_ditta').on("change keyup paste", function(){
@@ -16,10 +17,30 @@ const maxI=2
     id_giorno_appalto=$("#id_giorno_appalto").val()
     load_appalti(id_giorno_appalto)
     load_ini_lav();
+    setZoom(1)
 
 } );
 
+function dragstartHandler(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
 
+function dragoverHandler(ev) {
+  dest=ev.target.id
+  _m_e=$("#"+dest).data('m_e')
+  _box=$("#"+dest).data('box')
+  _el=$("#"+dest).data('el')
+  ev.preventDefault();
+}
+
+function dropHandler(ev) {
+  ev.preventDefault();
+  const from = ev.dataTransfer.getData("text");
+  idlav=$("#"+from).data('idlav')
+  impegnalav(idlav)
+  console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
+  setsquadra(_m_e,_box,_el)
+}
 
 
 function load_appalti(id_giorno_appalto) {
@@ -398,6 +419,57 @@ function detail_appalto(m_e,box) {
     $("#modalinfo").modal('show')
 }
 
+
+function accordion(m_e,box) {
+    html=""
+    html+=`
+    <td style='padding:10px'>
+        <div class="d-grid gap-2 mb-2">
+            <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)">Info</button>
+        </div>
+
+        <div class="accordion accordion-flush" id="div_gen_box`+m_e+box+`">
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
+                    Ditta
+                </button>
+                </h2>
+                <div id="flush-collapseOne" class="accordion-collapse collapse"">
+                    <div class="accordion-body"></div>
+                </div>
+            </div>
+
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
+                    Mezzo
+                </button>
+                </h2>
+                <div id="flush-collapseThree" class="accordion-collapse collapse"">
+                    <div class="accordion-body"></div>
+                </div>
+            </div>
+        
+            <div class="accordion-item">
+                <h2 class="accordion-header">
+                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                    Persone
+                </button>
+                </h2>
+                <div id="flush-collapseTwo" class="accordion-collapse collapse"">
+                    <div class="accordion-body">
+                        <div id='div_pers`+m_e+box+`'></div>
+                    </div>
+                </div>
+            </div>
+        </div>    
+ 
+    </td>      
+    `
+    return html
+} 
+
 function newapp(m_e,from) {
     strm=$("#strm").val()
     strp=$("#strp").val()
@@ -417,18 +489,19 @@ function newapp(m_e,from) {
     }
     html=""
    
+    html=accordion(m_e,box)
+    $('#tbApp'+m_e+' tr').append(html)
+
+   
+    html="";
     html+=`
-        <td style='padding:10px'>
+        
             <div id='div_box`+m_e+box+`' class="card box`+m_e+`" style="width: 13rem;">
-               
-
-                <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)">Info</button>
-
                 <div class="card-body">
-                    <div class="list-group">`
+                    <div class="list-group"  ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)">`
                         for (el=0;el<elemBox;el++) {
                             html+=`    
-                            <a href="#" class="list-group-item list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' aria-current="true" onclick="setsquadra('`+m_e+`',`+box+`,`+el+`)">
+                            <a href="#" class="list-group-item itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" >
                                 Assegnabile
                             </a>`
                         }
@@ -436,9 +509,15 @@ function newapp(m_e,from) {
                     </div>
                 </div>                                    
             </div>
-        </td>
+        
     `
-    $('#tbApp'+m_e+' tr').append(html)
+    $("#div_pers"+m_e+box).html(html)
+    
     if (from=="man") alert("Appalto aggiunto in coda!")
 
 }
+
+function setZoom(value) {
+	$('#div_tb').css('transform','scale('+value+')');
+	$('#div_tb').css('transformOrigin','left top');
+};
