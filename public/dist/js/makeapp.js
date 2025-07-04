@@ -447,7 +447,7 @@ function accordion(m_e,box) {
             <div>
             
                 <small>
-                    <center>Mezzi associati</center>
+                    <center>Mezzi impegnati</center>
                 </small>
 
 
