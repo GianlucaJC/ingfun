@@ -284,6 +284,17 @@ function save_appalto() {
 
             $("#div_wait").empty()
             $("#modalinfo").modal('hide')
+            numero_persone=$("#numero_persone").val()
+            orario_incontro=$("#orario_incontro").val()
+            html=`
+                <span class="badge rounded-pill bg-success mr-2 mt-2">
+                <i class="fa-solid fa-person"></i> 
+                `+numero_persone+`
+                 <i class="ml-3 fa-solid fa-clock"></i> `
+                +orario_incontro+` 
+                </span>
+            `
+            $("#infoapp"+m_e+box).html(html)
           }
           else {
             $("#div_wait").html("<font color='red'>Errore durante il salvataggio dei dati</font>")
@@ -429,7 +440,12 @@ function accordion(m_e,box) {
     <td style='padding:10px'>
     
         <div class="d-grid gap-2 mb-2">
-            <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)">Info</button>
+            <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)" >Info</button>
+            <div id='infoapp`+m_e+box+`'>
+                <span class="badge rounded-pill bg-gray mr-2 mt-2">
+                <i class="fa-solid fa-person"></i> 
+                 <i class="ml-3 fa-solid fa-clock"></i>
+            </div>
         </div>
 
         <div class="accordion accordion-flush" id="div_gen_box`+m_e+box+`">
@@ -447,7 +463,7 @@ function accordion(m_e,box) {
             <div>
             
                 <small>
-                    <center>Mezzi impegnati</center>
+                    <center><i class="fa-solid fa-car mt-2"></i></center>
                 </small>
 
 
