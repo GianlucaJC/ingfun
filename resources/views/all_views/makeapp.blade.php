@@ -45,7 +45,7 @@ th, td {
       <div class="container-fluid mt-4">
 	  <!--<div class='onesignal-customlink-container'></div>!-->
 
-		<form method='post' action="{{ route('makeappalti') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
+		<form method='post' action="{{ route('makeapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
             <input type='hidden' name='id_giorno_appalto' id='id_giorno_appalto' value='{{$id_giorno_appalto}}'>
@@ -137,23 +137,39 @@ th, td {
                                                 <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo'>
                                                 <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
                                                     <div class="d-grid gap-1" style="padding:10px">
+                                                        <?php $infomezzi=""; ?>
                                                         @foreach($inventario as $flotta)
                                                             <?php
                                                                 $mezzo=$flotta->targa;
-                                                                if (isset($marche[$flotta->marca]))
-                                                                    $mezzo.=" - ".$marche[$flotta->marca];
-                                                                if (isset($modelli[$flotta->modello]))
-                                                                    $mezzo.=" - ".$modelli[$flotta->modello];
+                                                                $targa=$flotta->targa;
+                                                                $marca="";
+                                                                if (isset($marche[$flotta->marca])) {
+                                                                    $marca=$marche[$flotta->marca];
+                                                                    $mezzo.=" - ".$marca;
+                                                                }
+                                                                $modello="";
+                                                                if (isset($modelli[$flotta->modello])) {
+                                                                    $modello=$modelli[$flotta->modello];
+                                                                    $mezzo.=" - ".$modello;
+                                                                }
                                                             ?>        
                                                             <button type="button" class="btn btn-outline-success allmezzi" data-nome='{{$mezzo}}' id='btnlav{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' onclick='impegnamezzo({{$flotta->id}})'>              
                                                             {{$mezzo}}
                                                             </button>
+                                                            <?php
+                                                                if (strlen($infomezzi)!=0) $infomezzi.=";";
+
+                                                                $infomezzi.="$targa-$marca-$modello";
+                                                            ?>
                                                         @endforeach	
+                                                                                                                                            
+
                                                     </div>
                                                 </div>       
                                         </div>
                                     </div>
                                 </div>
+                                <input type='hidden' name='infomezzi' id='infomezzi' value='{{$infomezzi}}'>
                                 <!--fine accordion mezzi !-->
 
                                 <!--accordion persone !-->
@@ -231,7 +247,7 @@ th, td {
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="modalinfotitle">Definizione appalto</h5>
+                <h5 class="modal-title" id="modalinfotitle">Informazioni sull'appalto</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
                 </button>

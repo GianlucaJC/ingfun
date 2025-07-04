@@ -132,6 +132,7 @@ function setsquadra(m_e,box,rowbox) {
     if( typeof setsquadra.unlock_id == 'undefined' ) setsquadra.unlock_id=new Array()
 
     idlav=setsquadra.idlav
+  
 
     present=false
     $(".box"+m_e+box).each(function(){
@@ -148,7 +149,7 @@ function setsquadra(m_e,box,rowbox) {
         remove=true
         idlav=$("#"+refbox).data( "idlav")
         $("#"+refbox).removeClass('active')
-        $("#"+refbox).first().html('Assegnabile')
+        $("#"+refbox).first().html("Assegnabile")
         $("#"+refbox).removeData( "idlav", '' );
     }
 
@@ -179,9 +180,11 @@ function setsquadra(m_e,box,rowbox) {
     if (max==false) {
         if (!$("#"+refbox).hasClass('active')) {
             $("#"+refbox).addClass('active')
-            $("#"+refbox).first().html(nomelav)
+            html=nomelav+" <span id='resp"+m_e+box+rowbox+"'></span>"
+            $("#"+refbox).first().html(html)
             $("#"+refbox).data( "idlav", idlav );
             numpres++
+            
         }
     } 
     if (numpres>=maxI) {
@@ -443,7 +446,7 @@ function accordion(m_e,box) {
             <div class="accordion-item">
                 <h2 class="accordion-header">
                 <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                    Mezzo
+                    Mezzi
                 </button>
                 </h2>
                 <div id="flush-collapseThree" class="accordion-collapse collapse"">
@@ -469,6 +472,118 @@ function accordion(m_e,box) {
     `
     return html
 } 
+
+function removelav(m_e,box,el) {
+    refbox="box"+m_e+box+el
+    idlav=$("#"+refbox).data( "idlav")
+    $("#"+refbox).removeClass('active')
+    $("#"+refbox).first().html('Assegnabile')
+    $("#"+refbox).removeData( "idlav", '' );
+    $("#modalinfo").modal('hide')
+}
+
+function setresp(m_e,box,el,targa,from) {
+    refbox="box"+m_e+box+el
+    if( typeof setresp.resp == 'undefined' ) setresp.resp=[]
+    resp=setresp.resp
+ 
+    idlav=$("#"+refbox).data( "idlav")
+    
+    numbox_current=0
+    $(".box"+m_e).each(function(){
+        numbox_current++
+    })    
+    
+    //eliminazione mezzo assegnato
+    if (targa=="0") {
+        if (resp[m_e]) {
+            ind=box+"_"+el
+            if (resp[m_e][ind]) {
+                delete resp[m_e][ind];
+            }
+        }
+        $("#resp"+m_e+box+el).html('')
+        if (from==1) $('#modalinfo').modal('hide')
+        return false
+    }
+    
+    if (resp[m_e]) {
+        //controllo per verificare se su stesso box esiste già una targa assegnata
+        for (elx=0;elx<elemBox;elx++) {
+            ind=box+"_"+elx
+            if (resp[m_e][ind] && resp[m_e][ind].targa==targa && el!=elx) return "KO";
+        }
+        //controllo per verificare se su altri box esiste già una targa assegnata
+        for (bo=0;bo<numbox_current;bo++) {
+            if (bo!=box) {
+                for (elx=0;elx<elemBox;elx++) {
+                    ind=bo+"_"+elx
+                    if (resp[m_e][ind] && resp[m_e][ind].targa==targa) return "KO";
+                }        
+            }
+        }
+    }
+   
+
+    $("#resp"+m_e+box+el).html("<b>"+targa+"</b>")
+    ind=box+"_"+el
+    if (!resp[m_e]) resp[m_e]={}
+    resp[m_e][ind]={}
+    resp[m_e][ind].targa=targa
+    resp[m_e][ind].idlav=idlav
+
+
+    if (from==1) $('#modalinfo').modal('hide')
+}
+
+function action_lav(m_e,box,el) {
+    infomezzi=$("#infomezzi").val()
+    html=""
+    html+=`
+        <button type="button" class="btn btn-primary" onclick="removelav('`+m_e+`',`+box+`,`+el+`)">
+        Rimuovi lavoratore dall'appalto</button>
+        <hr>
+        <center><h4>Imposta lavoratore come responsabile mezzo</h4></center>
+    
+    `
+    arr_mezzi=infomezzi.split(";")
+    html+="<div class='d-grid gap-2'>";
+        html+=`
+            <button type="button" class="btn btn-outline-warning" 
+            onclick="
+                esito=setresp('`+m_e+`',`+box+`,`+el+`,'0',1);
+                if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
+            ">
+            Elimina mezzo assegnato
+            </button>
+        `;
+
+        for (sca=0;sca<arr_mezzi.length;sca++) {
+            targa=arr_mezzi[sca].split("-")[0]
+            marca=arr_mezzi[sca].split("-")[1]
+            modello=arr_mezzi[sca].split("-")[2]
+            
+            html+=`
+                <button type="button" class="btn btn-outline-success" 
+                onclick="
+                    esito=setresp('`+m_e+`',`+box+`,`+el+`,'`+targa+`',1);
+                    if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
+                ">`
+                +targa+` - `+marca+` - `+modello+`
+                </button>
+            `;
+        }
+    html+="</div>"    
+        
+
+    refbox="box"+m_e+box+el
+    idlav=$("#"+refbox).data( "idlav")
+    if (typeof idlav == 'undefined' || idlav.length==0) return false
+    
+    $("#body_content").html(html)
+
+    $("#modalinfo").modal('show')
+}
 
 function newapp(m_e,from) {
     strm=$("#strm").val()
@@ -501,9 +616,13 @@ function newapp(m_e,from) {
                     <div class="list-group"  ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)">`
                         for (el=0;el<elemBox;el++) {
                             html+=`    
-                            <a href="#" class="list-group-item itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" >
+                            <a href="#" class="list-group-item  clearfix itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" onclick="action_lav('`+m_e+`',`+box+`,`+el+`)" >
                                 Assegnabile
-                            </a>`
+                            </a>
+    
+    
+                            `
+                            
                         }
                         html+=`
                     </div>
