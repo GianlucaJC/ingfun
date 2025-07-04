@@ -425,8 +425,9 @@ function detail_appalto(m_e,box) {
 
 function accordion(m_e,box) {
     html=""
-    html+=`
+    html+=`    
     <td style='padding:10px'>
+    
         <div class="d-grid gap-2 mb-2">
             <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)">Info</button>
         </div>
@@ -443,14 +444,19 @@ function accordion(m_e,box) {
                 </div>
             </div>
 
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
-                    Mezzi
-                </button>
-                </h2>
-                <div id="flush-collapseThree" class="accordion-collapse collapse"">
-                    <div class="accordion-body"></div>
+            <div>
+            
+                <small>
+                    <center>Mezzi associati</center>
+                </small>
+
+
+
+
+                 
+                <div class="viewmezzi mb-2">
+                 
+                    
                 </div>
             </div>
         
@@ -479,9 +485,39 @@ function removelav(m_e,box,el) {
     $("#"+refbox).removeClass('active')
     $("#"+refbox).first().html('Assegnabile')
     $("#"+refbox).removeData( "idlav", '' );
+    setresp(m_e,box,el,0,1) //contestualmente elimina mezzo eventuale assegnato
+    view_mezzi()
     $("#modalinfo").modal('hide')
 }
 
+function view_mezzi() {
+
+    if( typeof setresp.resp == 'undefined' ) return false
+    resp=setresp.resp
+
+
+    numbox_current=0
+    $(".box"+m_e).each(function(){
+        numbox_current++
+    })    
+    html=""
+    for (box=0;box<numbox_current;box++) {
+        for (sc=1;sc<=2;sc++) {
+            m_e="M"
+            if (sc==2) m_e="P";
+            for (elx=0;elx<elemBox;elx++) {
+                ind=box+"_"+elx
+                if (resp[m_e]) {
+                    if (resp[m_e][ind]) {
+                        html+=`<span class="badge rounded-pill bg-primary mr-2 mt-2">`+resp[m_e][ind].targa+`</span>`
+                    }
+                }
+            }
+        } 
+    }
+    console.log(html)
+    $(".viewmezzi").html(html)
+}
 function setresp(m_e,box,el,targa,from) {
     refbox="box"+m_e+box+el
     if( typeof setresp.resp == 'undefined' ) setresp.resp=[]
@@ -500,6 +536,7 @@ function setresp(m_e,box,el,targa,from) {
             ind=box+"_"+el
             if (resp[m_e][ind]) {
                 delete resp[m_e][ind];
+                view_mezzi()
             }
         }
         $("#resp"+m_e+box+el).html('')
@@ -531,7 +568,7 @@ function setresp(m_e,box,el,targa,from) {
     resp[m_e][ind]={}
     resp[m_e][ind].targa=targa
     resp[m_e][ind].idlav=idlav
-
+    view_mezzi()
 
     if (from==1) $('#modalinfo').modal('hide')
 }

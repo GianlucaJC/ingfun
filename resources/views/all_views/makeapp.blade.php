@@ -91,7 +91,7 @@ th, td {
 					<div class="row">
                     
 					<div class="col-md-2">
-                                        
+
                         <label for="zoomlevel" class="form-label">Zoom level</label>
                         <input type="range" class="form-range" min="0.50" max="1.05" step="0.05" id="zoomlevel" value='1' onchange="setZoom(this.value)">
 
@@ -275,7 +275,7 @@ th, td {
  @section('content_plugin')
 	<!-- jQuery -->
 	<script src="{{ URL::asset('/') }}plugins/jquery/jquery.min.js"></script>
-	<!-- Bootstrap 4 -->
+	<!-- Bootstrap 5 -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<!-- jQuery UI -->
 	<script src="{{ URL::asset('/') }}plugins/jquery-ui/jquery-ui.min.js"></script>
