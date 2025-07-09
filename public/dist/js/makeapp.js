@@ -95,7 +95,7 @@ function dropHandler(ev) {
   const from = ev.dataTransfer.getData("text");
   dest=ev.target.id
     
-  //in caso di assgnazione responsabile mezzo, from contiene l'id del bottone mezzo (car1, car2)
+  //in caso di assegnazione responsabile mezzo, from contiene l'id del bottone mezzo (car1, car2)
   if (from.substr(0,3)=="car") {
     box_from=$("#"+from).data('box')
     m_e=$("#"+dest).data('m_e')
@@ -146,7 +146,12 @@ function dragoverHandlerDitta(ev) {
 function dropHandlerDitta(ev) {
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
+  if (from.substr(0,6)!="btndit") {
+    alert("Drag & Drop non ammesso!")
+    return false
+  }
   dest=ev.target.id
+
   ditta=$("#"+from).data("nome");d_origin=ditta
   iddit=$("#"+from).data("iddit")
   if (ditta.length>20) ditta=ditta.substr(0,16)+"..."
@@ -624,6 +629,15 @@ function removemezzo(dest) {
     }
 }
 
+function removeditta(id) {
+    if (!confirm("Sicuri di disassociare la ditta?")) return false;
+    $("#"+id).removeData( "iddit", '' );
+    html="<i class='fa-solid fa-location-dot'></i>"
+    $("#"+id).html(html)
+    $("#"+id).removeClass('bg-success').addClass('bg-secondary')
+    
+}
+
 function accordion(m_e,box) {
     html=""
     html+=`    
@@ -638,7 +652,7 @@ function accordion(m_e,box) {
                 </span>    
             </div>
             <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1" 
-                id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top">
+                id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)'>
                 <i class="fa-solid fa-location-dot"></i>
             </span>    
         </div>
@@ -671,7 +685,7 @@ function accordion(m_e,box) {
                     <div class="accordion-body">
                         <div id='div_pers`+m_e+box+`'></div>
                     </div>
-                    
+                    <center><button type="button" class="btn btn-success btn-sm" id="btn_save_only`+m_e+box+`" onclick="save_only_lav('`+m_e+`',`+box+`)">Salva</button></center>
                 </div>
             </div>
         </div>   
