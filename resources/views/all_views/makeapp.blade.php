@@ -153,7 +153,9 @@ th, td {
                                                                     $mezzo.=" - ".$modello;
                                                                 }
                                                             ?>        
-                                                            <button type="button" class="btn btn-outline-success allmezzi" data-nome='{{$mezzo}}' id='btnlav{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' onclick='impegnamezzo({{$flotta->id}})'>              
+                                                            <button type="button" class="btn btn-outline-success allmezzi" data-nome='{{$mezzo}}' id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
+                                                            data-targa='{{$flotta->targa}}' data-mezzo='{{$mezzo}}'
+                                                            draggable="true" ondragstart="dragstartHandlerMezzi(event)">              
                                                             {{$mezzo}}
                                                             </button>
                                                             <?php

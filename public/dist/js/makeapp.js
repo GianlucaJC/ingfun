@@ -18,9 +18,66 @@ var _m_e="?";var _box="?";var _el="?"
     load_appalti(id_giorno_appalto)
     load_ini_lav();
     setZoom(1)
-
+    //$('[data-toggle="tooltip"]').tooltip(); 
+    
+    const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
+    const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    
 } );
 
+///////// DRAG & DROP RESP Mezzi
+function dragstartHandlerResp(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+  console.log("target",ev.target.id)
+}
+//////////////////
+
+
+
+///////// DRAG & DROP Mezzi
+function dragstartHandlerMezzi(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+
+function dragoverHandlerMezzi(ev) {
+  car=ev.target.id
+  ev.preventDefault();
+}
+
+function dropHandlerMezzi(ev) {
+    ev.preventDefault();
+    const from = ev.dataTransfer.getData("text");
+    if (from.substr(0,8)!="btnmezzo")  {
+        alert("Drag & Drop non ammesso!")
+        return false
+    }
+    mezzo=$("#"+from).data('mezzo')
+    targa=$("#"+from).data('targa')
+    dest=ev.target.id
+    m_e=$("#"+dest).data('m_e')
+    box=$("#"+dest).data('box')
+    testo="Mattutini"
+    if (m_e=="P") testo="Pomeridiani"
+    check_ins=true
+    $(".car"+m_e).each(function(){
+        check_targa=$(this).data( "targa")
+        if (targa==check_targa) {
+            alert("Mezzo già assegnato negli appalti "+testo)
+            check_ins=false
+        }    
+    })    
+
+    if (check_ins==false) return false
+    $("#"+dest).text(targa)
+    $('#'+dest).attr('data-bs-original-title', mezzo);
+    $("#"+dest).data( "targa", targa );
+    console.log("dest",dest,"data-targa",$("#"+dest).data( "targa"))
+    $("#"+dest).removeClass('bg-secondary').addClass('bg-warning')
+}
+//////////////////
+
+
+///////// DRAG & DROP Lavoratori
 function dragstartHandler(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
 }
@@ -36,12 +93,37 @@ function dragoverHandler(ev) {
 function dropHandler(ev) {
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
+  dest=ev.target.id
+    
+  //in caso di assgnazione responsabile mezzo, from contiene l'id del bottone mezzo (car1, car2)
+  if (from.substr(0,3)=="car") {
+    m_e=$("#"+dest).data('m_e')
+    box=$("#"+dest).data('box')
+    el=$("#"+dest).data('el')
+    if (m_e.length!=0) {
+        //assegnazione responsabile mezzo
+        targa=$("#"+from).data("targa")
+        
+        esito=setresp(m_e,box,el,targa,1);
+        if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
+        console.log("targa ass",targa)
+    }
+    return false
+  }
+ 
+  if (from.substr(0,6)!="btnlav") {
+    alert("Drag & Drop non ammesso")
+    return false
+  }
+
+  
+
   idlav=$("#"+from).data('idlav')
   impegnalav(idlav)
   console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
   setsquadra(_m_e,_box,_el)
 }
-
+//////////////////
 
 function load_appalti(id_giorno_appalto) {
     maxM=$("#maxM").val()
@@ -135,10 +217,12 @@ function setsquadra(m_e,box,rowbox) {
   
 
     present=false
+    /*
     $(".box"+m_e+box).each(function(){
         id_ref=$(this).data( "idlav")
         if (id_ref==idlav) present=true
     })
+    */
 
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
@@ -180,7 +264,7 @@ function setsquadra(m_e,box,rowbox) {
     if (max==false) {
         if (!$("#"+refbox).hasClass('active')) {
             $("#"+refbox).addClass('active')
-            html=nomelav+" <span id='resp"+m_e+box+rowbox+"'></span>"
+            html=nomelav+" <span id='resp"+m_e+box+rowbox+"'></span><input type='hidden' id='resp_raw"+m_e+box+rowbox+"'>"
             $("#"+refbox).first().html(html)
             $("#"+refbox).data( "idlav", idlav );
             numpres++
@@ -246,8 +330,15 @@ function save_appalto() {
     id_giorno_appalto=save_appalto.id_giorno_appalto
     m_e=save_appalto.m_e
     box=save_appalto.box
+    from=save_appalto.from
 
-    info=$('#form_info').serialize();
+    if (from==1) {
+        $("#btn_save_only"+m_e+box).prop('disabled',true)
+        $("#btn_save_only"+m_e+box).text('Salvataggio in corso...')   
+    }
+
+    if (from==0) info=$('#form_info').serialize();
+    else info=0;
 
     let CSRF_TOKEN = $("#token_csrf").val();
     html="<i class='fas fa-spinner fa-spin'></i>"
@@ -255,20 +346,37 @@ function save_appalto() {
     base_path = $("#url").val();
 
     all_id_box=""
-    $(".box"+m_e+box).each(function(){
-        lav=$(this).data( "idlav")
-        if (all_id_box.length>0) all_id_box+=";" 
-        if( typeof lav === 'undefined' ) all_id_box+="0"
-        else all_id_box+=lav
-    
-    })    
-    timer = setTimeout(function() {	
+    if (from==0) {
+        $(".box"+m_e+box).each(function(){
+            lav=$(this).data( "idlav")
+            if (all_id_box.length>0) all_id_box+=";" 
+            if( typeof lav === 'undefined' ) all_id_box+="0"
+            else all_id_box+=lav
+        
+        })  
+    }
+
+    all_id_boxes=""
+    if (from==1) {
+        $(".box").each(function(){
+            lav=$(this).data( "idlav")
+            m_e1=$(this).data( "m_e")
+            box1=$(this).data( "box")
+
+            if (all_id_boxes.length>0) all_id_boxes+=";" 
+            if( typeof lav === 'undefined' ) all_id_boxes+="0|"+m_e1+"|"+box1
+            else all_id_boxes+=lav+"|"+m_e1+"|"+box1
+        })      
+    }
+
+   
+      timer = setTimeout(function() {	
       fetch(base_path+"/save_infoapp", {
           method: 'post',
           headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
           },
-          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&"+info,
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&from="+from,
       })
       .then(response => {
           if (response.ok) {
@@ -276,25 +384,34 @@ function save_appalto() {
           }
       })
       .then(resp=>{
+            if (from==1) {
+                $("#btn_save_only"+m_e+box).prop('disabled',false)
+                $("#btn_save_only"+m_e+box).text('Salva')    
+            }
+
           if (resp.header=="OK") {
-          $("#btnbox"+m_e+box)
-            .removeClass('btn-outline-info')
-            .removeClass('btn-info')
-            .addClass('btn-info')
+            if (from==0) {
+                $("#btnbox"+m_e+box)
+                .removeClass('btn-outline-info')
+                .removeClass('btn-info')
+                .addClass('btn-info')
+            }    
 
             $("#div_wait").empty()
             $("#modalinfo").modal('hide')
-            numero_persone=$("#numero_persone").val()
-            orario_incontro=$("#orario_incontro").val()
-            html=`
+            if (from==0) {
+                numero_persone=$("#numero_persone").val()
+                orario_incontro=$("#orario_incontro").val()
+                html=`
                 <span class="badge rounded-pill bg-success mr-2 mt-2">
                 <i class="fa-solid fa-person"></i> 
                 `+numero_persone+`
                  <i class="ml-3 fa-solid fa-clock"></i> `
                 +orario_incontro+` 
                 </span>
-            `
-            $("#infoapp"+m_e+box).html(html)
+                `
+                $("#infoapp"+m_e+box).html(html)
+            }    
           }
           else {
             $("#div_wait").html("<font color='red'>Errore durante il salvataggio dei dati</font>")
@@ -308,10 +425,18 @@ function save_appalto() {
     }, 800)	
 
 }
-function save_info(id_giorno_appalto,m_e,box){
+
+function save_only_lav(m_e,box) {
+    id_giorno_appalto=$("#id_giorno_appalto").val()
+    save_info(id_giorno_appalto,m_e,box,1)
+    save_appalto()
+}
+
+function save_info(id_giorno_appalto,m_e,box,from){
     save_appalto.id_giorno_appalto=id_giorno_appalto
     save_appalto.m_e=m_e
     save_appalto.box=box
+    save_appalto.from=from
 }
 function info_box(m_e,box) {
     $("#div_save").empty();
@@ -350,7 +475,7 @@ function info_box(m_e,box) {
             }
             $("#div_wait").empty()
             html=`
-                <button type="submit" id='btn_save' class="btn btn-primary" onclick="save_info(`+id_giorno_appalto+`,'`+m_e+`',`+box+`)">Salva dati appalto</button>
+                <button type="submit" id='btn_save' class="btn btn-primary" onclick="save_info(`+id_giorno_appalto+`,'`+m_e+`',`+box+`,0)">Salva dati appalto</button>
             `
             $("#div_save").html(html)
             validation_form()
@@ -433,6 +558,37 @@ function detail_appalto(m_e,box) {
     $("#modalinfo").modal('show')
 }
 
+function removemezzo(dest) {
+    if (dest.length>0) {
+        if (!confirm("Sicuri di eliminare il mezzo (e l'eventuale assegnazione del responsabile mezzo)?"))
+            return false
+        
+        resp=new Array()
+        if( typeof setresp.resp != 'undefined' ) resp=setresp.resp
+        targa=$("#"+dest).data("targa")
+        m=dest.substr(3,1)
+        m_e=$("#"+dest).data('m_e')
+        box=$("#"+dest).data('box')
+        var exist  = Object.keys(resp).includes(m_e)
+        if (exist) {
+        
+            for (elx=0;elx<elemBox;elx++) {
+                ind=box+"_"+elx
+                if (resp[m_e][ind] && resp[m_e][ind].targa==targa) {
+                    esito=setresp(m_e,box,elx,'0',1);
+                    break;
+                }
+            }
+        }
+        $("#"+dest).text("Mezzo"+m)
+        $('#'+dest).attr('data-bs-original-title', "");
+        $("#"+dest).data( "targa", "");
+        $("#"+dest).removeClass('bg-warning').addClass('bg-secondary')
+
+        
+            
+    }
+}
 
 function accordion(m_e,box) {
     html=""
@@ -461,18 +617,17 @@ function accordion(m_e,box) {
             </div>
 
             <div>
-            
                 <small>
                     <center><i class="fa-solid fa-car mt-2"></i></center>
-                </small>
-
-
-
-
-                 
-                <div class="viewmezzi mb-2">
-                 
+                        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:1em"  id='car1`+m_e+box+`'   data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+                            Mezzo1
+                        </span>
                     
+                        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:1em"  id='car2`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+                            Mezzo2
+                        </span>                    
+                </small>                 
+                <div class="viewmezzi mb-2">
                 </div>
             </div>
         
@@ -486,10 +641,10 @@ function accordion(m_e,box) {
                     <div class="accordion-body">
                         <div id='div_pers`+m_e+box+`'></div>
                     </div>
+                    <center><button type="button" class="btn btn-success btn-sm" id="btn_save_only`+m_e+box+`" onclick="save_only_lav('`+m_e+`',`+box+`)">Salva</button></center>
                 </div>
             </div>
-        </div>    
- 
+        </div>   
     </td>      
     `
     return html
@@ -502,38 +657,13 @@ function removelav(m_e,box,el) {
     $("#"+refbox).first().html('Assegnabile')
     $("#"+refbox).removeData( "idlav", '' );
     setresp(m_e,box,el,0,1) //contestualmente elimina mezzo eventuale assegnato
-    view_mezzi()
     $("#modalinfo").modal('hide')
 }
 
-function view_mezzi() {
-
-    if( typeof setresp.resp == 'undefined' ) return false
-    resp=setresp.resp
 
 
-    numbox_current=0
-    $(".box"+m_e).each(function(){
-        numbox_current++
-    })    
-    html=""
-    for (box=0;box<numbox_current;box++) {
-        for (sc=1;sc<=2;sc++) {
-            m_e="M"
-            if (sc==2) m_e="P";
-            for (elx=0;elx<elemBox;elx++) {
-                ind=box+"_"+elx
-                if (resp[m_e]) {
-                    if (resp[m_e][ind]) {
-                        html+=`<span class="badge rounded-pill bg-primary mr-2 mt-2">`+resp[m_e][ind].targa+`</span>`
-                    }
-                }
-            }
-        } 
-    }
-    console.log(html)
-    $(".viewmezzi").html(html)
-}
+
+
 function setresp(m_e,box,el,targa,from) {
     refbox="box"+m_e+box+el
     if( typeof setresp.resp == 'undefined' ) setresp.resp=[]
@@ -552,11 +682,12 @@ function setresp(m_e,box,el,targa,from) {
             ind=box+"_"+el
             if (resp[m_e][ind]) {
                 delete resp[m_e][ind];
-                view_mezzi()
             }
         }
         $("#resp"+m_e+box+el).html('')
-        if (from==1) $('#modalinfo').modal('hide')
+
+        $("#resp_raw"+m_e+box+el).val('')
+        
         return false
     }
     
@@ -579,14 +710,13 @@ function setresp(m_e,box,el,targa,from) {
    
 
     $("#resp"+m_e+box+el).html("<b>"+targa+"</b>")
+    $("#resp_raw"+m_e+box+el).val(targa)
     ind=box+"_"+el
     if (!resp[m_e]) resp[m_e]={}
     resp[m_e][ind]={}
     resp[m_e][ind].targa=targa
     resp[m_e][ind].idlav=idlav
-    view_mezzi()
-
-    if (from==1) $('#modalinfo').modal('hide')
+   
 }
 
 function action_lav(m_e,box,el) {
@@ -610,7 +740,7 @@ function action_lav(m_e,box,el) {
             Elimina mezzo assegnato
             </button>
         `;
-
+        /*
         for (sca=0;sca<arr_mezzi.length;sca++) {
             targa=arr_mezzi[sca].split("-")[0]
             marca=arr_mezzi[sca].split("-")[1]
@@ -626,6 +756,7 @@ function action_lav(m_e,box,el) {
                 </button>
             `;
         }
+        */
     html+="</div>"    
         
 

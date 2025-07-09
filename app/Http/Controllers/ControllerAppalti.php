@@ -673,46 +673,63 @@ public function __construct()
 		$id_giorno_appalto=$request->input('id_giorno_appalto');
 		$m_e=$request->input('m_e');
 		$box=$request->input('box');
-		$info_appalto=appaltinew_info::where('id_appalto','=',$id_giorno_appalto)
-		->where('m_e','=',$m_e)
-		->where('id_box','=',$box)
-		->delete();
-		$appalto=new appaltinew_info;
-		$appalto->id_appalto=$id_giorno_appalto;
-		$appalto->m_e=$m_e;
-		$appalto->id_box=$box;
-		
-		$appalto->luogo_incontro=$request->input('luogo_incontro');
-		$appalto->orario_incontro=$request->input('orario_incontro');
-		$appalto->luogo_destinazione=$request->input('luogo_destinazione');
-		$appalto->ora_destinazione=$request->input('ora_destinazione');
-		$appalto->data_servizio=$request->input('data_servizio');
-		$appalto->numero_persone=$request->input('numero_persone');
-		$appalto->servizi_svolti=$request->input('servizi_svolti');
-		$appalto->nome_salma=$request->input('nome_salma');
-		$appalto->note=$request->input('note');
+		$from=$request->input('from');
 
-		$appalto->save();
+		if ($from==0) {
+			$info_appalto=appaltinew_info::where('id_appalto','=',$id_giorno_appalto)
+			->where('m_e','=',$m_e)
+			->where('id_box','=',$box)
+			->delete();
+			$appalto=new appaltinew_info;
+			$appalto->id_appalto=$id_giorno_appalto;
+			$appalto->m_e=$m_e;
+			$appalto->id_box=$box;
+			
+			$appalto->luogo_incontro=$request->input('luogo_incontro');
+			$appalto->orario_incontro=$request->input('orario_incontro');
+			$appalto->luogo_destinazione=$request->input('luogo_destinazione');
+			$appalto->ora_destinazione=$request->input('ora_destinazione');
+			$appalto->data_servizio=$request->input('data_servizio');
+			$appalto->numero_persone=$request->input('numero_persone');
+			$appalto->servizi_svolti=$request->input('servizi_svolti');
+			$appalto->nome_salma=$request->input('nome_salma');
+			$appalto->note=$request->input('note');
+
+			$appalto->save();
+		}
 		
 		$all_id_box=$request->input('all_id_box');
 		$arr_id=explode(";",$all_id_box);
 		
-		$info_appalto=appaltibox::where('idapp','=',$id_giorno_appalto)
-		->where('m_e','=',$m_e)
-		->where('id_box','=',$box)
-		->delete();
-
-		for ($sca=0;$sca<count($arr_id);$sca++) {
-			$id_lav=$arr_id[$sca];
-			$appalto=new appaltibox;
-			$appalto->idapp=$id_giorno_appalto;
-			$appalto->m_e=$m_e;
-			$appalto->id_box=$box;
-			$appalto->rowbox=$sca;
-			$appalto->id_lav=$id_lav;
-			$appalto->save();
+		$num_box=1;
+		if ($from==1) {
+			$all_id_boxes=$request->input('all_id_boxes');
+			$arr_info=explode(";",$all_id_box);
+			$num_box=count($arr_info);
 		}
+		
+		for ($s_box=0;$s_box<$num_box;$s_box++) {
+			if ($from==1) {
+				$infobox=$arr_info[$s_box];
+				$m_e=$infobox[1];
+				$box=$infobox[2];
+			}
+			$info_appalto=appaltibox::where('idapp','=',$id_giorno_appalto)
+			->where('m_e','=',$m_e)
+			->where('id_box','=',$box)
+			->delete();
 
+			for ($sca=0;$sca<count($arr_id);$sca++) {
+				$id_lav=$arr_id[$sca];
+				$appalto=new appaltibox;
+				$appalto->idapp=$id_giorno_appalto;
+				$appalto->m_e=$m_e;
+				$appalto->id_box=$box;
+				$appalto->rowbox=$sca;
+				$appalto->id_lav=$id_lav;
+				$appalto->save();
+			}
+		}
 		$info_appalto=array();
 		$info_appalto['header']="OK";
 		return json_encode($info_appalto);		
