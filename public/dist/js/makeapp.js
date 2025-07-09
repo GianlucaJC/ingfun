@@ -97,9 +97,16 @@ function dropHandler(ev) {
     
   //in caso di assgnazione responsabile mezzo, from contiene l'id del bottone mezzo (car1, car2)
   if (from.substr(0,3)=="car") {
+    box_from=$("#"+from).data('box')
     m_e=$("#"+dest).data('m_e')
     box=$("#"+dest).data('box')
     el=$("#"+dest).data('el')
+
+    if (box_from!=box) {
+        alert("Assegnazione non possibile!")
+        return false
+    }
+
     if (m_e.length!=0) {
         //assegnazione responsabile mezzo
         targa=$("#"+from).data("targa")
@@ -124,6 +131,33 @@ function dropHandler(ev) {
   setsquadra(_m_e,_box,_el)
 }
 //////////////////
+
+
+///////// DRAG & DROP Ditte
+
+
+function dragstartHandlerDitta(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+}
+function dragoverHandlerDitta(ev) {
+  dest=ev.target.id
+  ev.preventDefault();
+}
+function dropHandlerDitta(ev) {
+  ev.preventDefault();
+  const from = ev.dataTransfer.getData("text");
+  dest=ev.target.id
+  ditta=$("#"+from).data("nome");d_origin=ditta
+  iddit=$("#"+from).data("iddit")
+  if (ditta.length>20) ditta=ditta.substr(0,16)+"..."
+  html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+ditta+"</span>"
+  $("#"+dest).html(html)
+  $("#"+dest).removeClass('bg-secondary').addClass('bg-success')
+  $("#"+dest).data("iddit",iddit)
+  console.log("dest",dest,"from",from)
+  
+} 
+///////// DRAG & DROP Lavoratori
 
 function load_appalti(id_giorno_appalto) {
     maxM=$("#maxM").val()
@@ -599,22 +633,18 @@ function accordion(m_e,box) {
             <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)" >Info</button>
             <div id='infoapp`+m_e+box+`'>
                 <span class="badge rounded-pill bg-gray mr-2 mt-2">
-                <i class="fa-solid fa-person"></i> 
-                 <i class="ml-3 fa-solid fa-clock"></i>
+                    <i class="fa-solid fa-person"></i> 
+                    <i class="ml-3 fa-solid fa-clock"></i>
+                </span>    
             </div>
+            <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1" 
+                id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top">
+                <i class="fa-solid fa-location-dot"></i>
+            </span>    
         </div>
 
         <div class="accordion accordion-flush" id="div_gen_box`+m_e+box+`">
-            <div class="accordion-item">
-                <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
-                    Ditta
-                </button>
-                </h2>
-                <div id="flush-collapseOne" class="accordion-collapse collapse"">
-                    <div class="accordion-body"></div>
-                </div>
-            </div>
+            
 
             <div>
                 <small>
@@ -641,7 +671,7 @@ function accordion(m_e,box) {
                     <div class="accordion-body">
                         <div id='div_pers`+m_e+box+`'></div>
                     </div>
-                    <center><button type="button" class="btn btn-success btn-sm" id="btn_save_only`+m_e+box+`" onclick="save_only_lav('`+m_e+`',`+box+`)">Salva</button></center>
+                    
                 </div>
             </div>
         </div>   
@@ -725,22 +755,18 @@ function action_lav(m_e,box,el) {
     html+=`
         <button type="button" class="btn btn-primary" onclick="removelav('`+m_e+`',`+box+`,`+el+`)">
         Rimuovi lavoratore dall'appalto</button>
-        <hr>
-        <center><h4>Imposta lavoratore come responsabile mezzo</h4></center>
-    
+        <button type="button" class="ml-2 btn btn-warning" 
+        onclick="
+            esito=setresp('`+m_e+`',`+box+`,`+el+`,'0',1);
+            if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
+        ">
+        Elimina mezzo assegnato
+        </button>        
     `
     arr_mezzi=infomezzi.split(";")
-    html+="<div class='d-grid gap-2'>";
-        html+=`
-            <button type="button" class="btn btn-outline-warning" 
-            onclick="
-                esito=setresp('`+m_e+`',`+box+`,`+el+`,'0',1);
-                if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
-            ">
-            Elimina mezzo assegnato
-            </button>
-        `;
         /*
+        html+="<div class='d-grid gap-2'>";
+
         for (sca=0;sca<arr_mezzi.length;sca++) {
             targa=arr_mezzi[sca].split("-")[0]
             marca=arr_mezzi[sca].split("-")[1]

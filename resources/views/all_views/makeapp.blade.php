@@ -113,7 +113,8 @@ th, td {
                                             <div id="div_dit" class='mt-2' style='max-height:800px;overflow-y:scroll'>
                                                 <div class="d-grid gap-1" style="padding:10px">
                                                     @foreach ($ditte as $ditta)
-                                                        <button type="button" class="btn btn-outline-success allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' onclick='impegnadit({{$ditta->id}})'>              
+                                                        <button type="button" class="btn btn-outline-success allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' 
+                                                        draggable="true" ondragstart="dragstartHandlerDitta(event)">              
                                                         {{$ditta->denominazione}}
                                                         </button>
                                                     @endforeach	
