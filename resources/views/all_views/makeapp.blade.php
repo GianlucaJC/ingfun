@@ -91,6 +91,9 @@ th, td {
 					<div class="row">
                     
 					<div class="col-md-2">
+                        <div class="d-grid gap-2">
+                            <button type="button" class="btn btn-outline-success btn-sm mb-2" id="btn_save_all" onclick="save_all()"><i class="fa-solid fa-floppy-disk"></i> Salva Tutto</button>
+                        </div>
 
                         <label for="zoomlevel" class="form-label">Zoom level</label>
                         <input type="range" class="form-range" min="0.50" max="1.05" step="0.05" id="zoomlevel" value='1' onchange="setZoom(this.value)">
@@ -215,7 +218,8 @@ th, td {
 
 
 
-                        <a href='#' onclick="newapp('M','man')">Aggiungi appalto mattutino</a>						
+                        <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
+                        Aggiungi appalto mattutino</a>						
 						<table id='tbAppM' class='table'>	
                             <tbody>
 							<tr>
@@ -224,7 +228,7 @@ th, td {
                             </tbody>
 						</table>
 
-                        <a href='#' onclick="newapp('P','man')">Aggiungi appalto pomeridiano</a>						
+                        <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>						
 						<table id='tbAppP' class='table'>	
                             <tbody>
                                 <tr>

@@ -1,7 +1,7 @@
 const numBox=6
 const elemBox=6
 const maxI=2
-
+var saveall=false
 var _m_e="?";var _box="?";var _el="?"
  $(function () {
     $('body').addClass("sidebar-collapse");
@@ -68,6 +68,9 @@ function dropHandlerMezzi(ev) {
     })    
 
     if (check_ins==false) return false
+
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+
     $("#"+dest).text(targa)
     $('#'+dest).attr('data-bs-original-title', mezzo);
     $("#"+dest).data( "targa", targa );
@@ -91,6 +94,7 @@ function dragoverHandler(ev) {
 }
 
 function dropHandler(ev) {
+
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
   dest=ev.target.id
@@ -114,6 +118,7 @@ function dropHandler(ev) {
         esito=setresp(m_e,box,el,targa,1);
         if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
         console.log("targa ass",targa)
+        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     }
     return false
   }
@@ -129,6 +134,7 @@ function dropHandler(ev) {
   impegnalav(idlav)
   console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
   setsquadra(_m_e,_box,_el)
+  $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
 }
 //////////////////
 
@@ -160,6 +166,7 @@ function dropHandlerDitta(ev) {
   $("#"+dest).removeClass('bg-secondary').addClass('bg-success')
   $("#"+dest).data("iddit",iddit)
   console.log("dest",dest,"from",from)
+  $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
   
 } 
 ///////// DRAG & DROP Lavoratori
@@ -371,10 +378,7 @@ function save_appalto() {
     box=save_appalto.box
     from=save_appalto.from
 
-    if (from==1) {
-        $("#btn_save_only"+m_e+box).prop('disabled',true)
-        $("#btn_save_only"+m_e+box).text('Salvataggio in corso...')   
-    }
+
 
     if (from==0) info=$('#form_info').serialize();
     else info=0;
@@ -423,10 +427,6 @@ function save_appalto() {
           }
       })
       .then(resp=>{
-            if (from==1) {
-                $("#btn_save_only"+m_e+box).prop('disabled',false)
-                $("#btn_save_only"+m_e+box).text('Salva')    
-            }
 
           if (resp.header=="OK") {
             if (from==0) {
@@ -465,10 +465,12 @@ function save_appalto() {
 
 }
 
-function save_only_lav(m_e,box) {
-    id_giorno_appalto=$("#id_giorno_appalto").val()
-    save_info(id_giorno_appalto,m_e,box,1)
-    save_appalto()
+function save_all() {
+    //id_giorno_appalto=$("#id_giorno_appalto").val()
+    //save_info(id_giorno_appalto,m_e,box,1)
+
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-outline-success')
+    //save_appalto()
 }
 
 function save_info(id_giorno_appalto,m_e,box,from){
@@ -601,7 +603,8 @@ function removemezzo(dest) {
     if (dest.length>0) {
         if (!confirm("Sicuri di eliminare il mezzo (e l'eventuale assegnazione del responsabile mezzo)?"))
             return false
-        
+            
+       $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')    
         resp=new Array()
         if( typeof setresp.resp != 'undefined' ) resp=setresp.resp
         targa=$("#"+dest).data("targa")
@@ -681,11 +684,11 @@ function accordion(m_e,box) {
                     Persone
                 </button>
                 </h2>
-                <div id="flush-collapseTwo" class="accordion-collapse collapse"">
+                <div id="flush-collapseTwo" class="accordion-collapse collapse">
                     <div class="accordion-body">
                         <div id='div_pers`+m_e+box+`'></div>
                     </div>
-                    <center><button type="button" class="btn btn-success btn-sm" id="btn_save_only`+m_e+box+`" onclick="save_only_lav('`+m_e+`',`+box+`)">Salva</button></center>
+
                 </div>
             </div>
         </div>   
@@ -701,6 +704,7 @@ function removelav(m_e,box,el) {
     $("#"+refbox).first().html('Assegnabile')
     $("#"+refbox).removeData( "idlav", '' );
     setresp(m_e,box,el,0,1) //contestualmente elimina mezzo eventuale assegnato
+    
     $("#modalinfo").modal('hide')
 }
 
@@ -731,7 +735,7 @@ function setresp(m_e,box,el,targa,from) {
         $("#resp"+m_e+box+el).html('')
 
         $("#resp_raw"+m_e+box+el).val('')
-        
+        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
         return false
     }
     
@@ -760,6 +764,7 @@ function setresp(m_e,box,el,targa,from) {
     resp[m_e][ind]={}
     resp[m_e][ind].targa=targa
     resp[m_e][ind].idlav=idlav
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
    
 }
 
@@ -856,7 +861,11 @@ function newapp(m_e,from) {
     `
     $("#div_pers"+m_e+box).html(html)
     
-    if (from=="man") alert("Appalto aggiunto in coda!")
+    if (from=="man") {
+        alert("Appalto aggiunto in coda!")
+        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    }
+    
 
 }
 
