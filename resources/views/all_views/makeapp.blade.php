@@ -24,7 +24,10 @@
 .itemlist {
     padding:0.4rem !important;
 }
-
+.panel-footer {
+  display: flex;
+  justify-content: space-between;
+}
 .box {
     
 }
@@ -255,7 +258,7 @@ th, td {
             <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title" id="modalinfotitle">Informazioni sull'appalto</h5>
-                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close">
+                <button type="button" class="close" data-bs-dismiss="modal" aria-label="Close"  onclick="$('#body_content').html('');">
                 <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -265,9 +268,7 @@ th, td {
             </div>
 
             <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
-                
-                
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" onclick="$('#body_content').html('')">Chiudi</button>
             </div>
             </div>
         </div>

@@ -3,6 +3,7 @@ const elemBox=6
 const maxI=2
 var saveall=false
 var _m_e="?";var _box="?";var _el="?"
+
  $(function () {
     $('body').addClass("sidebar-collapse");
     $('#cerca_ditta').on("change keyup paste", function(){
@@ -442,13 +443,12 @@ function save_appalto() {
                 numero_persone=$("#numero_persone").val()
                 orario_incontro=$("#orario_incontro").val()
                 html=`
-                <span class="badge rounded-pill bg-success mr-2 mt-2">
                 <i class="fa-solid fa-person"></i> 
                 `+numero_persone+`
                  <i class="ml-3 fa-solid fa-clock"></i> `
-                +orario_incontro+` 
-                </span>
-                `
+                +orario_incontro
+
+                $("#infoapp"+m_e+box).removeClass('bg-secondary').removeClass('bg-success').addClass('bg-success')
                 $("#infoapp"+m_e+box).html(html)
             }    
           }
@@ -641,42 +641,146 @@ function removeditta(id) {
     
 }
 
+function resetbox(m_e,box,from) {
+    html="";
+    $("#alert_confirm").hide()
+    if (!$('#conferma').is(":checked")) {
+        $("#alert_confirm").show(130)
+        return false
+    }
+    if (from==0) {
+        html=inibox(m_e,box)
+        $("#boxinfo"+m_e+box).html(html)
+        html=inimezzi(m_e,box)
+        $("#mezzi_info"+m_e+box).html(html)
+        html=initditte(m_e,box)
+        $("#mezzi_info"+m_e+box).html(html)
+    }    
+    else {
+        $(".box").each(function(){
+            m_e=$(this).data( "m_e")
+            box=$(this).data( "box")
+            html=inibox(m_e,box)
+            $("#boxinfo"+m_e+box).html(html)
+            html=inimezzi(m_e,box)
+            $("#mezzi_info"+m_e+box).html(html)
+            html=initditte(m_e,box)
+            $("#ditte_info"+m_e+box).html(html)
+
+        })
+    }    
+    $("#modalinfo").modal('hide')
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    
+}
+
+function enable_reset() {
+    $('#alert_confirm').show()
+    $("#btn_reset_box").prop("disabled",true)
+    $("#btn_dele_box").prop("disabled",true)
+    $("#btn_reset_all_box").prop("disabled",true)
+
+    if ($('#conferma').is(":checked")) {
+        $("#btn_reset_box").prop("disabled",false)
+        $("#btn_dele_box").prop("disabled",false)
+        $("#btn_reset_all_box").prop("disabled",false)
+        $('#alert_confirm').hide(130)
+    }
+    
+}
+function deletebox(m_e,box) {
+    $("#alert_confirm").hide()
+    if (!$('#conferma').is(":checked")) {
+        $("#alert_confirm").show(130)
+        return false
+    }
+    $("#tdbox"+m_e+box).hide()
+    $("#modalinfo").modal('hide')
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+
+}
+
+function optionbox(m_e,box) {
+    html=""
+    html=`
+        <div class="d-grid gap-2">
+            <button class="btn btn-primary" id='btn_reset_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,0)">Reset Box</button>
+          
+            <button class="btn btn-warning" id='btn_dele_box' type="button" onclick="deletebox('`+m_e+`',`+box+`)"  style='display:none'>Elimina box</button>
+            <hr>
+            <button class="btn btn-warning" id='btn_reset_all_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,1)">Reset ALL Box</button>              
+            <div class="form-check form-switch ml-4">
+                <input class="form-check-input" type="checkbox" id="conferma" onclick="enable_reset()">
+                <label class="form-check-label" for="conferma">Conferma operazione</label>
+            </div>
+            <div class="alert alert-light" role="alert" id='alert_confirm'>
+                <b>Attenzione!</b><br>
+                Prima di avviare l'operazione cliccare sul check di conferma<hr>
+                <small>
+                <b>N.B.: Da tener presente che l'operazione viene consolidata solo cliccando sul bottone 'Salva Tutto'</b>
+                </small>
+            </div>
+
+        </div>
+    `
+    $("#body_content").html(html)
+    $("#modalinfo").modal('show')    
+}
+
+function inimezzi(m_e,box) {
+    html=""
+    html+=`
+        <center><i class="fa-solid fa-car mt-2"></i></center>
+        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:.8em"  id='car1`+m_e+box+`'   data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+            Mezzo1
+        </span>
+    
+        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:.8em"  id='car2`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+            Mezzo2
+        </span>     
+    `
+    return html
+}
+
+function initditte(m_e,box) {
+    html="";
+    html+=`
+        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1" 
+            id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:100%'>
+            <i class="fa-solid fa-location-dot"></i>
+        </span>      
+    `
+    return html
+}
+
 function accordion(m_e,box) {
     html=""
     html+=`    
-    <td style='padding:10px'>
+    <td style='padding:10px' id='tdbox`+m_e+box+`'>
     
         <div class="d-grid gap-2 mb-2">
             <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)" >Info</button>
-            <div id='infoapp`+m_e+box+`'>
-                <span class="badge rounded-pill bg-gray mr-2 mt-2">
+            <div class="panel-footer text-center">
+            
+                <span id='infoapp`+m_e+box+`' class="badge rounded-pill bg-secondary pull-left">
                     <i class="fa-solid fa-person"></i> 
                     <i class="ml-3 fa-solid fa-clock"></i>
                 </span>    
+                <span class="pull-right">
+                    <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> <small>Option</small>
+                    </a>
+                </span>                
             </div>
-            <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1" 
-                id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)'>
-                <i class="fa-solid fa-location-dot"></i>
-            </span>    
+            <div id='ditte_info`+m_e+box+`' class='mb-2'>`
+            html+=initditte(m_e,box)
+            html+=`</div>
         </div>
 
         <div class="accordion accordion-flush" id="div_gen_box`+m_e+box+`">
-            
-
-            <div>
-                <small>
-                    <center><i class="fa-solid fa-car mt-2"></i></center>
-                        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:1em"  id='car1`+m_e+box+`'   data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
-                            Mezzo1
-                        </span>
-                    
-                        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:1em"  id='car2`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
-                            Mezzo2
-                        </span>                    
-                </small>                 
-                <div class="viewmezzi mb-2">
-                </div>
-            </div>
+            <div id='mezzi_info`+m_e+box+`' class='mb-2'>`
+                html+=inimezzi(m_e,box)     
+            html+=
+            `</div>
         
             <div class="accordion-item">
                 <h2 class="accordion-header">
@@ -814,6 +918,18 @@ function action_lav(m_e,box,el) {
     $("#modalinfo").modal('show')
 }
 
+
+function inibox(m_e,box) {
+    html="";
+    for (el=0;el<elemBox;el++) {
+        html+=`    
+        <a href="#" class="list-group-item  clearfix itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" onclick="action_lav('`+m_e+`',`+box+`,`+el+`)" >
+            Assegnabile
+        </a>
+        `
+    }
+    return html
+}
 function newapp(m_e,from) {
     strm=$("#strm").val()
     strp=$("#strp").val()
@@ -842,17 +958,8 @@ function newapp(m_e,from) {
         
             <div id='div_box`+m_e+box+`' class="card box`+m_e+`" style="width: 13rem;">
                 <div class="card-body">
-                    <div class="list-group"  ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)">`
-                        for (el=0;el<elemBox;el++) {
-                            html+=`    
-                            <a href="#" class="list-group-item  clearfix itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" onclick="action_lav('`+m_e+`',`+box+`,`+el+`)" >
-                                Assegnabile
-                            </a>
-    
-    
-                            `
-                            
-                        }
+                    <div id='boxinfo`+m_e+box+`' class="list-group"  ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)">`
+                        html+=inibox(m_e,box);    
                         html+=`
                     </div>
                 </div>                                    
