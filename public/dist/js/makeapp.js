@@ -654,7 +654,7 @@ function resetbox(m_e,box,from) {
         html=inimezzi(m_e,box)
         $("#mezzi_info"+m_e+box).html(html)
         html=initditte(m_e,box)
-        $("#mezzi_info"+m_e+box).html(html)
+        $("#ditte_info"+m_e+box).html(html)
     }    
     else {
         $(".box").each(function(){
