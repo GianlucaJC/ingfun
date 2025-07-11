@@ -378,7 +378,8 @@ function save_appalto() {
     from=save_appalto.from
 
 
-
+    //from==0 salvataggio singolo box da bottone interno ad info
+    //from==1 invocato dal bottone salva tutto (non esegue serialize del form per le info sull'appalto)
     if (from==0) info=$('#form_info').serialize();
     else info=0;
 
@@ -449,6 +450,14 @@ function save_appalto() {
                 $("#infoapp"+m_e+box).removeClass('bg-secondary').removeClass('bg-success').addClass('bg-success')
                 $("#infoapp"+m_e+box).html(html)
             }    
+            if (from==1) {
+                //save_all
+                $("#btn_save_all").prop('disabled',false)
+                $("#btn_save_all").html("<i class='fa-solid fa-floppy-disk'></i> Salva Tutto")
+                $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-outline-success')
+
+            }
+
           }
           else {
             $("#div_wait").html("<font color='red'>Errore durante il salvataggio dei dati</font>")
@@ -464,11 +473,11 @@ function save_appalto() {
 }
 
 function save_all() {
-    //id_giorno_appalto=$("#id_giorno_appalto").val()
-    //save_info(id_giorno_appalto,m_e,box,1)
-
-    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-outline-success')
-    //save_appalto()
+    id_giorno_appalto=$("#id_giorno_appalto").val()
+    save_info(id_giorno_appalto,"",1000,1)
+    $("#btn_save_all").prop('disabled',true)
+    $("#btn_save_all").text("Salvataggio in corso...")
+    save_appalto()
 }
 
 function save_info(id_giorno_appalto,m_e,box,from){
@@ -476,6 +485,7 @@ function save_info(id_giorno_appalto,m_e,box,from){
     save_appalto.m_e=m_e
     save_appalto.box=box
     save_appalto.from=from
+    //save_appalto() viene invocato dal submit controllato da validation_form()
 }
 function info_box(m_e,box) {
     $("#div_save").empty();

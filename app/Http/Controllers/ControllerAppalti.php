@@ -674,7 +674,10 @@ public function __construct()
 		$m_e=$request->input('m_e');
 		$box=$request->input('box');
 		$from=$request->input('from');
+		//in caso di salvataggio singolo $box contiene il box di riferimento e $arr_box avrà un solo indice
+		//altrimenti ($from==1) $box=1000, popolo l'array $arr_box con un ciclo
 
+		$arr_box=array();
 		if ($from==0) {
 			$info_appalto=appaltinew_info::where('id_appalto','=',$id_giorno_appalto)
 			->where('m_e','=',$m_e)
@@ -701,35 +704,81 @@ public function __construct()
 		$all_id_box=$request->input('all_id_box');
 		$arr_id=explode(";",$all_id_box);
 		
-		$num_box=1;
-		if ($from==1) {
-			$all_id_boxes=$request->input('all_id_boxes');
-			$arr_info=explode(";",$all_id_box);
-			$num_box=count($arr_info);
-		}
+		if ($from==0) $arr_box[$box][$m_e]=$arr_id;
 		
-		for ($s_box=0;$s_box<$num_box;$s_box++) {
-			if ($from==1) {
+		if ($from==1) {
+			$arr_box=Array();
+			$all_id_boxes=$request->input('all_id_boxes');
+			$arr_info=explode(";",$all_id_boxes);			
+			$num_box=count($arr_info);
+			$oldb=-1;
+			for ($s_box=0;$s_box<$num_box;$s_box++) {
 				$infobox=$arr_info[$s_box];
-				$m_e=$infobox[1];
-				$box=$infobox[2];
-			}
-			$info_appalto=appaltibox::where('idapp','=',$id_giorno_appalto)
-			->where('m_e','=',$m_e)
-			->where('id_box','=',$box)
-			->delete();
-
-			for ($sca=0;$sca<count($arr_id);$sca++) {
-				$id_lav=$arr_id[$sca];
-				$appalto=new appaltibox;
-				$appalto->idapp=$id_giorno_appalto;
-				$appalto->m_e=$m_e;
-				$appalto->id_box=$box;
-				$appalto->rowbox=$sca;
-				$appalto->id_lav=$id_lav;
-				$appalto->save();
+				$arr_i=explode("|",$infobox);
+				$lav=$arr_i[0];
+				$m=$arr_i[1];
+				$b=$arr_i[2];
+				$c=0;
+				if (isset($arr_box[$b][$m])) $c=count($arr_box[$b][$m]);
+				$arr_box[$b][$m][$c]="$lav";
 			}
 		}
+
+		/*  in entrambi i casi ($from==0, $from==1) si ottiene stessa struttura array.
+			Esempio struttura $arr_box:
+			Array
+			(	*indice:box
+				[0] => Array
+					(	*indice:m_e
+						[M] => Array
+							(
+								*indice:elemBox
+								[0] => 60
+								[1] => 154
+								[2] => 1
+								[3] => 55
+								[4] => 0
+								[5] => 0
+							)
+
+						[P] => Array
+							(
+								[0] => 2
+								[1] => 0
+								[2] => 0
+								[3] => 0
+								[4] => 0
+								[5] => 0
+							)
+
+					)
+				....
+		*/
+		//però caso di from==0 (singolo box) $arr_box contiene un solo elemento 
+		//ed il box effettivo non è l'indice di $arr_box ma quello presente in $_POST['box']
+		//from==1: save_all() invece il $box è l'indice principale di $arr_box
+		for ($nbox=0;$nbox<count($arr_box);$nbox++) {
+			if ($from==1) $box=$nbox;
+			$infobox=$arr_box[$box];
+			
+			foreach($infobox as $m_e=>$value) {
+				$info_appalto=appaltibox::where('idapp','=',$id_giorno_appalto)
+				->where('m_e','=',$m_e)
+				->where('id_box','=',$box)
+				->delete();
+				for ($sca=0;$sca<count($value);$sca++) {
+					$id_lav=$value[$sca];
+					$appalto=new appaltibox;
+					$appalto->idapp=$id_giorno_appalto;
+					$appalto->m_e=$m_e;
+					$appalto->id_box=$box;
+					$appalto->rowbox=$sca;
+					$appalto->id_lav=$id_lav;
+					$appalto->save();	
+				}
+			}
+		}
+
 		$info_appalto=array();
 		$info_appalto['header']="OK";
 		return json_encode($info_appalto);		
