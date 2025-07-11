@@ -54,15 +54,28 @@ th, td {
             <input type='hidden' name='id_giorno_appalto' id='id_giorno_appalto' value='{{$id_giorno_appalto}}'>
             <?php
                 $strm="";$strp="";
+                $numpm="";$numpp="";
+                $orariom="";$orariop="";
                 foreach ($info_box as $ib) {
                     $me=$ib->m_e;
+                    $id_box=$ib->id_box;
                     if ($me=="M") {
                         if (strlen($strm)!=0) $strm.=";";
-                        $strm.=$ib->id_box;
+                        $strm.=$id_box;
+
+                        if (strlen($numpm)!=0) $numpm.="|";
+                        $numpm.=$id_box.";".$ib->numero_persone;
+                        if (strlen($orariom)!=0) $orariom.="|";
+                        $orariom.=$id_box.";".$ib->orario_incontro;
                     }
                     if ($me=="P") {
                         if (strlen($strp)!=0) $strp.=";";
-                        $strp.=$ib->id_box;
+                        $strp.=$id_box;
+
+                        if (strlen($numpp)!=0) $numpp.="|";
+                        $numpp.=$id_box.";".$ib->numero_persone;
+                        if (strlen($orariop)!=0) $orariop.="|";
+                        $orariop.=$id_box.";".$ib->orario_incontro;                        
                     }
                 }
 
@@ -84,6 +97,13 @@ th, td {
 
             <input type='hidden' name='strm' id='strm' value='{{$strm}}'> 
             <input type='hidden' name='strp' id='strp' value='{{$strp}}'> 
+
+            <input type='hidden' name='numpm' id='numpm' value='{{$numpm}}'> 
+            <input type='hidden' name='numpp' id='numpp' value='{{$numpp}}'> 
+            <input type='hidden' name='orariom' id='orariom' value='{{$orariom}}'> 
+            <input type='hidden' name='orariop' id='orariop' value='{{$orariop}}'> 
+
+
             <input type='hidden' name='strall' id='strall' value='{{$strall}}'> 
             <input type='hidden' name='maxM' id='maxM' value='{{$maxM}}'> 
             <input type='hidden' name='maxP' id='maxP' value='{{$maxP}}'> 

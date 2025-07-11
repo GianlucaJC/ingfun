@@ -187,6 +187,40 @@ function load_appalti(id_giorno_appalto) {
     for (sca=0;sca<ref;sca++) {
         newapp('P','auto')
     }
+
+    //dopo il rendering dell'accordion    
+    //precarico dei dati visibili (es. numero persone, orario incontro, etc.)
+    numpm=$("#numpm").val()
+    numpp=$("#numpp").val()
+    orariom=$("#orariom").val()
+    orariop=$("#orariop").val()
+
+    arr_pm=numpm.split("|");arr_pp=numpp.split("|")
+    arr_om=orariom.split("|");arr_op=orariop.split("|")
+    for (me=1;me<=2;me++) {
+        m_e="M";
+        arr_ref_nump=arr_pm
+        arr_ref_op=arr_om
+        if (me==2) {m_e="P";arr_ref_nump=arr_pp;;arr_ref_op=arr_op}
+        for (scy=0;scy<arr_ref_nump.length;scy++) {
+            box=arr_ref_nump[scy].split(";")[0]
+            //verificare bene se box va bene sia per numero_persone che orario incontro
+            numero_persone=arr_ref_nump[scy].split(";")[1];
+            orario_incontro=arr_ref_op[scy].split(";")[1];
+
+            html=`
+            <i class="fa-solid fa-person"></i> 
+            `+numero_persone+`
+                <i class="ml-3 fa-solid fa-clock"></i> `
+            +orario_incontro
+
+            $("#infoapp"+m_e+box).removeClass('bg-secondary').removeClass('bg-success').addClass('bg-success')
+            $("#infoapp"+m_e+box).html(html)        
+            
+        
+        }
+    }
+    //////////////    
 }
 
 
@@ -762,6 +796,18 @@ function initditte(m_e,box) {
 }
 
 function accordion(m_e,box) {
+    strm=$("#strm").val()
+    strp=$("#strp").val()
+
+    outmp="outline-";
+    if (m_e=="M") {
+        if (strm.includes(box)) outmp="";
+    }
+    if (m_e=="P") {
+        if (strp.includes(box)) outmp="";
+    }
+    html=""
+    
     html=""
     html+=`    
     <td style='padding:10px' id='tdbox`+m_e+box+`'>
@@ -939,22 +985,10 @@ function inibox(m_e,box) {
     return html
 }
 function newapp(m_e,from) {
-    strm=$("#strm").val()
-    strp=$("#strp").val()
-
-    arrm=strm.split(";");arrp=strp.split(";")
     box=0
     $(".box"+m_e).each(function(){
         box++
     })
-    
-    outmp="outline-";
-    if (m_e=="M") {
-        if (strm.includes(box)) outmp="";
-    }
-    if (m_e=="P") {
-        if (strp.includes(box)) outmp="";
-    }
     html=""
    
     html=accordion(m_e,box)

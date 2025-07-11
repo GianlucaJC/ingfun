@@ -619,7 +619,7 @@ public function __construct()
 		->get();
 
 		$info_box=appaltinew_info::from('appaltinew_info as a')
-		->select('a.m_e','a.id_box')
+		->select('a.*')
 		->where('a.id_appalto','=',$id_giorno_appalto)
 		->get();
 	
