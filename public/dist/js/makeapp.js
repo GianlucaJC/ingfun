@@ -264,12 +264,10 @@ function setsquadra(m_e,box,rowbox) {
   
 
     present=false
-    /*
     $(".box"+m_e+box).each(function(){
         id_ref=$(this).data( "idlav")
         if (id_ref==idlav) present=true
     })
-    */
 
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
