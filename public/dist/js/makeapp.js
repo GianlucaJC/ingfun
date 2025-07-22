@@ -27,6 +27,7 @@ var _m_e="?";var _box="?";var _el="?"
 } );
 
 ///////// DRAG & DROP RESP Mezzi
+///per l'assegnazione vedi la function setresp()
 function dragstartHandlerResp(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
   console.log("target",ev.target.id)
@@ -190,37 +191,99 @@ function load_appalti(id_giorno_appalto) {
 
     //dopo il rendering dell'accordion    
     //precarico dei dati visibili (es. numero persone, orario incontro, etc.)
-    numpm=$("#numpm").val()
-    numpp=$("#numpp").val()
-    orariom=$("#orariom").val()
-    orariop=$("#orariop").val()
+    load_inf()
+}
 
-    arr_pm=numpm.split("|");arr_pp=numpp.split("|")
-    arr_om=orariom.split("|");arr_op=orariop.split("|")
-    for (me=1;me<=2;me++) {
-        m_e="M";
-        arr_ref_nump=arr_pm
-        arr_ref_op=arr_om
-        if (me==2) {m_e="P";arr_ref_nump=arr_pp;;arr_ref_op=arr_op}
-        for (scy=0;scy<arr_ref_nump.length;scy++) {
-            box=arr_ref_nump[scy].split(";")[0]
-            //verificare bene se box va bene sia per numero_persone che orario incontro
-            numero_persone=arr_ref_nump[scy].split(";")[1];
-            orario_incontro=arr_ref_op[scy].split(";")[1];
-
-            html=`
-            <i class="fa-solid fa-person"></i> 
-            `+numero_persone+`
-                <i class="ml-3 fa-solid fa-clock"></i> `
-            +orario_incontro
-
-            $("#infoapp"+m_e+box).removeClass('bg-secondary').removeClass('bg-success').addClass('bg-success')
-            $("#infoapp"+m_e+box).html(html)        
+function load_inf() {
+    id_giorno_appalto=$("#id_giorno_appalto").val()
+    let CSRF_TOKEN = $("#token_csrf").val();      
+    base_path = $("#url").val();
+    timer = setTimeout(function() {	
+      fetch(base_path+"/check_allestimento", {
+          method: 'post',
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+          },
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&from=1",
+      })
+      .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+      })
+      .then(ris=>{
+            resp=ris.info_appalto
+            for (sca=0;sca<resp.length;sca++) {
+                box=resp[sca].id_box
+                m_e=resp[sca].m_e
+                numero_persone=resp[sca].numero_persone
+                orario_incontro=resp[sca].orario_incontro
+                html=`
+                <i class="fa-solid fa-person"></i> 
+                `+numero_persone+`
+                    <i class="ml-3 fa-solid fa-clock"></i> `
+                +orario_incontro
+                $("#infoapp"+m_e+box).removeClass('bg-secondary').removeClass('bg-success').addClass('bg-success')
+                $("#infoapp"+m_e+box).html(html)
+                console.log("m_e",m_e,"box",box)
+            }
+            resp=ris.info_altro
             
-        
-        }
-    }
-    //////////////    
+            //recupero tutte le ditte (mi servirà perchè all'ID salvato devo collegare la denominazione)
+            alld=$("#alld").val();
+            infod=alld.split("|");
+            arr_d=new Array();
+            for (sc=0;sc<infod.length;sc++) {
+                elem=infod[sc];arr_ref=elem.split(";")
+                arr_d[arr_ref[0]]=arr_ref[1]
+            }
+            //
+            
+            for (sca=0;sca<resp.length;sca++) {
+                box=resp[sca].box
+                m_e=resp[sca].m_e
+                targa1=resp[sca].targa1
+                targa2=resp[sca].targa2
+                ditta=resp[sca].ditta
+                
+                if (ditta && typeof ditta !== 'undefined') {
+                    iddit=ditta.toString()
+                    refditta="";
+                    if (arr_d[iddit]) {
+                        refditta=arr_d[iddit];d_origin=refditta
+                        if (refditta.length>20) refditta=refditta.substr(0,16)+"..."
+                        dest="ditta"+m_e+box
+
+                        html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+refditta+"</span>"
+                        $("#"+dest).html(html)
+                        $("#"+dest).data("iddit",iddit)
+                        $("#"+dest).removeClass('bg-secondary').removeClass('bg-success').addClass('bg-success')
+                       
+                    }
+                }
+
+                if (targa1 && targa1.length>0) {
+                    dest="car1"+m_e+box
+                    $("#"+dest).removeClass('bg-secondary').removeClass('bg-warning').addClass('bg-warning')
+                    $("#"+dest).text(targa1)
+                    //$('#'+dest).attr('data-bs-original-title', mezzo);
+                    $("#"+dest).data( "targa", targa1 );                    
+                }
+                if (targa2 && targa2.length>0) {
+                    dest="car2"+m_e+box
+                    $("#"+dest).removeClass('bg-secondary').removeClass('bg-warning').addClass('bg-warning')
+                    $("#"+dest).text(targa2)
+                    //$('#'+dest).attr('data-bs-original-title', mezzo);
+                    $("#"+dest).data( "targa", targa2 );    
+                }
+
+            }            
+      })
+      .catch(status, err => {
+          return console.log(status, err);
+      })     
+
+    }, 800)	
 }
 
 
@@ -390,10 +453,12 @@ function load_ini_lav() {
         box=strall_info[sca].split(";")[1]
         id_lav=strall_info[sca].split(";")[2]
         rowbox=strall_info[sca].split(";")[3]
+        responsabile_targa=strall_info[sca].split(";")[4]
         if( typeof id_lav !== 'undefined' ) {
             if (id_lav!="0") {
                 setsquadra.idlav=id_lav
                 setsquadra(m_e,box,rowbox)
+                if (responsabile_targa.length>0) esito=setresp(m_e,box,rowbox,responsabile_targa,2);
             }
         }
     }
@@ -409,6 +474,8 @@ function save_appalto() {
     id_giorno_appalto=save_appalto.id_giorno_appalto
     m_e=save_appalto.m_e
     box=save_appalto.box
+
+    
     from=save_appalto.from
 
 
@@ -422,8 +489,14 @@ function save_appalto() {
     $("#div_wait").html(html)
     base_path = $("#url").val();
 
-    all_id_box=""
+    all_id_box="";
+    car1="";car2="";
+    ditta="";
     if (from==0) {
+        ditta=$("#ditta"+m_e+box).data('iddit')
+        car1=$("#car1"+m_e+box).data('targa')
+        car2=$("#car2"+m_e+box).data('targa')
+        console.log("car1x",car1,"car2x",car2)
         $(".box"+m_e+box).each(function(){
             lav=$(this).data( "idlav")
             if (all_id_box.length>0) all_id_box+=";" 
@@ -431,29 +504,101 @@ function save_appalto() {
             else all_id_box+=lav
         
         })  
+        if( typeof car1 === 'undefined' ) car1=""
+        if( typeof car2 === 'undefined' ) car2=""
     }
+    
+
+    if( typeof setresp.resp !== 'undefined' ) respo=setresp.resp
+    else respo=[]
 
     all_id_boxes=""
+    cars="";
+
+    //construzione stringa concatenta per responsabile mezzi (sia from==0 che from1==1)
+    targhe_resp="";
+
+    $(".box").each(function(){
+        lav=$(this).data( "idlav")
+        m_e1=$(this).data( "m_e")
+        box1=$(this).data( "box")
+        elx=$(this).data( "el")
+        
+        var exist  = Object.keys(respo).includes(m_e1)
+        if (exist==true) {
+            ind=box1+"_"+elx
+            console.log("ind",ind,"elx",elx,"m_e1",m_e1)
+            var exist  = Object.keys(respo[m_e1]).includes(ind)
+            if (exist==true) {
+                if (respo[m_e1][ind].targa) {
+                    if (targhe_resp.length>0) targhe_resp+="|"
+                    targhe_resp+=respo[m_e1][ind].targa+";"+m_e1+";"+box1+";"+elx
+                }
+            }
+        } 
+    })  
+
+
     if (from==1) {
         $(".box").each(function(){
             lav=$(this).data( "idlav")
             m_e1=$(this).data( "m_e")
             box1=$(this).data( "box")
-
             if (all_id_boxes.length>0) all_id_boxes+=";" 
-            if( typeof lav === 'undefined' ) all_id_boxes+="0|"+m_e1+"|"+box1
-            else all_id_boxes+=lav+"|"+m_e1+"|"+box1
+            if( typeof lav === 'undefined' ) all_id_boxes+=m_e1+"|"+box1+"|0"
+            else all_id_boxes+=m_e1+"|"+box1+"|"+lav
         })      
     }
 
-   
+    refcar="";strcar="";
+    carm1="";carm2="";
+    carp1="";carp2="";
+    for (scac=1;scac<=4;scac++) {
+        if (scac==1) {refcar="car1M";strcar=carm1;}
+        if (scac==2) {refcar="car2M";strcar=carm2;}
+        if (scac==3) {refcar="car1P";strcar=carp1;}
+        if (scac==4) {refcar="car2P";strcar=carp2;}
+        
+        $("."+refcar).each(function(){
+            if (strcar.length!=0) strcar+="|"
+            t="";
+            if( typeof ($(this).data('targa')) != 'undefined' ) t=$(this).data('targa')
+            strcar+=$(this).data('box')+";"+t
+        })
+        if (scac==1) carm1=strcar;
+        if (scac==2) carm2=strcar;
+        if (scac==3) carp1=strcar;
+        if (scac==4) carp2=strcar;
+    }
+
+    ditte="";
+    $(".ditte").each(function(){
+        iddit=0
+        if( typeof ($(this).data('iddit')) != 'undefined' ) iddit=$(this).data('iddit')
+        if (ditte.length>0) ditte+="|"
+        ditte+=$(this).data('box')+";"+$(this).data('m_e')+";"+iddit
+    })
+    console.log("ditte",ditte)
+    
+    /*
+        in caso di salvataggio singolo (bottone salva dentro info),
+        sono utili car1 e car2 (vedi nel blocco from==0 come vengono valorizzati)
+        in caso di salvataggio multiplo ci son 4 variabili (carm1, carm2, carp1, carp2) per tutti i box (usando concatenazione stringhe).
+        Stesso discorso per le ditte:
+        salvataggio singolo (from==0) viene passato l'id della ditta in ditta
+        in caso multiplo (from==1) vedi concatenazione id nella variabile ditte
+    */        
+
+
+
+
       timer = setTimeout(function() {	
       fetch(base_path+"/save_infoapp", {
           method: 'post',
           headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
           },
-          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&from="+from,
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&car1="+car1+"&car2="+car2+"&carm1="+carm1+"&carm2="+carm2+"&carp1="+carp1+"&carp2="+carp2+"&ditta="+ditta+"&ditte="+ditte+"&targhe_resp="+targhe_resp+"&from="+from,
       })
       .then(response => {
           if (response.ok) {
@@ -534,7 +679,7 @@ function info_box(m_e,box) {
           headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
           },
-          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box,
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&from=0",
       })
       .then(response => {
           if (response.ok) {
@@ -545,16 +690,16 @@ function info_box(m_e,box) {
           if (resp.header=="OK") {
             $(".dati").val('');
             
-            if (resp[0]) {
-                $("#luogo_incontro").val(resp[0].luogo_incontro)
-                $("#orario_incontro").val(resp[0].orario_incontro)
-                $("#luogo_destinazione").val(resp[0].luogo_destinazione)
-                $("#ora_destinazione").val(resp[0].ora_destinazione)
-                $("#data_servizio").val(resp[0].data_servizio)
-                $("#numero_persone").val(resp[0].numero_persone)
-                $("#servizi_svolti").val(resp[0].servizi_svolti)
-                $("#nome_salma").val(resp[0].nome_salma)
-                $("#note").val(resp[0].note)
+            if (resp.info_appalto[0]) {
+                $("#luogo_incontro").val(resp.info_appalto[0].luogo_incontro)
+                $("#orario_incontro").val(resp.info_appalto[0].orario_incontro)
+                $("#luogo_destinazione").val(resp.info_appalto[0].luogo_destinazione)
+                $("#ora_destinazione").val(resp.info_appalto[0].ora_destinazione)
+                $("#data_servizio").val(resp.info_appalto[0].data_servizio)
+                $("#numero_persone").val(resp.info_appalto[0].numero_persone)
+                $("#servizi_svolti").val(resp.info_appalto[0].servizi_svolti)
+                $("#nome_salma").val(resp.info_appalto[0].nome_salma)
+                $("#note").val(resp.info_appalto[0].note)
             }
             $("#div_wait").empty()
             html=`
@@ -773,11 +918,11 @@ function inimezzi(m_e,box) {
     html=""
     html+=`
         <center><i class="fa-solid fa-car mt-2"></i></center>
-        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:.8em"  id='car1`+m_e+box+`'   data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car1`+m_e+` car`+m_e+`" style="font-size:.8em"  id='car1`+m_e+box+`'   data-m_e='`+m_e+`' data-refcar='car1' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
             Mezzo1
         </span>
     
-        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car`+m_e+`" style="font-size:.8em"  id='car2`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car2`+m_e+` car`+m_e+`" style="font-size:.8em"  id='car2`+m_e+box+`' data-m_e='`+m_e+`' data-refcar='car2' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
             Mezzo2
         </span>     
     `
@@ -787,7 +932,7 @@ function inimezzi(m_e,box) {
 function initditte(m_e,box) {
     html="";
     html+=`
-        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1" 
+        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 ditte" 
             id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:100%'>
             <i class="fa-solid fa-location-dot"></i>
         </span>      
@@ -893,7 +1038,7 @@ function setresp(m_e,box,el,targa,from) {
         $("#resp"+m_e+box+el).html('')
 
         $("#resp_raw"+m_e+box+el).val('')
-        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+            $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
         return false
     }
     
@@ -922,7 +1067,9 @@ function setresp(m_e,box,el,targa,from) {
     resp[m_e][ind]={}
     resp[m_e][ind].targa=targa
     resp[m_e][ind].idlav=idlav
-    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    if (from=="1") {
+        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    }
    
 }
 

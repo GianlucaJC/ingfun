@@ -14,6 +14,7 @@ use App\Models\user;
 use App\Models\societa;
 use App\Models\mezzi;
 use App\Models\appaltibox;
+use App\Models\appaltinew_altro;
 use App\Models\appaltinew_info;
 use App\Models\parco_scheda_mezzo;
 use App\Models\parco_marca_mezzo;
@@ -624,7 +625,7 @@ public function __construct()
 		->get();
 	
 		$appaltibox=appaltibox::from('appaltibox as a')
-		->select('a.m_e','a.id_box','a.id_lav','a.rowbox','responsabile_mezzo')
+		->select('a.m_e','a.id_box','a.id_lav','a.rowbox','responsabile_targa')
 		->where('a.idapp','=',$id_giorno_appalto)
 		->get();		
 
@@ -656,17 +657,34 @@ public function __construct()
 		$id_giorno_appalto=$request->input('id_giorno_appalto');
 		$m_e=$request->input('m_e');
 		$box=$request->input('box');
+		$from=$request->input('from');
 
 		$info_appalto=appaltinew_info::from('appaltinew_info as a')
-		->select('a.id','a.id_box','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note')
+		->select('a.id','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note')
 		->join('appaltinew as an','a.id_appalto','an.id')
 		->where('a.id_appalto','=',$id_giorno_appalto)
-		->where('a.m_e','=',$m_e)
-		->where('a.id_box','=',$box)
+		->when($from=="0", function ($info_appalto) use($m_e,$box) {
+			 return $info_appalto->where('a.m_e','=',$m_e)->where('a.id_box','=',$box);
+		})
 		->get();
-		$info_appalto['header']="KO";
-		if (isset($info_appalto)) $info_appalto['header']="OK";
-		return json_encode($info_appalto);
+
+		$info_altro=array();
+		$resp=array();
+
+		$resp['header']="KO";
+		if (isset($info_appalto)) $resp['header']="OK";
+		$resp['info_appalto']=$info_appalto;
+			
+		if ($from==1) {
+			$info_altro=appaltinew_altro::from('appaltinew_altro as a')
+			->select('a.id','a.box','a.m_e','a.targa1','a.targa2','a.ditta')
+			->where('a.idapp','=',$id_giorno_appalto)
+			->get();
+		}
+		$resp['info_altro']=$info_altro;
+
+
+		return json_encode($resp);
 	}
 
 	public function save_infoapp(Request $request) {
@@ -715,9 +733,9 @@ public function __construct()
 			for ($s_box=0;$s_box<$num_box;$s_box++) {
 				$infobox=$arr_info[$s_box];
 				$arr_i=explode("|",$infobox);
-				$lav=$arr_i[0];
-				$m=$arr_i[1];
-				$b=$arr_i[2];
+				$m=$arr_i[0];
+				$b=$arr_i[1];
+				$lav=$arr_i[2];
 				$c=0;
 				if (isset($arr_box[$b][$m])) $c=count($arr_box[$b][$m]);
 				$arr_box[$b][$m][$c]="$lav";
@@ -774,11 +792,128 @@ public function __construct()
 					$appalto->id_box=$box;
 					$appalto->rowbox=$sca;
 					$appalto->id_lav=$id_lav;
-					$appalto->save();	
+					$appalto->save();
 				}
 			}
 		}
 
+		//salvataggio responsabile mezzi
+		
+		//da js: targhe_resp=targa+";"+m_e1+";"+box1+";"+elx
+		$targhe_resp=$request->input('targhe_resp');
+		if (strlen($targhe_resp)>0) {
+			$arr_t=explode("|",$targhe_resp);
+			for ($sc=0;$sc<count($arr_t);$sc++) {
+				$el_cur=$arr_t[$sc];
+				$arr_c=explode(";",$el_cur);
+				$tar=$arr_c[0];
+				$m_e=$arr_c[1];
+				$box=$arr_c[2];
+				$rowbox=$arr_c[3];
+				$agg = appaltibox::where('idapp', "=", $id_giorno_appalto)
+				->where('m_e',"=",$m_e)
+				->where('id_box',"=",$box)
+				->where('rowbox',"=",$rowbox)
+				->update(['responsabile_targa'=>$tar]);
+			}
+		}
+		//
+		
+
+		/*
+			Aggiornamento mezzi.
+			Riferimento JS function save_appalto():
+			in caso di salvataggio singolo (bottone salva dentro info),
+			sono utili car1 e car2 (vedi nel blocco from==0 come vengono valorizzati)
+			in caso di salvataggio multiplo ci son 4 variabili (carm1, carm2, carp1, carp2) per tutti i box (usando concatenazione stringhe)
+		*/     
+		
+		//aggiornamento mezzi (salvataggio Save only box)
+		if ($from==0) {
+			$car1=$request->input('car1');$car2=$request->input('car2');
+			$ditta=$request->input('ditta');
+			$info_appalto=appaltinew_altro::where('idapp','=',$id_giorno_appalto)
+			->where('m_e','=',$m_e)
+			->where('box','=',$box)
+			->delete();
+
+			$appalto=new appaltinew_altro;
+			$appalto->idapp=$id_giorno_appalto;
+			$appalto->m_e=$m_e;
+			$appalto->box=$box;
+			$appalto->targa1=$car1;
+			$appalto->targa2=$car2;
+			$appalto->ditta=$ditta;
+			$appalto->save();
+		}
+
+		//aggiornamento mezzi (salvataggio Save ALL)
+		if ($from==1) {
+			$carm1=$request->input('carm1');$carm2=$request->input('carm2');
+			$carp1=$request->input('carp1');$carp2=$request->input('carp2');
+			$ditte=$request->input('ditte');
+			$info_appalto=appaltinew_altro::where('idapp','=',$id_giorno_appalto)->delete();
+			$lencar=explode("|",$carm1); //len uguale
+			$carm=$carm1."@".$carm2;
+			$carp=$carp1."@".$carp2;
+
+			for ($scac=1;$scac<=2;$scac++) {
+				if ($scac==1) {$refcar=$carm;}
+				if ($scac==2) {$refcar=$carp;}
+				$m_e="M";
+				if ($scac==2) $m_e="P";
+				$arr_car=explode("@",$refcar);
+				$i_car1=$arr_car[0];$i_car2=$arr_car[1];
+				$a_car1=explode("|",$i_car1);$a_car2=explode("|",$i_car2);
+
+				for ($sca_car=0;$sca_car<count($lencar);$sca_car++) {
+					$ii=$a_car1[$sca_car];
+					$info_car1=explode(";",$ii);
+					$ii=$a_car2[$sca_car];
+					$info_car2=explode(";",$ii);
+					$box=$info_car1[0]; //comune a car1 e car2
+					$car1=$info_car1[1];
+					$car2=$info_car2[1];
+					
+					$appalto=new appaltinew_altro;
+					$appalto->idapp=$id_giorno_appalto;
+					$appalto->m_e=$m_e;
+					$appalto->box=$box;
+					$appalto->targa1=$car1;
+					$appalto->targa2=$car2;
+					$appalto->save();
+				}
+				
+			}		
+			//alla fine della for sono certo che sono stati ricreati tutti i record per gli appalti del giorno 
+			//nella tabella appaltinew_altro, quindi per le ditte posso far riferimento alla update
+			
+			$a_ditte=explode("|",$ditte);
+			for ($sca_d=0;$sca_d<count($a_ditte);$sca_d++) {
+				$dix=$a_ditte[$sca_d];
+				$arrd=explode(";",$dix);
+				$box=$arrd[0];$m_e=$arrd[1];$iddit=$arrd[2];
+				$count=appaltinew_altro::where('idapp', $id_giorno_appalto)
+				->where('m_e',"=",$m_e)
+				->where('box',"=",$box)
+				->count();
+				if ($count>0) {
+					$agg = appaltinew_altro::where('idapp', $id_giorno_appalto)
+					->where('m_e',"=",$m_e)
+					->where('box',"=",$box)
+					->update(['ditta'=>$iddit]);
+				} else {
+					$appalto=new appaltinew_altro;
+					$appalto->idapp=$id_giorno_appalto;
+					$appalto->m_e=$m_e;
+					$appalto->box=$box;
+					$appalto->ditta=$iddit;
+					$appalto->save();				
+				}
+			}
+
+
+		}
 		$info_appalto=array();
 		$info_appalto['header']="OK";
 		return json_encode($info_appalto);		

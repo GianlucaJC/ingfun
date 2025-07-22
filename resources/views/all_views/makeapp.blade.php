@@ -54,28 +54,16 @@ th, td {
             <input type='hidden' name='id_giorno_appalto' id='id_giorno_appalto' value='{{$id_giorno_appalto}}'>
             <?php
                 $strm="";$strp="";
-                $numpm="";$numpp="";
-                $orariom="";$orariop="";
                 foreach ($info_box as $ib) {
                     $me=$ib->m_e;
                     $id_box=$ib->id_box;
                     if ($me=="M") {
                         if (strlen($strm)!=0) $strm.=";";
                         $strm.=$id_box;
-
-                        if (strlen($numpm)!=0) $numpm.="|";
-                        $numpm.=$id_box.";".$ib->numero_persone;
-                        if (strlen($orariom)!=0) $orariom.="|";
-                        $orariom.=$id_box.";".$ib->orario_incontro;
                     }
                     if ($me=="P") {
                         if (strlen($strp)!=0) $strp.=";";
-                        $strp.=$id_box;
-
-                        if (strlen($numpp)!=0) $numpp.="|";
-                        $numpp.=$id_box.";".$ib->numero_persone;
-                        if (strlen($orariop)!=0) $orariop.="|";
-                        $orariop.=$id_box.";".$ib->orario_incontro;                        
+                        $strp.=$id_box;                     
                     }
                 }
 
@@ -87,8 +75,9 @@ th, td {
                     $b[$m_e]=$id_box;
                     $id_lav=$appbox->id_lav;
                     $rowbox=$appbox->rowbox;
+                    $responsabile_targa=$appbox->responsabile_targa;
                     if (strlen($strall)!=0) $strall.="|";
-                    $strall.=$m_e.";".$id_box.";".$id_lav.";".$rowbox;
+                    $strall.=$m_e.";".$id_box.";".$id_lav.";".$rowbox.";".$responsabile_targa;
                 }
                 $maxM=0;$maxP=0;
                 if (isset($b['M'])) $maxM=$b['M']+1;
@@ -98,10 +87,6 @@ th, td {
             <input type='hidden' name='strm' id='strm' value='{{$strm}}'> 
             <input type='hidden' name='strp' id='strp' value='{{$strp}}'> 
 
-            <input type='hidden' name='numpm' id='numpm' value='{{$numpm}}'> 
-            <input type='hidden' name='numpp' id='numpp' value='{{$numpp}}'> 
-            <input type='hidden' name='orariom' id='orariom' value='{{$orariom}}'> 
-            <input type='hidden' name='orariop' id='orariop' value='{{$orariop}}'> 
 
 
             <input type='hidden' name='strall' id='strall' value='{{$strall}}'> 
@@ -138,12 +123,18 @@ th, td {
                                             <input type='text' class='form-control mt-2' id='cerca_ditta' placeholder='Cerca Ditta'>
                                             <div id="div_dit" class='mt-2' style='max-height:800px;overflow-y:scroll'>
                                                 <div class="d-grid gap-1" style="padding:10px">
+                                                    <?php $alld=""; ?>
                                                     @foreach ($ditte as $ditta)
+                                                        <?php
+                                                            if (strlen($alld)!=0) $alld.="|";
+                                                            $alld.=$ditta->id.";".$ditta->denominazione;
+                                                        ?>
                                                         <button type="button" class="btn btn-outline-success allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' 
                                                         draggable="true" ondragstart="dragstartHandlerDitta(event)">              
                                                         {{$ditta->denominazione}}
                                                         </button>
                                                     @endforeach	
+                                                    <input type='text' name='alld' id='alld' value='{{$alld}}'>
                                                 </div>
                                             </div>          
                                         </div>
