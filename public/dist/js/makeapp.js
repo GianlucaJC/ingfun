@@ -81,25 +81,38 @@ function dropHandlerMezzi(ev) {
 }
 //////////////////
 
+///DRAG & DROP da box a box tra lav
+function dragstartHandlerLav(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+  console.log("targetLavBox",ev.target.id)
+}
 
 ///////// DRAG & DROP Lavoratori
 function dragstartHandler(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
+  console.log("targetLav",ev.target.id)
 }
 
 function dragoverHandler(ev) {
-  dest=ev.target.id
-  _m_e=$("#"+dest).data('m_e')
-  _box=$("#"+dest).data('box')
-  _el=$("#"+dest).data('el')
-  ev.preventDefault();
+    dest=ev.target.id
+    from = ev.dataTransfer.getData("text");
+
+
+    //drag from lav (elenco di sx) to box
+    _m_e=$("#"+dest).data('m_e')
+    _box=$("#"+dest).data('box')
+    _el=$("#"+dest).data('el')
+    ev.preventDefault();
 }
 
 function dropHandler(ev) {
 
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
+  
   dest=ev.target.id
+  console.log("from",from,"dest",dest)
+  
     
   //in caso di assegnazione responsabile mezzo, from contiene l'id del bottone mezzo (car1, car2)
   if (from.substr(0,3)=="car") {
@@ -125,14 +138,31 @@ function dropHandler(ev) {
     return false
   }
  
+  //spostamento lavoratore da box a box
+  if (from.substr(0,3)=="box") {
+    idlav=$("#"+from).data('idlav')
+    impegnalav(idlav)
+    m_e_f=$("#"+from).data('m_e')
+    box_f=$("#"+from).data('box')
+    el_f=$("#"+from).data('el')
+    removelav(m_e_f,box_f,el_f) //rimuove il lavoratore dal box di origine
+
+    console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
+    setsquadra(_m_e,_box,_el) //...e lo sposta in quello di destinazione
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')    
+    return false
+  }
+ 
+ //in altri casi disabilito il drag & drop
   if (from.substr(0,6)!="btnlav") {
     alert("Drag & Drop non ammesso")
     return false
   }
 
-  
 
   idlav=$("#"+from).data('idlav')
+  
+  if (_m_e=="?") return false;
   impegnalav(idlav)
   console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
   setsquadra(_m_e,_box,_el)
@@ -1124,7 +1154,7 @@ function inibox(m_e,box) {
     html="";
     for (el=0;el<elemBox;el++) {
         html+=`    
-        <a href="#" class="list-group-item  clearfix itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" onclick="action_lav('`+m_e+`',`+box+`,`+el+`)" >
+        <a href="#" class="list-group-item  clearfix itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" onclick="action_lav('`+m_e+`',`+box+`,`+el+`)"  >
             Assegnabile
         </a>
         `
@@ -1147,7 +1177,7 @@ function newapp(m_e,from) {
         
             <div id='div_box`+m_e+box+`' class="card box`+m_e+`" style="width: 13rem;">
                 <div class="card-body">
-                    <div id='boxinfo`+m_e+box+`' class="list-group"  ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)">`
+                    <div id='boxinfo`+m_e+box+`' class="list-group"  ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)" draggable="true" ondragstart="dragstartHandlerLav(event)">`
                         html+=inibox(m_e,box);    
                         html+=`
                     </div>
