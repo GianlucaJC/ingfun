@@ -853,9 +853,12 @@ public function __construct()
 			$carp1=$request->input('carp1');$carp2=$request->input('carp2');
 			$ditte=$request->input('ditte');
 			$info_appalto=appaltinew_altro::where('idapp','=',$id_giorno_appalto)->delete();
-			$lencar=explode("|",$carm1); //len uguale
+			$lencar1=explode("|",$carm1); 
+			$lencar2=explode("|",$carp1); 
 			$carm=$carm1."@".$carm2;
 			$carp=$carp1."@".$carp2;
+			$lencar=$lencar1;
+			if ($lencar2>$lencar1) $lencar=$lencar2;
 
 			for ($scac=1;$scac<=2;$scac++) {
 				if ($scac==1) {$refcar=$carm;}
@@ -867,6 +870,7 @@ public function __construct()
 				$a_car1=explode("|",$i_car1);$a_car2=explode("|",$i_car2);
 
 				for ($sca_car=0;$sca_car<count($lencar);$sca_car++) {
+					if (!isset($a_car1[$sca_car])) continue;
 					$ii=$a_car1[$sca_car];
 					$info_car1=explode(";",$ii);
 					$ii=$a_car2[$sca_car];
