@@ -855,6 +855,7 @@ function removeditta(id) {
     html="<i class='fa-solid fa-location-dot'></i>"
     $("#"+id).html(html)
     $("#"+id).removeClass('bg-success').addClass('bg-secondary')
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     
 }
 
@@ -1162,6 +1163,11 @@ function inibox(m_e,box) {
     return html
 }
 function newapp(m_e,from) {
+    if (from=="man") {
+        tipo_box="mattutino"
+        if (m_e=="P") tipo_box="pomeridiano"
+        if (!confirm("Sicuri di creare un nuovo box "+tipo_box+"?")) return false
+    }
     box=0
     $(".box"+m_e).each(function(){
         box++
