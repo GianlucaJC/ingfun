@@ -134,7 +134,7 @@ th, td {
                                                         {{$ditta->denominazione}}
                                                         </button>
                                                     @endforeach	
-                                                    <input type='text' name='alld' id='alld' value='{{$alld}}'>
+                                                    <input type='hidden' name='alld' id='alld' value='{{$alld}}'>
                                                 </div>
                                             </div>          
                                         </div>
