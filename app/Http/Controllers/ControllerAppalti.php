@@ -619,6 +619,11 @@ public function __construct()
 		->orderBy('nominativo')	
 		->get();
 
+		$servizi=DB::table('servizi')
+		->select("*")
+		->where('dele', "=","0")
+		->orderBy('descrizione')->get();		
+
 		$info_box=appaltinew_info::from('appaltinew_info as a')
 		->select('a.*')
 		->where('a.id_appalto','=',$id_giorno_appalto)
@@ -650,7 +655,7 @@ public function __construct()
 		->where('dele', "=","0")	
 		->orderBy('targa')->get();
 
-		return view('all_views/makeapp',compact('lavoratori','id_giorno_appalto','info_box','appaltibox','ditte','marche','modelli','inventario'));
+		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','appaltibox','ditte','marche','modelli','inventario'));
 	}
 
 	public function check_allestimento(Request $request) {
@@ -712,7 +717,7 @@ public function __construct()
 			$appalto->ora_destinazione=$request->input('ora_destinazione');
 			$appalto->data_servizio=$request->input('data_servizio');
 			$appalto->numero_persone=$request->input('numero_persone');
-			$appalto->servizi_svolti=$request->input('servizi_svolti');
+			$appalto->servizi_svolti=$request->input('servizi');
 			$appalto->nome_salma=$request->input('nome_salma');
 			$appalto->note=$request->input('note');
 

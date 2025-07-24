@@ -545,6 +545,7 @@ function save_appalto() {
     all_id_boxes=""
     cars="";
 
+
     //construzione stringa concatenta per responsabile mezzi (sia from==0 che from1==1)
     targhe_resp="";
 
@@ -621,6 +622,7 @@ function save_appalto() {
 
 
 
+      servizi=$("#servizi_svolti").val();
 
       timer = setTimeout(function() {	
       fetch(base_path+"/save_infoapp", {
@@ -628,7 +630,7 @@ function save_appalto() {
           headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
           },
-          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&car1="+car1+"&car2="+car2+"&carm1="+carm1+"&carm2="+carm2+"&carp1="+carp1+"&carp2="+carp2+"&ditta="+ditta+"&ditte="+ditte+"&targhe_resp="+targhe_resp+"&from="+from,
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&servizi="+servizi+"&car1="+car1+"&car2="+car2+"&carm1="+carm1+"&carm2="+carm2+"&carp1="+carp1+"&carp2="+carp2+"&ditta="+ditta+"&ditte="+ditte+"&targhe_resp="+targhe_resp+"&from="+from,
       })
       .then(response => {
           if (response.ok) {
@@ -719,7 +721,8 @@ function info_box(m_e,box) {
       .then(resp=>{
           if (resp.header=="OK") {
             $(".dati").val('');
-            
+            all_servizi=$("#all_servizi").val().split("|");
+            servizi_svolti=new Array()
             if (resp.info_appalto[0]) {
                 $("#luogo_incontro").val(resp.info_appalto[0].luogo_incontro)
                 $("#orario_incontro").val(resp.info_appalto[0].orario_incontro)
@@ -727,10 +730,28 @@ function info_box(m_e,box) {
                 $("#ora_destinazione").val(resp.info_appalto[0].ora_destinazione)
                 $("#data_servizio").val(resp.info_appalto[0].data_servizio)
                 $("#numero_persone").val(resp.info_appalto[0].numero_persone)
-                $("#servizi_svolti").val(resp.info_appalto[0].servizi_svolti)
+                
                 $("#nome_salma").val(resp.info_appalto[0].nome_salma)
                 $("#note").val(resp.info_appalto[0].note)
-            }
+                sv=resp.info_appalto[0].servizi_svolti
+                if (sv && sv.length>0)
+                    servizi_svolti=resp.info_appalto[0].servizi_svolti.split(",")
+            } 
+
+            html=`
+                <select class="form-select select2" name="servizi_svolti[]" id="servizi_svolti" multiple>`
+                for (sc=0;sc<all_servizi.length;sc++) {
+                    id_serv=all_servizi[sc].split(";")[0]
+                    serv=all_servizi[sc].split(";")[1]
+                    html+="<option value='"+id_serv+"' ";
+                    //if (in_array($id_servizio,$id_servizi)) echo " selected ";
+                    if (servizi_svolti.includes(id_serv)) html+=" selected ";
+                    html+=">"+serv+"</option>";
+                }
+            html+=`</select>`
+            $("#div_serv").html(html)
+            $('.select2').select2()
+
             $("#div_wait").empty()
             html=`
                 <button type="submit" id='btn_save' class="btn btn-primary" onclick="save_info(`+id_giorno_appalto+`,'`+m_e+`',`+box+`,0)">Salva dati appalto</button>
@@ -788,8 +809,10 @@ function detail_appalto(m_e,box) {
 
                 <div class="row">
                     <div class="col-md-8">
-                        <label for="servizi_svolti" class="col-form-label">servizi_svolti</label>
-                        <input type="text" class="form-control dati" id="servizi_svolti" name='servizi_svolti'>
+                        <label for="servizi_svolti" class="col-form-label">Servizi svolti</label>
+                        <div id='div_serv'>
+                            <i class='fas fa-spinner fa-spin'></i>
+                        </div>
                     </div>
 
                     <div class="col-md-4">
@@ -812,6 +835,8 @@ function detail_appalto(m_e,box) {
         </form>    
     `
     $("#body_content").html(html)
+    
+
     info_box(m_e,box)
     $("#modalinfo").modal('show')
 }

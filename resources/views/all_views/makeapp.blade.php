@@ -13,6 +13,10 @@
 
 
 @section('extra_style') 
+    <!-- Select2 -->
+    <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2/css/select2.min.css">
+    <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
 	<link rel="manifest" href="{{ asset('/manifest.json') }}">
 	<script>
 	</script>	
@@ -52,7 +56,14 @@ th, td {
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
             <input type='hidden' name='id_giorno_appalto' id='id_giorno_appalto' value='{{$id_giorno_appalto}}'>
-            <?php
+                <?php
+                $all_servizi="";
+                foreach($servizi as $servizio) {
+                    if (strlen($all_servizi)>0) $all_servizi.="|";
+                    $all_servizi.=$servizio->id.";".$servizio->descrizione;
+                }
+                echo "<input type='hidden' name='all_servizi' id='all_servizi' value='$all_servizi'>";
+
                 $strm="";$strp="";
                 foreach ($info_box as $ib) {
                     $me=$ib->m_e;
@@ -294,6 +305,8 @@ th, td {
  @section('content_plugin')
 	<!-- jQuery -->
 	<script src="{{ URL::asset('/') }}plugins/jquery/jquery.min.js"></script>
+	<!--select2 !-->
+	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	<!-- Bootstrap 5 -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<!-- jQuery UI -->
