@@ -14,6 +14,7 @@ use App\Models\user;
 use App\Models\societa;
 use App\Models\mezzi;
 use App\Models\appaltibox;
+use App\Models\appaltinew;
 use App\Models\appaltinew_altro;
 use App\Models\appaltinew_info;
 use App\Models\parco_scheda_mezzo;
@@ -23,6 +24,7 @@ use OneSignal;
 use Twilio\Rest\Client;
 use Mail;
 
+use Carbon\Carbon;
 
 use DB;
 
@@ -928,5 +930,40 @@ public function __construct()
 		return json_encode($info_appalto);		
 	}
 	///////////////////
+
+	public function listnewapp(Request $request) {
+		$view_dele=0;
+		if (request()->has("view_dele")) $view_dele=request()->input("view_dele");
+		$data_app = Carbon::now()->addDay()->toDateString();
+
+		if ($view_dele=="on") $view_dele=1;
+		if (request()->has("newapp"))  {
+			$data_appalto=request()->input('data_appalto');
+			$appalto=new appaltinew;
+			$appalto->data_appalto=$data_appalto;
+			$appalto->save();
+		}
+
+		$restore_cand=request()->input("restore_cand");
+		if (strlen($restore_cand)!=0) {
+			appaltinew::where('id', $restore_cand)
+			  ->update(['dele' => 0]);			
+		}
+		$dele_cand=request()->input("dele_cand");
+		if (strlen($dele_cand)!=0) {
+			appaltinew::where('id', $dele_cand)
+			  ->update(['dele' => 1]);			
+		}		
+		
+		$all_appalti=appaltinew::select('appaltinew.id','appaltinew.dele','appaltinew.data_appalto')
+		->when($view_dele=="0", function ($all_appalti) {
+			return $all_appalti->where('appaltinew.dele', "=","0");
+		})
+		->orderByDesc('appaltinew.id')	
+		->get();
+
+
+		return view('all_views/listnewappalti',compact('all_appalti','view_dele','data_app'));
+	}
 
 }
