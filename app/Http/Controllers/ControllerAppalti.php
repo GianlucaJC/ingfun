@@ -625,6 +625,11 @@ public function __construct()
 		->select("*")
 		->where('dele', "=","0")
 		->orderBy('descrizione')->get();		
+		
+		$info_app=appaltinew::from('appaltinew as a')
+		->select('a.*')
+		->where('a.id','=',$id_giorno_appalto)
+		->get();
 
 		$info_box=appaltinew_info::from('appaltinew_info as a')
 		->select('a.*')
@@ -657,7 +662,7 @@ public function __construct()
 		->where('dele', "=","0")	
 		->orderBy('targa')->get();
 
-		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','appaltibox','ditte','marche','modelli','inventario'));
+		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','info_app','appaltibox','ditte','marche','modelli','inventario'));
 	}
 
 	public function check_allestimento(Request $request) {

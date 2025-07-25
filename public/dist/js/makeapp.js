@@ -721,6 +721,7 @@ function info_box(m_e,box) {
       .then(resp=>{
           if (resp.header=="OK") {
             $(".dati").val('');
+            dap=$("#dap").val();
             all_servizi=$("#all_servizi").val().split("|");
             servizi_svolti=new Array()
             if (resp.info_appalto[0]) {
@@ -728,7 +729,8 @@ function info_box(m_e,box) {
                 $("#orario_incontro").val(resp.info_appalto[0].orario_incontro)
                 $("#luogo_destinazione").val(resp.info_appalto[0].luogo_destinazione)
                 $("#ora_destinazione").val(resp.info_appalto[0].ora_destinazione)
-                $("#data_servizio").val(resp.info_appalto[0].data_servizio)
+                //$("#data_servizio").val(resp.info_appalto[0].data_servizio)
+                $("#data_servizio").val(dap)
                 $("#numero_persone").val(resp.info_appalto[0].numero_persone)
                 
                 $("#nome_salma").val(resp.info_appalto[0].nome_salma)
@@ -799,7 +801,7 @@ function detail_appalto(m_e,box) {
                     </div>
                     <div class="col-md-4">
                         <label for="data_servizio" class="col-form-label">Data servizio</label>
-                        <input type='date' class="form-control dati" id="data_servizio" name='data_servizio' required>
+                        <input type='date' readonly class="form-control dati" id="data_servizio" name='data_servizio' required>
                     </div>
                     <div class="col-md-4">
                         <label for="numero_persone" class="col-form-label">Numero persone</label>

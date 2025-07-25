@@ -239,12 +239,21 @@ th, td {
 
 					</div>
 					<!-- /.col -->
+                    
 					<div class="col-md-10" style='max-height:1200px'>
-
-
-
-                        <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
-                        Aggiungi appalto mattutino</a>						
+                        <?php
+                            $dap=date("Y-m-d");
+                            if (isset($info_app[0]->data_appalto)) {
+                                $dap=$info_app[0]->data_appalto;
+                                $dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
+                                echo "Appalti del <b>".$dap1."</b>";
+                            }
+                        ?>
+                        <input type='hidden' id='dap' value='{{$dap}}'>
+                        <span style="float:right">
+                            <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
+                            Aggiungi appalto mattutino</a>						
+                        </span>
 						<table id='tbAppM' class='table'>	
                             <tbody>
 							<tr>
@@ -252,8 +261,10 @@ th, td {
 							</tr>
                             </tbody>
 						</table>
+                        <span style="float:right">
+                            <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>
+                        </span>
 
-                        <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>						
 						<table id='tbAppP' class='table'>	
                             <tbody>
                                 <tr>
