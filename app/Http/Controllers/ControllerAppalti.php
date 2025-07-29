@@ -17,6 +17,7 @@ use App\Models\appaltibox;
 use App\Models\appaltinew;
 use App\Models\appaltinew_altro;
 use App\Models\appaltinew_info;
+use App\Models\appaltinew_reper;
 use App\Models\parco_scheda_mezzo;
 use App\Models\parco_marca_mezzo;
 use App\Models\parco_modello_mezzo;
@@ -695,7 +696,12 @@ public function __construct()
 		}
 		$resp['info_altro']=$info_altro;
 
+		$info_reper=appaltinew_reper::from('appaltinew_reper as a')
+		->select('a.reper')
+		->where('a.idapp','=',$id_giorno_appalto)
+		->get();
 
+		$resp['info_reper']=$info_reper;
 		return json_encode($resp);
 	}
 
@@ -930,6 +936,21 @@ public function __construct()
 
 
 		}
+
+		$reper=$request->input('reper');
+		$count=appaltinew_reper::where('idapp','=',$id_giorno_appalto)->count();
+		if ($count!=0) {
+			$rep = appaltinew_reper::where('idapp', $id_giorno_appalto)
+			->update(['reper'=>$reper]);
+		}
+		else {
+			$rep=new appaltinew_reper;
+			$rep->idapp=$id_giorno_appalto;
+			$rep->reper=$reper;
+			$rep->save();				
+		}
+		
+
 		$info_appalto=array();
 		$info_appalto['header']="OK";
 		return json_encode($info_appalto);		

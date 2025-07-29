@@ -1,5 +1,6 @@
 const numBox=6
 const elemBox=6
+const elemRep=7
 const maxI=2
 var saveall=false
 var _m_e="?";var _box="?";var _el="?"
@@ -19,10 +20,13 @@ var _m_e="?";var _box="?";var _el="?"
     load_appalti(id_giorno_appalto)
     load_ini_lav();
     setZoom(1)
+
+
     //$('[data-toggle="tooltip"]').tooltip(); 
     
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
+    
     
 } );
 
@@ -92,7 +96,7 @@ function dragstartHandler(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
   console.log("targetLav",ev.target.id)
 }
-
+////drag on box lavoratori
 function dragoverHandler(ev) {
     dest=ev.target.id
     from = ev.dataTransfer.getData("text");
@@ -104,7 +108,7 @@ function dragoverHandler(ev) {
     _el=$("#"+dest).data('el')
     ev.preventDefault();
 }
-
+//drop on box lavoratori
 function dropHandler(ev) {
 
   ev.preventDefault();
@@ -170,6 +174,65 @@ function dropHandler(ev) {
 }
 //////////////////
 
+
+
+////drag on box reperibilità
+function dragoverHandlerRep(ev) {
+    dest=ev.target.id
+    from = ev.dataTransfer.getData("text");
+    //drag from lav (elenco di sx) to box
+    ev.preventDefault();
+}
+//drop on box reperibilità
+function dropHandlerRep(ev) {
+
+  ev.preventDefault();
+  const from = ev.dataTransfer.getData("text");
+  dest=ev.target.id
+
+  //spostamento lavoratore da box lavoratori a box reperibilità
+  if (from.substr(0,6)=="btnlav") {
+    idlav=$("#"+from).data('idlav')
+    m_e=$("#"+dest).data('m_e')
+    el=$("#"+from).data('el')
+    console.log("from",from,"dest",dest,"m_e",m_e)
+
+   present=false
+   console.log("idlav",idlav)
+    $(".rep"+m_e).each(function(){
+        id_ref=$(this).data( "idlav")
+        if (id_ref==idlav) present=true
+    })
+
+
+    if (present==true || remove==true) {
+       // alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
+        return false
+    }
+
+    reflav="btnlav"+idlav
+    nomelav=$("#"+reflav).text().trim()
+    
+    //refbox="box"+m_e+el
+    refbox=dest
+    remove=false
+    if ($("#"+refbox).hasClass('active')) { 
+        remove=true
+        idlav=$("#"+refbox).data( "idlav")
+        $("#"+refbox).removeClass('active')
+        $("#"+refbox).first().html("Assegnabile")
+        $("#"+refbox).removeData( "idlav", '' );
+    }
+    if (!$("#"+refbox).hasClass('active')) {
+        $("#"+refbox).addClass('active')
+        html=nomelav
+        $("#"+refbox).first().html(html)
+        $("#"+refbox).data( "idlav", idlav );
+        numpres++
+    }
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+  }
+}
 
 ///////// DRAG & DROP Ditte
 
@@ -307,7 +370,27 @@ function load_inf() {
                     $("#"+dest).data( "targa", targa2 );    
                 }
 
-            }            
+            }
+
+            dato=ris.info_reper
+            reper=dato[0].reper
+            console.log("reper",reper)
+            if (reper && reper.length>0) {
+                a_rep=reper.split("|")
+                for (sca=0;sca<a_rep.length;sca++) {
+                    me=a_rep[sca].split(";")[0]
+                    elem=a_rep[sca].split(";")[1]
+                    idlav=a_rep[sca].split(";")[2]
+                    refbox="rep"+me+elem
+                    if (elem && idlav!="0") {
+                        reflav="btnlav"+idlav
+                        nomelav=$("#"+reflav).text().trim()
+                        $("#"+refbox).data("idlav",idlav)
+                        $("#"+refbox).text(nomelav)
+                        $("#"+refbox).addClass('active')
+                    }
+                }
+            }
       })
       .catch(status, err => {
           return console.log(status, err);
@@ -610,6 +693,16 @@ function save_appalto() {
         ditte+=$(this).data('box')+";"+$(this).data('m_e')+";"+iddit
     })
     console.log("ditte",ditte)
+
+    reper="";
+    $(".rep").each(function(){
+        idrep=0
+        if( typeof ($(this).data('idlav')) != 'undefined' ) idrep=$(this).data('idlav')
+        id_elem=$(this).data('el')
+        if (reper.length>0) reper+="|"
+        reper+=$(this).data('m_e')+";"+id_elem+";"+idrep
+    })    
+    console.log("reper",reper)
     
     /*
         in caso di salvataggio singolo (bottone salva dentro info),
@@ -630,7 +723,7 @@ function save_appalto() {
           headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
           },
-          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&servizi="+servizi+"&car1="+car1+"&car2="+car2+"&carm1="+carm1+"&carm2="+carm2+"&carp1="+carp1+"&carp2="+carp2+"&ditta="+ditta+"&ditte="+ditte+"&targhe_resp="+targhe_resp+"&from="+from,
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&servizi="+servizi+"&car1="+car1+"&car2="+car2+"&carm1="+carm1+"&carm2="+carm2+"&carp1="+carp1+"&carp2="+carp2+"&ditta="+ditta+"&ditte="+ditte+"&reper="+reper+"&targhe_resp="+targhe_resp+"&from="+from,
       })
       .then(response => {
           if (response.ok) {
@@ -1189,6 +1282,50 @@ function inibox(m_e,box) {
     }
     return html
 }
+
+function action_rep(m_e,el) {
+    refrep="rep"+m_e+el
+    idlav=($("#"+refrep).data("idlav"))
+    if (!idlav || idlav.length==0) return false
+    if (!confirm("Sicuri di rimuovere il nominativo dalla lista reperibilità?")) return false;
+
+    $("#"+refrep).removeClass('active')
+    $("#"+refrep).first().html("Assegnabile")
+    $("#"+refrep).removeData( "idlav", '' );
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+}
+function inirep(sc) {
+    m_e="";txt_rep="";
+    if (sc==1) {m_e="Ma";txt_rep="Mattino"}
+    if (sc==2) {m_e="Mb";txt_rep="Pomeriggio"}
+    if (sc==3) {m_e="Pa";txt_rep="Primo Notturno"}
+    if (sc==4) {m_e="Pb";txt_rep="Secondo Notturno"}
+    html="";
+    if (sc==1) {
+        html+=`
+            <div class="alert alert-light" role="alert">
+                Reperibilità
+            </div>
+        `    
+    }
+    html+=`
+        <div id='div_rep`+m_e+`' class="card">
+    
+            <div class="card-body"><b>`+txt_rep+`</b>
+                <div id='boxrep`+m_e+`' class="list-group"  ondrop="dropHandlerRep(event)"   ondragover="dragoverHandlerRep(event)" draggable="true" ondragstart="dragstartHandlerRep(event)">`
+                for (el=0;el<elemRep;el++) {
+                    html+=`    
+                    <a href="#" class="list-group-item py-1 clearfix itemlist list-group-item-action rep rep`+m_e+`" id='rep`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_rep('`+m_e+`',`+el+`)"  >
+                        Assegnabile
+                    </a>
+                    `
+                }
+                html+=`</div>
+            </div>                                    
+    </div>`
+    return html
+}
+
 function newapp(m_e,from) {
     if (from=="man") {
         tipo_box="mattutino"
@@ -1203,6 +1340,18 @@ function newapp(m_e,from) {
    
     html=accordion(m_e,box)
     $('#tbApp'+m_e+' tr').append(html)
+    
+    html=""
+    for (sc=1;sc<=4;sc++) {
+        html=inirep(sc)
+        if (sc==1) me="Ma"
+        if (sc==2) me="Mb"
+        if (sc==3) me="Pa"
+        if (sc==4) me="Pb"
+
+        $('#rep'+me).html(html)
+    }    
+    
 
    
     html="";

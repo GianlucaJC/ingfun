@@ -47,7 +47,7 @@ th, td {
   <div class="content-wrapper" style='background-color:white'>
 
     <!-- Main content -->
-    <div class="content" id='div_tb'>
+    <div class="content" id='div_tbx'>
     
       <div class="container-fluid mt-4">
 	  <!--<div class='onesignal-customlink-container'></div>!-->
@@ -240,7 +240,8 @@ th, td {
 					</div>
 					<!-- /.col -->
                     
-					<div class="col-md-10" style='max-height:1200px'>
+					<div class="col-md-8" style='max-height:auto;overflow-x:auto'>
+                        <div id='div_tb'>
                         <?php
                             $dap=date("Y-m-d");
                             if (isset($info_app[0]->data_appalto)) {
@@ -271,9 +272,24 @@ th, td {
                                     <!--colonne popolate dinamicamente!-->
                                 </tr>
                             </tbody>
-						</table>                        
+						</table>  
+                        </div>                      
 					</div>
 					<!-- /.col -->
+
+					<div class="col-md-2">
+                        <div id='div_reperx'>
+                            <div id='repMa'>	
+                            </div> 
+                            <div id='repMb'>	
+                            </div> 
+                            <div id='repPa'>	
+                            </div>                         
+                            <div id='repPb'>	
+                            </div>    
+                        </div>                     
+                    </div>    
+                    
 					</div>
 					<!-- /.row -->
 				</div><!-- /.container-fluid -->
