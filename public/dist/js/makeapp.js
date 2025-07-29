@@ -400,7 +400,7 @@ function load_inf() {
                     elem=a_rep[sca].split(";")[1]
                     idlav=a_rep[sca].split(";")[2]
                     refbox="rep"+me+elem
-                    if (elem && idlav!="0") {
+                    if (elem && idlav && idlav!="0") {
                         reflav="btnlav"+idlav
                         nomelav=$("#"+reflav).text().trim()
                         $("#"+refbox).data("idlav",idlav)
