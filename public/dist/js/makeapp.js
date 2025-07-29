@@ -174,7 +174,11 @@ function dropHandler(ev) {
 }
 //////////////////
 
-
+///DRAG & DROP da rep a rep
+function dragstartHandlerRep(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+  console.log("targetLavBox",ev.target.id)
+}
 
 ////drag on box reperibilità
 function dragoverHandlerRep(ev) {
@@ -191,24 +195,38 @@ function dropHandlerRep(ev) {
   dest=ev.target.id
 
   //spostamento lavoratore da box lavoratori a box reperibilità
-  if (from.substr(0,6)=="btnlav") {
+  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="rep") {
+  
     idlav=$("#"+from).data('idlav')
     m_e=$("#"+dest).data('m_e')
     el=$("#"+from).data('el')
     console.log("from",from,"dest",dest,"m_e",m_e)
 
-   present=false
-   console.log("idlav",idlav)
-    $(".rep"+m_e).each(function(){
-        id_ref=$(this).data( "idlav")
-        if (id_ref==idlav) present=true
-    })
 
 
-    if (present==true || remove==true) {
+    present=false
+    check_self=false
+    if (from.substr(0,5)==dest.substr(0,5)) check_self=true
+    if (check_self==false) {
+        $(".rep"+m_e).each(function(){
+            id_ref=$(this).data( "idlav")
+            if (id_ref==idlav) present=true
+        })
+    }
+    if (present==true) {
        // alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
         return false
     }
+    console.log("idlav",idlav)
+    if (from.substr(0,3)=="rep") {
+        $("#"+from).data("idlav","")
+        $("#"+from).text("Assegnabile")
+        $("#"+from).removeClass('active')
+    }
+
+
+
+
 
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
