@@ -229,7 +229,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
    @extends('all_views.viewmaster.sidemenu_new')
 
    <span id='credit_top'>
-	<center>Sviluppo prototipale by <b>Misericordia</b></center>
+	<center>Sviluppo prototipale</center>
    </span> 
    @yield('content_main')  
 
