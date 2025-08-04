@@ -107,7 +107,7 @@ th, td {
 				<section class="content">
 				<div class="container-fluid">
 
-					<div class="row">
+					<div class="row" style='width:1400px'>
                     
 					<div class="col-md-2">
                         <div class="d-grid gap-2">
@@ -115,12 +115,12 @@ th, td {
                         </div>
 
                         <label for="zoomlevel" class="form-label">Zoom level</label>
-                        <input type="range" class="form-range" min="0.50" max="1.05" step="0.05" id="zoomlevel" value='1' onchange="setZoom(this.value)">
+                        <input type="range" class="form-range" min="0.10" max="1.05" step="0.02" id="zoomlevel"  onchange="setZoom(this.value,1)">
 
 
                         <div class="card-body">
 
-                            <div class="accordion accordion-flush" id="accordionFlushExample">
+                            <div class="accordion" id="accordionFlushExample">
                                 <!--accordion ditte !-->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
@@ -140,7 +140,7 @@ th, td {
                                                             if (strlen($alld)!=0) $alld.="|";
                                                             $alld.=$ditta->id.";".$ditta->denominazione;
                                                         ?>
-                                                        <button type="button" class="btn btn-outline-success allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' 
+                                                        <button type="button" class="btn btn-outline-success btn-sm allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' 
                                                         draggable="true" ondragstart="dragstartHandlerDitta(event)">              
                                                         {{$ditta->denominazione}}
                                                         </button>
@@ -182,7 +182,7 @@ th, td {
                                                                     $mezzo.=" - ".$modello;
                                                                 }
                                                             ?>        
-                                                            <button type="button" class="btn btn-outline-success allmezzi" data-nome='{{$mezzo}}' id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
+                                                            <button type="button" class="btn btn-outline-success btn-sm  allmezzi" data-nome='{{$mezzo}}' id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
                                                             data-targa='{{$flotta->targa}}' data-mezzo='{{$mezzo}}'
                                                             draggable="true" ondragstart="dragstartHandlerMezzi(event)">              
                                                             {{$mezzo}}
@@ -206,18 +206,18 @@ th, td {
                                 <!--accordion persone !-->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                    <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" >
                                         Persone
                                     </button>
                                     </h2>
-                                    <div id="flush-collapseTwo" class="accordion-collapse collapse" >
+                                    <div id="flush-collapseTwo" class="accordion-collapse show" >
                                         <div class="accordion-body">
                                             <!--testo persone!-->
                                             <input type='text' class='form-control mt-2' id='cerca_nome' placeholder='Cerca Nominativo'>
                                             <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
                                                 <div class="d-grid gap-1" style="padding:10px">
                                                     @foreach ($lavoratori as $lavoratore)
-                                                        <button type="button" class="btn btn-outline-success allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)">              
+                                                        <button type="button" class="btn btn-outline-success  btn-sm allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)">  
                                                         {{$lavoratore->nominativo}}
                                                         </button>
                                                         <div style='display:none' id='unlock{{$lavoratore->id}}'>
@@ -240,58 +240,54 @@ th, td {
 					</div>
 					<!-- /.col -->
                     
-					<div class="col-md-8" style='max-height:auto;overflow-x:auto'>
-                        <div id='div_tb'>
-                        <?php
-                            $dap=date("Y-m-d");
-                            if (isset($info_app[0]->data_appalto)) {
-                                $dap=$info_app[0]->data_appalto;
-                                $dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
-                                echo "Appalti del <b>".$dap1."</b>";
-                            }
-                        ?>
-                        <input type='hidden' id='dap' value='{{$dap}}'>
-                        <span style="float:right">
-                            <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
-                            Aggiungi appalto mattutino</a>						
-                        </span>
-						<table id='tbAppM' class='table'>	
-                            <tbody>
-							<tr>
-                                    <!--colonne popolate dinamicamente!-->
-							</tr>
-                            </tbody>
-						</table>
-                        <span style="float:right">
-                            <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>
-                        </span>
+					<div class="col-md-10">
+                        <div id='div_tb' style='border:2px ;width:2500px' >
+                            <?php
+                                $dap=date("Y-m-d");
+                                if (isset($info_app[0]->data_appalto)) {
+                                    $dap=$info_app[0]->data_appalto;
+                                    $dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
+                                    echo "Appalti del <b>".$dap1."</b>";
+                                }
+                            ?>
 
-						<table id='tbAppP' class='table'>	
-                            <tbody>
-                                <tr>
-                                    <!--colonne popolate dinamicamente!-->
-                                </tr>
-                            </tbody>
-						</table>  
-                        </div>                      
-					</div>
-					<!-- /.col -->
+                            <input type='hidden' id='dap' value='{{$dap}}'>
+                            
+                            <div style='overflow-x:hidden;white-space: nowrap;'>
+                                <span style="float:right">
+                                    <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
+                                    Aggiungi appalto mattutino</a>						
+                                </span>
+                            
+                            
+                                <table id='tbAppM' class='table'>	
+                                    <tbody>
+                                    <tr>
+                                            <!--colonne popolate dinamicamente!-->
+                                    </tr>
+                                    </tbody>
 
-					<div class="col-md-2">
-                        <div id='div_reperx'>
-                            <div id='repMa'>	
-                            </div> 
-                            <div id='repMb'>	
-                            </div> 
-                            <div id='repPa'>	
-                            </div>                         
-                            <div id='repPb'>	
-                            </div>    
-                        </div>                     
+                                </table>
+                            </div>
+                               
+                            <div style='overflow-x:hidden;white-space: nowrap;'>
+                                <span style="float:right">
+                                    <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>
+                                </span>
+                                
+                                <table id='tbAppP' class='table'>	
+                                    <tbody>
+                                        <tr>
+                                            <!--colonne popolate dinamicamente!-->
+                                        </tr>
+                                    </tbody>
+                                </table>  
+                            </div>
+					    </div>
                     </div>    
-                    
-					</div>
-					<!-- /.row -->
+					<!-- /.col -->
+				</div>
+				<!-- /.row -->
 				</div><!-- /.container-fluid -->
 				</section>            
 
@@ -299,6 +295,8 @@ th, td {
       </div><!-- /.container-fluid -->
     </div>
 
+    @section('operazioni')
+    @endsection
     <!-- MODAL !-->
 
 

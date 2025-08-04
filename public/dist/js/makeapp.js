@@ -1,7 +1,8 @@
-const numBox=6
+const numBox=7
 const elemBox=6
-const elemRep=7
+const elemRep=10
 const maxI=2
+const zoomI=0.53
 var saveall=false
 var _m_e="?";var _box="?";var _el="?"
 
@@ -19,14 +20,17 @@ var _m_e="?";var _box="?";var _el="?"
     id_giorno_appalto=$("#id_giorno_appalto").val()
     load_appalti(id_giorno_appalto)
     load_ini_lav();
-    setZoom(1)
+    setZoom(zoomI,0)
 
+    $("#div_side").removeClass('control-sidebar-dark')
+    $('.control-sidebar').ControlSidebar('show');
 
     //$('[data-toggle="tooltip"]').tooltip(); 
     
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
-    
+
+
     
 } );
 
@@ -273,7 +277,7 @@ function dropHandlerDitta(ev) {
 
   ditta=$("#"+from).data("nome");d_origin=ditta
   iddit=$("#"+from).data("iddit")
-  if (ditta.length>20) ditta=ditta.substr(0,16)+"..."
+  //if (ditta.length>20) ditta=ditta.substr(0,16)+"..."
   html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+ditta+"</span>"
   $("#"+dest).html(html)
   $("#"+dest).removeClass('bg-secondary').addClass('bg-success')
@@ -299,6 +303,30 @@ function load_appalti(id_giorno_appalto) {
     for (sca=0;sca<ref;sca++) {
         newapp('P','auto')
     }
+    html=`
+        <div id='div_reperx'>
+            <div id='repMa'>	
+            </div> 
+            <div id='repMb'>	
+            </div> 
+            <div id='repPa'>	
+            </div>                         
+            <div id='repPb'>	
+            </div>    
+        </div>
+    `    
+    $("#div_side").html(html)
+    html=""
+    for (sc=1;sc<=4;sc++) {
+        html=inirep(sc)
+        if (sc==1) me="Ma"
+        if (sc==2) me="Mb"
+        if (sc==3) me="Pa"
+        if (sc==4) me="Pb"
+
+        $('#rep'+me).html(html)
+    }    
+    
 
     //dopo il rendering dell'accordion    
     //precarico dei dati visibili (es. numero persone, orario incontro, etc.)
@@ -1087,13 +1115,16 @@ function inimezzi(m_e,box) {
     html=""
     html+=`
         <center><i class="fa-solid fa-car mt-2"></i></center>
-        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car1`+m_e+` car`+m_e+`" style="font-size:.8em"  id='car1`+m_e+box+`'   data-m_e='`+m_e+`' data-refcar='car1' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
-            Mezzo1
-        </span>
-    
-        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 car2`+m_e+` car`+m_e+`" style="font-size:.8em"  id='car2`+m_e+box+`' data-m_e='`+m_e+`' data-refcar='car2' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
-            Mezzo2
-        </span>     
+        <font size='5px'>
+            <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-2 car1`+m_e+` car`+m_e+`" style="font-size:.8em"  id='car1`+m_e+box+`'   data-m_e='`+m_e+`' data-refcar='car1' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+                Mezzo1
+            </span>
+        </font>
+         <font size='5px'>
+            <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-2 car2`+m_e+` car`+m_e+`" style="font-size:.8em"  id='car2`+m_e+box+`' data-m_e='`+m_e+`' data-refcar='car2' data-box='`+box+`' data-bs-toggle="tooltip" ondrop="dropHandlerMezzi(event)"  draggable="true" ondragstart="dragstartHandlerResp(event)" ondragover="dragoverHandlerMezzi(event)" data-placement="top" onclick="removemezzo(this.id)">
+                Mezzo2
+            </span>     
+        </font>    
     `
     return html
 }
@@ -1101,10 +1132,13 @@ function inimezzi(m_e,box) {
 function initditte(m_e,box) {
     html="";
     html+=`
-        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-1 ditte" 
-            id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:100%'>
+        <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-2 ditte" 
+            id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:100%;height:40px;white-space:collapse'>
             <i class="fa-solid fa-location-dot"></i>
-        </span>      
+            
+        </span>
+
+
     `
     return html
 }
@@ -1129,11 +1163,12 @@ function accordion(m_e,box) {
         <div class="d-grid gap-2 mb-2">
             <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)" >Info</button>
             <div class="panel-footer text-center">
-            
-                <span id='infoapp`+m_e+box+`' class="badge rounded-pill bg-secondary pull-left">
-                    <i class="fa-solid fa-person"></i> 
-                    <i class="ml-3 fa-solid fa-clock"></i>
-                </span>    
+                <font size='6px'>
+                    <span id='infoapp`+m_e+box+`' class="badge rounded-pill bg-secondary pull-left p-2">
+                        <i class="fa-solid fa-person"></i> 
+                        <i class="ml-3 fa-solid fa-clock"></i>
+                    </span>    
+                </font>    
                 <span class="pull-right">
                     <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> <small>Option</small>
                     </a>
@@ -1152,11 +1187,11 @@ function accordion(m_e,box) {
         
             <div class="accordion-item">
                 <h2 class="accordion-header">
-                <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
+                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
                     Persone
                 </button>
                 </h2>
-                <div id="flush-collapseTwo" class="accordion-collapse collapse">
+                <div id="flush-collapseTwo" class="accordion-collapse show">
                     <div class="accordion-body">
                         <div id='div_pers`+m_e+box+`'></div>
                     </div>
@@ -1359,17 +1394,6 @@ function newapp(m_e,from) {
     html=accordion(m_e,box)
     $('#tbApp'+m_e+' tr').append(html)
     
-    html=""
-    for (sc=1;sc<=4;sc++) {
-        html=inirep(sc)
-        if (sc==1) me="Ma"
-        if (sc==2) me="Mb"
-        if (sc==3) me="Pa"
-        if (sc==4) me="Pb"
-
-        $('#rep'+me).html(html)
-    }    
-    
 
    
     html="";
@@ -1395,7 +1419,9 @@ function newapp(m_e,from) {
 
 }
 
-function setZoom(value) {
+function setZoom(value,from) {
 	$('#div_tb').css('transform','scale('+value+')');
 	$('#div_tb').css('transformOrigin','left top');
+    if (from==1) $("#div_side").hide(120)
+    if (value<=zoomI) $("#div_side").show(120)
 };
