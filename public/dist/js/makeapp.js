@@ -25,7 +25,7 @@ var _m_e="?";var _box="?";var _el="?"
 
     $("#div_side").removeClass('control-sidebar-dark')
     $('.control-sidebar').ControlSidebar('show');
-
+    $("#div_urg").show(1000);
     //$('[data-toggle="tooltip"]').tooltip(); 
     
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
@@ -1471,7 +1471,7 @@ function urgenze() {
                 </div>
             </div>            
             <div class="col-md-8">
-                <label for="servizi_svolti" class="col-form-label">Servizi svolti</label>
+                <label for="servizi_urg" class="col-form-label">Servizi svolti</label>
                 <div id='div_serv1'>
                     <i class='fas fa-spinner fa-spin'></i>
                 </div>

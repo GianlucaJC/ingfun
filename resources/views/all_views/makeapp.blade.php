@@ -286,7 +286,7 @@ th, td {
                                 </table>  
                             </div>
 
-                            <div class="container-fluid">
+                            <div class="container-fluid" style="display:none" id='div_urg'>
                                 <h2>Urgenze</h2>
                                 <a href='javascript:void(0)' onclick='urgenze()'>
                                     <h3><i class="fas fa-calendar-plus"></i> Nuova urgenza</h3>
