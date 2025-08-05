@@ -131,9 +131,9 @@ th, td {
                                     <div id="flush-collapseOne" class="accordion-collapse collapse" >
                                         <div class="accordion-body">
                                             <!--testo ditte !-->
-                                            <input type='text' class='form-control mt-2' id='cerca_ditta' placeholder='Cerca Ditta'>
+                                            <input type='text' class='form-control mt-2' id='cerca_ditta' placeholder='Cerca Ditta' style='width:110px'>
                                             <div id="div_dit" class='mt-2' style='max-height:800px;overflow-y:scroll'>
-                                                <div class="d-grid gap-1" style="padding:10px">
+                                                <div class="d-grid gap-1">
                                                     <?php $alld=""; ?>
                                                     @foreach ($ditte as $ditta)
                                                         <?php
@@ -141,7 +141,7 @@ th, td {
                                                             $alld.=$ditta->id.";".$ditta->denominazione;
                                                         ?>
                                                         <button type="button" class="btn btn-outline-success btn-sm allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' 
-                                                        draggable="true" ondragstart="dragstartHandlerDitta(event)">              
+                                                        draggable="true" ondragstart="dragstartHandlerDitta(event)" style='width:110px'>              
                                                         {{$ditta->denominazione}}
                                                         </button>
                                                     @endforeach	
@@ -163,9 +163,9 @@ th, td {
                                     <div id="flush-collapseThree" class="accordion-collapse collapse" >
                                         <div class="accordion-body">
                                             <!--testo mezzi!-->
-                                                <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo'>
+                                                <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo' style='width:110px'>
                                                 <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
-                                                    <div class="d-grid gap-1" style="padding:10px">
+                                                    <div class="d-grid gap-1">
                                                         <?php $infomezzi=""; ?>
                                                         @foreach($inventario as $flotta)
                                                             <?php
@@ -182,9 +182,9 @@ th, td {
                                                                     $mezzo.=" - ".$modello;
                                                                 }
                                                             ?>        
-                                                            <button type="button" class="btn btn-outline-success btn-sm  allmezzi" data-nome='{{$mezzo}}' id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
+                                                            <button type="button" class="btn btn-outline-success btn-sm allmezzi" data-nome='{{$mezzo}}' id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
                                                             data-targa='{{$flotta->targa}}' data-mezzo='{{$mezzo}}'
-                                                            draggable="true" ondragstart="dragstartHandlerMezzi(event)">              
+                                                            draggable="true" ondragstart="dragstartHandlerMezzi(event)" style='width:110px'>              
                                                             {{$mezzo}}
                                                             </button>
                                                             <?php
@@ -213,11 +213,11 @@ th, td {
                                     <div id="flush-collapseTwo" class="accordion-collapse show" >
                                         <div class="accordion-body">
                                             <!--testo persone!-->
-                                            <input type='text' class='form-control mt-2' id='cerca_nome' placeholder='Cerca Nominativo'>
+                                            <input type='text' class='form-control mt-2' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
                                             <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
-                                                <div class="d-grid gap-1" style="padding:10px">
+                                                <div class="d-grid gap-1">
                                                     @foreach ($lavoratori as $lavoratore)
-                                                        <button type="button" class="btn btn-outline-success  btn-sm allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)">  
+                                                        <button type="button" class="btn btn-outline-success  btn-sm allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" style='width:110px'>  
                                                         {{$lavoratore->nominativo}}
                                                         </button>
                                                         <div style='display:none' id='unlock{{$lavoratore->id}}'>
