@@ -56,6 +56,7 @@ th, td {
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
             <input type='hidden' name='id_giorno_appalto' id='id_giorno_appalto' value='{{$id_giorno_appalto}}'>
+            
                 <?php
                 $all_servizi="";
                 foreach($servizi as $servizio) {
@@ -243,7 +244,7 @@ th, td {
 					<div class="col-md-10">
                         <div id='div_tb' style='border:2px ;width:2500px' >
                             <?php
-                                $dap=date("Y-m-d");
+                                $dap=date("Y-m-d");$dap1=$dap;
                                 if (isset($info_app[0]->data_appalto)) {
                                     $dap=$info_app[0]->data_appalto;
                                     $dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
@@ -252,6 +253,7 @@ th, td {
                             ?>
 
                             <input type='hidden' id='dap' value='{{$dap}}'>
+                            <input type='hidden' id='dap1' value='{{$dap1}}'>
                             
                             <div style='overflow-x:hidden;white-space: nowrap;'>
                                 <span style="float:right">
@@ -283,7 +285,15 @@ th, td {
                                     </tbody>
                                 </table>  
                             </div>
+
+                            <div class="container-fluid">
+                                <h2>Urgenze</h2>
+                                <a href='javascript:void(0)' onclick='urgenze()'>
+                                    <h3><i class="fas fa-calendar-plus"></i> Nuova urgenza</h3>
+                                </a>    
+                            </div>                               
 					    </div>
+                     
                     </div>    
 					<!-- /.col -->
 				</div>
@@ -300,7 +310,7 @@ th, td {
     <!-- MODAL !-->
 
 
-    <div class="modal fade bd-example-modal-lg" id="modalinfo" tabindex="-1" role="dialog" aria-labelledby="Info appalto" aria-hidden="true">
+    <div class="modal fade bd-example-modal-lg" id="modalinfo" role="dialog" aria-labelledby="Info appalto" aria-hidden="true">
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
             <div class="modal-header">

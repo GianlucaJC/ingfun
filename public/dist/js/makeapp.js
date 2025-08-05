@@ -1454,6 +1454,74 @@ function action_lav(m_e,box,el) {
     $("#modalinfo").modal('show')
 }
 
+function urgenze() {
+    dap1=$("#dap1").val();
+   
+    html=""
+    html+=`
+        <center>
+            <h4>Definizione Urgenza del `+dap1+`<h4>
+        </center>
+
+        <div class="row">
+            <div class="col-md-4">
+                <label for="ditta_urg" class="col-form-label">Ditta</label>
+                <div id='div_ditta_urg'>
+                    <i class='fas fa-spinner fa-spin'></i>
+                </div>
+            </div>            
+            <div class="col-md-8">
+                <label for="servizi_svolti" class="col-form-label">Servizi svolti</label>
+                <div id='div_serv1'>
+                    <i class='fas fa-spinner fa-spin'></i>
+                </div>
+            </div>
+
+        </div>                        
+    `
+    
+    $("#body_content").html(html)
+
+    alld=$("#alld").val().split("|");
+    ditta_u=new Array()
+    html=`
+        <select class="form-select select2" name="ditta_urg" id="ditta_urg">
+            <option value=''>Select...</option>
+        `
+        
+        for (sc=0;sc<alld.length;sc++) {
+            id_d=alld[sc].split(";")[0]
+            ditt=alld[sc].split(";")[1]
+            html+="<option value='"+id_d+"' ";
+            //if (in_array($id_servizio,$id_servizi)) echo " selected ";
+            if (ditta_u.includes(id_d)) html+=" selected ";
+            html+=">"+ditt+"</option>";
+        }
+    html+=`</select>`    
+    $("#div_ditta_urg").html(html)    
+
+    all_servizi=$("#all_servizi").val().split("|");
+    servizi_svolti=new Array()
+    html=`
+        <select class="form-select select2" name="servizi_urg[]" id="servizi_urg" multiple>`
+        for (sc=0;sc<all_servizi.length;sc++) {
+            id_serv=all_servizi[sc].split(";")[0]
+            serv=all_servizi[sc].split(";")[1]
+            html+="<option value='"+id_serv+"' ";
+            //if (in_array($id_servizio,$id_servizi)) echo " selected ";
+            if (servizi_svolti.includes(id_serv)) html+=" selected ";
+            html+=">"+serv+"</option>";
+        }
+    html+=`</select>`    
+    $("#div_serv1").html(html)
+
+    
+
+    $('.select2').select2()
+
+    $("#modalinfo").modal('show')
+}
+
 
 function inibox(m_e,box) {
     html="";
