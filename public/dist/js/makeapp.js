@@ -1301,7 +1301,7 @@ function accordion(m_e,box) {
                     </span>    
                 </font>    
                 <span class="pull-right">
-                    <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> <small>Option</small>
+                    <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> Option
                     </a>
                 </span>                
             </div>
