@@ -18,6 +18,7 @@ use App\Models\appaltinew;
 use App\Models\appaltinew_altro;
 use App\Models\appaltinew_info;
 use App\Models\appaltinew_reper;
+use App\Models\appaltinew_assenti;
 use App\Models\parco_scheda_mezzo;
 use App\Models\parco_marca_mezzo;
 use App\Models\parco_modello_mezzo;
@@ -702,6 +703,14 @@ public function __construct()
 		->get();
 
 		$resp['info_reper']=$info_reper;
+
+		$info_assenti=appaltinew_assenti::from('appaltinew_assenti as a')
+		->select('a.assenti')
+		->where('a.idapp','=',$id_giorno_appalto)
+		->get();
+
+		$resp['info_assenti']=$info_assenti;
+
 		return json_encode($resp);
 	}
 
@@ -949,6 +958,20 @@ public function __construct()
 			$rep->reper=$reper;
 			$rep->save();				
 		}
+
+		$assenti=$request->input('assenti');
+		$count=appaltinew_assenti::where('idapp','=',$id_giorno_appalto)->count();
+		if ($count!=0) {
+			$rep = appaltinew_assenti::where('idapp', $id_giorno_appalto)
+			->update(['assenti'=>$assenti]);
+		}
+		else {
+			$rep=new appaltinew_assenti;
+			$rep->idapp=$id_giorno_appalto;
+			$rep->assenti=$assenti;
+			$rep->save();				
+		}
+				
 		
 
 		$info_appalto=array();

@@ -1,6 +1,7 @@
 const numBox=7
 const elemBox=6
 const elemRep=10
+const elemAss=10
 const maxI=2
 const zoomI=0.53
 var saveall=false
@@ -178,6 +179,84 @@ function dropHandler(ev) {
 }
 //////////////////
 
+///DRAG & DROP da ass a ass
+function dragstartHandlerAss(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+  console.log("targetLavBox",ev.target.id)
+}
+
+////drag on box assenti
+function dragoverHandlerAss(ev) {
+    dest=ev.target.id
+    from = ev.dataTransfer.getData("text");
+    //drag from lav (elenco di sx) to box
+    ev.preventDefault();
+}
+//drop on box assenti
+function dropHandlerAss(ev) {
+
+  ev.preventDefault();
+  const from = ev.dataTransfer.getData("text");
+  dest=ev.target.id
+
+  //spostamento lavoratore da box lavoratori a box assenti
+  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="ass") {
+  
+    idlav=$("#"+from).data('idlav')
+    m_e=$("#"+dest).data('m_e')
+    el=$("#"+from).data('el')
+    console.log("assegnazioni per assenti - from",from,"dest",dest,"m_e",m_e)
+
+
+
+    present=false
+    check_self=false
+    if (from.substr(0,5)==dest.substr(0,5)) check_self=true
+    if (check_self==false) {
+        $(".ass"+m_e).each(function(){
+            id_ref=$(this).data( "idlav")
+            if (id_ref==idlav) present=true
+        })
+    }
+    if (present==true) {
+       // alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
+        return false
+    }
+    console.log("idlav",idlav)
+    if (from.substr(0,3)=="ass") {
+        $("#"+from).data("idlav","")
+        $("#"+from).text("Assegna")
+        $("#"+from).removeClass('active')
+    }
+
+
+    reflav="btnlav"+idlav
+    nomelav=$("#"+reflav).text().trim()
+    
+    //refbox="box"+m_e+el
+    refbox=dest
+    remove=false
+    if ($("#"+refbox).hasClass('active')) { 
+        remove=true
+        idlav=$("#"+refbox).data( "idlav")
+        $("#"+refbox).removeClass('active')
+        $("#"+refbox).first().html("Assegna")
+        $("#"+refbox).removeData( "idlav", '' );
+    }
+    if (!$("#"+refbox).hasClass('active')) {
+        $("#"+refbox).addClass('active')
+        html=nomelav
+        $("#"+refbox).first().html(html)
+        $("#"+refbox).data( "idlav", idlav );
+        numpres++
+    }
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+  }
+}
+
+
+///
+
 ///DRAG & DROP da rep a rep
 function dragstartHandlerRep(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
@@ -191,6 +270,8 @@ function dragoverHandlerRep(ev) {
     //drag from lav (elenco di sx) to box
     ev.preventDefault();
 }
+
+
 //drop on box reperibilità
 function dropHandlerRep(ev) {
 
@@ -224,7 +305,7 @@ function dropHandlerRep(ev) {
     console.log("idlav",idlav)
     if (from.substr(0,3)=="rep") {
         $("#"+from).data("idlav","")
-        $("#"+from).text("Assegnabile")
+        $("#"+from).text("Assegna")
         $("#"+from).removeClass('active')
     }
 
@@ -242,7 +323,7 @@ function dropHandlerRep(ev) {
         remove=true
         idlav=$("#"+refbox).data( "idlav")
         $("#"+refbox).removeClass('active')
-        $("#"+refbox).first().html("Assegnabile")
+        $("#"+refbox).first().html("Assegna")
         $("#"+refbox).removeData( "idlav", '' );
     }
     if (!$("#"+refbox).hasClass('active')) {
@@ -303,21 +384,34 @@ function load_appalti(id_giorno_appalto) {
     for (sca=0;sca<ref;sca++) {
         newapp('P','auto')
     }
-    html=`
-        <div id='div_reperx'>
-            <div id='repMa'>	
-            </div> 
-            <div id='repMb'>	
-            </div> 
-            <div id='repPa'>	
-            </div>                         
-            <div id='repPb'>	
+    html="";
+    html+=`
+    <div class="container-fluid" style='background-color:white'>
+        <div class="row">
+            <div class="col-md-6">    
+                <div id='div_reperx'>
+                    <div id='repMa'>	
+                    </div> 
+                    <div id='repMb'>	
+                    </div>             
+                </div>
             </div>    
+            <div class="col-md-6">    
+                <div id='div_assenti'>
+                    <div id='assMa'>	
+                    </div>                         
+                    <div id='assMb'>	
+                    </div>    
+                </div>
+            </div>
         </div>
-    `    
+    </div>            
+    `
+
     $("#div_side").html(html)
+
     html=""
-    for (sc=1;sc<=4;sc++) {
+    for (sc=1;sc<=2;sc++) {
         html=inirep(sc)
         if (sc==1) me="Ma"
         if (sc==2) me="Mb"
@@ -327,6 +421,14 @@ function load_appalti(id_giorno_appalto) {
         $('#rep'+me).html(html)
     }    
     
+    html=""
+    for (sc=1;sc<=2;sc++) {
+        html=iniass(sc)
+        if (sc==1) me="Ma"
+        if (sc==2) me="Mb"
+        $('#ass'+me).html(html)
+    }    
+        
 
     //dopo il rendering dell'accordion    
     //precarico dei dati visibili (es. numero persone, orario incontro, etc.)
@@ -390,7 +492,7 @@ function load_inf() {
                     refditta="";
                     if (arr_d[iddit]) {
                         refditta=arr_d[iddit];d_origin=refditta
-                        if (refditta.length>20) refditta=refditta.substr(0,16)+"..."
+                        //if (refditta.length>20) refditta=refditta.substr(0,16)+"..."
                         dest="ditta"+m_e+box
 
                         html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+refditta+"</span>"
@@ -437,6 +539,26 @@ function load_inf() {
                     }
                 }
             }
+
+            dato=ris.info_assenti
+            assenti=dato[0].assenti
+            console.log("assenti",assenti)
+            if (assenti && assenti.length>0) {
+                a_ass=assenti.split("|")
+                for (sca=0;sca<a_ass.length;sca++) {
+                    me=a_ass[sca].split(";")[0]
+                    elem=a_ass[sca].split(";")[1]
+                    idlav=a_ass[sca].split(";")[2]
+                    refbox="ass"+me+elem
+                    if (elem && idlav && idlav!="0") {
+                        reflav="btnlav"+idlav
+                        nomelav=$("#"+reflav).text().trim()
+                        $("#"+refbox).data("idlav",idlav)
+                        $("#"+refbox).text(nomelav)
+                        $("#"+refbox).addClass('active')
+                    }
+                }
+            }            
       })
       .catch(status, err => {
           return console.log(status, err);
@@ -534,7 +656,7 @@ function setsquadra(m_e,box,rowbox) {
         remove=true
         idlav=$("#"+refbox).data( "idlav")
         $("#"+refbox).removeClass('active')
-        $("#"+refbox).first().html("Assegnabile")
+        $("#"+refbox).first().html("Assegna")
         $("#"+refbox).removeData( "idlav", '' );
     }
 
@@ -749,6 +871,15 @@ function save_appalto() {
         reper+=$(this).data('m_e')+";"+id_elem+";"+idrep
     })    
     console.log("reper",reper)
+    assenti="";
+    $(".ass").each(function(){
+        idass=0
+        if( typeof ($(this).data('idlav')) != 'undefined' ) idass=$(this).data('idlav')
+        id_elem=$(this).data('el')
+        if (assenti.length>0) assenti+="|"
+        assenti+=$(this).data('m_e')+";"+id_elem+";"+idass
+    })    
+    console.log("assenti",assenti)    
     
     /*
         in caso di salvataggio singolo (bottone salva dentro info),
@@ -769,7 +900,7 @@ function save_appalto() {
           headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
           },
-          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&servizi="+servizi+"&car1="+car1+"&car2="+car2+"&carm1="+carm1+"&carm2="+carm2+"&carp1="+carp1+"&carp2="+carp2+"&ditta="+ditta+"&ditte="+ditte+"&reper="+reper+"&targhe_resp="+targhe_resp+"&from="+from,
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&all_id_box="+all_id_box+"&all_id_boxes="+all_id_boxes+"&"+info+"&servizi="+servizi+"&car1="+car1+"&car2="+car2+"&carm1="+carm1+"&carm2="+carm2+"&carp1="+carp1+"&carp2="+carp2+"&ditta="+ditta+"&ditte="+ditte+"&reper="+reper+"&assenti="+assenti+"&targhe_resp="+targhe_resp+"&from="+from,
       })
       .then(response => {
           if (response.ok) {
@@ -1208,7 +1339,7 @@ function removelav(m_e,box,el) {
     refbox="box"+m_e+box+el
     idlav=$("#"+refbox).data( "idlav")
     $("#"+refbox).removeClass('active')
-    $("#"+refbox).first().html('Assegnabile')
+    $("#"+refbox).first().html('Assegna')
     $("#"+refbox).removeData( "idlav", '' );
     setresp(m_e,box,el,0,1) //contestualmente elimina mezzo eventuale assegnato
     
@@ -1329,7 +1460,7 @@ function inibox(m_e,box) {
     for (el=0;el<elemBox;el++) {
         html+=`    
         <a href="#" class="list-group-item  clearfix itemlist list-group-item-action box box`+m_e+box+`" id='box`+m_e+box+el+`' data-m_e='`+m_e+`' data-box=`+box+` data-el=`+el+` aria-current="true" onclick="action_lav('`+m_e+`',`+box+`,`+el+`)"  >
-            Assegnabile
+            Assegna
         </a>
         `
     }
@@ -1343,16 +1474,22 @@ function action_rep(m_e,el) {
     if (!confirm("Sicuri di rimuovere il nominativo dalla lista reperibilità?")) return false;
 
     $("#"+refrep).removeClass('active')
-    $("#"+refrep).first().html("Assegnabile")
+    $("#"+refrep).first().html("Assegna")
     $("#"+refrep).removeData( "idlav", '' );
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
 }
 function inirep(sc) {
     m_e="";txt_rep="";
+    
     if (sc==1) {m_e="Ma";txt_rep="Mattino"}
     if (sc==2) {m_e="Mb";txt_rep="Pomeriggio"}
+    /*
     if (sc==3) {m_e="Pa";txt_rep="Primo Notturno"}
     if (sc==4) {m_e="Pb";txt_rep="Secondo Notturno"}
+    */
+
+
+
     html="";
     if (sc==1) {
         html+=`
@@ -1364,13 +1501,62 @@ function inirep(sc) {
     html+=`
         <div id='div_rep`+m_e+`' class="card">
     
-            <div class="card-body"><b>`+txt_rep+`</b>
+            <div class="card-body"><font size='2px'><b>`+txt_rep+`</b></font>
                 <div id='boxrep`+m_e+`' class="list-group"  ondrop="dropHandlerRep(event)"   ondragover="dragoverHandlerRep(event)" draggable="true" ondragstart="dragstartHandlerRep(event)">`
                 for (el=0;el<elemRep;el++) {
                     html+=`    
-                    <a href="#" class="list-group-item py-1 clearfix itemlist list-group-item-action rep rep`+m_e+`" id='rep`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_rep('`+m_e+`',`+el+`)"  >
-                        Assegnabile
-                    </a>
+                    <font size='2rem'>
+                        <a href="#" class="list-group-item py-1 clearfix itemlist list-group-item-action rep rep`+m_e+`" id='rep`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_rep('`+m_e+`',`+el+`)">
+                            Assegna
+                        </a>
+                    </font>
+                    `
+                }
+                html+=`</div>
+            </div>                                    
+    </div>`
+    return html
+}
+
+
+function action_ass(m_e,el) {
+    refass="ass"+m_e+el
+    idlav=($("#"+refass).data("idlav"))
+    if (!idlav || idlav.length==0) return false
+    if (!confirm("Sicuri di rimuovere il nominativo dalla lista assenti?")) return false;
+
+    $("#"+refass).removeClass('active')
+    $("#"+refass).first().html("Assegna")
+    $("#"+refass).removeData( "idlav", '' );
+    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+}
+function iniass(sc) {
+    m_e="";txt_ass="";
+    
+    if (sc==1) {m_e="Ma";txt_ass="Mattino"}
+    if (sc==2) {m_e="Mb";txt_ass="Pomeriggio"}
+
+
+    html="";
+    if (sc==1) {
+        html+=`
+            <div class="alert alert-light" role="alert">
+                Assenti
+            </div>
+        `    
+    }
+    html+=`
+        <div id='div_ass`+m_e+`' class="card">
+    
+            <div class="card-body"><font size='2px'><b>`+txt_ass+`</b></font>
+                <div id='boxass`+m_e+`' class="list-group"  ondrop="dropHandlerAss(event)"   ondragover="dragoverHandlerAss(event)" draggable="true" ondragstart="dragstartHandlerAss(event)">`
+                for (el=0;el<elemAss;el++) {
+                    html+=`    
+                    <font size='2rem'>
+                        <a href="#" class="list-group-item py-1 clearfix itemlist list-group-item-action ass ass`+m_e+`" id='ass`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_ass('`+m_e+`',`+el+`)">
+                            Assegna
+                        </a>
+                    </font>
                     `
                 }
                 html+=`</div>
