@@ -7,6 +7,8 @@ const zoomI=0.53
 var saveall=false
 var _m_e="?";var _box="?";var _el="?"
 
+
+
  $(function () {
     $('body').addClass("sidebar-collapse");
     $('#cerca_ditta').on("change keyup paste", function(){
@@ -1488,6 +1490,107 @@ function action_lav(m_e,box,el) {
     $("#modalinfo").modal('show')
 }
 
+function validation_urg() {
+    $("#frm_urgenze").validate({
+        rules: {
+            lav_urg: {
+                required: true
+            },
+            ditta_urg: {
+                required: true
+            },
+            servizi_urg: {
+                required: true
+            },
+            descr_urgenza: {
+                required: true
+            },                        
+        },
+        messages: {
+            lav_urg: {
+             required: "Selezionare il lavoratore",
+            },
+            ditta_urg: {
+             required: "Selezionare la ditta",
+            },
+            servizi_urg: {
+             required: "Selezionare il servizio",
+            },
+            descr_urgenza: {
+             required: "Definire una descrizione",
+            },
+
+
+
+        },
+  errorPlacement: function(label, element) {
+    if (element.hasClass('web-select2')) {
+      label.insertAfter(element.next('.select2-container')).addClass('mt-2 text-danger');
+      select2label = label
+    } else {
+      label.addClass('mt-2 text-danger');
+      label.insertAfter(element);
+    }
+  },        
+        highlight: function(element) {
+            $(element).parent().addClass('is-invalid')
+            $(element).addClass('form-control-danger')
+        },
+        success: function(label, element) {
+            $(element).parent().removeClass('is-invalid')
+            $(element).removeClass('form-control-danger')
+            label.remove();
+        },
+        submitHandler: function(form) {
+           update_urg();
+        },        
+    })
+
+      /*
+    var forms = document.querySelectorAll('.needs-validation_urg')
+
+    // Loop over them and prevent submission
+    Array.prototype.slice.call(forms)
+        .forEach(function (form) {
+        form.addEventListener('submit', function (event) {
+            if (!form.checkValidity()) {
+            event.preventDefault()
+            event.stopPropagation()
+            }
+
+            form.classList.add('was-validated')
+        }, false)
+        })
+    */
+
+
+
+}
+
+function update_urg() {
+    html=""
+    lav_urg=$("#lav_urg option:selected").text()
+    ditta_urg=$("#ditta_urg option:selected").text()
+    servizi_urg=$("#servizi_urg option:selected").text()
+    descr_urgenza=$("#descr_urgenza").val()
+    html+=`
+        <li class="list-group-item">
+            <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                <div class="d-flex w-100 justify-content-between">
+                <h5 class="mb-1"><b>`+lav_urg+`</b></h5>
+                <small>`+servizi_urg+`</small>
+                </div>
+                <p class="mb-1">`+ditta_urg+`</p>
+                <small>`+descr_urgenza+`</small>
+            </a>
+        </li>
+    `
+    $("#div_lista_urgenze").append(html)
+    $("#modalinfo").modal('hide')
+
+}
+
+
 function urgenze() {
     dap1=$("#dap1").val();
    
@@ -1495,31 +1598,65 @@ function urgenze() {
     html+=`
         <center>
             <h4>Definizione Urgenza del `+dap1+`<h4>
-        </center>
-
-        <div class="row">
-            <div class="col-md-4">
-                <label for="ditta_urg" class="col-form-label">Ditta</label>
-                <div id='div_ditta_urg'>
-                    <i class='fas fa-spinner fa-spin'></i>
+        </center><hr>
+		<form method='post'class="row g-3 needs-validation_urg" novalidate id='frm_urgenze' name='frm_urgenze' autocomplete="off">
+            <div class="row">
+                <div class="col-md-4">
+                    <label for="ditta_urg" class="control-label">Ditta</label>
+                    <div id='div_ditta_urg'>
+                        <i class='fas fa-spinner fa-spin'></i>
+                    </div>
+                </div>            
+                <div class="col-md-8">
+                    <label for="servizi_urg" class="control-label">Servizio da svolgere</label>
+                    <div id='div_serv1'>
+                        <i class='fas fa-spinner fa-spin'></i>
+                    </div>
                 </div>
-            </div>            
-            <div class="col-md-8">
-                <label for="servizi_urg" class="col-form-label">Servizi svolti</label>
-                <div id='div_serv1'>
-                    <i class='fas fa-spinner fa-spin'></i>
-                </div>
-            </div>
+            </div>           
+            <div class="row">         
+                <div class="col-md-4">
+                    <label for="lav_urg" class="control-label">Lavoratore</label>
+                    <div id='div_lav_urg'>
+                        <i class='fas fa-spinner fa-spin'></i>
+                    </div>
+                </div>              
+                <div class="col-md-8">
+                    <label for="descr_urgenza" class="control-label">Descrizione</label>
+                    <input type='text' class="form-control dati" id="descr_urgenza" name="descr_urgenza" >
+                </div>                            
+            </div>    
+            <hr>
+            <button type="submit" id='btn_save_urg' class="btn btn-primary">Salva urgenza</button>  
+        </form>      
 
-        </div>                        
     `
     
     $("#body_content").html(html)
+    
+
+    elenco_lav=$("#elenco_lav").val().split("|");
+    lav_u=new Array()
+    html=`
+        <select class="form-select select2" name="lav_urg" id="lav_urg" required>
+            <option value=''>Select...</option>
+        `
+        
+        for (sc=0;sc<elenco_lav.length;sc++) {
+            id_l=elenco_lav[sc].split(";")[0]
+            lavu=elenco_lav[sc].split(";")[1]
+            html+="<option value='"+id_l+"' ";
+            //if (in_array($id_servizio,$id_servizi)) echo " selected ";
+            if (lav_u.includes(id_l)) html+=" selected ";
+            html+=">"+lavu+"</option>";
+        }
+    html+=`</select>`    
+    $("#div_lav_urg").html(html)   
 
     alld=$("#alld").val().split("|");
     ditta_u=new Array()
     html=`
-        <select class="form-select select2" name="ditta_urg" id="ditta_urg">
+        <select class="form-select select2" name="ditta_urg" id="ditta_urg" required>
             <option value=''>Select...</option>
         `
         
@@ -1537,7 +1674,9 @@ function urgenze() {
     all_servizi=$("#all_servizi").val().split("|");
     servizi_svolti=new Array()
     html=`
-        <select class="form-select select2" name="servizi_urg[]" id="servizi_urg" multiple>`
+        <select class="form-select select2" name="servizi_urg" id="servizi_urg" required>
+            <option value=''>Select...</option>
+        `
         for (sc=0;sc<all_servizi.length;sc++) {
             id_serv=all_servizi[sc].split(";")[0]
             serv=all_servizi[sc].split(";")[1]
@@ -1549,9 +1688,10 @@ function urgenze() {
     html+=`</select>`    
     $("#div_serv1").html(html)
 
-    
+    $('#servizi_urg').select2().attr('required',true);
 
     $('.select2').select2()
+    validation_urg()
 
     $("#modalinfo").modal('show')
 }

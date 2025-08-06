@@ -217,7 +217,12 @@ th, td {
                                             <input type='text' class='form-control mt-2' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
                                             <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
                                                 <div class="d-grid gap-1">
+                                                    <?php $elenco_lav=""; ?>
                                                     @foreach ($lavoratori as $lavoratore)
+                                                        <?php
+                                                            if (strlen($elenco_lav)!=0) $elenco_lav.="|";
+                                                            $elenco_lav.=$lavoratore->id.";".$lavoratore->nominativo;
+                                                        ?>
                                                         <button type="button" class="btn btn-outline-success  btn-sm allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" style='width:110px'>  
                                                         {{$lavoratore->nominativo}}
                                                         </button>
@@ -228,6 +233,7 @@ th, td {
                                                             <hr>
                                                         </div>
                                                     @endforeach	
+                                                    <input type='hidden' name='elenco_lav' id='elenco_lav' value='{{$elenco_lav}}'>
                                                 </div>
                                             </div>      
                                         </div>
@@ -291,7 +297,10 @@ th, td {
                                 <a href='javascript:void(0)' onclick='urgenze()'>
                                     <h3><i class="fas fa-calendar-plus"></i> Nuova urgenza</h3>
                                 </a>    
-                            </div>                               
+                            </div>       
+                                <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze'>
+                                    
+                                </ul>             
 					    </div>
                      
                     </div>    
@@ -340,6 +349,8 @@ th, td {
  @section('content_plugin')
 	<!-- jQuery -->
 	<script src="{{ URL::asset('/') }}plugins/jquery/jquery.min.js"></script>
+    <script src="https://ajax.aspnetcdn.com/ajax/jquery.validate/1.11.1/jquery.validate.min.js"></script>
+
 	<!--select2 !-->
 	<script src="{{ URL::asset('/') }}plugins/select2/js/select2.full.min.js"></script>
 	<!-- Bootstrap 5 -->
