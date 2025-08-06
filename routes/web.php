@@ -73,6 +73,8 @@ Route::group(['only_log' => ['auth']], function () {
 		Route::post('save_infoapp', [ 'as' => 'save_infoapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@save_infoapp']);	
 
 		Route::post('deletebox', [ 'as' => 'deletebox', 'uses' => 'App\Http\Controllers\ControllerAppalti@deletebox']);		
+
+		Route::post('save_urgenza', [ 'as' => 'save_urgenza', 'uses' => 'App\Http\Controllers\ControllerAppalti@save_urgenza']);				
 		////////////////////////////	
 
 

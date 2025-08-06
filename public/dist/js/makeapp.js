@@ -6,10 +6,33 @@ const maxI=2
 const zoomI=0.53
 var saveall=false
 var _m_e="?";var _box="?";var _el="?"
-
+var lavall=new Array();
+var servall=new Array();
+var dittall=new Array();
 
 
  $(function () {
+    elenco_lav=$("#elenco_lav").val().split("|");
+    for (sc=0;sc<elenco_lav.length;sc++) {
+        id_l=elenco_lav[sc].split(";")[0]
+        lavu=elenco_lav[sc].split(";")[1]
+        lavall[id_l]=lavu;
+    }
+
+    all_servizi=$("#all_servizi").val().split("|");
+    for (sc=0;sc<all_servizi.length;sc++) {
+        id_serv=all_servizi[sc].split(";")[0]
+        serv=all_servizi[sc].split(";")[1]
+        servall[id_serv]=serv;
+    }
+
+    alld=$("#alld").val().split("|");
+    for (sc=0;sc<alld.length;sc++) {
+        id_d=alld[sc].split(";")[0]
+        ditt=alld[sc].split(";")[1]    
+        dittall[id_d]=ditt;
+    }
+
     $('body').addClass("sidebar-collapse");
     $('#cerca_ditta').on("change keyup paste", function(){
         trova_ditta()
@@ -562,7 +585,9 @@ function load_inf() {
                         $("#"+refbox).addClass('active')
                     }
                 }
-            }            
+            }   
+            info_urgenze=ris.info_urgenze
+            load_urgenze(info_urgenze)
       })
       .catch(status, err => {
           return console.log(status, err);
@@ -1566,27 +1591,97 @@ function validation_urg() {
 
 
 }
+function load_urgenze(resp) {
+    if (resp.length==0) return false
+    for (sca=0;sca<resp.length;sca++) {
+        id_ditta=resp[sca].id_ditta
+        id_servizio=resp[sca].id_servizio
+        id_lavoratore=resp[sca].id_lavoratore
 
-function update_urg() {
-    html=""
-    lav_urg=$("#lav_urg option:selected").text()
-    ditta_urg=$("#ditta_urg option:selected").text()
-    servizi_urg=$("#servizi_urg option:selected").text()
-    descr_urgenza=$("#descr_urgenza").val()
-    html+=`
+        lav_urg_t=id_lavoratore
+        if (lavall[id_lavoratore]) lav_urg_t=lavall[id_lavoratore]
+        servizi_urg_t=id_servizio
+        if (servall[id_servizio]) servizi_urg_t=servall[id_servizio]
+        ditta_urg_t=id_ditta
+        if (dittall[id_ditta]) ditta_urg_t=dittall[id_ditta]
+        descr_urgenza=resp[sca].descrizione
+        html=`
         <li class="list-group-item">
             <a href="#" class="list-group-item list-group-item-action" aria-current="true">
                 <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><b>`+lav_urg+`</b></h5>
-                <small>`+servizi_urg+`</small>
+                <h5 class="mb-1"><b>`+lav_urg_t+`</b></h5>
+                <small>`+servizi_urg_t+`</small>
                 </div>
-                <p class="mb-1">`+ditta_urg+`</p>
+                <p class="mb-1">`+ditta_urg_t+`</p>
                 <small>`+descr_urgenza+`</small>
             </a>
         </li>
-    `
-    $("#div_lista_urgenze").append(html)
-    $("#modalinfo").modal('hide')
+        `
+        $("#div_lista_urgenze").append(html)    
+    }
+}
+
+function update_urg() {
+    html=""
+    $("#btn_save_urg").prop("disabled",true)
+    $("#btn_save_urg").text("Salvataggio in corso...")
+    $("#wait_urg").show()
+    lav_urg=$("#lav_urg").val()
+    ditta_urg=$("#ditta_urg").val()
+    servizi_urg=$("#servizi_urg").val()
+
+    lav_urg_t=$("#lav_urg option:selected").text()
+    ditta_urg_t=$("#ditta_urg option:selected").text()
+    servizi_urg_t=$("#servizi_urg option:selected").text()
+
+    descr_urgenza=$("#descr_urgenza").val()
+    
+    id_giorno_appalto=$("#id_giorno_appalto").val()
+    let CSRF_TOKEN = $("#token_csrf").val();      
+    base_path = $("#url").val();
+    timer = setTimeout(function() {	
+      fetch(base_path+"/save_urgenza", {
+          method: 'post',
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+          },
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&lav_urg="+lav_urg+"&ditta_urg="+ditta_urg+"&servizi_urg="+servizi_urg+"&descr_urgenza="+descr_urgenza,
+      })
+      .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+      })
+      .then(ris=>{
+            resp=ris.header
+            $("#btn_save_urg").prop("disabled",false)
+            $("#btn_save_urg").text("Salva urgenza")
+            $("#wait_urg").hide()            
+            if (resp=="OK") {
+                html+=`
+                    <li class="list-group-item">
+                        <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                            <div class="d-flex w-100 justify-content-between">
+                            <h5 class="mb-1"><b>`+lav_urg_t+`</b></h5>
+                            <small>`+servizi_urg_t+`</small>
+                            </div>
+                            <p class="mb-1">`+ditta_urg_t+`</p>
+                            <small>`+descr_urgenza+`</small>
+                        </a>
+                    </li>
+                `
+                $("#div_lista_urgenze").append(html)
+                $("#modalinfo").modal('hide')
+
+            } else alert("Problema occorso durante il salvataggio!")
+
+      })
+      .catch(status, err => {
+          return console.log(status, err);
+      })     
+
+    }, 800)	
+
 
 }
 
@@ -1628,10 +1723,11 @@ function urgenze() {
             </div>    
             <hr>
             <button type="submit" id='btn_save_urg' class="btn btn-primary">Salva urgenza</button>  
+            <span id='wait_urg' style='display:none'><i class='fas fa-spinner fa-spin'></i></span>
         </form>      
 
     `
-    
+    /* salva urgenza gestito da validation_urg() */
     $("#body_content").html(html)
     
 

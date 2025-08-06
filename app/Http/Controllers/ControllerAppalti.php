@@ -19,6 +19,7 @@ use App\Models\appaltinew_altro;
 use App\Models\appaltinew_info;
 use App\Models\appaltinew_reper;
 use App\Models\appaltinew_assenti;
+use App\Models\appaltinew_urgenze;
 use App\Models\parco_scheda_mezzo;
 use App\Models\parco_marca_mezzo;
 use App\Models\parco_modello_mezzo;
@@ -711,6 +712,13 @@ public function __construct()
 
 		$resp['info_assenti']=$info_assenti;
 
+		$info_urgenze=appaltinew_urgenze::from('appaltinew_urgenze as a')
+		->select('a.id_ditta','a.id_servizio','a.id_lavoratore','a.descrizione')
+		->where('a.idapp','=',$id_giorno_appalto)
+		->get();
+
+		$resp['info_urgenze']=$info_urgenze;		
+
 		return json_encode($resp);
 	}
 
@@ -728,6 +736,22 @@ public function __construct()
 
 	}
 
+	public function save_urgenza(Request $request) {
+		$id_giorno_appalto=$request->input('id_giorno_appalto');
+		$count=appaltinew_urgenze::where('idapp','=',$id_giorno_appalto)->count();
+		if ($count==0) {
+			$appalto=new appaltinew_urgenze;
+			$appalto->idapp=$id_giorno_appalto;
+			$appalto->id_ditta=$request->input('ditta_urg');
+			$appalto->id_servizio=$request->input('servizi_urg');
+			$appalto->id_lavoratore=$request->input('lav_urg');
+			$appalto->descrizione=$request->input('descr_urgenza');
+			$appalto->save();
+		}
+		$info_appalto=array();
+		$info_appalto['header']="OK";
+		return json_encode($info_appalto);				
+	}
 
 	public function save_infoapp(Request $request) {
 		$id_giorno_appalto=$request->input('id_giorno_appalto');
