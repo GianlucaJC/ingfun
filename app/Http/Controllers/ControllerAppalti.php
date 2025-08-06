@@ -739,15 +739,14 @@ public function __construct()
 	public function save_urgenza(Request $request) {
 		$id_giorno_appalto=$request->input('id_giorno_appalto');
 		$count=appaltinew_urgenze::where('idapp','=',$id_giorno_appalto)->count();
-		if ($count==0) {
-			$appalto=new appaltinew_urgenze;
-			$appalto->idapp=$id_giorno_appalto;
-			$appalto->id_ditta=$request->input('ditta_urg');
-			$appalto->id_servizio=$request->input('servizi_urg');
-			$appalto->id_lavoratore=$request->input('lav_urg');
-			$appalto->descrizione=$request->input('descr_urgenza');
-			$appalto->save();
-		}
+
+		$appalto=new appaltinew_urgenze;
+		$appalto->idapp=$id_giorno_appalto;
+		$appalto->id_ditta=$request->input('ditta_urg');
+		$appalto->id_servizio=$request->input('servizi_urg');
+		$appalto->id_lavoratore=$request->input('lav_urg');
+		$appalto->descrizione=$request->input('descr_urgenza');
+		$appalto->save();
 		$info_appalto=array();
 		$info_appalto['header']="OK";
 		return json_encode($info_appalto);				
