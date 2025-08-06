@@ -455,8 +455,10 @@ function load_inf() {
       .then(ris=>{
             resp=ris.info_appalto
             for (sca=0;sca<resp.length;sca++) {
+                hide=resp[sca].hide
                 box=resp[sca].id_box
                 m_e=resp[sca].m_e
+                if (hide==1) $("#tdbox"+m_e+box).hide()
                 numero_persone=resp[sca].numero_persone
                 orario_incontro=resp[sca].orario_incontro
                 html=`
@@ -1170,6 +1172,9 @@ function resetbox(m_e,box,from) {
         $("#mezzi_info"+m_e+box).html(html)
         html=initditte(m_e,box)
         $("#ditte_info"+m_e+box).html(html)
+        for (el=0;el<elemBox;el++) {
+            setresp(m_e,box,el,0,1) 
+        }
     }    
     else {
         $(".box").each(function(){
@@ -1181,11 +1186,15 @@ function resetbox(m_e,box,from) {
             $("#mezzi_info"+m_e+box).html(html)
             html=initditte(m_e,box)
             $("#ditte_info"+m_e+box).html(html)
+            for (el=0;el<elemBox;el++) {
+                setresp(m_e,box,el,0,1) 
+            }
 
         })
     }    
     $("#modalinfo").modal('hide')
-    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    if (from==0)
+        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     
 }
 
@@ -1204,15 +1213,37 @@ function enable_reset() {
     
 }
 function deletebox(m_e,box) {
-    $("#alert_confirm").hide()
-    if (!$('#conferma').is(":checked")) {
-        $("#alert_confirm").show(130)
-        return false
-    }
-    $("#tdbox"+m_e+box).hide()
-    $("#modalinfo").modal('hide')
-    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    id_giorno_appalto=$("#id_giorno_appalto").val()
+    resetbox(m_e,box,0)
+    let CSRF_TOKEN = $("#token_csrf").val();      
+    base_path = $("#url").val();
+    timer = setTimeout(function() {	
+      fetch(base_path+"/deletebox", {
+          method: 'post',
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+          },
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box,
+      })
+      .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+      })
+      .then(ris=>{
+            resp=ris.header
+            if (resp=="OK") {
+                save_all()
+                $("#tdbox"+m_e+box).hide(200)
+                $("#modalinfo").modal('hide')
+            } else alert("Problema occorso durante la cancellazione!")
 
+      })
+      .catch(status, err => {
+          return console.log(status, err);
+      })     
+
+    }, 800)	    
 }
 
 function optionbox(m_e,box) {
@@ -1220,10 +1251,13 @@ function optionbox(m_e,box) {
     html=`
         <div class="d-grid gap-2">
             <button class="btn btn-primary" id='btn_reset_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,0)">Reset Box</button>
-          
-            <button class="btn btn-warning" id='btn_dele_box' type="button" onclick="deletebox('`+m_e+`',`+box+`)"  style='display:none'>Elimina box</button>
-            <hr>
+
             <button class="btn btn-warning" id='btn_reset_all_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,1)">Reset ALL Box</button>              
+            <hr>
+            <button class="btn btn-warning" id='btn_dele_box' type="button" disabled onclick="deletebox('`+m_e+`',`+box+`)">Elimina box</button>
+           
+
+
             <div class="form-check form-switch ml-4">
                 <input class="form-check-input" type="checkbox" id="conferma" onclick="enable_reset()">
                 <label class="form-check-label" for="conferma">Conferma operazione</label>
@@ -1232,7 +1266,7 @@ function optionbox(m_e,box) {
                 <b>Attenzione!</b><br>
                 Prima di avviare l'operazione cliccare sul check di conferma<hr>
                 <small>
-                <b>N.B.: Da tener presente che l'operazione viene consolidata solo cliccando sul bottone 'Salva Tutto'</b>
+                <b>N.B.: Da tener presente che per i primi due bottoni, l'operazione viene consolidata solo cliccando sul bottone 'Salva Tutto'</b>
                 </small>
             </div>
 

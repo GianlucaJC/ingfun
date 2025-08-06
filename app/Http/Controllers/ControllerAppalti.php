@@ -674,7 +674,7 @@ public function __construct()
 		$from=$request->input('from');
 
 		$info_appalto=appaltinew_info::from('appaltinew_info as a')
-		->select('a.id','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note')
+		->select('a.id','a.hide','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note')
 		->join('appaltinew as an','a.id_appalto','an.id')
 		->where('a.id_appalto','=',$id_giorno_appalto)
 		->when($from=="0", function ($info_appalto) use($m_e,$box) {
@@ -713,6 +713,21 @@ public function __construct()
 
 		return json_encode($resp);
 	}
+
+	public function deletebox(Request $request) {
+		$id_giorno_appalto=$request->input('id_giorno_appalto');
+		$m_e=$request->input('m_e');
+		$box=$request->input('box');
+		$agg = appaltinew_info::where('id_appalto', "=", $id_giorno_appalto)
+		->where('m_e',"=",$m_e)
+		->where('id_box',"=",$box)
+		->update(['hide'=>1]);		
+		$info_appalto=array();
+		$info_appalto['header']="OK";
+		return json_encode($info_appalto);		
+
+	}
+
 
 	public function save_infoapp(Request $request) {
 		$id_giorno_appalto=$request->input('id_giorno_appalto');
