@@ -3,7 +3,7 @@ const elemBox=6
 const elemRep=10
 const elemAss=10
 const maxI=2
-const zoomI=0.53
+const zoomI=0.56
 var saveall=false
 var _m_e="?";var _box="?";var _el="?"
 var lavall=new Array();
@@ -12,6 +12,10 @@ var dittall=new Array();
 
 
  $(function () {
+    class_o="hold-transition sidebar-mini"
+    class_n="hold-transition layout-top-nav"
+    $("body").removeClass(class_o).addClass(class_n)
+
     elenco_lav=$("#elenco_lav").val().split("|");
     for (sc=0;sc<elenco_lav.length;sc++) {
         id_l=elenco_lav[sc].split(";")[0]
@@ -115,6 +119,8 @@ function dropHandlerMezzi(ev) {
 }
 //////////////////
 
+
+
 ///DRAG & DROP da box a box tra lav
 function dragstartHandlerLav(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
@@ -126,6 +132,66 @@ function dragstartHandler(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
   console.log("targetLav",ev.target.id)
 }
+
+
+///DRAG & DROP da allbox a allbox tra lav
+function dragstartHandlerBox(ev) {
+  ev.dataTransfer.setData("text", ev.target.id);
+  console.log("targetLavBox",ev.target.id)
+}
+////drag on Allbox lavoratori
+function dragoverHandlerBox(ev) {
+    dest=ev.target.id
+    from = ev.dataTransfer.getData("text");
+    ev.preventDefault();
+}
+
+//drop on allbox lavoratori
+function dropHandlerBox(ev) {
+    ctrl=false
+    if (ev.ctrlKey) ctrl=true
+
+    ev.preventDefault();
+    const from = ev.dataTransfer.getData("text");
+
+    dest=ev.target.id
+    console.log("from",from,"dest",dest)
+        
+    //in altri casi disabilito il drag & drop
+    if (dest.substr(0,6)!="boxall") {
+     return false
+    }
+
+    m_eo=from.substr(6,1)
+    boxo=from.substr(7)
+
+    m_ed=dest.substr(6,1)
+    boxd=dest.substr(7)
+    
+    //resetbox della box di destinazione
+    resetbox(m_ed,boxd,2);
+
+    
+
+    console.log("m_eo+boxo","-",m_eo,boxo,"-")
+    //copio/sposto ogni elemento del box di origine sul box di destinazione
+    el=0
+    $(".box"+m_eo+boxo).each(function(){
+        id_ref=$(this).data( "idlav")
+        console.log("id_ref",id_ref,"m_eo",m_eo,"boxo",boxo,"m_ed",m_ed,"boxd",boxd,"el",el) 
+        impegnalav(id_ref)
+        setsquadra(m_ed,boxd,el) //...e lo copio in quello di destinazione
+        el++
+    })
+
+    //resetbox della box di origine (se non si preme ctrl)
+    if (ctrl==false)
+        resetbox(m_eo,boxo,2);
+
+  $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+}
+//////////////////
+
 ////drag on box lavoratori
 function dragoverHandler(ev) {
     dest=ev.target.id
@@ -138,9 +204,12 @@ function dragoverHandler(ev) {
     _el=$("#"+dest).data('el')
     ev.preventDefault();
 }
+
+
 //drop on box lavoratori
 function dropHandler(ev) {
-
+  ctrl=false
+  if (ev.ctrlKey) ctrl=true
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
   
@@ -172,14 +241,16 @@ function dropHandler(ev) {
     return false
   }
  
-  //spostamento lavoratore da box a box
+  //spostamento/copia lavoratore da box a box
+  
   if (from.substr(0,3)=="box") {
     idlav=$("#"+from).data('idlav')
     impegnalav(idlav)
     m_e_f=$("#"+from).data('m_e')
     box_f=$("#"+from).data('box')
     el_f=$("#"+from).data('el')
-    removelav(m_e_f,box_f,el_f) //rimuove il lavoratore dal box di origine
+    if (ctrl==false)
+        removelav(m_e_f,box_f,el_f) //rimuove il lavoratore dal box di origine
 
     console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
     setsquadra(_m_e,_box,_el) //...e lo sposta in quello di destinazione
@@ -662,7 +733,7 @@ function unlock(idlav) {
 
 function setsquadra(m_e,box,rowbox) {
     if( typeof setsquadra.idlav == 'undefined' ) {
-        alert("Scegliere prima un lavoratore da assegnare!")
+        //alert("Scegliere prima un lavoratore da assegnare!")
         return false
     }
     if( typeof setsquadra.unlock_id == 'undefined' ) setsquadra.unlock_id=new Array()
@@ -1187,12 +1258,17 @@ function removeditta(id) {
 
 function resetbox(m_e,box,from) {
     html="";
+    //from==0 || from==2 chiamata con riferimento a singolo box
+    //from==1 chiamata con riferimento a tutti i box
+    //from==2: da spostamento squadra da box a box
     $("#alert_confirm").hide()
-    if (!$('#conferma').is(":checked")) {
-        $("#alert_confirm").show(130)
-        return false
+    if (from!=2) {
+        if (!$('#conferma').is(":checked")) {
+            $("#alert_confirm").show(130)
+            return false
+        }
     }
-    if (from==0) {
+    if (from==0 || from==2) {
         html=inibox(m_e,box)
         $("#boxinfo"+m_e+box).html(html)
         html=inimezzi(m_e,box)
@@ -1923,8 +1999,8 @@ function newapp(m_e,from) {
     html="";
     html+=`
         
-            <div id='div_box`+m_e+box+`' class="card box`+m_e+`" style="width: 13rem;">
-                <div class="card-body">
+            <div id='div_box`+m_e+box+`' class="card box`+m_e+`" style="width: 13rem;" >
+                <div class="card-body" id='boxall`+m_e+box+`'  ondrop="dropHandlerBox(event)"   ondragover="dragoverHandlerBox(event)" draggable="true" ondragstart="dragstartHandlerBox(event)" >
                     <div id='boxinfo`+m_e+box+`' class="list-group"  ondrop="dropHandler(event)"   ondragover="dragoverHandler(event)" draggable="true" ondragstart="dragstartHandlerLav(event)">`
                         html+=inibox(m_e,box);    
                         html+=`
