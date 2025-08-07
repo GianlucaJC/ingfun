@@ -13,7 +13,7 @@ var dittall=new Array();
 
  $(function () {
     class_o="hold-transition sidebar-mini"
-    class_n="hold-transition layout-top-nav"
+    class_n="hold-transition skin-blue sidebar-collapse"
     $("body").removeClass(class_o).addClass(class_n)
 
     elenco_lav=$("#elenco_lav").val().split("|");
