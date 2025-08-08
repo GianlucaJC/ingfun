@@ -859,6 +859,7 @@ function load_ini_lav() {
         m_e=strall_info[sca].split(";")[0]
         box=strall_info[sca].split(";")[1]
         id_lav=strall_info[sca].split(";")[2]
+        $("#spanlav"+id_lav).hide();
         rowbox=strall_info[sca].split(";")[3]
         responsabile_targa=strall_info[sca].split(";")[4]
         if( typeof id_lav !== 'undefined' ) {
@@ -1906,7 +1907,7 @@ function action_rep(m_e,el) {
     if (!confirm("Sicuri di rimuovere il nominativo dalla lista reperibilità?")) return false;
 
     $("#"+refrep).removeClass('active')
-    $("#"+refrep).first().html("Assegna")
+    $("#"+refrep).first().html("__________")
     $("#"+refrep).removeData( "idlav", '' );
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
 }
@@ -1962,7 +1963,7 @@ function action_ass(m_e,el) {
     if (!confirm("Sicuri di rimuovere il nominativo dalla lista assenti?")) return false;
 
     $("#"+refass).removeClass('active')
-    $("#"+refass).first().html("Assegna")
+    $("#"+refass).first().html("__________")
     $("#"+refass).removeData( "idlav", '' );
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
 }
