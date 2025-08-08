@@ -251,16 +251,17 @@ function dropHandler(ev) {
   
   if (from.substr(0,3)=="box") {
     idlav=$("#"+from).data('idlav')
-    impegnalav(idlav)
+    esito=impegnalav(idlav)
     m_e_f=$("#"+from).data('m_e')
     box_f=$("#"+from).data('box')
     el_f=$("#"+from).data('el')
-    if (ctrl==false)
-        removelav(m_e_f,box_f,el_f) //rimuove il lavoratore dal box di origine
-
     console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
-    setsquadra(_m_e,_box,_el) //...e lo sposta in quello di destinazione
-    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')    
+    esito=setsquadra(_m_e,_box,_el) // sposta in quello di destinazione
+    if (ctrl==false && esito==true)
+        removelav(m_e_f,box_f,el_f) //e rimuove il lavoratore dal box di origine
+
+    if (esito==true) 
+        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')    
     return false
   }
  
@@ -276,9 +277,10 @@ function dropHandler(ev) {
   if (_m_e=="?") return false;
   
   impegnalav(idlav)
-  console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
-  setsquadra(_m_e,_box,_el)
-  if (from.substr(0,6)=="btnlav") {
+  console.log("dati dell'impegno: idlav",idlav,"_m_e",_m_e,"_box",_box,"_el",_el)
+  esito=setsquadra(_m_e,_box,_el)
+  if (esito==false) return false;
+  if (from.substr(0,6)=="btnlav" && esito==true) {
     //$("#"+from).hide(120)
     $("#spanlav"+idlav).hide();
   }
@@ -763,10 +765,13 @@ function setsquadra(m_e,box,rowbox) {
         if (id_ref==idlav) present=true
     })
 
+
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
     
     refbox="box"+m_e+box+rowbox
+    if ($("#"+refbox).hasClass('active')) return false;
+    /*
     remove=false
     if ($("#"+refbox).hasClass('active')) { 
         remove=true
@@ -775,6 +780,8 @@ function setsquadra(m_e,box,rowbox) {
         $("#"+refbox).first().html("Assegna")
         $("#"+refbox).removeData( "idlav", '' );
     }
+    */
+
 
     $("#btnlav"+idlav).prop("disabled",false)
     numpres=0;max=false
@@ -792,15 +799,16 @@ function setsquadra(m_e,box,rowbox) {
             }
         }
     })    
-
-    if (present==true || remove==true) {
+    
+    
+    if (present==true) {
        // alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
         return false
     }
     
 
 
-    if (max==false) {
+    if (max==false ) {
         if (!$("#"+refbox).hasClass('active')) {
             $("#"+refbox).addClass('active')
             html=nomelav+" <span id='resp"+m_e+box+rowbox+"'></span><input type='hidden' id='resp_raw"+m_e+box+rowbox+"'>"
@@ -810,10 +818,12 @@ function setsquadra(m_e,box,rowbox) {
             
         }
     } 
+
     if (numpres>=maxI) {
         $("#btnlav"+idlav).prop("disabled",true)
         $("#unlock"+idlav).show(120)
     }
+    return true
 
 }
 
