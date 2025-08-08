@@ -155,7 +155,7 @@ th, td {
                                                             if (strlen($elenco_lav)!=0) $elenco_lav.="|";
                                                             $elenco_lav.=$lavoratore->id.";".$lavoratore->nominativo;
                                                             $tipo_contratto=$lavoratore->tipo_contratto;
-                                                            $color="secondary";
+                                                            $color="info";
                                                             if ($tipo_contratto==1) $color="danger";
                                                             if ($tipo_contratto==2) $color="primary";
                                                             if ($tipo_contratto==3) $color="warning";
