@@ -279,7 +279,8 @@ function dropHandler(ev) {
   console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
   setsquadra(_m_e,_box,_el)
   if (from.substr(0,6)=="btnlav") {
-    $("#"+from).hide(120)
+    //$("#"+from).hide(120)
+    $("#spanlav"+idlav).hide();
   }
 
   $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
@@ -1469,17 +1470,9 @@ function accordion(m_e,box) {
             `</div>
         
             <div class="accordion-item">
-                <h2 class="accordion-header">
-                <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo">
-                    Persone
-                </button>
-                </h2>
-                <div id="flush-collapseTwo" class="accordion-collapse show">
                     <div class="accordion-body">
                         <div id='div_pers`+m_e+box+`'></div>
                     </div>
-
-                </div>
             </div>
         </div>   
     </td>      

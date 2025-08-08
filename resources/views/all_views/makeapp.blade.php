@@ -139,11 +139,11 @@ th, td {
                                 <!--accordion persone !-->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" >
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwox" aria-expanded="false" aria-controls="flush-collapseTwox" >
                                         Persone
                                     </button>
                                     </h2>
-                                    <div id="flush-collapseTwo" class="accordion-collapse show" >
+                                    <div id="flush-collapseTwox" class="accordion-collapse show" >
                                         <div class="accordion-body" >
                                             <!--testo persone!-->
                                             <input type='text' class='form-control input-sm' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
@@ -158,12 +158,12 @@ th, td {
                                                         
 
 
-                                                        <span style='line-height:0.9;' ><font size='1rem'>
-                                                            <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
+                                                        <div style='line-height:0.9;' id='spanlav{{$lavoratore->id}}' class='allnomi'data-nome='{{$lavoratore->nominativo}}' ><font size='1rem'>
+                                                            <a href="javascript:void(0)" class="allnomilink-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
                                                             {{$lavoratore->nominativo}}
                                                             </a>
                                                             </font>
-                                                        </span>
+                                                        </div>
 
 
                                                         <div style='display:none' id='unlock{{$lavoratore->id}}'>
