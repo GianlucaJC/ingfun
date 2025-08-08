@@ -159,7 +159,7 @@ th, td {
                                                             if ($tipo_contratto==1) $color="danger";
                                                             if ($tipo_contratto==2) $color="primary";
                                                             if ($tipo_contratto==3) $color="warning";
-                                                            if ($tipo_contratto==4) $color="secondary";
+                                                            if ($tipo_contratto==5) $color="secondary";
 
                                                         ?>
                                                         
