@@ -178,6 +178,7 @@ function dropHandlerBox(ev) {
     el=0
     $(".box"+m_eo+boxo).each(function(){
         id_ref=$(this).data( "idlav")
+        if (ctrl==false) removelav(m_eo,boxo,el); 
         console.log("id_ref",id_ref,"m_eo",m_eo,"boxo",boxo,"m_ed",m_ed,"boxd",boxd,"el",el) 
         impegnalav(id_ref)
         setsquadra(m_ed,boxd,el) //...e lo copio in quello di destinazione
@@ -238,6 +239,7 @@ function dropHandler(ev) {
         console.log("targa ass",targa)
         $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     }
+
     return false
   }
  
@@ -268,9 +270,14 @@ function dropHandler(ev) {
   idlav=$("#"+from).data('idlav')
   
   if (_m_e=="?") return false;
+  
   impegnalav(idlav)
   console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
   setsquadra(_m_e,_box,_el)
+  if (from.substr(0,6)=="btnlav") {
+    $("#"+from).hide(120)
+  }
+
   $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
 }
 //////////////////
@@ -619,9 +626,9 @@ function load_inf() {
             }
 
             dato=ris.info_reper
-            reper=dato[0].reper
-            console.log("reper",reper)
-            if (reper && reper.length>0) {
+            
+            if (dato && dato[0] && dato[0].reper && dato[0].reper.length>0) {
+                reper=dato[0].reper
                 a_rep=reper.split("|")
                 for (sca=0;sca<a_rep.length;sca++) {
                     me=a_rep[sca].split(";")[0]
@@ -639,9 +646,10 @@ function load_inf() {
             }
 
             dato=ris.info_assenti
-            assenti=dato[0].assenti
-            console.log("assenti",assenti)
-            if (assenti && assenti.length>0) {
+            
+
+            if (dato && dato[0] && dato[0].assenti && dato[0].assenti.length>0) {
+                assenti=dato[0].assenti
                 a_ass=assenti.split("|")
                 for (sca=0;sca<a_ass.length;sca++) {
                     me=a_ass[sca].split(";")[0]
