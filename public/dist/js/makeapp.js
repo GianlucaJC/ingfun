@@ -182,7 +182,7 @@ function dropHandlerBox(ev) {
         if (ctrl==false) removelav(m_eo,boxo,el); 
         console.log("id_ref",id_ref,"m_eo",m_eo,"boxo",boxo,"m_ed",m_ed,"boxd",boxd,"el",el) 
         impegnalav(id_ref)
-        setsquadra(m_ed,boxd,el) //...e lo copio in quello di destinazione
+        setsquadra(m_ed,boxd,el,boxo) //...e lo copio in quello di destinazione
         el++
     })
 
@@ -248,6 +248,7 @@ function dropHandler(ev) {
   }
  
   //spostamento/copia lavoratore da box a box
+    boxo=$("#"+from).data('box')
   
   if (from.substr(0,3)=="box") {
     idlav=$("#"+from).data('idlav')
@@ -256,7 +257,7 @@ function dropHandler(ev) {
     box_f=$("#"+from).data('box')
     el_f=$("#"+from).data('el')
     console.log("dati dell'impegno: _m_e",_m_e,"_box",_box,"_el",_el)
-    esito=setsquadra(_m_e,_box,_el) // sposta in quello di destinazione
+    esito=setsquadra(_m_e,_box,_el,boxo) // sposta in quello di destinazione
     if (ctrl==false && esito==true)
         removelav(m_e_f,box_f,el_f) //e rimuove il lavoratore dal box di origine
 
@@ -278,7 +279,7 @@ function dropHandler(ev) {
   
   impegnalav(idlav)
   console.log("dati dell'impegno: idlav",idlav,"_m_e",_m_e,"_box",_box,"_el",_el)
-  esito=setsquadra(_m_e,_box,_el)
+  esito=setsquadra(_m_e,_box,_el,boxo)
   if (esito==false) return false;
   if (from.substr(0,6)=="btnlav" && esito==true) {
     //$("#"+from).hide(120)
@@ -749,7 +750,7 @@ function unlock(idlav) {
     setsquadra.unlock_id.push(idlav)
 }
 
-function setsquadra(m_e,box,rowbox) {
+function setsquadra(m_e,box,rowbox,boxo) {
     if( typeof setsquadra.idlav == 'undefined' ) {
         //alert("Scegliere prima un lavoratore da assegnare!")
         return false
@@ -764,12 +765,13 @@ function setsquadra(m_e,box,rowbox) {
         id_ref=$(this).data( "idlav")
         if (id_ref==idlav) present=true
     })
-
+    if (boxo==box || boxo==1000) present=false
 
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
     
     refbox="box"+m_e+box+rowbox
+    
     if ($("#"+refbox).hasClass('active')) return false;
     /*
     remove=false
@@ -800,10 +802,10 @@ function setsquadra(m_e,box,rowbox) {
         }
     })    
     
-    
+
     if (present==true) {
        // alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
-        return false
+       return false
     }
     
 
@@ -865,7 +867,7 @@ function load_ini_lav() {
         if( typeof id_lav !== 'undefined' ) {
             if (id_lav!="0") {
                 setsquadra.idlav=id_lav
-                setsquadra(m_e,box,rowbox)
+                setsquadra(m_e,box,rowbox,1000)
                 if (responsabile_targa.length>0) esito=setresp(m_e,box,rowbox,responsabile_targa,2);
             }
         }
@@ -1428,7 +1430,7 @@ function initditte(m_e,box) {
     html="";
     html+=`
         <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-2 ditte" 
-            id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:100%;height:40px;white-space:collapse'>
+            id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:100%;height:40px;white-space:collapse;font-size:1.3em'>
             <i class="fa-solid fa-location-dot"></i>
             
         </span>
