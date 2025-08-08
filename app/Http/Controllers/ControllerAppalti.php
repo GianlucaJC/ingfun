@@ -622,6 +622,7 @@ public function __construct()
 	public function makeapp($id_giorno_appalto=0) {
 		$lavoratori=candidati::select('id','nominativo','tipo_contr','tipo_contratto')
 		->where('dele','=',0)
+		->orderBy('tipo_contratto')	
 		->orderBy('nominativo')	
 		->get();
 

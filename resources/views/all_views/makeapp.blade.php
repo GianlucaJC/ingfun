@@ -154,12 +154,19 @@ th, td {
                                                         <?php
                                                             if (strlen($elenco_lav)!=0) $elenco_lav.="|";
                                                             $elenco_lav.=$lavoratore->id.";".$lavoratore->nominativo;
+                                                            $tipo_contratto=$lavoratore->tipo_contratto;
+                                                            $color="secondary";
+                                                            if ($tipo_contratto==1) $color="danger";
+                                                            if ($tipo_contratto==2) $color="primary";
+                                                            if ($tipo_contratto==3) $color="warning";
+                                                            if ($tipo_contratto==4) $color="secondary";
+
                                                         ?>
                                                         
 
 
                                                         <div style='line-height:0.9;' id='spanlav{{$lavoratore->id}}' class='allnomi'data-nome='{{$lavoratore->nominativo}}' ><font size='1rem'>
-                                                            <a href="javascript:void(0)" class="allnomilink-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
+                                                            <a href="javascript:void(0)" class="link-{{$color}} link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
                                                             {{$lavoratore->nominativo}}
                                                             </a>
                                                             </font>
