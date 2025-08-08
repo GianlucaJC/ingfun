@@ -335,7 +335,7 @@ function dropHandlerAss(ev) {
     console.log("idlav",idlav)
     if (from.substr(0,3)=="ass") {
         $("#"+from).data("idlav","")
-        $("#"+from).text("Assegna")
+        $("#"+from).text("__________")
         $("#"+from).removeClass('active')
     }
 
@@ -415,7 +415,7 @@ function dropHandlerRep(ev) {
     console.log("idlav",idlav)
     if (from.substr(0,3)=="rep") {
         $("#"+from).data("idlav","")
-        $("#"+from).text("Assegna")
+        $("#"+from).text("__________")
         $("#"+from).removeClass('active')
     }
 
@@ -1937,11 +1937,15 @@ function inirep(sc) {
                 <div id='boxrep`+m_e+`' class="list-group"  ondrop="dropHandlerRep(event)"   ondragover="dragoverHandlerRep(event)" draggable="true" ondragstart="dragstartHandlerRep(event)">`
                 for (el=0;el<elemRep;el++) {
                     html+=`    
-                    <font size='2rem'>
-                        <a href="#" class="list-group-item py-1 clearfix itemlist list-group-item-action rep rep`+m_e+`" id='rep`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_rep('`+m_e+`',`+el+`)">
-                            Assegna
-                        </a>
-                    </font>
+
+
+                    <div style='line-height:1.6;' id='sparep' >
+                        <font size='1rem'>
+                            <a href="javascript:void(0)" class="rep rep`+m_e+`" id='rep`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_rep('`+m_e+`',`+el+`)">
+                                __________
+                            </a>
+                        </font>
+                    </div>                    
                     `
                 }
                 html+=`</div>
@@ -1983,12 +1987,14 @@ function iniass(sc) {
             <div class="card-body"><font size='2px'><b>`+txt_ass+`</b></font>
                 <div id='boxass`+m_e+`' class="list-group"  ondrop="dropHandlerAss(event)"   ondragover="dragoverHandlerAss(event)" draggable="true" ondragstart="dragstartHandlerAss(event)">`
                 for (el=0;el<elemAss;el++) {
-                    html+=`    
-                    <font size='2rem'>
-                        <a href="#" class="list-group-item py-1 clearfix itemlist list-group-item-action ass ass`+m_e+`" id='ass`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_ass('`+m_e+`',`+el+`)">
-                            Assegna
-                        </a>
-                    </font>
+                    html+=`   
+                        <div style='line-height:1.6;' id='spanass' >
+                            <font size='1rem'>
+                                <a href="javascript:void(0)" class="ass ass`+m_e+`" id='ass`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_ass('`+m_e+`',`+el+`)">
+                                  __________
+                                </a>
+                            </font>
+                        </div>
                     `
                 }
                 html+=`</div>
