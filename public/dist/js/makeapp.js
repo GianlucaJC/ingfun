@@ -2,8 +2,8 @@ const numBox=7
 const elemBox=6
 const elemRep=10
 const elemAss=10
-const maxI=2
-const zoomI=0.56
+const maxI=20
+const zoomI=0.54
 var saveall=false
 var _m_e="?";var _box="?";var _el="?"
 var lavall=new Array();
@@ -15,6 +15,7 @@ var dittall=new Array();
     class_o="hold-transition sidebar-mini"
     class_n="hold-transition skin-blue sidebar-collapse"
     $("body").removeClass(class_o).addClass(class_n)
+    $("#credit_top").hide()
 
     elenco_lav=$("#elenco_lav").val().split("|");
     for (sc=0;sc<elenco_lav.length;sc++) {
@@ -185,9 +186,12 @@ function dropHandlerBox(ev) {
         el++
     })
 
-    //resetbox della box di origine (se non si preme ctrl)
+    //resetbox della box di origine (se non si preme ctrl) 
+    //preferito farlo singolarmente durante la $(".box").each()
+    /*
     if (ctrl==false)
         resetbox(m_eo,boxo,2);
+    */
 
   $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
 }
@@ -726,8 +730,11 @@ function trova_mezzo() {
 }
 
 function impegnalav(idlav) {
+    /*
     $(".allnomi").removeClass('btn btn-success').addClass('btn btn-outline-success')
     $("#btnlav"+idlav).removeClass('btn btn-outline-success').addClass('btn btn-success')
+    */
+
     setsquadra.idlav=idlav
 }
 

@@ -122,10 +122,12 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <a href="#" class="nav-link">Contact</a>
       </li>
 	  !-->
-    </ul>
 
+    </ul>
+	@yield('space_top')
     <!-- Right navbar links -->
     <ul class="navbar-nav ml-auto">
+		
       <!-- Navbar Search -->
       <li class="nav-item" style='display:none'>
         <a class="nav-link" data-widget="navbar-search" href="#" role="button">

@@ -41,6 +41,24 @@ th, td {
 }
 </style>
 
+@section('space_top')
+
+    <div class="">
+        <button type="button" class="btn btn-outline-success btn-sm mb-2" id="btn_save_all" onclick="save_all()"><i class="fa-solid fa-floppy-disk"></i> Salva Tutto</button>
+    </div>
+    <div class="ml-3">
+        <label for="zoomlevel" class="form-label">Zoom level</label>
+        <input type="range" class="form-range" min="0.10" max="1.05" step="0.02" id="zoomlevel"  onchange="setZoom(this.value,1)">
+
+    </div>
+@endsection
+
+@section('notifiche')
+   <span id='credit' >
+	<center>Sviluppo prototipale</center>
+   </span>
+@endsection
+
 @section('content_main')
 
   <!-- Content Wrapper. Contains page content -->
@@ -51,6 +69,7 @@ th, td {
     
       <div class="container-fluid mt-4">
 	  <!--<div class='onesignal-customlink-container'></div>!-->
+
 
 		<form method='post' action="{{ route('makeapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
@@ -111,17 +130,56 @@ th, td {
 					<div class="row" style='width:1400px'>
                     
 					<div class="col-md-2">
-                        <div class="d-grid gap-2">
-                            <button type="button" class="btn btn-outline-success btn-sm mb-2" id="btn_save_all" onclick="save_all()"><i class="fa-solid fa-floppy-disk"></i> Salva Tutto</button>
-                        </div>
-
-                        <label for="zoomlevel" class="form-label">Zoom level</label>
-                        <input type="range" class="form-range" min="0.10" max="1.05" step="0.02" id="zoomlevel"  onchange="setZoom(this.value,1)">
-
 
                         <div class="card-body">
 
+
                             <div class="accordion" id="accordionFlushExample">
+
+                                <!--accordion persone !-->
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header">
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" >
+                                        Persone
+                                    </button>
+                                    </h2>
+                                    <div id="flush-collapseTwo" class="accordion-collapse show" >
+                                        <div class="accordion-body" >
+                                            <!--testo persone!-->
+                                            <input type='text' class='form-control input-sm' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
+                                            <div id="div_lav" class='mt-2' style='max-height:560px;overflow-y:scroll'>
+                                                <div class="d-grid gap-1">
+                                                    <?php $elenco_lav=""; ?>
+                                                    @foreach ($lavoratori as $lavoratore)
+                                                        <?php
+                                                            if (strlen($elenco_lav)!=0) $elenco_lav.="|";
+                                                            $elenco_lav.=$lavoratore->id.";".$lavoratore->nominativo;
+                                                        ?>
+                                                        
+
+
+                                                        <span style='line-height:0.9;' ><font size='1rem'>
+                                                            <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
+                                                            {{$lavoratore->nominativo}}
+                                                            </a>
+                                                            </font>
+                                                        </span>
+
+
+                                                        <div style='display:none' id='unlock{{$lavoratore->id}}'>
+                                                            <a href='#' onclick="unlock({{$lavoratore->id}})">
+                                                                <i class="fa-solid fa-unlock"></i>
+                                                            </a>   
+                                                            <hr>
+                                                        </div>
+                                                    @endforeach	
+                                                    <input type='hidden' name='elenco_lav' id='elenco_lav' value='{{$elenco_lav}}'>
+                                                </div>
+                                            </div>      
+                                        </div>
+                                    </div>
+                                </div>
+                                <!-- fine accordion persone !-->                            
                                 <!--accordion ditte !-->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
@@ -204,42 +262,6 @@ th, td {
                                 <input type='hidden' name='infomezzi' id='infomezzi' value='{{$infomezzi}}'>
                                 <!--fine accordion mezzi !-->
 
-                                <!--accordion persone !-->
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwo" aria-expanded="false" aria-controls="flush-collapseTwo" >
-                                        Persone
-                                    </button>
-                                    </h2>
-                                    <div id="flush-collapseTwo" class="accordion-collapse show" >
-                                        <div class="accordion-body">
-                                            <!--testo persone!-->
-                                            <input type='text' class='form-control mt-2' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
-                                            <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
-                                                <div class="d-grid gap-1">
-                                                    <?php $elenco_lav=""; ?>
-                                                    @foreach ($lavoratori as $lavoratore)
-                                                        <?php
-                                                            if (strlen($elenco_lav)!=0) $elenco_lav.="|";
-                                                            $elenco_lav.=$lavoratore->id.";".$lavoratore->nominativo;
-                                                        ?>
-                                                        <button type="button" class="btn btn-outline-success  btn-sm allnomi" data-nome='{{$lavoratore->nominativo}}' id='btnlav{{$lavoratore->id}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" style='width:110px'>  
-                                                        {{$lavoratore->nominativo}}
-                                                        </button>
-                                                        <div style='display:none' id='unlock{{$lavoratore->id}}'>
-                                                            <a href='#' onclick="unlock({{$lavoratore->id}})">
-                                                                <i class="fa-solid fa-unlock"></i>
-                                                            </a>   
-                                                            <hr>
-                                                        </div>
-                                                    @endforeach	
-                                                    <input type='hidden' name='elenco_lav' id='elenco_lav' value='{{$elenco_lav}}'>
-                                                </div>
-                                            </div>      
-                                        </div>
-                                    </div>
-                                </div>
-                                <!-- fine accordion persone !-->
 
                             </div>
                         </div>
