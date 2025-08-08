@@ -147,7 +147,7 @@ th, td {
                                         <div class="accordion-body" >
                                             <!--testo persone!-->
                                             <input type='text' class='form-control input-sm' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
-                                            <div id="div_lav" class='mt-2' style='max-height:560px;overflow-y:scroll'>
+                                            <div id="div_lav" class='mt-2' style='max-height:auto;overflow-y:scroll'>
                                                 <div class="d-grid gap-1">
                                                     <?php $elenco_lav=""; ?>
                                                     @foreach ($lavoratori as $lavoratore)
