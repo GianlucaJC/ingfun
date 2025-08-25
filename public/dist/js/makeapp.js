@@ -265,11 +265,17 @@ function dropHandler(ev) {
         $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')    
     return false
   }
- 
- //in altri casi disabilito il drag & drop
-  if (from.substr(0,6)!="btnlav") {
+
+
+  if (from.substr(0,3)=="ass") {
     alert("Drag & Drop non ammesso")
     return false
+  }
+
+ //in altri casi disabilito il drag & drop
+  if (from.substr(0,6)!="btnlav") {
+    //alert("Drag & Drop non ammesso")
+    //return false
   }
 
 
@@ -318,8 +324,10 @@ function dropHandlerAss(ev) {
     el=$("#"+from).data('el')
     console.log("assegnazioni per assenti - from",from,"dest",dest,"m_e",m_e)
 
+    if (dest.substr(0,3)!='ass') return false
+    $("#spanlav"+idlav).hide();
 
-
+    
     present=false
     check_self=false
     if (from.substr(0,5)==dest.substr(0,5)) check_self=true
@@ -394,10 +402,13 @@ function dropHandlerRep(ev) {
   if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="rep") {
   
     idlav=$("#"+from).data('idlav')
+    
+
     m_e=$("#"+dest).data('m_e')
     el=$("#"+from).data('el')
     console.log("from",from,"dest",dest,"m_e",m_e)
-
+    if (dest.substr(0,3)!='rep') return false
+    $("#spanlav"+idlav).hide();
 
 
     present=false
@@ -1297,7 +1308,8 @@ function resetbox(m_e,box,from) {
             return false
         }
     }
-    if (from==0 || from==2) {
+
+    if (from==0) {
         html=inibox(m_e,box)
         $("#boxinfo"+m_e+box).html(html)
         html=inimezzi(m_e,box)
@@ -1308,7 +1320,7 @@ function resetbox(m_e,box,from) {
             setresp(m_e,box,el,0,1) 
         }
     }    
-    else {
+    else if (from!=2) {
         $(".box").each(function(){
             m_e=$(this).data( "m_e")
             box=$(this).data( "box")
@@ -1963,7 +1975,7 @@ function action_ass(m_e,el) {
     idlav=($("#"+refass).data("idlav"))
     if (!idlav || idlav.length==0) return false
     if (!confirm("Sicuri di rimuovere il nominativo dalla lista assenti?")) return false;
-
+    $("#spanlav"+idlav).show();
     $("#"+refass).removeClass('active')
     $("#"+refass).first().html("__________")
     $("#"+refass).removeData( "idlav", '' );
@@ -1991,10 +2003,10 @@ function iniass(sc) {
                 <div id='boxass`+m_e+`' class="list-group"  ondrop="dropHandlerAss(event)"   ondragover="dragoverHandlerAss(event)" draggable="true" ondragstart="dragstartHandlerAss(event)">`
                 for (el=0;el<elemAss;el++) {
                     html+=`   
-                        <div style='line-height:1.6;' id='spanass' >
+                        <div style='line-height:1.6;' id='spanass'  >
                             <font size='1rem'>
                                 <a href="javascript:void(0)" class="ass ass`+m_e+`" id='ass`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_ass('`+m_e+`',`+el+`)">
-                                  __________
+                                    __________
                                 </a>
                             </font>
                         </div>
