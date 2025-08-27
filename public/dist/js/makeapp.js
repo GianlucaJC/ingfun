@@ -398,15 +398,17 @@ function dropHandlerRep(ev) {
   const from = ev.dataTransfer.getData("text");
   dest=ev.target.id
 
+  console.log("from",from,"dest",dest,"m_e",m_e)
+
   //spostamento lavoratore da box lavoratori a box reperibilità
-  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="rep") {
+  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="rep" || from.substr(0,3)=="box") {
   
     idlav=$("#"+from).data('idlav')
     
 
     m_e=$("#"+dest).data('m_e')
     el=$("#"+from).data('el')
-    console.log("from",from,"dest",dest,"m_e",m_e)
+    
     if (dest.substr(0,3)!='rep') return false
     $("#spanlav"+idlav).hide();
 
