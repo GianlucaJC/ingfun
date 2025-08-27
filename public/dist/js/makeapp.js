@@ -2071,7 +2071,8 @@ function action_ass(m_e,el) {
     if (!idlav || idlav.length==0) return false
     if (!confirm("Sicuri di rimuovere il nominativo dalla lista assenti?")) return false;
     $("#spanlav"+idlav).show();
-    $("#"+refass).removeClass('active')
+    $("#"+refass).removeClass('impegnato')
+    remove_impegno(refass)
     $("#"+refass).first().html("__________")
     $("#"+refass).removeData( "idlav", '' );
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
