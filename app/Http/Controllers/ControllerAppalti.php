@@ -670,6 +670,14 @@ public function __construct()
 		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','info_app','appaltibox','ditte','marche','modelli','inventario'));
 	}
 
+	public function dele_urg(Request $request) {
+		$id_urg=$request->input('id_urg');
+		$info_appalto=appaltinew_urgenze::where('id','=',$id_urg)->delete();
+		$info_appalto=array();
+		$info_appalto['header']="OK";
+		return json_encode($info_appalto);				
+	}
+
 	public function check_allestimento(Request $request) {
 		$id_giorno_appalto=$request->input('id_giorno_appalto');
 		$m_e=$request->input('m_e');
@@ -715,7 +723,7 @@ public function __construct()
 		$resp['info_assenti']=$info_assenti;
 
 		$info_urgenze=appaltinew_urgenze::from('appaltinew_urgenze as a')
-		->select('a.id_ditta','a.id_servizio','a.id_lavoratore','a.descrizione')
+		->select('a.id','a.id_ditta','a.id_servizio','a.id_lavoratore','a.descrizione')
 		->where('a.idapp','=',$id_giorno_appalto)
 		->get();
 
@@ -740,17 +748,34 @@ public function __construct()
 
 	public function save_urgenza(Request $request) {
 		$id_giorno_appalto=$request->input('id_giorno_appalto');
-		$count=appaltinew_urgenze::where('idapp','=',$id_giorno_appalto)->count();
-
-		$appalto=new appaltinew_urgenze;
+		$id_edit_urg=$request->input('id_edit_urg');
+		$id_ref=$id_edit_urg;
+		$count=appaltinew_urgenze::where('id','=',$id_edit_urg)->count();
+		
+		if ($count==0)
+			$appalto=new appaltinew_urgenze;		
+		else
+			$appalto = appaltinew_urgenze::where('id', $id_edit_urg)->first();
 		$appalto->idapp=$id_giorno_appalto;
 		$appalto->id_ditta=$request->input('ditta_urg');
 		$appalto->id_servizio=$request->input('servizi_urg');
 		$appalto->id_lavoratore=$request->input('lav_urg');
 		$appalto->descrizione=$request->input('descr_urgenza');
 		$appalto->save();
+	
+		if ($count==0) $id_ref = $appalto->id;
+
 		$info_appalto=array();
 		$info_appalto['header']="OK";
+		
+
+		$info_urgenze=appaltinew_urgenze::from('appaltinew_urgenze as a')
+		->select('a.id','a.id_ditta','a.id_servizio','a.id_lavoratore','a.descrizione')
+		->get();
+
+		$info_appalto['info_urgenze']=$info_urgenze;
+		$info_appalto['id_ref']=$id_ref;
+
 		return json_encode($info_appalto);				
 	}
 

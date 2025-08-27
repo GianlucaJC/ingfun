@@ -206,10 +206,14 @@ th, td {
                                                             if (strlen($alld)!=0) $alld.="|";
                                                             $alld.=$ditta->id.";".$ditta->denominazione;
                                                         ?>
-                                                        <button type="button" class="btn btn-outline-success btn-sm allditte" data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}' 
-                                                        draggable="true" ondragstart="dragstartHandlerDitta(event)" style='width:110px'>              
-                                                        {{$ditta->denominazione}}
-                                                        </button>
+
+                                                        <div style='line-height:1.2;margin-right:1rem' id='spandit' class='mb-1'><font size='1rem'>
+                                                            <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover allditte"  data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}'  
+                                                            draggable="true" ondragstart="dragstartHandlerDitta(event)" >
+                                                            {{$ditta->denominazione}}
+                                                            </a>
+                                                            </font>
+                                                        </div>                                                        
                                                     @endforeach	
                                                     <input type='hidden' name='alld' id='alld' value='{{$alld}}'>
                                                 </div>
@@ -323,7 +327,7 @@ th, td {
 
                             <div class="container-fluid" style="display:none" id='div_urg'>
                                 <h2>Urgenze</h2>
-                                <a href='javascript:void(0)' onclick='urgenze()'>
+                                <a href='javascript:void(0)' onclick="urgenze('New')">
                                     <h3><i class="fas fa-calendar-plus"></i> Nuova urgenza</h3>
                                 </a>    
                             </div>       

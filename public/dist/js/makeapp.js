@@ -1702,7 +1702,9 @@ function validation_urg() {
 }
 function load_urgenze(resp) {
     if (resp.length==0) return false
+    urgenze.resp=resp
     for (sca=0;sca<resp.length;sca++) {
+        id_urg=resp[sca].id
         id_ditta=resp[sca].id_ditta
         id_servizio=resp[sca].id_servizio
         id_lavoratore=resp[sca].id_lavoratore
@@ -1715,16 +1717,18 @@ function load_urgenze(resp) {
         if (dittall[id_ditta]) ditta_urg_t=dittall[id_ditta]
         descr_urgenza=resp[sca].descrizione
         html=`
-        <li class="list-group-item">
-            <a href="#" class="list-group-item list-group-item-action" aria-current="true">
-                <div class="d-flex w-100 justify-content-between">
-                <h5 class="mb-1"><b>`+lav_urg_t+`</b></h5>
-                <small>`+servizi_urg_t+`</small>
-                </div>
-                <p class="mb-1">`+ditta_urg_t+`</p>
-                <small>`+descr_urgenza+`</small>
-            </a>
-        </li>
+        <div id='div_urg`+id_urg+`'>
+            <li class="list-group-item" id='urge`+id_urg+`'>
+                <a href="#" onclick='urgenze(`+id_urg+`)' class="list-group-item list-group-item-action" aria-current="true">
+                    <div class="d-flex w-100 justify-content-between">
+                    <h5 class="mb-1"><b>`+lav_urg_t+`</b></h5>
+                    <small>`+servizi_urg_t+`</small>
+                    </div>
+                    <p class="mb-1">`+ditta_urg_t+`</p>
+                    <small>`+descr_urgenza+`</small>
+                </a>
+            </li>
+        </div>
         `
         $("#div_lista_urgenze").append(html)    
     }
@@ -1735,6 +1739,9 @@ function update_urg() {
     $("#btn_save_urg").prop("disabled",true)
     $("#btn_save_urg").text("Salvataggio in corso...")
     $("#wait_urg").show()
+    id_edit_urg=$("#id_edit_urg").val()
+
+    
     lav_urg=$("#lav_urg").val()
     ditta_urg=$("#ditta_urg").val()
     servizi_urg=$("#servizi_urg").val()
@@ -1754,7 +1761,7 @@ function update_urg() {
           headers: {
             "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
           },
-          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&lav_urg="+lav_urg+"&ditta_urg="+ditta_urg+"&servizi_urg="+servizi_urg+"&descr_urgenza="+descr_urgenza,
+          body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&id_edit_urg="+id_edit_urg+"&lav_urg="+lav_urg+"&ditta_urg="+ditta_urg+"&servizi_urg="+servizi_urg+"&descr_urgenza="+descr_urgenza,
       })
       .then(response => {
           if (response.ok) {
@@ -1762,14 +1769,16 @@ function update_urg() {
           }
       })
       .then(ris=>{
+            urgenze.resp=ris.info_urgenze
             resp=ris.header
             $("#btn_save_urg").prop("disabled",false)
             $("#btn_save_urg").text("Salva urgenza")
             $("#wait_urg").hide()            
             if (resp=="OK") {
+                id_ref=ris.id_ref
                 html+=`
-                    <li class="list-group-item">
-                        <a href="#" class="list-group-item list-group-item-action" aria-current="true">
+                    <li class="list-group-item" id='urge`+id_ref+`'>
+                        <a href="#" onclick='urgenze(`+id_ref+`)' class="list-group-item list-group-item-action" aria-current="true">
                             <div class="d-flex w-100 justify-content-between">
                             <h5 class="mb-1"><b>`+lav_urg_t+`</b></h5>
                             <small>`+servizi_urg_t+`</small>
@@ -1779,7 +1788,13 @@ function update_urg() {
                         </a>
                     </li>
                 `
-                $("#div_lista_urgenze").append(html)
+                if (id_edit_urg!="0") 
+                    $("#div_urg"+id_edit_urg).html(html)
+                else   {
+                    html1=`<div id='div_urg`+id_ref+`'>`+html+`</div>`
+                    $("#div_lista_urgenze").append(html1)
+                }
+                
                 $("#modalinfo").modal('hide')
 
             } else alert("Problema occorso durante il salvataggio!")
@@ -1794,8 +1809,52 @@ function update_urg() {
 
 }
 
+function dele_urg(id_urg) {
+ if (!confirm("Sicuri di cancellare l'urgenza?")) return false
+    let CSRF_TOKEN = $("#token_csrf").val();
+    html="<i class='fas fa-spinner fa-spin'></i>"
+    
+    base_path = $("#url").val();
+    timer = setTimeout(function() {	
+    $("#urge"+id_urg).html('Cancellazione in corso...')
+      fetch(base_path+"/dele_urg", {
+          method: 'post',
+          headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+          },
+          body: "_token="+ CSRF_TOKEN+"&id_urg="+id_urg,
+      })
+      .then(response => {
+          if (response.ok) {
+            return response.json();
+          }
+      })
+      .then(resp=>{
+          if (resp.header=="OK") {
+            $("#urge"+id_urg).remove()
+            $("#modalinfo").modal('hide')
+          } 
+      })
+      .catch(status, err => {
+          return console.log(status, err);
+      })     
 
-function urgenze() {
+    }, 800)	 
+}
+
+function urgenze(id_urg) {
+    indice_resp="New"
+    if( typeof urgenze.resp == 'undefined' ) resp=""
+    else {
+        resp=urgenze.resp
+        for (sca=0;sca<resp.length;sca++) {
+            _id=resp[sca].id 
+            if (_id==id_urg) indice_resp=sca
+        }
+    }
+
+    id_edit_urg=0
+    if (id_urg!="New") id_edit_urg=id_urg
     dap1=$("#dap1").val();
    
     html=""
@@ -1804,6 +1863,7 @@ function urgenze() {
             <h4>Definizione Urgenza del `+dap1+`<h4>
         </center><hr>
 		<form method='post'class="row g-3 needs-validation_urg" novalidate id='frm_urgenze' name='frm_urgenze' autocomplete="off">
+            <input type='hidden' name='id_edit_urg' id='id_edit_urg' value='`+id_edit_urg+`'>
             <div class="row">
                 <div class="col-md-4">
                     <label for="ditta_urg" class="control-label">Ditta</label>
@@ -1831,7 +1891,14 @@ function urgenze() {
                 </div>                            
             </div>    
             <hr>
-            <button type="submit" id='btn_save_urg' class="btn btn-primary">Salva urgenza</button>  
+            <button type="submit" id='btn_save_urg' class="btn btn-primary">Salva urgenza</button>`
+            if (id_urg!="New") {
+                html+=`
+                <button type="button" onclick='dele_urg(`+id_urg+`)' id='btn_dele_urg' class="btn btn-warning">Elimina urgenza</button>`
+                
+            }
+
+            html+=`
             <span id='wait_urg' style='display:none'><i class='fas fa-spinner fa-spin'></i></span>
         </form>      
 
@@ -1897,6 +1964,17 @@ function urgenze() {
 
     $('.select2').select2()
     validation_urg()
+
+    if (indice_resp!="New") {
+        id_ditta=resp[indice_resp].id_ditta
+        $("#ditta_urg").val(id_ditta)
+        id_servizio=resp[indice_resp].id_servizio
+        $("#servizi_urg").val(id_servizio)
+        id_lavoratore=resp[indice_resp].id_lavoratore
+        $("#lav_urg").val(id_lavoratore)
+        descr_urgenza=resp[indice_resp].descrizione
+        $("#descr_urgenza").val(descr_urgenza)
+    }
 
     $("#modalinfo").modal('show')
 }
