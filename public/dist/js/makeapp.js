@@ -147,7 +147,7 @@ function dragoverHandlerBox(ev) {
     ev.preventDefault();
 }
 
-//drop on allbox lavoratori
+//drop on allbox lavoratori (drag tramite area interna al box)
 function dropHandlerBox(ev) {
     ctrl=false
     if (ev.ctrlKey) ctrl=true
@@ -267,16 +267,6 @@ function dropHandler(ev) {
   }
 
 
-  if (from.substr(0,3)=="ass") {
-    alert("Drag & Drop non ammesso")
-    return false
-  }
-
- //in altri casi disabilito il drag & drop
-  if (from.substr(0,6)!="btnlav") {
-    //alert("Drag & Drop non ammesso")
-    //return false
-  }
 
 
   idlav=$("#"+from).data('idlav')
@@ -290,6 +280,26 @@ function dropHandler(ev) {
   if (from.substr(0,6)=="btnlav" && esito==true) {
     //$("#"+from).hide(120)
     $("#spanlav"+idlav).hide();
+  }
+  
+  //in caso il drag proviene dai reperibili lo rimuovo dal box-elemento reperibili
+  if (from.substr(0,3)=="rep") {
+    el_ref=$("#"+from).data('el')
+    refrep="rep"+m_e+el_ref
+    
+    remove_impegno(refrep)
+    $("#"+refrep).removeClass('impegnato')
+    $("#"+refrep).first().html("__________")
+    $("#"+refrep).removeData( "idlav", '' );
+  }
+
+  //in caso il drag proviene dagli assenti lo rimuovo dal box-elemento assenti
+  if (from.substr(0,3)=="ass") {
+    el_ref=$("#"+from).data('el')
+    refrep="ass"+m_e+el_ref
+    $("#"+refrep).removeClass('impegnato')
+    $("#"+refrep).first().html("__________")
+    $("#"+refrep).removeData( "idlav", '' );
   }
 
   $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
@@ -345,7 +355,8 @@ function dropHandlerAss(ev) {
     if (from.substr(0,3)=="ass") {
         $("#"+from).data("idlav","")
         $("#"+from).text("__________")
-        $("#"+from).removeClass('active')
+        $("#"+from).removeClass('impegnato')
+        remove_impegno(from)
     }
 
 
@@ -355,19 +366,18 @@ function dropHandlerAss(ev) {
     //refbox="box"+m_e+el
     refbox=dest
     remove=false
-    if ($("#"+refbox).hasClass('active')) { 
-        remove=true
-        idlav=$("#"+refbox).data( "idlav")
-        $("#"+refbox).removeClass('active')
-        $("#"+refbox).first().html("Assegna")
-        $("#"+refbox).removeData( "idlav", '' );
-    }
-    if (!$("#"+refbox).hasClass('active')) {
-        $("#"+refbox).addClass('active')
+
+    color=$("#"+reflav).data('color')
+
+    if (!$("#"+refbox).hasClass('impegnato')) {
+        elref=refbox.substr(5)
+        $("#"+refbox).addClass('text-'+color)
+        $("#"+refbox).addClass('impegnato')
         html=nomelav
         $("#"+refbox).first().html(html)
         $("#"+refbox).data( "idlav", idlav );
-        numpres++
+        $("#"+refbox).data( "el", elref );
+
     }
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
   }
@@ -399,6 +409,8 @@ function dropHandlerRep(ev) {
   dest=ev.target.id
 
   console.log("from",from,"dest",dest,"m_e",m_e)
+  refbox=dest
+  if ($("#"+refbox).hasClass('impegnato')) return false
 
   //spostamento lavoratore da box lavoratori a box reperibilità
   if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="rep" || from.substr(0,3)=="box") {
@@ -411,6 +423,7 @@ function dropHandlerRep(ev) {
     
     if (dest.substr(0,3)!='rep') return false
     $("#spanlav"+idlav).hide();
+
 
 
     present=false
@@ -430,32 +443,31 @@ function dropHandlerRep(ev) {
     if (from.substr(0,3)=="rep") {
         $("#"+from).data("idlav","")
         $("#"+from).text("__________")
-        $("#"+from).removeClass('active')
+        remove_impegno(from)
+        $("#"+from).removeClass('impegnato')
     }
-
-
-
-
 
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
     
     //refbox="box"+m_e+el
-    refbox=dest
     remove=false
-    if ($("#"+refbox).hasClass('active')) { 
-        remove=true
-        idlav=$("#"+refbox).data( "idlav")
-        $("#"+refbox).removeClass('active')
-        $("#"+refbox).first().html("Assegna")
-        $("#"+refbox).removeData( "idlav", '' );
-    }
-    if (!$("#"+refbox).hasClass('active')) {
-        $("#"+refbox).addClass('active')
+
+    color=$("#"+reflav).data('color')
+
+    remove_impegno(refbox)
+    
+ 
+    if (!$("#"+refbox).hasClass('impegnato')) {
+        elref=refbox.substr(5)
+        $("#"+refbox).addClass('text-'+color)
+
+        $("#"+refbox).addClass('impegnato')
         html=nomelav
         $("#"+refbox).first().html(html)
         $("#"+refbox).data( "idlav", idlav );
-        numpres++
+        $("#"+refbox).data( "el", elref );
+       
     }
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
   }
@@ -492,6 +504,20 @@ function dropHandlerDitta(ev) {
   
 } 
 ///////// DRAG & DROP Lavoratori
+
+
+function remove_impegno(refrep) {
+    colo="";
+    for (c=1;c<=5;c++) {
+        if (c==1) colo="info";
+        if (c==2) colo="danger";
+        if (c==3) colo="primary";
+        if (c==4) colo="warning";
+        if (c==5) colo="secondary";
+        $("#"+refrep).removeClass('text-'+colo)
+    } 
+
+}
 
 function load_appalti(id_giorno_appalto) {
     maxM=$("#maxM").val()
@@ -782,21 +808,10 @@ function setsquadra(m_e,box,rowbox,boxo) {
 
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
-    
+    color=$("#"+reflav).data('color')
     refbox="box"+m_e+box+rowbox
-    
-    if ($("#"+refbox).hasClass('active')) return false;
-    /*
-    remove=false
-    if ($("#"+refbox).hasClass('active')) { 
-        remove=true
-        idlav=$("#"+refbox).data( "idlav")
-        $("#"+refbox).removeClass('active')
-        $("#"+refbox).first().html("Assegna")
-        $("#"+refbox).removeData( "idlav", '' );
-    }
-    */
-
+    if ($("#"+refbox).hasClass('impegnato')) return false;
+     
 
     $("#btnlav"+idlav).prop("disabled",false)
     numpres=0;max=false
@@ -820,17 +835,16 @@ function setsquadra(m_e,box,rowbox,boxo) {
        // alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
        return false
     }
-    
-
 
     if (max==false ) {
-        if (!$("#"+refbox).hasClass('active')) {
-            $("#"+refbox).addClass('active')
+        if (!$("#"+refbox).hasClass('impegnato')) {
+            $("#"+refbox).addClass('impegnato')
+            $("#"+refbox).addClass('text-'+color)
+
             html=nomelav+" <span id='resp"+m_e+box+rowbox+"'></span><input type='hidden' id='resp_raw"+m_e+box+rowbox+"'>"
             $("#"+refbox).first().html(html)
             $("#"+refbox).data( "idlav", idlav );
             numpres++
-            
         }
     } 
 
@@ -1510,7 +1524,8 @@ function accordion(m_e,box) {
 function removelav(m_e,box,el) {
     refbox="box"+m_e+box+el
     idlav=$("#"+refbox).data( "idlav")
-    $("#"+refbox).removeClass('active')
+    $("#"+refbox).removeClass('impegnato')
+    remove_impegno(refbox)
     $("#"+refbox).first().html('Assegna')
     $("#"+refbox).removeData( "idlav", '' );
     setresp(m_e,box,el,0,1) //contestualmente elimina mezzo eventuale assegnato
