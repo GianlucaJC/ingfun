@@ -282,24 +282,24 @@ function dropHandler(ev) {
     $("#spanlav"+idlav).hide();
   }
   
-  //in caso il drag proviene dai reperibili lo rimuovo dal box-elemento reperibili
+  //in caso il drag proviene dai reperibili NON lo rimuovo dal box-elemento reperibili
   if (from.substr(0,3)=="rep") {
+    m_e_f=$("#"+from).data('m_e')
     el_ref=$("#"+from).data('el')
-    refrep="rep"+m_e+el_ref
-    
-    remove_impegno(refrep)
-    $("#"+refrep).removeClass('impegnato')
-    $("#"+refrep).first().html("__________")
-    $("#"+refrep).removeData( "idlav", '' );
+    refrep="boxrep"+m_e_f+el_ref
   }
 
   //in caso il drag proviene dagli assenti lo rimuovo dal box-elemento assenti
   if (from.substr(0,3)=="ass") {
+    m_e_f=$("#"+from).data('m_e')
     el_ref=$("#"+from).data('el')
-    refrep="ass"+m_e+el_ref
-    $("#"+refrep).removeClass('impegnato')
-    $("#"+refrep).first().html("__________")
-    $("#"+refrep).removeData( "idlav", '' );
+   
+    refass="ass"+m_e_f+el_ref
+    console.log("refass",refass,"from",from)
+    remove_impegno(refass)
+    $("#"+refass).removeClass('impegnato')
+    $("#"+refass).first().html("__________")
+    $("#"+refass).removeData( "idlav", '' );
   }
 
   $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
@@ -327,7 +327,7 @@ function dropHandlerAss(ev) {
   dest=ev.target.id
 
   //spostamento lavoratore da box lavoratori a box assenti
-  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="ass") {
+  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="ass" || from.substr(0,3)=="rep") {
   
     idlav=$("#"+from).data('idlav')
     m_e=$("#"+dest).data('m_e')
@@ -358,7 +358,12 @@ function dropHandlerAss(ev) {
         $("#"+from).removeClass('impegnato')
         remove_impegno(from)
     }
-
+    if (from.substr(0,3)=="rep") {
+        $("#"+from).data("idlav","")
+        $("#"+from).text("__________")
+        remove_impegno(from)
+        $("#"+from).removeClass('impegnato')
+    }
 
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
@@ -413,7 +418,7 @@ function dropHandlerRep(ev) {
   if ($("#"+refbox).hasClass('impegnato')) return false
 
   //spostamento lavoratore da box lavoratori a box reperibilità
-  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="rep" || from.substr(0,3)=="box") {
+  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="rep" || from.substr(0,3)=="box" || from.substr(0,3)=="ass" ) {
   
     idlav=$("#"+from).data('idlav')
     
@@ -446,7 +451,12 @@ function dropHandlerRep(ev) {
         remove_impegno(from)
         $("#"+from).removeClass('impegnato')
     }
-
+    if (from.substr(0,3)=="ass") {
+        $("#"+from).data("idlav","")
+        $("#"+from).text("__________")
+        remove_impegno(from)
+        $("#"+from).removeClass('impegnato')
+    }
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
     
@@ -687,7 +697,9 @@ function load_inf() {
                         nomelav=$("#"+reflav).text().trim()
                         $("#"+refbox).data("idlav",idlav)
                         $("#"+refbox).text(nomelav)
-                        $("#"+refbox).addClass('active')
+                        color=$("#"+reflav).data('color')
+                        $("#"+refbox).addClass('text-'+color)
+                        $("#"+refbox).addClass('impegnato')
                     }
                 }
             }
@@ -708,7 +720,9 @@ function load_inf() {
                         nomelav=$("#"+reflav).text().trim()
                         $("#"+refbox).data("idlav",idlav)
                         $("#"+refbox).text(nomelav)
-                        $("#"+refbox).addClass('active')
+                        color=$("#"+reflav).data('color')
+                        $("#"+refbox).addClass('text-'+color)
+                        $("#"+refbox).addClass('impegnato')
                     }
                 }
             }   
@@ -2014,8 +2028,8 @@ function action_rep(m_e,el) {
     idlav=($("#"+refrep).data("idlav"))
     if (!idlav || idlav.length==0) return false
     if (!confirm("Sicuri di rimuovere il nominativo dalla lista reperibilità?")) return false;
-
-    $("#"+refrep).removeClass('active')
+    remove_impegno(refrep)
+    $("#"+refrep).removeClass('impegnato')
     $("#"+refrep).first().html("__________")
     $("#"+refrep).removeData( "idlav", '' );
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
