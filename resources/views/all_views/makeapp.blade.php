@@ -25,20 +25,35 @@
 	
 @endsection
 <style>
-.itemlist {
-    padding:0.4rem !important;
-}
-.panel-footer {
-  display: flex;
-  justify-content: space-between;
-}
-.box {
-    
-}
+    .itemlist {
+        padding:0.4rem !important;
+    }
+    .panel-footer {
+    display: flex;
+    justify-content: space-between;
+    }
+    .box {
+        
+    }
 
-th, td {
-   padding-right: 18px;
-}
+    th, td {
+    padding-right: 18px;
+    }
+    @media print {
+      /* Il contenuto che vuoi adattare per la stampa in A3 orizzontale */
+      body {
+        width: 29.7cm; /* Larghezza A3 */
+        height: 42cm; /* Altezza A3 */
+        margin: 0;
+        padding: 0;
+        orientation: landscape; /* Imposta l'orientamento su orizzontale */
+      }
+
+      /* Rimuovi elementi non necessari dalla stampa, come intestazioni o piè di pagina */
+      header, footer {
+        display: none;
+      }
+    }    
 </style>
 
 @section('space_top')
@@ -54,6 +69,13 @@ th, td {
             </button>        
         </a>
     </div>
+
+    <div class="ml-3">
+        <button type="button" class="btn btn-outline-success btn-sm mb-2" onclick="window.print()">
+            <i class="fas fa-print"></i> Stampa videata
+        </button>        
+    </div>
+    
 
 
     <div class="ml-3">
