@@ -46,6 +46,16 @@ th, td {
     <div class="">
         <button type="button" class="btn btn-outline-success btn-sm mb-2" id="btn_save_all" onclick="save_all()"><i class="fa-solid fa-floppy-disk"></i> Salva Tutto</button>
     </div>
+
+    <div class="ml-3">
+        <a aria-label="Send Appalto" href="https://wa.me/?text=Test Appalto" target="_blank">
+            <button type="button" class="btn btn-outline-success btn-sm mb-2">
+                <i class="fab fa-whatsapp"></i> Genera messaggio
+            </button>        
+        </a>
+    </div>
+
+
     <div class="ml-3">
         <label for="zoomlevel" class="form-label">Zoom level</label>
         <input type="range" class="form-range" min="0.10" max="1.05" step="0.02" id="zoomlevel"  onchange="setZoom(this.value,1)">
