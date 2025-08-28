@@ -97,6 +97,7 @@ public function __construct()
 		
 		$pf_pi=$request->input("pf_pi");
 		$descr_contr=$request->input("descr_contr");
+		$alias=$request->input("alias");
 		$cognome=$request->input("cognome");
 		$nome=$request->input("nome");
 		$cap=$request->input("cap");
@@ -126,7 +127,7 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['dele'=>0,'pf_pi'=>$pf_pi, 'denominazione' => $descr_contr,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'indirizzo'=>$indirizzo, 'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
+		$data=['dele'=>0,'pf_pi'=>$pf_pi, 'denominazione' => $descr_contr,'alias' => $alias,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'indirizzo'=>$indirizzo, 'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
 
 		$id_ref=0;
 		//Creazione nuovo elemento
@@ -170,7 +171,7 @@ public function __construct()
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		$ditte=DB::table('ditte as d')
-		->select("d.id","d.dele","d.denominazione","d.cognome","d.nome")
+		->select("d.id","d.dele","d.denominazione","d.alias","d.cognome","d.nome")
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('d.dele', "=","0");
 		})

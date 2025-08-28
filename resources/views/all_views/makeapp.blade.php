@@ -204,11 +204,11 @@ th, td {
                                                     @foreach ($ditte as $ditta)
                                                         <?php
                                                             if (strlen($alld)!=0) $alld.="|";
-                                                            $alld.=$ditta->id.";".$ditta->denominazione;
+                                                            $alld.=$ditta->id.";".$ditta->denominazione.";".$ditta->alias;
                                                         ?>
 
                                                         <div style='line-height:1.2;margin-right:1rem' id='spandit' class='mb-1'><font size='1rem'>
-                                                            <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover allditte"  data-nome='{{$ditta->denominazione}}' id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}'  
+                                                            <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover allditte"  data-nome='{{$ditta->denominazione}}' data-alias='{{$ditta->alias}}'  id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}'  
                                                             draggable="true" ondragstart="dragstartHandlerDitta(event)" >
                                                             {{$ditta->denominazione}}
                                                             </a>

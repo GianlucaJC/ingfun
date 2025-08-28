@@ -647,7 +647,7 @@ public function __construct()
 		->get();		
 
 		$ditte=DB::table('ditte as d')
-		->select("d.id","d.dele","d.denominazione","d.cognome","d.nome")
+		->select("d.id","d.dele","d.denominazione","d.alias","d.cognome","d.nome")
 		->where('d.dele', "=","0")
 		->orderBy('denominazione')->get();
 

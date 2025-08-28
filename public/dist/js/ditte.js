@@ -161,6 +161,7 @@ function edit_elem(id_ditta) {
 			$("#cognome").val(info[0].cognome)
 			$("#nome").val(info[0].nome)
 			$("#descr_contr").val(info[0].denominazione)
+			$("#alias").val(info[0].alias)
 			$("#comune").val(info[0].comune)
 			$("#cap").val(info[0].cap)
 			$("#provincia").val(info[0].provincia)

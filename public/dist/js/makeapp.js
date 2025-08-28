@@ -503,6 +503,10 @@ function dropHandlerDitta(ev) {
   dest=ev.target.id
 
   ditta=$("#"+from).data("nome");d_origin=ditta
+  alias=$("#"+from).data("alias");
+  if (alias.length!=0) {ditta=alias;}
+
+
   iddit=$("#"+from).data("iddit")
   //if (ditta.length>20) ditta=ditta.substr(0,16)+"..."
   html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+ditta+"</span>"
@@ -638,7 +642,7 @@ function load_inf() {
             arr_d=new Array();
             for (sc=0;sc<infod.length;sc++) {
                 elem=infod[sc];arr_ref=elem.split(";")
-                arr_d[arr_ref[0]]=arr_ref[1]
+                arr_d[arr_ref[0]]=arr_ref[1]+";"+arr_ref[2]
             }
             //
             
@@ -654,10 +658,14 @@ function load_inf() {
                     refditta="";
                     if (arr_d[iddit]) {
                         refditta=arr_d[iddit];d_origin=refditta
+                        realditta=refditta.split(";")[0]
+                        alias=refditta.split(";")[1]
+                        d_origin=realditta
+                        if (alias && alias.lenght!=0) d_origin=alias
                         //if (refditta.length>20) refditta=refditta.substr(0,16)+"..."
                         dest="ditta"+m_e+box
 
-                        html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+refditta+"</span>"
+                        html="<span title='"+realditta+"'><i class='fa-solid fa-location-dot'></i> "+d_origin+"</span>"
                         $("#"+dest).html(html)
                         $("#"+dest).data("iddit",iddit)
                         $("#"+dest).removeClass('bg-secondary').removeClass('bg-success').addClass('bg-success')

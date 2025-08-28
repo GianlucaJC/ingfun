@@ -29,7 +29,7 @@
 			</div>
 
 			<div class="row mb-3">
-				<div class="col-md-12">
+				<div class="col-md-8">
 					<div class="input-group mb-3">
 					  <div class="input-group-prepend">
 						<span class="input-group-text" id="basic-addon1">Denominazione</span>
@@ -37,8 +37,14 @@
 					  <input type="text" class="form-control" placeholder="Denominazione" aria-label="Denominazione" name="descr_contr" id="descr_contr">
 					</div>			
 				</div>
-
-				
+				<div class="col-md-4">
+					<div class="input-group mb-3">
+					  <div class="input-group-prepend">
+						<span class="input-group-text" id="basic-addon1">Alias</span>
+					  </div>
+					  <input type="text" class="form-control" placeholder="Alias" aria-label="Alias" name="alias" id="alias">
+					</div>			
+				</div>				
 			</div>
 
 
