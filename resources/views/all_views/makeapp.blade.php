@@ -62,12 +62,10 @@
         <button type="button" class="btn btn-outline-success btn-sm mb-2" id="btn_save_all" onclick="save_all()"><i class="fa-solid fa-floppy-disk"></i> Salva Tutto</button>
     </div>
 
-    <div class="ml-3">
-        <a aria-label="Send Appalto" href="https://wa.me/?text=Test Appalto" target="_blank">
-            <button type="button" class="btn btn-outline-success btn-sm mb-2">
+    <div class="ml-3">        
+            <button type="button" onclick='make_msg()' class="btn btn-outline-success btn-sm mb-2">
                 <i class="fab fa-whatsapp"></i> Genera messaggio
-            </button>        
-        </a>
+            </button>
     </div>
 
     <div class="ml-3">

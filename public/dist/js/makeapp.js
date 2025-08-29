@@ -1223,6 +1223,7 @@ function info_box(m_e,box) {
 
 }
 
+
 function detail_appalto(m_e,box) {
     html=`
         <form id='form_info' method='post' action="" name='form_info' class="needs-validation" autocomplete="off" novalidate>
@@ -2182,3 +2183,28 @@ function setZoom(value,from) {
     if (from==1) $("#div_side").hide(120)
     if (value<=zoomI) $("#div_side").show(120)
 };
+
+
+function get_msg() {
+    msg=$("#txt_msg").val()
+    $("#a_send").attr('href', 'https://wa.me/?text='+msg);
+    //https://wa.me/?text=Test Appalto
+}
+function make_msg() {
+    html=`
+        <div class="mb-3">
+            <label for="txt_msg" class="form-label">Testo del messaggio</label>
+            <textarea class="form-control" id="txt_msg" rows="3">Appalto X, persone Y...</textarea>
+        </div>
+        <hr>
+        <a aria-label="Send Appalto" id='a_send' href="#" target="_blank">
+            <button type="button" class="btn btn-success btn-sm" onclick='get_msg()'>
+                <i class="fab fa-whatsapp"></i> Invia
+            </button>
+        </a>
+    `    
+
+    $("#body_content").html(html)
+
+    $("#modalinfo").modal('show')
+}
