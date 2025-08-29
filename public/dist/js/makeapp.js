@@ -661,7 +661,7 @@ function load_inf() {
                         realditta=refditta.split(";")[0]
                         alias=refditta.split(";")[1]
                         d_origin=realditta
-                        if (alias && alias.lenght!=0) d_origin=alias
+                        if (alias && alias.length!=0) d_origin=alias
                         //if (refditta.length>20) refditta=refditta.substr(0,16)+"..."
                         dest="ditta"+m_e+box
 
@@ -1430,9 +1430,15 @@ function deletebox(m_e,box) {
 }
 
 function optionbox(m_e,box) {
+    saveall=$("#btn_save_all").hasClass('btn-outline-success')
+    dis="disabled"
+    if (saveall==true) dis=""
     html=""
     html=`
         <div class="d-grid gap-2">
+
+            <button class="btn btn-success" `+dis+` id='btn_make_msg' type="button" onclick="make_msg('`+m_e+`',`+box+`,1)"><i class="fab fa-whatsapp"></i>  Genera messaggio WhatsApp per questo appalto</button>
+            <hr>        
             <button class="btn btn-primary" id='btn_reset_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,0)">Reset Box</button>
 
             <button class="btn btn-warning" id='btn_reset_all_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,1)">Reset ALL Box</button>              
@@ -2188,13 +2194,15 @@ function setZoom(value,from) {
 function get_msg() {
     msg=$("#txt_msg").val()
     $("#a_send").attr('href', 'https://wa.me/?text='+msg);
-    //https://wa.me/?text=Test Appalto
 }
-function make_msg() {
+function make_msg(m_e,box,from) {
+    testo="";load=""
+    if (from==1) load="<i class='fas fa-spinner fa-spin'></i>"
     html=`
+        <div id='div_load_msg'>`+load+`</div>
         <div class="mb-3">
             <label for="txt_msg" class="form-label">Testo del messaggio</label>
-            <textarea class="form-control" id="txt_msg" rows="3">Appalto X, persone Y...</textarea>
+            <textarea class="form-control" id="txt_msg" rows="3"></textarea>
         </div>
         <hr>
         <a aria-label="Send Appalto" id='a_send' href="#" target="_blank">
@@ -2203,8 +2211,65 @@ function make_msg() {
             </button>
         </a>
     `    
-
     $("#body_content").html(html)
+    if (from==0) {
+        $("#modalinfo").modal('show')
+        $("#div_load_msg").empty()
+    }
 
-    $("#modalinfo").modal('show')
+    if (from==1) {
+        ditta=$("#ditta"+m_e+box).html()
+        spanElement = document.getElementById("ditta"+m_e+box);
+        ditta = spanElement.textContent.trim();        
+
+        id_giorno_appalto=$("#id_giorno_appalto").val()
+        let CSRF_TOKEN = $("#token_csrf").val();
+        
+       
+        base_path = $("#url").val();
+        timer = setTimeout(function() {	
+        fetch(base_path+"/check_allestimento", {
+            method: 'post',
+            headers: {
+                "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+            },
+            body: "_token="+ CSRF_TOKEN+"&id_giorno_appalto="+id_giorno_appalto+"&m_e="+m_e+"&box="+box+"&from=0",
+        })
+        .then(response => {
+            if (response.ok) {
+                return response.json();
+            }
+        })
+        .then(resp=>{
+            if (resp.header=="OK") {
+                html="";
+                html+=ditta+"\n"
+                infobox=resp.infobox.split(";")
+                resplav=""
+                for (sca=0;sca<infobox.length;sca++) {
+                    idl=infobox[sca]
+                    lav_t=idl
+                    if (lavall[idl]) lav_t=lavall[idl]
+                    if (lav_t.trim()!="0") {
+                        if (resplav.length!=0) resplav+=", "
+                        resplav+=lav_t
+                    }
+                }
+                html+=resplav
+                $("#txt_msg").val(html)
+                $("#div_load_msg").empty()
+
+
+            }
+            else {
+                $("#div_load_msg").html("<font color='red'>Errore durante il recupero dei dati</font>")
+            }
+
+        })
+        .catch(status, err => {
+            return console.log(status, err);
+        })     
+
+        }, 800)    
+    }
 }

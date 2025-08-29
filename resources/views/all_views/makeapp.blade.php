@@ -63,8 +63,8 @@
     </div>
 
     <div class="ml-3">        
-            <button type="button" onclick='make_msg()' class="btn btn-outline-success btn-sm mb-2">
-                <i class="fab fa-whatsapp"></i> Genera messaggio
+            <button type="button" onclick='make_msg("","",0)' class="btn btn-outline-success btn-sm mb-2">
+                <i class="fab fa-whatsapp"></i> Messaggio libero
             </button>
     </div>
 

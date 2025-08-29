@@ -683,6 +683,19 @@ public function __construct()
 		$m_e=$request->input('m_e');
 		$box=$request->input('box');
 		$from=$request->input('from');
+		$appaltibox=appaltibox::from('appaltibox as a')
+		->select('a.m_e','a.id_box','a.id_lav','a.rowbox','responsabile_targa')
+		->where('a.idapp','=',$id_giorno_appalto)
+		->where('a.m_e','=',$m_e)
+		->where('a.id_box','=',$box)
+		->get();	
+		$infobox="";
+		
+		foreach($appaltibox as $app) {
+			if (strlen($infobox)!=0) $infobox.=";";
+			$infobox.=$app->id_lav;
+		}
+
 
 		$info_appalto=appaltinew_info::from('appaltinew_info as a')
 		->select('a.id','a.hide','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note')
@@ -727,7 +740,9 @@ public function __construct()
 		->where('a.idapp','=',$id_giorno_appalto)
 		->get();
 
-		$resp['info_urgenze']=$info_urgenze;		
+		$resp['info_urgenze']=$info_urgenze;
+		$resp['infobox']=$infobox;
+
 
 		return json_encode($resp);
 	}
