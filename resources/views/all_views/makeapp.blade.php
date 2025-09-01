@@ -69,7 +69,7 @@
     </div>
 
     <div class="ml-3">
-        <button type="button" class="btn btn-outline-success btn-sm mb-2" onclick="window.print()">
+        <button type="button" class="btn btn-outline-success btn-sm mb-2" onclick="$('#side_list').hide();window.print();$('#side_list').show();">
             <i class="fas fa-print"></i> Stampa videata
         </button>        
     </div>
@@ -159,7 +159,7 @@
 
 					<div class="row" style='width:1400px'>
                     
-					<div class="col-md-2">
+					<div class="col-md-2" id='side_list'>
 
                         <div class="card-body">
 
