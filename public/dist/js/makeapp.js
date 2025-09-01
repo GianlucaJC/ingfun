@@ -2251,8 +2251,8 @@ function make_msg(m_e,box,from) {
                 html+="Alle ore "
                 orario_incontro="";
                 luogo_incontro="";
-                if (infoa[0] && infoa[0].orario_incontro.length>0) orario_incontro=infoa[0].orario_incontro
-                if (infoa[0] && infoa[0].luogo_incontro.length>0) luogo_incontro=infoa[0].luogo_incontro
+                if (infoa[0].orario_incontro && infoa[0].orario_incontro.length>0) orario_incontro=infoa[0].orario_incontro
+                if (infoa[0].luogo_incontro && infoa[0].luogo_incontro.length>0) luogo_incontro=infoa[0].luogo_incontro
                 html+="*"+orario_incontro+"*, _"+luogo_incontro+"_"
                 car1=$("#car1"+m_e+box).data('targa');car2=$("#car2"+m_e+box).data('targa');
                 if (car1) html+=", "+car1
@@ -2274,13 +2274,13 @@ function make_msg(m_e,box,from) {
                 
                 html+=resplav
                 ora_destinazione="";luogo_destinazione="";
-                if (infoa[0] && infoa[0].ora_destinazione.length>0) ora_destinazione=infoa[0].ora_destinazione
-                if (infoa[0] && infoa[0].luogo_destinazione.length>0) luogo_destinazione=infoa[0].luogo_destinazione
+                if (infoa[0].ora_destinazione && infoa[0].ora_destinazione.length>0) ora_destinazione=infoa[0].ora_destinazione
+                if (infoa[0].luogo_destinazione && infoa[0].luogo_destinazione.length>0) luogo_destinazione=infoa[0].luogo_destinazione
                 
                 html+="\n*"+ora_destinazione+"*, *"+luogo_destinazione+"*"  
 
                 note="";
-                if (infoa[0] && infoa[0].note.length>0) note=infoa[0].note
+                if (infoa[0].note && infoa[0].note.length>0) note=infoa[0].note
                 
                 
                 html+="\n\n"+note
