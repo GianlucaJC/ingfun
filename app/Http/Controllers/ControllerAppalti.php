@@ -689,11 +689,15 @@ public function __construct()
 		->where('a.m_e','=',$m_e)
 		->where('a.id_box','=',$box)
 		->get();	
-		$infobox="";
+		$infobox="";$rt="";
 		
 		foreach($appaltibox as $app) {
 			if (strlen($infobox)!=0) $infobox.=";";
 			$infobox.=$app->id_lav;
+			if (strlen($app->responsabile_targa)>0) {
+				if (strlen($rt)!=0) $rt.=";";
+				$rt.=$app->responsabile_targa."|".$app->id_lav;
+			}
 		}
 
 
@@ -742,6 +746,7 @@ public function __construct()
 
 		$resp['info_urgenze']=$info_urgenze;
 		$resp['infobox']=$infobox;
+		$resp['resp_targa']=$rt;
 
 
 		return json_encode($resp);

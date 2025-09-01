@@ -2281,9 +2281,22 @@ function make_msg(m_e,box,from) {
 
                 note="";
                 if (infoa[0].note && infoa[0].note.length>0) note=infoa[0].note
-                
+
                 
                 html+="\n\n"+note
+
+                resp_targa=resp.resp_targa.split(";")
+                resplav="";inforesp="";
+                for (sca=0;sca<resp_targa.length;sca++) {
+                    if (inforesp.length>0) inforesp+=", "
+                    targa_r=resp_targa[sca].split("|")[0]
+                    lav_resp=resp_targa[sca].split("|")[1]
+                    lav_r=lav_resp
+                    if (lavall[lav_resp]) lav_r=lavall[lav_resp]  
+                    inforesp+="Responsabile mezzo _"+targa_r+"_ : *"+lav_r+"*"
+                }              
+                html+="\n"+inforesp
+
                 $("#txt_msg").val(html)
                 $("#div_load_msg").empty()
 
