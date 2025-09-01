@@ -115,6 +115,7 @@ function dropHandlerMezzi(ev) {
     $("#"+dest).text(targa)
     $('#'+dest).attr('data-bs-original-title', mezzo);
     $("#"+dest).data( "targa", targa );
+    $("#"+dest).data( "mezzo", mezzo );
     console.log("dest",dest,"data-targa",$("#"+dest).data( "targa"))
     $("#"+dest).removeClass('bg-secondary').addClass('bg-warning')
 }
@@ -2188,11 +2189,13 @@ function setZoom(value,from) {
 	$('#div_tb').css('transformOrigin','left top');
     if (from==1) $("#div_side").hide(120)
     if (value<=zoomI) $("#div_side").show(120)
-};
+}
 
 
 function get_msg() {
     msg=$("#txt_msg").val()
+    msg=msg.replace(/\n/g,'%0A')
+    
     $("#a_send").attr('href', 'https://wa.me/?text='+msg);
 }
 function make_msg(m_e,box,from) {
@@ -2202,7 +2205,7 @@ function make_msg(m_e,box,from) {
         <div id='div_load_msg'>`+load+`</div>
         <div class="mb-3">
             <label for="txt_msg" class="form-label">Testo del messaggio</label>
-            <textarea class="form-control" id="txt_msg" rows="3"></textarea>
+            <textarea class="form-control" id="txt_msg" rows="10"></textarea>
         </div>
         <hr>
         <a aria-label="Send Appalto" id='a_send' href="#" target="_blank">
@@ -2242,8 +2245,21 @@ function make_msg(m_e,box,from) {
         })
         .then(resp=>{
             if (resp.header=="OK") {
+                infoa=resp.info_appalto  
                 html="";
-                html+=ditta+"\n"
+                html+="*"+ditta+"*\n\n"
+                html+="Alle ore "
+                orario_incontro="";
+                luogo_incontro="";
+                if (infoa[0] && infoa[0].orario_incontro.length>0) orario_incontro=infoa[0].orario_incontro
+                if (infoa[0] && infoa[0].luogo_incontro.length>0) luogo_incontro=infoa[0].luogo_incontro
+                html+="*"+orario_incontro+"*, _"+luogo_incontro+"_"
+                car1=$("#car1"+m_e+box).data('targa');car2=$("#car2"+m_e+box).data('targa');
+                if (car1) html+=", "+car1
+                if (car2) html+=", "+car2
+
+                html+="\n\n"
+
                 infobox=resp.infobox.split(";")
                 resplav=""
                 for (sca=0;sca<infobox.length;sca++) {
@@ -2255,9 +2271,22 @@ function make_msg(m_e,box,from) {
                         resplav+=lav_t
                     }
                 }
+                
                 html+=resplav
+                ora_destinazione="";luogo_destinazione="";
+                if (infoa[0] && infoa[0].ora_destinazione.length>0) ora_destinazione=infoa[0].ora_destinazione
+                if (infoa[0] && infoa[0].luogo_destinazione.length>0) luogo_destinazione=infoa[0].luogo_destinazione
+                
+                html+="\n*"+ora_destinazione+"*, *"+luogo_destinazione+"*"  
+
+                note="";
+                if (infoa[0] && infoa[0].note.length>0) note=infoa[0].note
+                
+                
+                html+="\n\n"+note
                 $("#txt_msg").val(html)
                 $("#div_load_msg").empty()
+
 
 
             }
