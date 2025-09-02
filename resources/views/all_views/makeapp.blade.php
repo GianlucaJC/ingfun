@@ -13,16 +13,23 @@
 
 
 @section('extra_style') 
+
     <!-- Select2 -->
     <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2/css/select2.min.css">
     <link rel="stylesheet" href="{{ URL::asset('/') }}plugins/select2-bootstrap4-theme/select2-bootstrap4.min.css">
+
+
+    
 
 	<link rel="manifest" href="{{ asset('/manifest.json') }}">
 	<script>
 	</script>	
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/all.min.css" integrity="sha512-Evv84Mr4kqVGRNSgIGL/F/aIDqQb7xQ2vcrdIwxfjThSH8CSR7PBEakCr51Ck+w+/U6swU2Im1vVX0SVk9ABhg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
 	<link href="https://cdn.datatables.net/buttons/1.7.0/css/buttons.dataTables.min.css" rel="stylesheet">
+    
+    <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/print.css?ver=<?php echo time();?>">
 	
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 @endsection
 <style>
     .itemlist {
@@ -39,21 +46,7 @@
     th, td {
     padding-right: 18px;
     }
-    @media print {
-      /* Il contenuto che vuoi adattare per la stampa in A3 orizzontale */
-      body {
-        width: 29.7cm; /* Larghezza A3 */
-        height: 42cm; /* Altezza A3 */
-        margin: 0;
-        padding: 0;
-        orientation: landscape; /* Imposta l'orientamento su orizzontale */
-      }
-
-      /* Rimuovi elementi non necessari dalla stampa, come intestazioni o piè di pagina */
-      header, footer {
-        display: none;
-      }
-    }    
+ 
 </style>
 
 @section('space_top')
@@ -69,7 +62,7 @@
     </div>
 
     <div class="ml-3">
-        <button type="button" class="btn btn-outline-success btn-sm mb-2" onclick="$('#side_list').hide();window.print();$('#side_list').show();">
+        <button type="button" id='btn_print' class="btn btn-outline-success btn-sm mb-2" onclick="generatePDF()">
             <i class="fas fa-print"></i> Stampa videata
         </button>        
     </div>
@@ -158,7 +151,7 @@
 				<div class="container-fluid">
 
 					<div class="row" style='width:1400px'>
-                    
+
 					<div class="col-md-2" id='side_list'>
 
                         <div class="card-body">
@@ -358,28 +351,46 @@
                                         </tr>
                                     </tbody>
                                 </table>  
-                            </div>
 
+                                <div id='div_print'>
+                                    <!-- 
+                                        div utilizzato dalla stampa
+                                        praticamente viene clonato <aside id='div_side'>
+                                        ed iniettato quì, questo perchè il browser nasconde <aside>
+                                        forse per spazio o per impostazioni che non trovo
+                                    !--> 
+                                </div>
+                            </div>
+                            
                             <div class="container-fluid" style="display:none" id='div_urg'>
                                 <h2>Urgenze</h2>
                                 <a href='javascript:void(0)' onclick="urgenze('New')">
                                     <h3><i class="fas fa-calendar-plus"></i> Nuova urgenza</h3>
                                 </a>    
-                            </div>       
+                            </div>      
+                                 
                                 <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze'>
                                     
                                 </ul>             
-					    </div>
+   
+                                
+
+					     </div>
                      
-                    </div>    
+                    </div> 
+                     
 					<!-- /.col -->
 				</div>
 				<!-- /.row -->
+                
 				</div><!-- /.container-fluid -->
+                
+
 				</section>            
 
 		</form>
       </div><!-- /.container-fluid -->
+
     </div>
 
     @section('operazioni')

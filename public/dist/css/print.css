@@ -1,0 +1,32 @@
+@media print {
+  /* Il contenuto che vuoi adattare per la stampa in A3 orizzontale */
+
+
+
+
+  body {
+
+	  page: rotated;
+	  transform-origin: top left;
+	  transform: translateX(100vw) rotate(90deg);
+	  width: 100vh;
+	  height: 100vw;
+
+  }
+
+  
+  /* Rimuovi elementi non necessari dalla stampa, come intestazioni o piè di pagina */
+  header, footer {
+	  display: none;
+  }
+  #side_list {
+	  display:none;
+  }
+  #div_side {
+	  display:block;
+  }
+
+
+
+
+}   

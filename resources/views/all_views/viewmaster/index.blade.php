@@ -237,6 +237,8 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
    @extends('all_views.viewmaster.sidebar')
 
+   
+
   <!-- Main Footer -->
   <footer class="main-footer" style='display:none'>
     <!-- To the right -->

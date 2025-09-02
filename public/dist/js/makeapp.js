@@ -573,8 +573,8 @@ function load_appalti(id_giorno_appalto) {
     </div>            
     `
 
-    $("#div_side").html(html)
-
+    $("#div_side").html(html) //in sidebar.blade
+ 
     html=""
     for (sc=1;sc<=2;sc++) {
         html=inirep(sc)
@@ -2318,3 +2318,49 @@ function make_msg(m_e,box,from) {
         }, 800)    
     }
 }
+
+function printall() {
+    const originalDiv = document.getElementById('div_side');
+    const newDiv = document.getElementById('div_print');
+    newDiv.innerHTML = originalDiv.innerHTML;
+    window.print()
+    $("#div_print").empty();
+}
+
+
+function generatePDF() {
+    // Get the element to be converted
+    $("#btn_print").removeClass('btn-outline-success').addClass('btn-success')
+    $("#btn_print").prop('disabled',true)
+    $("#btn_print").text('Preparazione PDF di stampa...')
+
+    timer = setTimeout(function() {	
+        const originalDiv = document.getElementById('div_side');
+        const newDiv = document.getElementById('div_print');
+        /*
+            div_print: utilizzato dalla stampa
+            praticamente viene clonato <aside id='div_side'>
+            ed iniettato quì, questo perchè il browser nasconde <aside>
+            forse per spazio o per impostazioni che non trovo
+        */     
+        newDiv.innerHTML = originalDiv.innerHTML;
+
+        const element = document.getElementById('div_tb');
+
+        // Define options for the PDF
+        const options = {
+        margin: 1,
+        filename: 'export_appalti.pdf',
+        image: { type: 'jpeg', quality: 0.98 },
+        html2canvas: { scale: 2 },
+        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+        };
+
+        // Use the library to generate and save the PDF
+        html2pdf().set(options).from(element).save();
+        $("#btn_print").prop('disabled',false)
+        $("#btn_print").text('Stampa videata')
+        $("#btn_print").removeClass('btn-success').addClass('btn-outline-success')
+    }, 800)
+
+  }
