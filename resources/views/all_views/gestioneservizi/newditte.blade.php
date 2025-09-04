@@ -42,7 +42,7 @@
 					  <div class="input-group-prepend">
 						<span class="input-group-text" id="basic-addon1">Alias</span>
 					  </div>
-					  <input type="text" class="form-control" placeholder="Alias" aria-label="Alias" name="alias" id="alias">
+					  <input type="text" class="form-control" placeholder="Alias" aria-label="Alias" name="alias" id="alias" maxlength=20>
 					</div>			
 				</div>				
 			</div>
