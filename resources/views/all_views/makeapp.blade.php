@@ -148,7 +148,7 @@
             <input type='hidden' name='maxP' id='maxP' value='{{$maxP}}'> 
 
 				<section class="content">
-				<div class="container-fluid">
+				<div class="container-fluid" id='div_all'>
 
 					<div class="row" style='width:1400px'>
 
@@ -157,7 +157,7 @@
                         <div class="card-body">
 
 
-                            <div class="accordion" id="accordionFlushExample">
+                            <div class="accordion">
 
                                 <!--accordion persone !-->
                                 <div class="accordion-item">
@@ -211,7 +211,7 @@
                                 </div>
                                 <!-- fine accordion persone !-->                            
                                 <!--accordion ditte !-->
-                                <div class="accordion-item">
+                                <div class="accordion-item noprint">
                                     <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseOne" aria-expanded="false" aria-controls="flush-collapseOne">
                                     Ditte
@@ -247,7 +247,7 @@
                                 <!-- fine accordion ditte !-->
 
                                 <!--accordion mezzi !-->
-                                <div class="accordion-item">
+                                <div class="accordion-item noprint">
                                     <h2 class="accordion-header">
                                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseThree" aria-expanded="false" aria-controls="flush-collapseThree">
                                         Mezzi
@@ -308,7 +308,7 @@
 					</div>
 					<!-- /.col -->
                     
-					<div class="col-md-10">
+					<div class="col-md-10">                        
                         <div id='div_tb' style='border:2px ;width:2500px' >
                             <?php
                                 $dap=date("Y-m-d");$dap1=$dap;

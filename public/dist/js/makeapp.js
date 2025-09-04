@@ -2356,18 +2356,20 @@ function generatePDF() {
     $("#btn_print").text('Preparazione PDF di stampa...')
 
     timer = setTimeout(function() {	
-        const originalDiv = document.getElementById('div_side');
-        const newDiv = document.getElementById('div_print');
+        $("#side_list").show()
+        originalDiv = document.getElementById('div_side');
+        newDiv = document.getElementById('div_print');
+        newDiv.innerHTML = originalDiv.innerHTML;
         /*
             div_print: utilizzato dalla stampa
             praticamente viene clonato <aside id='div_side'>
             ed iniettato quì, questo perchè il browser nasconde <aside>
             forse per spazio o per impostazioni che non trovo
         */     
-        newDiv.innerHTML = originalDiv.innerHTML;
 
-        const element = document.getElementById('div_tb');
 
+        const element = document.getElementById('div_all');
+        $(".noprint").hide();
         // Define options for the PDF
         const options = {
         margin: 1,
@@ -2379,6 +2381,7 @@ function generatePDF() {
 
         // Use the library to generate and save the PDF
         html2pdf().set(options).from(element).save();
+        $(".noprint").show();
         $("#btn_print").prop('disabled',false)
         $("#btn_print").text('Stampa videata')
         $("#btn_print").removeClass('btn-success').addClass('btn-outline-success')

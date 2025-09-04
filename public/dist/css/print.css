@@ -19,8 +19,12 @@
   header, footer {
 	  display: none;
   }
-  #side_list {
+  .noprint {
 	  display:none;
+  }
+
+  #side_list {
+	  display:block;
   }
   #div_side {
 	  display:block;
