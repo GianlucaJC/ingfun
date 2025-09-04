@@ -1342,10 +1342,16 @@ function resetbox(m_e,box,from) {
     //from==1 chiamata con riferimento a tutti i box
     //from==2: da spostamento squadra da box a box
     $("#alert_confirm").hide()
+
     if (from!=2) {
-        if (!$('#conferma').is(":checked")) {
-            $("#alert_confirm").show(130)
-            return false
+        if (from==0) {
+            if (!confirm("Sicuri di effettuare il reset del box?")) return false;
+        }
+        else {
+            if (!$('#conferma').is(":checked")) {
+                $("#alert_confirm").show(130)
+                return false
+            }
         }
     }
 
@@ -1431,16 +1437,9 @@ function deletebox(m_e,box) {
 }
 
 function optionbox(m_e,box) {
-    saveall=$("#btn_save_all").hasClass('btn-outline-success')
-    dis="disabled"
-    if (saveall==true) dis=""
     html=""
     html=`
         <div class="d-grid gap-2">
-
-            <button class="btn btn-success" `+dis+` id='btn_make_msg' type="button" onclick="make_msg('`+m_e+`',`+box+`,1)"><i class="fab fa-whatsapp"></i>  Genera messaggio WhatsApp per questo appalto</button>
-            <hr>        
-            <button class="btn btn-primary" id='btn_reset_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,0)">Reset Box</button>
 
             <button class="btn btn-warning" id='btn_reset_all_box' type="button" disabled onclick="resetbox('`+m_e+`',`+box+`,1)">Reset ALL Box</button>              
             <hr>
@@ -1509,9 +1508,10 @@ function accordion(m_e,box) {
     if (m_e=="P") {
         if (strp.includes(box)) outmp="";
     }
+
     html=""
     
-    html=""
+
     html+=`    
     <td style='padding:10px' id='tdbox`+m_e+box+`'>
     
@@ -1525,8 +1525,22 @@ function accordion(m_e,box) {
                     </span>    
                 </font>    
                 <span class="pull-right">
+
                     <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> Option
+                    </a><hr>
+
+                    <a class="link-secondary" href='#' onclick="resetbox('`+m_e+`',`+box+`,0)">
+                    <i class="fas fa-trash"></i>   
+                        Reset box
                     </a>
+
+
+                    <a class="ml-2 btn_make_msg link-secondary" href='#' onclick="make_msg('`+m_e+`',`+box+`,1)"><i class="fab fa-whatsapp"></i>  
+                        Genera
+                    </a>
+
+
+
                 </span>                
             </div>
             <div id='ditte_info`+m_e+box+`' class='mb-2'>`
@@ -2199,6 +2213,13 @@ function get_msg() {
     $("#a_send").attr('href', 'https://wa.me/?text='+msg);
 }
 function make_msg(m_e,box,from) {
+    if (from==1) {
+        saveall=$("#btn_save_all").hasClass('btn-outline-success')
+        if (saveall==false) {
+            alert("Attenzione!\nC'è un salvataggio in sospeso. Prima di procedere con la creazione del messaggio è necessario salvare le modifiche in corso.")
+            return false
+        }
+    }
     testo="";load=""
     if (from==1) load="<i class='fas fa-spinner fa-spin'></i>"
     html=`
@@ -2214,9 +2235,9 @@ function make_msg(m_e,box,from) {
             </button>
         </a>
     `    
+    $("#modalinfo").modal('show')
     $("#body_content").html(html)
     if (from==0) {
-        $("#modalinfo").modal('show')
         $("#div_load_msg").empty()
     }
 
@@ -2251,8 +2272,8 @@ function make_msg(m_e,box,from) {
                 html+="Alle ore "
                 orario_incontro="";
                 luogo_incontro="";
-                if (infoa[0].orario_incontro && infoa[0].orario_incontro.length>0) orario_incontro=infoa[0].orario_incontro
-                if (infoa[0].luogo_incontro && infoa[0].luogo_incontro.length>0) luogo_incontro=infoa[0].luogo_incontro
+                if (infoa[0] && infoa[0].orario_incontro && infoa[0].orario_incontro.length>0) orario_incontro=infoa[0].orario_incontro
+                if (infoa[0] && infoa[0].luogo_incontro && infoa[0].luogo_incontro.length>0) luogo_incontro=infoa[0].luogo_incontro
                 html+="*"+orario_incontro+"*, _"+luogo_incontro+"_"
                 car1=$("#car1"+m_e+box).data('targa');car2=$("#car2"+m_e+box).data('targa');
                 if (car1) html+=", "+car1
@@ -2274,13 +2295,13 @@ function make_msg(m_e,box,from) {
                 
                 html+=resplav
                 ora_destinazione="";luogo_destinazione="";
-                if (infoa[0].ora_destinazione && infoa[0].ora_destinazione.length>0) ora_destinazione=infoa[0].ora_destinazione
-                if (infoa[0].luogo_destinazione && infoa[0].luogo_destinazione.length>0) luogo_destinazione=infoa[0].luogo_destinazione
+                if (infoa[0] && infoa[0].ora_destinazione && infoa[0].ora_destinazione.length>0) ora_destinazione=infoa[0].ora_destinazione
+                if (infoa[0] && infoa[0].luogo_destinazione && infoa[0].luogo_destinazione.length>0) luogo_destinazione=infoa[0].luogo_destinazione
                 
                 html+="\n*"+ora_destinazione+"*, *"+luogo_destinazione+"*"  
 
                 note="";
-                if (infoa[0].note && infoa[0].note.length>0) note=infoa[0].note
+                if (infoa[0] && infoa[0].note && infoa[0].note.length>0) note=infoa[0].note
 
                 
                 html+="\n\n"+note
