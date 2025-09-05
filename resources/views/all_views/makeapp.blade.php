@@ -168,11 +168,12 @@
                                     </h2>
                                     <div id="flush-collapseTwox" class="accordion-collapse show" >
                                         <div class="accordion-body" draggable="true" ondrop="dropHandlerPers(event)" ondragover="dragoverHandlerPers(event)" >
- >
+ 
                                             <!--testo persone!-->
                                             <input type='text' class='form-control input-sm' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
                                             <div id="div_lav" class='mt-2' style='max-height:auto;overflow-y:scroll'>
                                                 <div class="d-grid gap-1">
+                                                
                                                     <?php $elenco_lav=""; ?>
                                                     @foreach ($lavoratori as $lavoratore)
                                                         <?php
@@ -210,6 +211,7 @@
                                         </div>
                                     </div>
                                 </div>
+                                
                                 <!-- fine accordion persone !-->                            
                                 <!--accordion ditte !-->
                                 <div class="accordion-item noprint">
