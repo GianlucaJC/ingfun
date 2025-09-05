@@ -129,12 +129,29 @@ function dragstartHandlerLav(ev) {
   console.log("targetLavBox",ev.target.id)
 }
 
-///////// DRAG & DROP Lavoratori
+///////// DRAG & DROP Lavoratori (su side sx)
 function dragstartHandler(ev) {
   ev.dataTransfer.setData("text", ev.target.id);
   console.log("targetLav",ev.target.id)
 }
+function dragoverHandlerPers(ev) {
+  pers=ev.target.id
+  ev.preventDefault();
+}
+///drop lavoratori su side sx
+function dropHandlerPers(ev) {
+    ev.preventDefault();
+    from = ev.dataTransfer.getData("text");
+    lav=$("#"+from).data('idlav')
 
+    if (from.substr(0,3)=="box" || from.substr(0,3)=="rep" || from.substr(0,3)=="ass") {
+        if (!confirm("Attenzione!\nIl lavoratore selezionato sarà rimosso da tutti gli appalti.\n\Procedere?"))
+            return false;
+        removelavall(lav)    
+    }       
+    $("#spanlav"+lav).show(150)
+
+}
 
 ///DRAG & DROP da allbox a allbox tra lav
 function dragstartHandlerBox(ev) {
@@ -328,16 +345,24 @@ function dropHandlerAss(ev) {
   dest=ev.target.id
 
   //spostamento lavoratore da box lavoratori a box assenti
-  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="ass" || from.substr(0,3)=="rep") {
+  if (from.substr(0,6)=="btnlav" || from.substr(0,3)=="ass" || from.substr(0,3)=="rep" || from.substr(0,3)=="box") {
   
+
     idlav=$("#"+from).data('idlav')
+    console.log("idlav prima:",idlav)
+    if (from.substr(0,3)=="box") {
+        if (!confirm("Attenzione!\nIl lavoratore selezionato sarà rimosso da tutti gli appalti.\n\Procedere?"))
+            return false;
+        removelavall(idlav)    
+    }    
+    console.log("idlav dopo:",idlav)
     m_e=$("#"+dest).data('m_e')
     el=$("#"+from).data('el')
     console.log("assegnazioni per assenti - from",from,"dest",dest,"m_e",m_e)
 
     if (dest.substr(0,3)!='ass') return false
     $("#spanlav"+idlav).hide();
-
+    
     
     present=false
     check_self=false
@@ -345,11 +370,13 @@ function dropHandlerAss(ev) {
     if (check_self==false) {
         $(".ass"+m_e).each(function(){
             id_ref=$(this).data( "idlav")
-            if (id_ref==idlav) present=true
+            if (id_ref && idlav) {
+                if (id_ref==idlav) present=true
+            }
         })
     }
     if (present==true) {
-       // alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
+        //alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
         return false
     }
     console.log("idlav",idlav)
@@ -1565,11 +1592,47 @@ function accordion(m_e,box) {
     return html
 } 
 
+function removelavall(idlav) {
+    $(".box").each(function(){
+        id_ref_lav=$(this).data( "idlav")
+        if (id_ref_lav==idlav) {
+            m_E=$("#"+this.id).data('m_e')
+            boX=$("#"+this.id).data('box')
+            
+            for (elxx=0;elxx<elemBox;elxx++) {
+                refboxx="box"+m_E+boX+elxx
+                idlav1=$("#"+refboxx).data( "idlav")
+                if (idlav==idlav1) removelav(m_E,boX,elxx)
+            } 
+            
+        }
+    })    
+    
+    $(".rep").each(function(){
+        id_ref_lav=$(this).data( "idlav")
+        if (id_ref_lav==idlav) {
+            $("#"+this.id).data("idlav","")
+            $("#"+this.id).text("__________")
+            $("#"+this.id).removeClass('impegnato')
+            remove_impegno(this.id)        
+        }
+    })
+
+    $(".ass").each(function(){
+        id_ref_lav=$(this).data( "idlav")
+        if (id_ref_lav==idlav) {
+            $("#"+this.id).data("idlav","")
+            $("#"+this.id).text("__________")
+            $("#"+this.id).removeClass('impegnato')
+            remove_impegno(this.id)        
+        }        
+    })
+}
 function removelav(m_e,box,el) {
     refbox="box"+m_e+box+el
-    idlav=$("#"+refbox).data( "idlav")
     $("#"+refbox).removeClass('impegnato')
     remove_impegno(refbox)
+
     $("#"+refbox).first().html('Assegna')
     $("#"+refbox).removeData( "idlav", '' );
     setresp(m_e,box,el,0,1) //contestualmente elimina mezzo eventuale assegnato
@@ -1586,7 +1649,7 @@ function setresp(m_e,box,el,targa,from) {
     if( typeof setresp.resp == 'undefined' ) setresp.resp=[]
     resp=setresp.resp
  
-    idlav=$("#"+refbox).data( "idlav")
+    idlav_set=$("#"+refbox).data( "idlav")
     
     numbox_current=0
     $(".box"+m_e).each(function(){
@@ -1632,7 +1695,7 @@ function setresp(m_e,box,el,targa,from) {
     if (!resp[m_e]) resp[m_e]={}
     resp[m_e][ind]={}
     resp[m_e][ind].targa=targa
-    resp[m_e][ind].idlav=idlav
+    resp[m_e][ind].idlav=idlav_set
     if (from=="1") {
         $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     }
