@@ -1842,8 +1842,15 @@ function load_urgenze(resp) {
         id_servizio=resp[sca].id_servizio
         id_lavoratore=resp[sca].id_lavoratore
 
-        lav_urg_t=id_lavoratore
-        if (lavall[id_lavoratore]) lav_urg_t=lavall[id_lavoratore]
+        arrl=id_lavoratore.split(",")
+        lav_urg_t="";
+        for (x=0;x<arrl.length;x++) {
+            id_lu=arrl[x]
+            if (lav_urg_t.length>0) lav_urg_t+=", "
+            if (lavall[id_lu]) lav_urg_t+=lavall[id_lu]
+            else lav_urg_t+=id_lu
+        }
+
         servizi_urg_t=id_servizio
         if (servall[id_servizio]) servizi_urg_t=servall[id_servizio]
         ditta_urg_t=id_ditta
@@ -2043,7 +2050,7 @@ function urgenze(id_urg) {
     elenco_lav=$("#elenco_lav").val().split("|");
     lav_u=new Array()
     html=`
-        <select class="form-select select2" name="lav_urg" id="lav_urg" required>
+        <select class="form-select select2" name="lav_urg[]" id="lav_urg" multiple required>
             <option value=''>Select...</option>
         `
         
@@ -2104,7 +2111,8 @@ function urgenze(id_urg) {
         id_servizio=resp[indice_resp].id_servizio
         $("#servizi_urg").val(id_servizio)
         id_lavoratore=resp[indice_resp].id_lavoratore
-        $("#lav_urg").val(id_lavoratore)
+        arrl=id_lavoratore.split(",")
+        $("#lav_urg").val(arrl);
         descr_urgenza=resp[indice_resp].descrizione
         $("#descr_urgenza").val(descr_urgenza)
     }
