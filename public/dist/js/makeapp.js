@@ -9,6 +9,7 @@ var _m_e="?";var _box="?";var _el="?"
 var lavall=new Array();
 var servall=new Array();
 var dittall=new Array();
+var alias_mezzi=new Array();
 
 
  $(function () {
@@ -37,6 +38,14 @@ var dittall=new Array();
         ditt=alld[sc].split(";")[1]    
         dittall[id_d]=ditt;
     }
+
+    all_alias_m=$("#all_alias_m").val().split("|");
+    for (sc=0;sc<all_alias_m.length;sc++) {
+        alias=all_alias_m[sc].split(";")[0]
+        ta=all_alias_m[sc].split(";")[1]    
+        alias_mezzi[ta]=alias;
+    }
+
 
     $('body').addClass("sidebar-collapse");
     $('#cerca_ditta').on("change keyup paste", function(){
@@ -2339,8 +2348,11 @@ function make_msg(m_e,box,from) {
                 if (infoa[0] && infoa[0].luogo_incontro && infoa[0].luogo_incontro.length>0) luogo_incontro=infoa[0].luogo_incontro
                 html+="*"+orario_incontro+"*, _"+luogo_incontro+"_"
                 car1=$("#car1"+m_e+box).data('targa');car2=$("#car2"+m_e+box).data('targa');
-                if (car1) html+=", "+car1
-                if (car2) html+=", "+car2
+                al_m1="";al_m2="";
+                if (alias_mezzi[car1]) al_m1=alias_mezzi[car1]
+                if (alias_mezzi[car2]) al_m2=alias_mezzi[car2]
+                if (car1) html+=", "+car1+"("+al_m1+")"
+                if (car2) html+=", "+car2+"("+al_m2+")"
 
                 html+="\n\n"
 

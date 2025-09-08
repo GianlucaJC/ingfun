@@ -13,8 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::table('ditte', function($table) {
-            $table->string('alias',20)->after('denominazione')->nullable();
+        Schema::table('parco_scheda_mezzo', function($table) {
+            $table->string('alias',20)->after('targa')->nullable();
         });
     }
 

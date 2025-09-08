@@ -262,10 +262,15 @@
                                                 <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo' style='width:110px'>
                                                 <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
                                                     <div class="d-grid gap-1">
-                                                        <?php $infomezzi=""; ?>
+                                                        <?php 
+                                                            $infomezzi="";
+                                                            $all_alias_m="";
+                                                        ?>
                                                         @foreach($inventario as $flotta)
                                                             <?php
                                                                 $mezzo=$flotta->targa;
+                                                                $aliasm=$flotta->alias;
+                                                                  
                                                                 $targa=$flotta->targa;
                                                                 $marca="";
                                                                 if (isset($marche[$flotta->marca])) {
@@ -277,6 +282,8 @@
                                                                     $modello=$modelli[$flotta->modello];
                                                                     $mezzo.=" - ".$modello;
                                                                 }
+                                                                if (strlen($all_alias_m)!=0) $all_alias_m.="|";
+                                                                $all_alias_m.=$aliasm.";".$targa;
                                                             ?>        
 
 
@@ -294,7 +301,8 @@
                                                                 $infomezzi.="$targa-$marca-$modello";
                                                             ?>
                                                         @endforeach	
-                                                                                                                                            
+
+                                                        <input type='hidden' name='all_alias_m' id='all_alias_m' value='{{$all_alias_m}}'>                                                            
 
                                                     </div>
                                                 </div>       

@@ -55,7 +55,7 @@
 				$dis="";
 				if ($id_mezzo!="0") $dis="disabled";
 			?>
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<div class="form-floating">
 					<input class="form-control"  id="targa" name="targa" type="text" placeholder="ID"  value="{{$info_mezzo[0]->targa ?? ''}}" required maxlength=30 {{$dis}}  />
 					<label for="targa">TARGA*</label>
@@ -64,12 +64,18 @@
 			
 			<!-- esiste un campo numero_interno nel DB ma mi è stato chiesto di far visualizzare l'ID assegnato automaticamente
 			!-->
-			<div class="col-md-6">
+			<div class="col-md-4">
 				<div class="form-floating">
 					<input class="form-control" id="numero_interno" name='numero_interno' type="text" disabled value="{{$info_mezzo[0]->id ?? ''}}" />
 					<label for="numero_interno">Numero interno</label>
 				</div>
 			</div>			
+			<div class="col-md-4">
+				<div class="form-floating">
+					<input class="form-control" id="alias" name='alias' type="text"  value="{{$info_mezzo[0]->alias ?? ''}}" />
+					<label for="alias">Alias</label>
+				</div>
+			</div>					
 		</div>
 		
 		<div class='row mb-3'>
