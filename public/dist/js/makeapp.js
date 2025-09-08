@@ -595,6 +595,10 @@ function load_appalti(id_giorno_appalto) {
                     </div> 
                     <div id='repMb'>	
                     </div>             
+                    <div id='repPa'>	
+                    </div>  
+                    <div id='repPb'>	
+                    </div>                                          
                 </div>
             </div>    
             <div class="col-md-6">    
@@ -612,13 +616,12 @@ function load_appalti(id_giorno_appalto) {
     $("#div_side").html(html) //in sidebar.blade
  
     html=""
-    for (sc=1;sc<=2;sc++) {
+    for (sc=1;sc<=4;sc++) {
         html=inirep(sc)
         if (sc==1) me="Ma"
         if (sc==2) me="Mb"
         if (sc==3) me="Pa"
         if (sc==4) me="Pb"
-
         $('#rep'+me).html(html)
     }    
     
@@ -2149,6 +2152,8 @@ function inirep(sc) {
     
     if (sc==1) {m_e="Ma";txt_rep="Mattino"}
     if (sc==2) {m_e="Mb";txt_rep="Pomeriggio"}
+    if (sc==3) {m_e="Pa";txt_rep="Primo Notturno"}
+    if (sc==4) {m_e="Pb";txt_rep="Secondo Notturno"}
     /*
     if (sc==3) {m_e="Pa";txt_rep="Primo Notturno"}
     if (sc==4) {m_e="Pb";txt_rep="Secondo Notturno"}
@@ -2164,12 +2169,14 @@ function inirep(sc) {
             </div>
         `    
     }
+    to=elemRep
+    if (sc==3 || sc==4) to=1
     html+=`
         <div id='div_rep`+m_e+`' class="card">
     
             <div class="card-body"><font size='2px'><b>`+txt_rep+`</b></font>
                 <div id='boxrep`+m_e+`' class="list-group"  ondrop="dropHandlerRep(event)"   ondragover="dragoverHandlerRep(event)" draggable="true" ondragstart="dragstartHandlerRep(event)">`
-                for (el=0;el<elemRep;el++) {
+                for (el=0;el<to;el++) {
                     html+=`    
 
 
