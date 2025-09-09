@@ -58,6 +58,7 @@
 							<th>Targa</th>
 							<th>Marca</th>
 							<th>Modello</th>
+							<th>Alias</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -91,7 +92,9 @@
 										echo $modelli[$flotta->modello];
 								?>
 								</td>
-								
+								<td>
+									{{$flotta->alias}}
+								</td>								
 								<td>
 									@if ($flotta->dele=="0") 
 
