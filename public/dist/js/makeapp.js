@@ -546,7 +546,7 @@ function dropHandlerDitta(ev) {
 
   iddit=$("#"+from).data("iddit")
   //if (ditta.length>20) ditta=ditta.substr(0,16)+"..."
-  html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+ditta+"</span>"
+  html="<span title='"+d_origin+"'  style='width:300px;height:40px;white-space:collapse;font-size:1.3em'><i class='fa-solid fa-location-dot'></i> "+ditta+"</span>"
   $("#"+dest).html(html)
   $("#"+dest).removeClass('bg-secondary').addClass('bg-success')
   $("#"+dest).data("iddit",iddit)
@@ -1526,7 +1526,7 @@ function initditte(m_e,box) {
     html="";
     html+=`
         <span class="badge rounded-pill bg-secondary mr-2 mt-2 p-2 ditte" 
-            id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:100%;height:40px;white-space:collapse;font-size:1.3em'>
+            id='ditta`+m_e+box+`' data-m_e='`+m_e+`' data-box='`+box+`'  ondragover="dragoverHandlerDitta(event)" ondrop="dropHandlerDitta(event)"  data-placement="top" onclick='removeditta(this.id)' style='width:300px;height:40px;white-space:collapse;font-size:1.3em'>
             <i class="fa-solid fa-location-dot"></i>
             
         </span>
@@ -2475,6 +2475,8 @@ function generatePDF() {
         $("#btn_print").prop('disabled',false)
         $("#btn_print").text('Stampa videata')
         $("#btn_print").removeClass('btn-success').addClass('btn-outline-success')
+        t1 = setTimeout(function() {	$("#div_print").empty();} ,1000)
+        
     }, 800)
 
   }
