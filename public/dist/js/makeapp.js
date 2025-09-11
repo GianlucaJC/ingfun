@@ -2296,8 +2296,8 @@ function setZoom(value,from) {
 function get_msg() {
     msg=$("#txt_msg").val()
     msg=msg.replace(/\n/g,'%0A')
-    
-    $("#a_send").attr('href', 'https://wa.me/?text='+msg);
+    $("#a_send").attr('href', 'whatsapp://send?text='+msg);
+    $("#modalinfo").modal('hide')
 }
 function make_msg(m_e,box,from) {
     if (from==1) {
@@ -2316,7 +2316,7 @@ function make_msg(m_e,box,from) {
             <textarea class="form-control" id="txt_msg" rows="10"></textarea>
         </div>
         <hr>
-        <a aria-label="Send Appalto" id='a_send' href="#" target="_blank">
+        <a aria-label="Send Appalto" id='a_send' href="#">
             <button type="button" class="btn btn-success btn-sm" onclick='get_msg()'>
                 <i class="fab fa-whatsapp"></i> Invia
             </button>
