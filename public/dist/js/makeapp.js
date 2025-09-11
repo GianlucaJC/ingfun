@@ -937,7 +937,9 @@ function validation_form() {
         if (form.checkValidity()) {
             event.preventDefault()
             event.stopPropagation()
-            save_appalto()
+            servizi=$("#servizi_svolti").val();
+            if (servizi.length==0) alert("Definire almento un servizio!")
+            else save_appalto()
         }
 
       }, false)
