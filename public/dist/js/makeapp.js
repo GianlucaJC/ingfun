@@ -546,7 +546,7 @@ function dropHandlerDitta(ev) {
 
   iddit=$("#"+from).data("iddit")
   //if (ditta.length>20) ditta=ditta.substr(0,16)+"..."
-  html="<span title='"+d_origin+"'  style='width:300px;height:40px;white-space:collapse;font-size:1.3em'><i class='fa-solid fa-location-dot'></i> "+ditta+"</span>"
+  html="<span title='"+d_origin+"'><i class='fa-solid fa-location-dot'></i> "+ditta+"</span>"
   $("#"+dest).html(html)
   $("#"+dest).removeClass('bg-secondary').addClass('bg-success')
   $("#"+dest).data("iddit",iddit)
