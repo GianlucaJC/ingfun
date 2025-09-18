@@ -288,14 +288,15 @@
                                                             ?>        
 
 
-                                                        <div style='line-height:1.2;margin-right:1rem' id='spanmez' class='mb-1'><font size='1rem'>
-                                                            <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover allmezzi" data-nome='{{$mezzo}}' id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
+                                                        <div style='line-height:1.2;margin-right:1rem' id='spanmez' class='allmezzi' data-nome='{{$mezzo}}'><font size='1rem'>
+                                                            <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
                                                                 data-targa='{{$flotta->targa}}' data-mezzo='{{$mezzo}}'
                                                                 draggable="true" ondragstart="dragstartHandlerMezzi(event)"  >
                                                             {{$mezzo}}
                                                             </a>
                                                             </font>
-                                                        </div>                                                             
+                                                        </div>     
+                                                                                                               
                                                             <?php
                                                                 if (strlen($infomezzi)!=0) $infomezzi.=";";
 
