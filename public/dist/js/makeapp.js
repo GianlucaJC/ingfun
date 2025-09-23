@@ -2510,8 +2510,11 @@ function generatePDF() {
 
 
         html = $("#div_side").html();
+        html="<div style='width: 50%;padding: 20px;'>"+html+"</div>"
         $("#div_print").append(html)
+
         html=$("#div_lista_urgenze").html()
+        html="<div style='width: 50%;padding: 20px;'>"+html+"</div>"
         $("#div_print").append(html)
         /*
             div_print: utilizzato dalla stampa

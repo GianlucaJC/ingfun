@@ -365,7 +365,7 @@
                                     </tbody>
                                 </table>  
 
-                                <div id='div_print'>
+                                <div id='div_print' style='display: flex;justify-content: space-between;'>
                                     <!-- 
                                         div utilizzato dalla stampa
                                         praticamente viene clonato <aside id='div_side'>
@@ -382,9 +382,9 @@
                                 </a>    
                             </div>      
                                  
-                                <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze'>
-                                    
-                                </ul>             
+                            <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze'>
+                                
+                            </ul>             
    
                                 
 
