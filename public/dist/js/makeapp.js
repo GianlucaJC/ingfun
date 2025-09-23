@@ -2168,6 +2168,9 @@ function inirep(sc) {
         html+=`
             <div class="alert alert-light" role="alert">
                 Reperibilità
+                    <a class="link-success" style="color: #22391478 !important;" href='#' onclick="msg_rep()"><i class="fab fa-whatsapp"></i>  
+                        Genera
+                    </a>
             </div>
         `    
     }
@@ -2301,6 +2304,59 @@ function get_msg() {
     $("#a_send").attr('href', 'whatsapp://send?text='+msg);
     $("#modalinfo").modal('hide')
 }
+
+function msg_rep() {
+    saveall=$("#btn_save_all").hasClass('btn-outline-success')
+    if (saveall==false) {
+        alert("Attenzione!\nC'è un salvataggio in sospeso. Prima di procedere con la creazione del messaggio è necessario salvare le modifiche in corso.")
+        return false
+    }
+    testo="";load=""
+    load="<i class='fas fa-spinner fa-spin'></i>"
+    html=`
+        <div id='div_load_msg'>`+load+`</div>
+        <div class="mb-3">
+            <label for="txt_msg" class="form-label">Testo del messaggio</label>
+            <textarea class="form-control" id="txt_msg" rows="10"></textarea>
+        </div>
+        <hr>
+        <a aria-label="Send Appalto" id='a_send' href="#">
+            <button type="button" class="btn btn-success btn-sm" onclick='get_msg()'>
+                <i class="fab fa-whatsapp"></i> Invia
+            </button>
+        </a>
+    `        
+    $("#modalinfo").modal('show')
+    $("#body_content").html(html)
+    html=""
+
+    for (sc=1;sc<=4;sc++) {
+        nomi_rep=""
+        if (sc==1) me="Ma"
+        if (sc==2) me="Mb"
+        if (sc==3) me="Pa"
+        if (sc==4) me="Pb"
+        $(".rep"+me).each(function(){
+            id_ref=$(this).data( "idlav")
+            if (id_ref) {
+                if (lavall[id_ref]) lav_t=lavall[id_ref]
+                if (lav_t.trim()!="0") nomi_rep+=lav_t+"\n"
+            }
+        })
+        if (nomi_rep.length!=0) {
+            if (sc==1) html+="Mattina a disposizione:\n"
+            if (sc==2) html+="Pomeriggio a disposizione:\n"
+            if (sc==3) html+="Primo turno notturno(18:00-24:00):\n"
+            if (sc==4) html+="Secondo turno notturno(24:00-6:00 ):\n"
+            html+=nomi_rep+"\n"
+        }
+    }
+    if (html.length>0) html+="Fine Squadre"
+    $("#txt_msg").val(html)
+    $("#div_load_msg").empty()
+
+}
+
 function make_msg(m_e,box,from) {
     if (from==1) {
         saveall=$("#btn_save_all").hasClass('btn-outline-success')
