@@ -2504,10 +2504,15 @@ function generatePDF() {
     $("#btn_print").text('Preparazione PDF di stampa...')
 
     timer = setTimeout(function() {	
+        $("#div_urg").hide()
+        $("#div_lista_urgenze").hide()
         $("#side_list").show()
-        originalDiv = document.getElementById('div_side');
-        newDiv = document.getElementById('div_print');
-        newDiv.innerHTML = originalDiv.innerHTML;
+
+
+        html = $("#div_side").html();
+        $("#div_print").append(html)
+        html=$("#div_lista_urgenze").html()
+        $("#div_print").append(html)
         /*
             div_print: utilizzato dalla stampa
             praticamente viene clonato <aside id='div_side'>
@@ -2533,7 +2538,11 @@ function generatePDF() {
         $("#btn_print").prop('disabled',false)
         $("#btn_print").text('Stampa videata')
         $("#btn_print").removeClass('btn-success').addClass('btn-outline-success')
-        t1 = setTimeout(function() {	$("#div_print").empty();} ,1000)
+        t1 = setTimeout(function() {	
+            $("#div_urg").show()
+            $("#div_lista_urgenze").show()
+            $("#div_print").empty();
+        } ,1000)
         
     }, 800)
 
