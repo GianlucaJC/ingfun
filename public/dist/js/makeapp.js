@@ -1557,7 +1557,7 @@ function accordion(m_e,box) {
     <td style='padding:10px' id='tdbox`+m_e+box+`'>
     
         <div class="d-grid gap-2 mb-2">
-            <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)" >Info</button>
+            <button id="btnbox`+m_e+box+`" type="button" class="btn btn-`+outmp+`info noprint"  data-target="#modalinfo" data-whatever="@mdo" onclick="detail_appalto('`+m_e+`',`+box+`)" >Info</button>
             <div class="panel-footer text-center">
                 <font size='6px'>
                     <span id='infoapp`+m_e+box+`' class="badge rounded-pill bg-secondary pull-left p-2">
@@ -1565,7 +1565,7 @@ function accordion(m_e,box) {
                         <i class="ml-3 fa-solid fa-clock"></i>
                     </span>    
                 </font>    
-                <span class="pull-right">
+                <span class="pull-right noprint">
 
                     <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> Option
                     </a><hr>
@@ -2534,20 +2534,22 @@ function generatePDF() {
         $(".noprint").hide();
         // Define options for the PDF
         const options = {
-        margin: 1,
-        filename: 'export_appalti.pdf',
-        image: { type: 'jpeg', quality: 0.98 },
-        html2canvas: { scale: 2 },
-        jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
+            margin: 1,
+            filename: 'export_appalti.pdf',
+            image: { type: 'jpeg', quality: 0.98 },
+            html2canvas: { scale: 2 },
+            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
         };
 
         // Use the library to generate and save the PDF
         html2pdf().set(options).from(element).save();
-        $(".noprint").show();
-        $("#btn_print").prop('disabled',false)
-        $("#btn_print").text('Stampa videata')
-        $("#btn_print").removeClass('btn-success').addClass('btn-outline-success')
+        
         t1 = setTimeout(function() {	
+            $("#btn_print").prop('disabled',false)
+            $("#btn_print").text('Stampa videata')
+            $("#btn_print").removeClass('btn-success').addClass('btn-outline-success')
+
+            $(".noprint").show();
             $("#div_urg").show()
             $("#div_lista_urgenze").show()
             $("#div_print").empty();
