@@ -2503,6 +2503,12 @@ function generatePDF() {
     $("#btn_print").prop('disabled',true)
     $("#btn_print").text('Preparazione PDF di stampa...')
 
+    $(".box").each(function(){
+        id_ref=$(this).data( "idlav")
+        console.log("id_ref all:",id_ref)
+        if (!id_ref) $(this).hide()
+    })    
+
     timer = setTimeout(function() {	
         $("#div_urg").hide()
         $("#div_lista_urgenze").hide()
@@ -2545,7 +2551,11 @@ function generatePDF() {
             $("#div_urg").show()
             $("#div_lista_urgenze").show()
             $("#div_print").empty();
+            $(".box").each(function(){
+                $(this).show()
+            })            
         } ,1000)
+
         
     }, 800)
 
