@@ -47,6 +47,9 @@
     padding-right: 18px;
     }
  
+    .clprint {
+        font-size:1.3rem;
+    }
 </style>
 
 @section('space_top')

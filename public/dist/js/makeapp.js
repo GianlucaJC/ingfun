@@ -2168,7 +2168,7 @@ function inirep(sc) {
         html+=`
             <div class="alert alert-light" role="alert">
                 Reperibilità
-                    <a class="link-success" style="color: #22391478 !important;" href='#' onclick="msg_rep()"><i class="fab fa-whatsapp"></i>  
+                    <a class="link-success noprint" style="color: #22391478 !important;" href='#' onclick="msg_rep()"><i class="fab fa-whatsapp"></i>  
                         Genera
                     </a>
             </div>
@@ -2186,7 +2186,7 @@ function inirep(sc) {
 
 
                     <div style='line-height:1.6;' id='sparep' >
-                        <font size='1rem'>
+                        <font size='1rem' class='repview' >
                             <a href="javascript:void(0)" class="rep rep`+m_e+`" id='rep`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_rep('`+m_e+`',`+el+`)">
                                 __________
                             </a>
@@ -2236,7 +2236,7 @@ function iniass(sc) {
                 for (el=0;el<elemAss;el++) {
                     html+=`   
                         <div style='line-height:1.6;' id='spanass'  >
-                            <font size='1rem'>
+                            <font size='1rem' class='assview'>
                                 <a href="javascript:void(0)" class="ass ass`+m_e+`" id='ass`+m_e+el+`' data-m_e='`+m_e+`' data-el=`+el+` aria-current="true" onclick="action_ass('`+m_e+`',`+el+`)">
                                     __________
                                 </a>
@@ -2510,6 +2510,8 @@ function generatePDF() {
     })    
 
     timer = setTimeout(function() {	
+        $(".repview").removeClass('clprint').addClass('clprint')
+        $(".assview").removeClass('clprint').addClass('clprint')
         $("#div_urg").hide()
         $("#div_lista_urgenze").hide()
         $("#side_list").show()
@@ -2553,6 +2555,8 @@ function generatePDF() {
             $("#div_urg").show()
             $("#div_lista_urgenze").show()
             $("#div_print").empty();
+            $(".repview").removeClass('clprint')
+            $(".assview").removeClass('clprint')
             $(".box").each(function(){
                 $(this).show()
             })            
