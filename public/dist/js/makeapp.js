@@ -2509,6 +2509,17 @@ function generatePDF() {
         if (!id_ref) $(this).hide()
     })    
 
+    $(".rep, .ass").each(function(){
+        $(this).removeClass('noprint')
+    })
+    $(".rep, .ass").each(function(){
+        id_ref=$(this).data( "idlav")
+        if (!id_ref) {
+            $(this).addClass('noprint')
+        }
+    })
+
+
     timer = setTimeout(function() {	
         $(".repview").removeClass('clprint').addClass('clprint')
         $(".assview").removeClass('clprint').addClass('clprint')
