@@ -1089,12 +1089,47 @@ public function __construct()
 			  ->update(['dele' => 1]);			
 		}		
 		
-		$all_appalti=appaltinew::select('appaltinew.id','appaltinew.dele','appaltinew.data_appalto')
+		$all_appalti_query=appaltinew::select('appaltinew.id','appaltinew.dele','appaltinew.data_appalto')
 		->when($view_dele=="0", function ($all_appalti) {
 			return $all_appalti->where('appaltinew.dele', "=","0");
 		})
 		->orderByDesc('appaltinew.id')	
 		->get();
+
+		
+
+		$all_appalti = $all_appalti_query->map(function ($appalto) {
+			// numero di persone impiegate totale
+			$appalto->persone_impiegate = appaltinew_info::where('id_appalto', $appalto->id)
+				->sum('numero_persone');
+
+			// numero mezzi impiegati
+			$targhe1 = appaltinew_altro::where('idapp', $appalto->id)->whereNotNull('targa1')->where('targa1', '!=', '')->pluck('targa1');
+			$targhe2 = appaltinew_altro::where('idapp', $appalto->id)->whereNotNull('targa2')->where('targa2', '!=', '')->pluck('targa2');
+
+			$targhe_unite = $targhe1->merge($targhe2);
+			$targhe_univoche = $targhe_unite->unique();
+
+			$appalto->mezzi_impiegati = $targhe_univoche->count();
+			/*
+			foreach($mezzi1 as $me1) {
+				if (!in_array($me1->targa1,$ar_m)) $ar_m[]=$me1->targa1;
+			}
+			*/
+
+			// numero di appalti valorizzati
+			$appalto->appalti_valorizzati = appaltinew_info::where('id_appalto', $appalto->id)
+				->where(function ($query) {
+					$query->whereNotNull('luogo_incontro')->where('luogo_incontro', '!=', '')
+						  ->orWhereNotNull('orario_incontro')->where('orario_incontro', '!=', '');
+				})
+				->count();
+
+			// numero urgenze
+			$appalto->urgenze = appaltinew_urgenze::where('idapp', $appalto->id)->count();
+
+			return $appalto;
+		});
 
 
 		return view('all_views/listnewappalti',compact('all_appalti','view_dele','data_app'));

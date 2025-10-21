@@ -9,6 +9,7 @@ $(document).ready( function () {
 		buttons: [
 			'excel', 'pdf'
 		],		
+		stateSave: true,
         initComplete: function () {
             // Apply the search
             this.api()
@@ -34,6 +35,13 @@ $(document).ready( function () {
 		
     });
 	
+	// Dopo il ricaricamento, vai alla pagina salvata
+	var savedPage = parseInt($('#page').val(), 10);
+	if (!isNaN(savedPage) && savedPage > 0) {
+		table.page(savedPage).draw('page');
+	}
+
+
 	$('#tipo_pagamento').select2();
 	refr=$("#refr").val()
 	//serve per far aprire automaticamente la scheda della ditta dopo un //refresh dovuto all'invio di un allegato
@@ -259,15 +267,21 @@ function edit_elem(id_ditta) {
 }
 
 function dele_element(value) {
-	if(!confirm('Sicuri di eliminare l\'elemento?')) 
-		event.preventDefault() 
-	else 
-		$('#dele_contr').val(value)	
+	if(confirm('Sicuri di eliminare l\'elemento?')) {
+		var table = $('#tbl_list_ditte').DataTable();
+		var currentPage = table.page();
+		$('#page').val(currentPage);
+		$('#dele_contr').val(value);
+		$('#frm_ditte').submit();
+	}
 }
 
 function restore_element(value) {
-	if(!confirm('Sicuri di ripristinare l\'elemento?')) 
-		event.preventDefault() 
-	else 
-		$('#restore_contr').val(value)	
+	if(confirm('Sicuri di ripristinare l\'elemento?')) {
+		var table = $('#tbl_list_ditte').DataTable();
+		var currentPage = table.page();
+		$('#page').val(currentPage);
+		$('#restore_contr').val(value);
+		$('#frm_ditte').submit();
+	}
 }

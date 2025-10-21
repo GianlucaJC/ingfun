@@ -10,11 +10,11 @@ $(document).ready( function () {
 		}	
     });		
     $('#tbl_list_pers').DataTable({
-		pageLength: 10,
-		lengthMenu: [10, 15, 20, 50, 100, 200, 500],
+		"lengthMenu": [[10, 25, 50, 100, -1], [10, 25, 50, 100, "Tutti"]],
+		"pageLength": 25, // Imposta il valore predefinito
 
 		pagingType: 'full_numbers',
-		dom: 'Bfrtip',
+		dom: 'Bflrtip', // Aggiunto 'l' per mostrare il menu di selezione
 		buttons: [
 			'excel', 'pdf'
 		],		

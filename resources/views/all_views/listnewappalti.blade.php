@@ -85,7 +85,13 @@
 						<tr>
 							<th style='min-width:220px'>Operazioni</th>
 							<th style='max-width:40px'>ID</th>
+
+							
 							<th>Data</th>
+							<th>Persone impiegate</th>
+							<th>Mezzi impiegati</th>
+							<th>Appalti valorizzati</th>
+							<th>Urgenze</th>
 						</tr>
 					</thead>
 					<tbody>
@@ -124,6 +130,18 @@
 							<td>
 								{{$appalti->data_appalto}}
 							</td>
+							<td>
+								{{$appalti->persone_impiegate}}
+							</td>
+							<td>
+								{{$appalti->mezzi_impiegati}}
+							</td>
+							<td>
+								{{$appalti->appalti_valorizzati}}
+							</td>
+							<td>
+								{{$appalti->urgenze}}
+							</td>
 
 						</tr>
 					@endforeach
@@ -133,6 +151,10 @@
 							<th style='min-width:220px'>Operazioni</th>
 							<th style='max-width:40px'>ID</th>
 							<th>Data</th>
+							<th>Persone impiegate</th>
+							<th>Mezzi impiegati</th>
+							<th>Appalti valorizzati</th>
+							<th>Urgenze</th>
 						</tr>
 					</tfoot>					
 				</table>
@@ -237,6 +259,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.003"></script>
+	<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.004"></script>
 
 @endsection

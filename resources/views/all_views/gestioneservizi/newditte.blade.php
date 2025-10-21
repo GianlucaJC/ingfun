@@ -235,6 +235,7 @@
 
 			<div id='div_doc'></div>
 
+			<input type="hidden" id="page" name="page" value="{{ request()->input('page', 0) }}">
 
 
 			<div class="row mb-3 mt-5">
