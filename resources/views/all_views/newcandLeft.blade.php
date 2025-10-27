@@ -35,7 +35,7 @@
 		</div>				
 		<div class="col-md-9">
 			<div class="form-floating">
-				<input class="form-control" id="indirizzo" name='indirizzo' type="text" placeholder="Via/Piazza" required maxlength=150 value="{{ $candidati[0]['indirizzo']}}"  />
+				<input class="form-control" id="indirizzo" name='indirizzo' type="text" placeholder="Via/Piazza"  maxlength=150 value="{{ $candidati[0]['indirizzo']}}"  />
 				<label for="indirizzo">Indirizzo*</label>
 			</div>
 		</div>
@@ -45,7 +45,7 @@
 		<div class="row mb-3">
 			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-select" id="regione" aria-label="Regione" name='regione' onchange='popola_province(this.value)' placeholder="Regione" required>
+					<select class="form-select" id="regione" aria-label="Regione" name='regione' onchange='popola_province(this.value)' placeholder="Regione" >
 						<option value=''>Select...</option>
 						<?php
 
@@ -63,7 +63,7 @@
 			</div>
 			<div class="col-md-6">
 				<div class="form-floating mb-3 mb-md-0">
-					<select class="form-control" name="provincia" id="provincia" onchange="popola_comuni(this.value,'0')" aria-label="Provincia" placeholder="Provincia" required>
+					<select class="form-control" name="provincia" id="provincia" onchange="popola_comuni(this.value,'0')" aria-label="Provincia" placeholder="Provincia" >
 					<option value=''>Select...</option>
 					<?php
 						/*
@@ -89,12 +89,12 @@
 		<div class="col-md-6">
 			<div class="form-floating mb-3 mb-md-0">
 			<!--
-				<select class="form-select" name="comune" id="comune"  onchange='popola_cap(this.value)' placeholder="Comune" required aria-label="Comune" required >
+				<select class="form-select" name="comune" id="comune"  onchange='popola_cap(this.value)' placeholder="Comune"  aria-label="Comune"  >
 				<option value=''>Select...</option>
 				</select>
 			!-->
 			
-				<select class="form-control" name="comune" id="comune" aria-label="Comune" required  onchange='popola_cap_pro(this.value)'>
+				<select class="form-control" name="comune" id="comune" aria-label="Comune"   onchange='popola_cap_pro(this.value)'>
 					<option value=''>Select...</option>
 					<option value="--|--"
 					<?php if ($candidati[0]['comune']=="--|--") echo " selected ";?>
@@ -121,14 +121,14 @@
 
 		<div class="col-md-3">
 			<div class="form-floating">
-				<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P." required  maxlength=5 value="{{ $candidati[0]['cap'] }}"  />
+				<input class="form-control" id="cap" name='cap' type="text" placeholder="C.A.P."   maxlength=5 value="{{ $candidati[0]['cap'] }}"  />
 				<label for="cap">Cap*</label>
 			</div>
 		</div>
 		
 		<div class="col-md-3">
 			<div class="form-floating">
-				<input class="form-control" id="provincia" name='provincia' type="text" placeholder="Provincia" required  maxlength=10 value="{{ $candidati[0]['provincia'] }}"  />
+				<input class="form-control" id="provincia" name='provincia' type="text" placeholder="Provincia"   maxlength=10 value="{{ $candidati[0]['provincia'] }}"  />
 				<label for="provincia">Provincia*</label>
 			</div>
 		</div>
@@ -149,7 +149,7 @@
 
 		<div class="col-md-6">
 			<div class="form-floating">
-				<input class="form-control" id="datanasc" name='datanasc' type="date" placeholder="Nato il" required value="{{ $candidati[0]['datanasc']}}"  />
+				<input class="form-control" id="datanasc" name='datanasc' type="date" placeholder="Nato il"  value="{{ $candidati[0]['datanasc']}}"  />
 				<label for="datanasc">Data di nascita*</label>
 			</div>
 		</div>
@@ -160,7 +160,7 @@
 	<div class="row mb-3">
 		<div class="col-md-4">
 			<div class="form-floating mb-3 mb-md-0">
-				<select class="form-select" id="nazione" aria-label="Nazione" name='nazione' onchange='check_nazione(this.value)' placeholder="Nazione" required>
+				<select class="form-select" id="nazione" aria-label="Nazione" name='nazione' onchange='check_nazione(this.value)' placeholder="Nazione" >
 					<option value=''>Select...</option>
 					<?php
 
@@ -179,7 +179,7 @@
 	
 		<div class="col-md-4">
 			<div class="form-floating mb-3 mb-md-0">
-				<select class="form-control infonasc" name="comunenasc" id="comunenasc" aria-label="Comune nascita" required  onchange="popola_pronasc(this.value)">
+				<select class="form-control infonasc" name="comunenasc" id="comunenasc" aria-label="Comune nascita"   onchange="popola_pronasc(this.value)">
 					<option value=''>Select...</option>
 					<option value="--|--"
 					<?php if ($candidati[0]['comunenasc']=="--|--") echo " selected ";?>
@@ -205,7 +205,7 @@
 
 		<div class="col-md-4">
 			<div class="form-floating">
-				<input class="form-control infonasc" id="pro_nasc" name='pro_nasc' type="text" placeholder="Provincia" required maxlength=10 value="{{ $candidati[0]['pro_nasc']}}"  />
+				<input class="form-control infonasc" id="pro_nasc" name='pro_nasc' type="text" placeholder="Provincia"  maxlength=10 value="{{ $candidati[0]['pro_nasc']}}"  />
 				<label for="pro_nasc">Provincia di Nascita*</label>
 			</div>
 		</div>
@@ -215,14 +215,14 @@
 	<div class="row mb-3">
 		<div class="col-md-6">
 			<div class="form-floating">
-				<input class="form-control" id="email" name='email' type="email" placeholder="Email" required maxlength=150 value="{{ $candidati[0]['email']}}" onkeyup="this.value = this.value.toLowerCase();" />
+				<input class="form-control" id="email" name='email' type="email" placeholder="Email"  maxlength=150 value="{{ $candidati[0]['email']}}" onkeyup="this.value = this.value.toLowerCase();" />
 				<label for="email">Email Privata*</label>
 			</div>
 		</div>
 
 		<div class="col-md-6">
 			<div class="form-floating">
-				<input class="form-control" id="telefono" name='telefono' type="text" placeholder="Telefono" required maxlength=20 value="{{ $candidati[0]['telefono']}}"  />
+				<input class="form-control" id="telefono" name='telefono' type="text" placeholder="Telefono"  maxlength=20 value="{{ $candidati[0]['telefono']}}"  />
 				<label for="telefono">Telefono privato*</label>
 			</div>
 		</div>

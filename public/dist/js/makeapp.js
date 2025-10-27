@@ -2424,8 +2424,12 @@ function make_msg(m_e,box,from) {
                 al_m1="";al_m2="";
                 if (alias_mezzi[car1]) al_m1=alias_mezzi[car1]
                 if (alias_mezzi[car2]) al_m2=alias_mezzi[car2]
+                /*
                 if (car1) html+=", "+car1+"("+al_m1+")"
                 if (car2) html+=", "+car2+"("+al_m2+")"
+                */
+                if (car1) html+=", "+al_m1
+                if (car2) html+=", "+al_m2
 
                 html+="\n\n"
 

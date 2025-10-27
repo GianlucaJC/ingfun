@@ -6,7 +6,7 @@
 			<div class="col-md-4">
 			  <div class="form-floating mb-3 mb-md-0">
 				
-				<select class="form-select" id="stato_occ" aria-label="Stato Occupazione" name='stato_occ' required>
+				<select class="form-select" id="stato_occ" aria-label="Stato Occupazione" name='stato_occ' >
 					<option value=''>Select...</option>
 					<option value='1' 
 					<?php
@@ -252,7 +252,7 @@
 			<div class="col-md-4">
 
 			  <div class="form-floating mb-3 mb-md-0">
-				<select class="form-select" id="tipologia_contr" aria-label="Tipologia contratto" name='tipologia_contr' >
+				<select class="form-select" id="tipologia_contr" aria-label="Tipologia contratto" name='tipologia_contr' required >
 					<option value=''>Select...</option>
 					@foreach($tipologia_contr as $tipologia_c)
 							<option value='{{ $tipologia_c->id }}'
