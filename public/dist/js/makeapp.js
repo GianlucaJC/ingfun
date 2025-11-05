@@ -98,7 +98,11 @@ function dropHandlerMezzi(ev) {
     ev.preventDefault();
     const from = ev.dataTransfer.getData("text");
     if (from.substr(0,8)!="btnmezzo")  {
-        alert("Drag & Drop non ammesso!")
+        Swal.fire({
+            icon: 'error',
+            title: 'Operazione non permessa',
+            text: 'Drag & Drop non ammesso!'
+        });
         return false
     }
     mezzo=$("#"+from).data('mezzo')
@@ -112,7 +116,11 @@ function dropHandlerMezzi(ev) {
     $(".car"+m_e).each(function(){
         check_targa=$(this).data( "targa")
         if (targa==check_targa) {
-            alert("Mezzo già assegnato negli appalti "+testo)
+            Swal.fire({
+                icon: 'warning',
+                title: 'Attenzione',
+                text: "Mezzo già assegnato negli appalti " + testo
+            });
             check_ins=false
         }    
     })    
@@ -150,16 +158,28 @@ function dragoverHandlerPers(ev) {
 ///drop lavoratori su side sx
 function dropHandlerPers(ev) {
     ev.preventDefault();
-    from = ev.dataTransfer.getData("text");
-    lav=$("#"+from).data('idlav')
+    const from = ev.dataTransfer.getData("text");
+    const lav = $("#" + from).data('idlav');
 
-    if (from.substr(0,3)=="box" || from.substr(0,3)=="rep" || from.substr(0,3)=="ass") {
-        if (!confirm("Attenzione!\nIl lavoratore selezionato sarà rimosso da tutti gli appalti.\n\Procedere?"))
-            return false;
-        removelavall(lav)    
-    }       
-    $("#spanlav"+lav).show(150)
-
+    if (from.substr(0, 3) === "box" || from.substr(0, 3) === "rep" || from.substr(0, 3) === "ass") {
+        Swal.fire({
+            title: 'Attenzione!',
+            text: "Il lavoratore selezionato sarà rimosso da tutti gli appalti. Procedere?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sì, procedi!',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                removelavall(lav);
+                $("#spanlav" + lav).show(150);
+            }
+        });
+    } else {
+        $("#spanlav" + lav).show(150);
+    }
 }
 
 ///DRAG & DROP da allbox a allbox tra lav
@@ -257,7 +277,11 @@ function dropHandler(ev) {
     el=$("#"+dest).data('el')
 
     if (box_from!=box) {
-        alert("Assegnazione non possibile!")
+        Swal.fire({
+            icon: 'error',
+            title: 'Assegnazione non possibile!',
+            text: 'Il responsabile del mezzo può essere assegnato solo a persone dello stesso appalto.'
+        });
         return false
     }
 
@@ -266,7 +290,11 @@ function dropHandler(ev) {
         targa=$("#"+from).data("targa")
         
         esito=setresp(m_e,box,el,targa,1);
-        if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
+        if (esito=='KO') Swal.fire({
+            icon: 'warning',
+            title: 'Attenzione!',
+            text: 'Assegnazione non possibile. Il mezzo potrebbe essere già stato assegnato.'
+        });
         console.log("targa ass",targa)
         $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     }
@@ -359,12 +387,22 @@ function dropHandlerAss(ev) {
 
     idlav=$("#"+from).data('idlav')
     console.log("idlav prima:",idlav)
-    if (from.substr(0,3)=="box") {
-        if (!confirm("Attenzione!\nIl lavoratore selezionato sarà rimosso da tutti gli appalti.\n\Procedere?"))
-            return false;
-        removelavall(idlav)    
-    }    
-    console.log("idlav dopo:",idlav)
+    if (from.substr(0, 3) === "box") {
+        Swal.fire({
+            title: 'Attenzione!',
+            text: "Il lavoratore selezionato sarà rimosso da tutti gli appalti. Procedere?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sì, procedi!',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                removelavall(idlav);
+            }
+        });
+    }
     m_e=$("#"+dest).data('m_e')
     el=$("#"+from).data('el')
     console.log("assegnazioni per assenti - from",from,"dest",dest,"m_e",m_e)
@@ -385,7 +423,6 @@ function dropHandlerAss(ev) {
         })
     }
     if (present==true) {
-        //alert("Il lavoratore selezionato è già presente in questo BOX appalto!")
         return false
     }
     console.log("idlav",idlav)
@@ -533,8 +570,12 @@ function dragoverHandlerDitta(ev) {
 function dropHandlerDitta(ev) {
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
-  if (from.substr(0,6)!="btndit") {
-    alert("Drag & Drop non ammesso!")
+  if (from.substr(0, 6) !== "btndit") {
+    Swal.fire({
+        icon: 'error',
+        title: 'Operazione non permessa',
+        text: 'Drag & Drop non ammesso!'
+    });
     return false
   }
   dest=ev.target.id
@@ -937,8 +978,12 @@ function validation_form() {
         if (form.checkValidity()) {
             event.preventDefault()
             event.stopPropagation()
-            servizi=$("#servizi_svolti").val();
-            if (servizi.length==0) alert("Definire almento un servizio!")
+            const servizi = $("#servizi_svolti").val();
+            if (servizi.length === 0) Swal.fire({
+                icon: 'warning',
+                title: 'Attenzione',
+                text: 'Definire almeno un servizio!'
+            });
             else save_appalto()
         }
 
@@ -1336,8 +1381,15 @@ function detail_appalto(m_e,box) {
 
 function removemezzo(dest) {
     if (dest.length>0) {
-        if (!confirm("Sicuri di eliminare il mezzo (e l'eventuale assegnazione del responsabile mezzo)?"))
-            return false
+        Swal.fire({
+            title: 'Sei sicuro?',
+            text: "Verrà eliminato il mezzo e l'eventuale assegnazione del responsabile.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sì, elimina!',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
             
        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')    
         resp=new Array()
@@ -1362,19 +1414,29 @@ function removemezzo(dest) {
         $("#"+dest).data( "targa", "");
         $("#"+dest).removeClass('bg-warning').addClass('bg-secondary')
 
-        
-            
+            }
+        });
     }
 }
 
 function removeditta(id) {
-    if (!confirm("Sicuri di disassociare la ditta?")) return false;
+    Swal.fire({
+        title: 'Sei sicuro?',
+        text: "Vuoi disassociare la ditta da questo appalto?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sì, disassocia!',
+        cancelButtonText: 'Annulla'
+    }).then((result) => {
+        if (result.isConfirmed) {
     $("#"+id).removeData( "iddit", '' );
     html="<i class='fa-solid fa-location-dot'></i>"
     $("#"+id).html(html)
     $("#"+id).removeClass('bg-success').addClass('bg-secondary')
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     
+}
+    });
 }
 
 function resetbox(m_e,box,from) {
@@ -1385,14 +1447,28 @@ function resetbox(m_e,box,from) {
     $("#alert_confirm").hide()
 
     if (from!=2) {
-        if (from==0) {
-            if (!confirm("Sicuri di effettuare il reset del box?")) return false;
-        }
-        else {
+        if (from === 0) {
+            Swal.fire({
+                title: 'Sei sicuro?',
+                text: "Verranno resettati tutti i dati del box!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sì, resetta!',
+                cancelButtonText: 'Annulla'
+            }).then((result) => {
+                if (!result.isConfirmed) {
+                    return false;
+                }
+                // Continue with reset if confirmed
+                performReset(m_e, box, from);
+            });
+            return; // Stop execution here, will be continued in then()
+        } else {
             if (!$('#conferma').is(":checked")) {
                 $("#alert_confirm").show(130)
                 return false
             }
+            performReset(m_e, box, from);
         }
     }
 
@@ -1427,6 +1503,38 @@ function resetbox(m_e,box,from) {
     if (from==0)
         $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     
+}
+
+function performReset(m_e, box, from) {
+    let html = "";
+    if (from == 0) {
+        html = inibox(m_e, box);
+        $("#boxinfo" + m_e + box).html(html);
+        html = inimezzi(m_e, box);
+        $("#mezzi_info" + m_e + box).html(html);
+        html = initditte(m_e, box);
+        $("#ditte_info" + m_e + box).html(html);
+        for (let el = 0; el < elemBox; el++) {
+            setresp(m_e, box, el, 0, 1);
+        }
+    } else if (from != 2) {
+        $(".box").each(function () {
+            const m_e_local = $(this).data("m_e");
+            const box_local = $(this).data("box");
+            html = inibox(m_e_local, box_local);
+            $("#boxinfo" + m_e_local + box_local).html(html);
+            html = inimezzi(m_e_local, box_local);
+            $("#mezzi_info" + m_e_local + box_local).html(html);
+            html = initditte(m_e_local, box_local);
+            $("#ditte_info" + m_e_local + box_local).html(html);
+            for (let el = 0; el < elemBox; el++) {
+                setresp(m_e_local, box_local, el, 0, 1);
+            }
+        });
+    }
+    $("#modalinfo").modal('hide');
+    if (from == 0)
+        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning');
 }
 
 function enable_reset() {
@@ -1467,7 +1575,11 @@ function deletebox(m_e,box) {
                 save_all()
                 $("#tdbox"+m_e+box).hide(200)
                 $("#modalinfo").modal('hide')
-            } else alert("Problema occorso durante la cancellazione!")
+            } else Swal.fire({
+                icon: 'error',
+                title: 'Errore',
+                text: 'Problema occorso durante la cancellazione!'
+            });
 
       })
       .catch(status, err => {
@@ -1727,8 +1839,9 @@ function action_lav(m_e,box,el) {
             esito=setresp('`+m_e+`',`+box+`,`+el+`,'0',1);
             if (esito=='KO') alert('Attenzione! Assegnazione non possibile.')
         ">
-        Elimina mezzo assegnato
-        </button>        
+        Elimina mezzo assegnato</button>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Chiudi</button>
+
     `
     arr_mezzi=infomezzi.split(";")
         /*
@@ -1942,7 +2055,11 @@ function update_urg() {
                 
                 $("#modalinfo").modal('hide')
 
-            } else alert("Problema occorso durante il salvataggio!")
+            } else Swal.fire({
+                icon: 'error',
+                title: 'Errore',
+                text: 'Problema occorso durante il salvataggio!'
+            });
 
       })
       .catch(status, err => {
@@ -1955,7 +2072,15 @@ function update_urg() {
 }
 
 function dele_urg(id_urg) {
- if (!confirm("Sicuri di cancellare l'urgenza?")) return false
+    Swal.fire({
+        title: 'Sei sicuro?',
+        text: "Vuoi cancellare l'urgenza?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonText: 'Sì, cancella!',
+        cancelButtonText: 'Annulla'
+    }).then((result) => {
+        if (result.isConfirmed) {
     let CSRF_TOKEN = $("#token_csrf").val();
     html="<i class='fas fa-spinner fa-spin'></i>"
     
@@ -1985,6 +2110,8 @@ function dele_urg(id_urg) {
       })     
 
     }, 800)	 
+        }
+    });
 }
 
 function urgenze(id_urg) {
@@ -2141,13 +2268,21 @@ function inibox(m_e,box) {
 function action_rep(m_e,el) {
     refrep="rep"+m_e+el
     idlav=($("#"+refrep).data("idlav"))
-    if (!idlav || idlav.length==0) return false
-    if (!confirm("Sicuri di rimuovere il nominativo dalla lista reperibilità?")) return false;
-    remove_impegno(refrep)
-    $("#"+refrep).removeClass('impegnato')
-    $("#"+refrep).first().html("__________")
-    $("#"+refrep).removeData( "idlav", '' );
-    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    if (!idlav || idlav.length == 0) return false;
+    Swal.fire({
+        title: 'Sei sicuro?',
+        text: "Vuoi rimuovere il nominativo dalla lista reperibilità?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sì, rimuovi!',
+        cancelButtonText: 'Annulla'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            remove_impegno(refrep);
+            $("#" + refrep).removeClass('impegnato').first().html("__________").removeData("idlav", '');
+            $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning');
+        }
+    });
 }
 function inirep(sc) {
     m_e="";txt_rep="";
@@ -2204,14 +2339,23 @@ function inirep(sc) {
 function action_ass(m_e,el) {
     refass="ass"+m_e+el
     idlav=($("#"+refass).data("idlav"))
-    if (!idlav || idlav.length==0) return false
-    if (!confirm("Sicuri di rimuovere il nominativo dalla lista assenti?")) return false;
-    $("#spanlav"+idlav).show();
-    $("#"+refass).removeClass('impegnato')
-    remove_impegno(refass)
-    $("#"+refass).first().html("__________")
-    $("#"+refass).removeData( "idlav", '' );
-    $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
+    if (!idlav || idlav.length == 0) return false;
+    Swal.fire({
+        title: 'Sei sicuro?',
+        text: "Vuoi rimuovere il nominativo dalla lista assenti?",
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sì, rimuovi!',
+        cancelButtonText: 'Annulla'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $("#spanlav" + idlav).show();
+            $("#" + refass).removeClass('impegnato');
+            remove_impegno(refass);
+            $("#" + refass).first().html("__________").removeData("idlav", '');
+            $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning');
+        }
+    });
 }
 function iniass(sc) {
     m_e="";txt_ass="";
@@ -2253,9 +2397,25 @@ function iniass(sc) {
 function newapp(m_e,from) {
     if (from=="man") {
         tipo_box="mattutino"
-        if (m_e=="P") tipo_box="pomeridiano"
-        if (!confirm("Sicuri di creare un nuovo box "+tipo_box+"?")) return false
+        if (m_e == "P") tipo_box = "pomeridiano";
+        Swal.fire({
+            title: 'Sei sicuro?',
+            text: "Vuoi creare un nuovo box " + tipo_box + "?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: 'Sì, crea!',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                createNewAppBox(m_e, from);
+            }
+        });
+    } else {
+        createNewAppBox(m_e, from);
     }
+}
+
+function createNewAppBox(m_e, from) {
     box=0
     $(".box"+m_e).each(function(){
         box++
@@ -2283,11 +2443,13 @@ function newapp(m_e,from) {
     $("#div_pers"+m_e+box).html(html)
     
     if (from=="man") {
-        alert("Appalto aggiunto in coda!")
+        Swal.fire({
+            icon: 'success',
+            title: 'Successo',
+            text: 'Appalto aggiunto in coda!'
+        });
         $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
     }
-    
-
 }
 
 function setZoom(value,from) {
@@ -2308,8 +2470,12 @@ function get_msg() {
 function msg_rep() {
     saveall=$("#btn_save_all").hasClass('btn-outline-success')
     if (saveall==false) {
-        alert("Attenzione!\nC'è un salvataggio in sospeso. Prima di procedere con la creazione del messaggio è necessario salvare le modifiche in corso.")
-        return false
+        Swal.fire({
+            icon: 'warning',
+            title: 'Salvataggio in sospeso',
+            text: "C'è un salvataggio in sospeso. Prima di procedere con la creazione del messaggio è necessario salvare le modifiche in corso."
+        });
+        return false;
     }
     testo="";load=""
     load="<i class='fas fa-spinner fa-spin'></i>"
@@ -2361,8 +2527,12 @@ function make_msg(m_e,box,from) {
     if (from==1) {
         saveall=$("#btn_save_all").hasClass('btn-outline-success')
         if (saveall==false) {
-            alert("Attenzione!\nC'è un salvataggio in sospeso. Prima di procedere con la creazione del messaggio è necessario salvare le modifiche in corso.")
-            return false
+            Swal.fire({
+                icon: 'warning',
+                title: 'Salvataggio in sospeso',
+                text: "C'è un salvataggio in sospeso. Prima di procedere con la creazione del messaggio è necessario salvare le modifiche in corso."
+            });
+            return false;
         }
     }
     testo="";load=""
@@ -2500,6 +2670,47 @@ function printall() {
     $("#div_print").empty();
 }
 
+function check_persone() {
+    let inconsistencies = [];
+
+    // Check Mattina
+    for (let box = 0; box < numBox; box++) {
+        if ($("#tdboxM" + box).length === 0) continue;
+
+        const info_app = $("#infoappM" + box);
+        if (info_app.hasClass('bg-success')) {
+            const expected_persons_text = info_app.text().trim().split(' ')[0];
+            const expected_persons = parseInt(expected_persons_text, 10);
+
+            if (!isNaN(expected_persons)) {
+                let assigned_persons = 0;
+                $(".boxM" + box).each(function() {
+                    if ($(this).data('idlav')) {
+                        assigned_persons++;
+                    }
+                });
+
+                if (assigned_persons !== expected_persons) {
+                    inconsistencies.push(`Appalto Mattina (Box ${box}): Previste ${expected_persons} persone, assegnate ${assigned_persons}.`);
+                }
+            }
+        }
+    }
+
+    if (inconsistencies.length > 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sono state trovate delle incongruenze',
+            html: inconsistencies.join('<br>')
+        });
+    } else {
+        Swal.fire({
+            icon: 'success',
+            title: 'Verifica completata',
+            text: 'Nessuna incongruenza trovata.'
+        });
+    }
+}
 
 function generatePDF() {
     // Get the element to be converted

@@ -58,6 +58,12 @@
         <button type="button" class="btn btn-outline-success btn-sm mb-2" id="btn_save_all" onclick="save_all()"><i class="fa-solid fa-floppy-disk"></i> Salva Tutto</button>
     </div>
 
+    <div class="ml-3">
+        <button type="button" class="btn btn-outline-info btn-sm mb-2" id="btn_check_persone" onclick="check_persone()">
+            <i class="fa-solid fa-person-circle-check"></i> Check persone
+        </button>
+    </div>
+
     <div class="ml-3">        
             <button type="button" onclick='make_msg("","",0)' class="btn btn-outline-success btn-sm mb-2">
                 <i class="fab fa-whatsapp"></i> Messaggio libero
@@ -458,6 +464,9 @@
 
 
 
+
+	<!-- SweetAlert2 -->
+	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 	<script src="{{ URL::asset('/') }}dist/js/makeapp.js?ver=<?php echo time(); ?>"></script>
 
