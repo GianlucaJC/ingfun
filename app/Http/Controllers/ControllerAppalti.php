@@ -1108,14 +1108,7 @@ public function __construct()
 			$targhe2 = appaltinew_altro::where('idapp', $appalto->id)->whereNotNull('targa2')->where('targa2', '!=', '')->pluck('targa2');
 
 			$targhe_unite = $targhe1->merge($targhe2);
-			$targhe_univoche = $targhe_unite->unique();
-
-			$appalto->mezzi_impiegati = $targhe_univoche->count();
-			/*
-			foreach($mezzi1 as $me1) {
-				if (!in_array($me1->targa1,$ar_m)) $ar_m[]=$me1->targa1;
-			}
-			*/
+			$appalto->mezzi_impiegati = $targhe_unite->count();
 
 			// numero di appalti valorizzati
 			$appalto->appalti_valorizzati = appaltinew_info::where('id_appalto', $appalto->id)
