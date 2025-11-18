@@ -702,7 +702,7 @@ public function __construct()
 
 
 		$info_appalto=appaltinew_info::from('appaltinew_info as a')
-		->select('a.id','a.hide','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note')
+		->select('a.id','a.hide','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note','a.note_fatturazione')
 		->join('appaltinew as an','a.id_appalto','an.id')
 		->where('a.id_appalto','=',$id_giorno_appalto)
 		->when($from=="0", function ($info_appalto) use($m_e,$box) {
@@ -826,7 +826,9 @@ public function __construct()
 			$appalto->numero_persone=$request->input('numero_persone');
 			$appalto->servizi_svolti=$request->input('servizi');
 			$appalto->nome_salma=$request->input('nome_salma');
+			$appalto->note_fatturazione=$request->input('note_fatturazione');
 			$appalto->note=$request->input('note');
+			
 
 			$appalto->save();
 		}

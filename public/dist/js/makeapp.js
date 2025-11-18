@@ -1270,6 +1270,7 @@ function info_box(m_e,box) {
                 
                 $("#nome_salma").val(resp.info_appalto[0].nome_salma)
                 $("#note").val(resp.info_appalto[0].note)
+                $("#note_fatturazione").val(resp.info_appalto[0].note_fatturazione)
                 sv=resp.info_appalto[0].servizi_svolti
                 if (sv && sv.length>0)
                     servizi_svolti=resp.info_appalto[0].servizi_svolti.split(",")
@@ -1283,6 +1284,9 @@ function info_box(m_e,box) {
                     html+="<option value='"+id_serv+"' ";
                     //if (in_array($id_servizio,$id_servizi)) echo " selected ";
                     if (servizi_svolti.includes(id_serv)) html+=" selected ";
+                    if (resp.info_appalto.length==0) {
+                        if (id_serv==3) html+=" selected "
+                    }
                     html+=">"+serv+"</option>";
                 }
             html+=`</select>`
@@ -1365,7 +1369,13 @@ function detail_appalto(m_e,box) {
                         <label for="note" class="col-form-label">Note</label>
                         <textarea class="form-control dati" id="note" name="note" row=4></textarea>
                     </div>                            
-                </div>                                                    
+                </div>       
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="note_fatturazione" class="col-form-label">Note Fatturazione</label>
+                        <textarea class="form-control dati" id="note_fatturazione" name="note_fatturazione" row=4></textarea>
+                    </div>
+                </div>          
             </div>
             <hr>
             <div id='div_save'></div>
@@ -2594,12 +2604,13 @@ function make_msg(m_e,box,from) {
                 al_m1="";al_m2="";
                 if (alias_mezzi[car1]) al_m1=alias_mezzi[car1]
                 if (alias_mezzi[car2]) al_m2=alias_mezzi[car2]
-                /*
+                
                 if (car1) html+=", "+car1+"("+al_m1+")"
                 if (car2) html+=", "+car2+"("+al_m2+")"
-                */
+                /*
                 if (car1) html+=", "+al_m1
                 if (car2) html+=", "+al_m2
+                */
 
                 html+="\n\n"
 
