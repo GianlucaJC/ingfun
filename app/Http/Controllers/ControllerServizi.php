@@ -261,9 +261,22 @@ public function __construct()
 			$descr_contr=strtoupper($descr_contr);
 			$arr=array();
 			$arr['dele']=0;
-			$arr['descrizione']=$descr_contr;
-			
-			DB::table("servizi")->insert($arr);
+			$arr['descrizione']=$descr_contr;			
+			$id_servizio = DB::table("servizi")->insertGetId($arr);
+
+			// Associa il nuovo servizio a tutte le ditte esistenti
+			$ditte = DB::table('ditte')->where('dele', 0)->pluck('id');
+			foreach ($ditte as $id_ditta) {
+				DB::table('servizi_ditte')->insert([
+					'id_ditta' => $id_ditta,
+					'id_servizio' => $id_servizio,
+					'importo_ditta' => 0,
+					'aliquota' => 5, // Default: 22% (verificare ID)
+					'importo_lavoratore' => 0,
+					'created_at' => now(),
+					'updated_at' => now()
+				]);
+			}
 		}
 		
 		//Modifica elemento

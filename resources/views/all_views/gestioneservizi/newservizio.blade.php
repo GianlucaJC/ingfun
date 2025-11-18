@@ -45,7 +45,7 @@
 					<div class="col-md-3">
 						<button type="submit" class="btn btn-success" >Crea/Modifica Servizio</button>
 						<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
-						Chiudi
+						Chiudixx
 						</button>
 						
 					</div>
