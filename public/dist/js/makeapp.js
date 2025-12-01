@@ -1,7 +1,7 @@
 const numBox=7
 const elemBox=6
-const elemRep=10
-const elemAss=10
+const elemRep=15
+const elemAss=15
 const maxI=20
 const zoomI=0.54
 var saveall=false
@@ -129,7 +129,10 @@ function dropHandlerMezzi(ev) {
 
     $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
 
-    $("#"+dest).text(targa)
+    alias = targa;
+    if (alias_mezzi[targa]) alias = alias_mezzi[targa];
+
+    $("#"+dest).text(alias)
     $('#'+dest).attr('data-bs-original-title', mezzo);
     $("#"+dest).data( "targa", targa );
     $("#"+dest).data( "mezzo", mezzo );
@@ -757,14 +760,22 @@ function load_inf() {
                 if (targa1 && targa1.length>0) {
                     dest="car1"+m_e+box
                     $("#"+dest).removeClass('bg-secondary').removeClass('bg-warning').addClass('bg-warning')
-                    $("#"+dest).text(targa1)
+                    
+                    let alias1 = targa1;
+                    if (alias_mezzi[targa1]) alias1 = alias_mezzi[targa1];
+                    $("#"+dest).text(alias1)
+                    $('#'+dest).attr('data-bs-original-title', targa1); // Keep original targa in tooltip
                     //$('#'+dest).attr('data-bs-original-title', mezzo);
                     $("#"+dest).data( "targa", targa1 );                    
                 }
                 if (targa2 && targa2.length>0) {
                     dest="car2"+m_e+box
                     $("#"+dest).removeClass('bg-secondary').removeClass('bg-warning').addClass('bg-warning')
-                    $("#"+dest).text(targa2)
+
+                    let alias2 = targa2;
+                    if (alias_mezzi[targa2]) alias2 = alias_mezzi[targa2];
+                    $("#"+dest).text(alias2)
+                    $('#'+dest).attr('data-bs-original-title', targa2); // Keep original targa in tooltip
                     //$('#'+dest).attr('data-bs-original-title', mezzo);
                     $("#"+dest).data( "targa", targa2 );    
                 }
@@ -2605,12 +2616,12 @@ function make_msg(m_e,box,from) {
                 if (alias_mezzi[car1]) al_m1=alias_mezzi[car1]
                 if (alias_mezzi[car2]) al_m2=alias_mezzi[car2]
                 
-                if (car1) html+=", "+car1
-                if (car2) html+=", "+car2
-                /*
+                // if (car1) html+=", "+car1
+                // if (car2) html+=", "+car2
+                
                 if (car1) html+=", "+al_m1
                 if (car2) html+=", "+al_m2
-                */
+                
 
                 html+="\n\n"
 

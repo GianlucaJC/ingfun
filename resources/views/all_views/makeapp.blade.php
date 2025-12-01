@@ -192,7 +192,7 @@
                                                             $color="info";
                                                             if ($tipo_contratto==1) $color="danger";
                                                             if ($tipo_contratto==2) $color="primary";
-                                                            if ($tipo_contratto==3) $color="warning";
+                                                            if ($tipo_contratto==3) $color="success";
                                                             if ($tipo_contratto==5) $color="secondary";
 
                                                         ?>
@@ -201,7 +201,7 @@
 
                                                         <div style='line-height:0.9;' id='spanlav{{$lavoratore->id}}' class='allnomi'data-nome='{{$lavoratore->nominativo}}' ><font size='1rem'>
                                                             <a href="javascript:void(0)" class="link-{{$color}} link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnlav{{$lavoratore->id}}' data-color='{{$color}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
-                                                            {{$lavoratore->nominativo}}
+                                                            {{$lavoratore->cognome}}
                                                             </a>
                                                             </font>
                                                         </div>
@@ -301,7 +301,13 @@
                                                             <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
                                                                 data-targa='{{$flotta->targa}}' data-mezzo='{{$mezzo}}'
                                                                 draggable="true" ondragstart="dragstartHandlerMezzi(event)"  >
-                                                            {{$mezzo}}
+                                                            <?php
+                                                                if (strlen($aliasm)==0) 
+                                                                    echo $mezzo;
+                                                                else
+                                                                    echo $aliasm;    
+                                                            ?>  
+
                                                             </a>
                                                             </font>
                                                         </div>     
