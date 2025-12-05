@@ -350,7 +350,7 @@
                             <input type='hidden' id='dap' value='{{$dap}}'>
                             <input type='hidden' id='dap1' value='{{$dap1}}'>
                             
-                            <div style='overflow-x:hidden;white-space: nowrap;'>
+                            <div style='overflow-x:scroll;white-space: nowrap;'>
                                 <span style="float:right">
                                     <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
                                     Aggiungi appalto mattutino</a>						
@@ -367,7 +367,7 @@
                                 </table>
                             </div>
                                
-                            <div style='overflow-x:hidden;white-space: nowrap;'>
+                            <div style='overflow-x:scroll;white-space: nowrap;'>
                                 <span style="float:right">
                                     <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>
                                 </span>
