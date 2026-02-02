@@ -10,6 +10,7 @@ var lavall=new Array();
 var servall=new Array();
 var dittall=new Array();
 var alias_mezzi=new Array();
+var appaltoLogs = [];
 
 
  $(function () {
@@ -1090,7 +1091,7 @@ function save_appalto() {
             if (exist==true) {
                 if (respo[m_e1][ind].targa) {
                     if (targhe_resp.length>0) targhe_resp+="|"
-                    targhe_resp+=respo[m_e1][ind].targa+";"+m_e1+";"+box1+";"+elx
+                    targhe_resp+=respo[m_e1][ind].targa+";"+m_e1+";"+box1+";"+elx+";"+respo[m_e1][ind].idlav
                 }
             }
         } 
@@ -2814,3 +2815,437 @@ function generatePDF() {
     }, 800)
 
   }
+
+//#region Funzioni di formattazione per i Log
+const logKeyLabels = {
+    'all_workers_data': 'Lavoratori Appalti',
+    'vehicles_morning_1': 'Veicoli Mattina 1',
+    'vehicles_morning_2': 'Veicoli Mattina 2',
+    'vehicles_afternoon_1': 'Veicoli Pomeriggio 1',
+    'vehicles_afternoon_2': 'Veicoli Pomeriggio 2',
+    'companies_data': 'Ditte Appalti',
+    'on_call_data': 'Reperibilità',
+    'absent_data': 'Assenti',
+    'all_responsibles': 'Responsabili Mezzi',
+    'workers_in_box': 'Lavoratori nel Box',
+    // per salvataggio singolo
+    'luogo_incontro': 'Luogo Incontro',
+    'orario_incontro': 'Orario Incontro',
+    'luogo_destinazione': 'Luogo Destinazione',
+    'ora_destinazione': 'Ora Destinazione',
+    'data_servizio': 'Data Servizio',
+    'numero_persone': 'Numero Persone',
+    'servizi_svolti': 'Servizi Svolti',
+    'nome_salma': 'Nome Salma',
+    'note': 'Note',
+    'note_fatturazione': 'Note Fatturazione',
+    'ditta_id': 'Ditta',
+    'car1_targa': 'Targa Mezzo 1',
+    'car2_targa': 'Targa Mezzo 2',
+};
+
+function getLogKeyLabel(key) {
+    return logKeyLabels[key] || key.replace(/_/g, ' ');
+}
+function formatWorkersData(dataString) {
+    if (!dataString) return '<em>(vuoto)</em>';
+    const assignments = {}; // { M: { 0: [], 1: [] }, P: { 0: [], 1: [] } }
+    const parts = dataString.split(';');
+    parts.forEach(part => {
+        const [m_e, box, lav_id] = part.split('|');
+        if (m_e && box !== undefined && lav_id && lav_id !== '0') {
+            if (!assignments[m_e]) assignments[m_e] = {};
+            if (!assignments[m_e][box]) assignments[m_e][box] = [];
+            const lav_name = lavall[lav_id] || `ID:${lav_id}`;
+            assignments[m_e][box].push(lav_name);
+        }
+    });
+
+    let html = '<ul class="list-unstyled" style="margin:0; padding-left: 1.2em; text-indent: -1.2em;">';
+    for (const m_e in assignments) {
+        const turno = m_e === 'M' ? 'Mattina' : 'Pomeriggio';
+        html += `<li><strong>${turno}:</strong><ul class="list-unstyled" style="padding-left: 1.2em;">`;
+        const sortedBoxes = Object.keys(assignments[m_e]).sort((a, b) => a - b);
+        for (const box of sortedBoxes) {
+            html += `<li>Box ${parseInt(box)+1}: ${assignments[m_e][box].join(', ')}</li>`;
+        }
+        html += '</ul></li>';
+    }
+    html += '</ul>';
+    return html;
+}
+
+function formatVehiclesData(dataString) {
+    if (!dataString) return '<em>(vuoto)</em>';
+    const assignments = [];
+    const parts = dataString.split('|');
+    parts.forEach(part => {
+        const [box, targa] = part.split(';');
+        if (box !== undefined && targa) {
+            const alias = alias_mezzi[targa] || targa;
+            assignments.push(`Box ${parseInt(box)+1}: ${alias}`);
+        }
+    });
+    return assignments.join('<br>');
+}
+
+function formatCompaniesData(dataString) {
+    if (!dataString) return '<em>(vuoto)</em>';
+    const assignments = {};
+    const parts = dataString.split('|');
+    parts.forEach(part => {
+        const [box, m_e, ditta_id] = part.split(';');
+        if (box !== undefined && m_e && ditta_id && ditta_id !== '0') {
+            const turno = m_e === 'M' ? 'Mattina' : 'Pomeriggio';
+            if (!assignments[turno]) assignments[turno] = [];
+            const ditta_name = dittall[ditta_id] || `ID:${ditta_id}`;
+            assignments[turno].push({box: parseInt(box), name: `Box ${parseInt(box)+1}: ${ditta_name}`});
+        }
+    });
+
+    let html = '<ul class="list-unstyled" style="margin:0; padding-left: 1.2em; text-indent: -1.2em;">';
+    for (const turno in assignments) {
+        html += `<li><strong>${turno}:</strong><ul class="list-unstyled" style="padding-left: 1.2em;">`;
+        assignments[turno].sort((a,b) => a.box - b.box).forEach(assignment => {
+            html += `<li>${assignment.name}</li>`;
+        });
+        html += '</ul></li>';
+    }
+    html += '</ul>';
+    return html;
+}
+
+function formatReperData(dataString) {
+    if (!dataString) return '<em>(vuoto)</em>';
+    const assignments = {};
+    const parts = dataString.split('|');
+    const fasce = { 'Ma': 'Mattino', 'Mb': 'Pomeriggio', 'Pa': 'Primo Notturno', 'Pb': 'Secondo Notturno' };
+    parts.forEach(part => {
+        const [fascia, elem, lav_id] = part.split(';');
+        if (fascia && lav_id && lav_id !== '0') {
+            const fascia_name = fasce[fascia] || fascia;
+            if (!assignments[fascia_name]) assignments[fascia_name] = [];
+            assignments[fascia_name].push(lavall[lav_id] || `ID:${lav_id}`);
+        }
+    });
+
+    let html = '<ul class="list-unstyled" style="margin:0;">';
+    for (const fascia_name in assignments) {
+        html += `<li><strong>${fascia_name}:</strong> ${assignments[fascia_name].join(', ')}</li>`;
+    }
+    html += '</ul>';
+    return html;
+}
+
+function formatAbsentData(dataString) {
+    if (!dataString) return '<em>(vuoto)</em>';
+    const assignments = {};
+    const parts = dataString.split('|');
+    const fasce = { 'Ma': 'Mattino', 'Mb': 'Pomeriggio' };
+    parts.forEach(part => {
+        const [fascia, elem, lav_id] = part.split(';');
+        if (fascia && lav_id && lav_id !== '0') {
+            const fascia_name = fasce[fascia] || fascia;
+            if (!assignments[fascia_name]) assignments[fascia_name] = [];
+            assignments[fascia_name].push(lavall[lav_id] || `ID:${lav_id}`);
+        }
+    });
+
+    let html = '<ul class="list-unstyled" style="margin:0;">';
+    for (const fascia_name in assignments) {
+        html += `<li><strong>${fascia_name}:</strong> ${assignments[fascia_name].join(', ')}</li>`;
+    }
+    html += '</ul>';
+    return html;
+}
+
+function formatResponsiblesData(dataString) {
+    if (!dataString) return '<em>(vuoto)</em>';
+    const assignments = [];
+    const parts = dataString.split('|');
+    parts.forEach(part => {
+        const [targa, m_e, box, rowbox, lav_id] = part.split(';');
+        if (targa && lav_id) {
+            const alias = alias_mezzi[targa] || targa;
+            const lav_name = lavall[lav_id] || `ID:${lav_id}`;
+            assignments.push(`Mezzo ${alias}: ${lav_name}`);
+        } else if (targa) {
+            // Fallback per log vecchi senza lav_id
+            const turno = m_e === 'M' ? 'Mattina' : 'Pomeriggio';
+            const alias = alias_mezzi[targa] || targa;
+            assignments.push(`Mezzo ${alias} (Turno ${turno}, Box ${parseInt(box)+1}, Pos ${rowbox})`);
+        }
+    });
+    return assignments.join('<br>');
+}
+
+function formatLogValue(key, value, payload) {
+    if (value === null || value === undefined || value === '') return '<em>(vuoto)</em>';
+
+    switch (key) {
+        case 'all_workers_data': case 'workers_in_box':
+            return formatWorkersData(value);
+        case 'vehicles_morning_1':
+        case 'vehicles_morning_2':
+        case 'vehicles_afternoon_1':
+        case 'vehicles_afternoon_2':
+            return formatVehiclesData(value);
+        case 'companies_data':
+            return formatCompaniesData(value);
+        case 'on_call_data':
+            return formatReperData(value);
+        case 'absent_data':
+            return formatAbsentData(value);
+        case 'all_responsibles':
+            return formatResponsiblesData(value);
+        case 'ditta_id':
+            return dittall[value] || `ID:${value}`;
+        case 'servizi_svolti':
+            if (!value) return '<em>(vuoto)</em>';
+            const service_ids = Array.isArray(value) ? value : String(value).split(',');
+            return service_ids.map(id => servall[id] || `ID:${id}`).join(', ');
+        case 'car1_targa':
+        case 'car2_targa':
+             return alias_mezzi[value] || value;
+        case 'luogo_incontro': case 'orario_incontro':
+        case 'luogo_destinazione': case 'ora_destinazione':
+        case 'data_servizio': case 'numero_persone':
+        case 'nome_salma': case 'note':
+        case 'note_fatturazione':
+            return value;
+        default:
+            return value;
+    }
+}
+
+function getDetailedDiffHtml(prevPayload, currentPayload) {
+    let diffHtml = '<div style="font-family: sans-serif; font-size: 0.9em;">';
+    let hasChanges = false;
+
+    const allKeys = new Set([...Object.keys(prevPayload), ...Object.keys(currentPayload)]);
+
+    for (const key of allKeys) {
+        const prevValue = prevPayload[key];
+        const currentValue = currentPayload[key];
+
+        const prevString = JSON.stringify(prevValue);
+        const currentString = JSON.stringify(currentValue);
+
+        if (prevString !== currentString) {
+            hasChanges = true;
+
+            let formattedPrev = formatLogValue(key, prevValue, prevPayload);
+            let formattedCurrent = formatLogValue(key, currentValue, currentPayload);
+
+            diffHtml += `<div style="margin-bottom: 10px; padding-bottom: 5px; border-bottom: 1px solid #ddd;">`;
+            diffHtml += `<strong style="text-transform: capitalize;">${getLogKeyLabel(key)}:</strong><br>`;
+            if (prevValue !== undefined && prevValue !== '') {
+                diffHtml += `<div style="color: #dc3545; padding-left: 10px; background: #f8d7da; border-radius: 4px; margin-top: 5px; padding: 5px;">${formattedPrev}</div>`;
+            }
+            if (currentValue !== undefined && currentValue !== '') {
+                diffHtml += `<div style="color: #198754; padding-left: 10px; background: #d1e7dd; border-radius: 4px; margin-top: 5px; padding: 5px;">${formattedCurrent}</div>`;
+            }
+            diffHtml += `</div>`;
+        }
+    }
+
+    if (!hasChanges) {
+        diffHtml += '<p style="margin: 0; color: #888;">Nessuna modifica rilevata tra questo salvataggio e il precedente.</p>';
+    }
+    diffHtml += '</div>';
+    return diffHtml;
+}
+
+function formatPayloadAsList(payload) {
+    if (!payload || Object.keys(payload).length === 0) return '<p>Dati non disponibili.</p>';
+
+    let listHtml = '<ul class="list-group list-group-flush">';
+
+    const keys = Object.keys(payload);
+
+    for (const key of keys) {
+        const currentValue = payload[key];
+
+        listHtml += `<li class="list-group-item" style="padding: .5rem 0; background-color: transparent;">`;
+        listHtml += `<strong style="display: inline-block; width: 180px; vertical-align: top; font-size: 0.9em; text-transform: capitalize;">${getLogKeyLabel(key)}:</strong> `;
+
+        let displayValue = formatLogValue(key, currentValue, payload);
+
+        listHtml += `<div style="display: inline-block; width: calc(100% - 190px);">${displayValue}</div>`;
+        listHtml += '</li>';
+    }
+    listHtml += '</ul>';
+    return listHtml;
+}
+//#endregion
+
+function showAppaltoLogs() {
+    const id_giorno_appalto = $("#id_giorno_appalto").val();
+    const CSRF_TOKEN = $("#token_csrf").val();
+    const base_path = $("#url").val();
+
+    Swal.fire({
+        title: 'Caricamento Log Eventi...',
+        html: '<i class="fas fa-spinner fa-spin"></i>',
+        allowOutsideClick: false,
+        showConfirmButton: false
+    });
+
+    fetch(base_path + "/get_appalto_logs/" + id_giorno_appalto, {
+        method: 'post',
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: "_token=" + CSRF_TOKEN
+    })
+    .then(response => {
+        if (response.ok) {
+            return response.json();
+        }
+        throw new Error('Errore nel recupero dei log.');
+    })
+    .then(logs => {
+        let logHtml = '<div style="max-height: 400px; overflow-y: auto; text-align: left;">';
+        if (logs.length === 0) {
+            logHtml += '<p>Nessun evento di salvataggio registrato per questo appalto.</p>';
+        } else {
+            appaltoLogs = logs; // Store logs globally
+            for (let i = 0; i < logs.length; i++) {
+                const log = logs[i];
+                const currentPayload = log.raw_payload || {};
+                const prevPayload = (i + 1 < logs.length) ? (logs[i + 1].raw_payload || {}) : {};
+
+                let detailsHtml;
+                if ((log.action.includes('Salvataggio') || log.action.includes('Ripristino')) && (i + 1 < logs.length)) {
+                    detailsHtml = getDetailedDiffHtml(prevPayload, currentPayload);
+                } else { // 'Creazione' or the very first log
+                    detailsHtml = formatPayloadAsList(currentPayload);
+                }
+
+                let restoreButton = '';
+                // Add restore button for past states that have a full payload
+                if (i > 0 && (log.action.includes('Salvataggio completo') || log.action.includes('Ripristino'))) {
+                    restoreButton = `<button class="btn btn-sm btn-outline-warning" onclick="confirmRestore(${i})">Ripristina a questa versione</button>`;
+                }
+
+                logHtml += `
+                    <div style="border-bottom: 1px solid #eee; padding-bottom: 10px; margin-bottom: 10px;">
+                        <strong>Quando:</strong> ${log.timestamp}<br>
+                        <strong>Chi:</strong> ${log.user}<br>
+                        <strong>Azione:</strong> ${log.action}<br>
+                        <strong>Dettagli:</strong> ${detailsHtml}
+                        <div class="mt-2">${restoreButton}</div>
+                    </div>
+                `;
+            }
+        }
+        logHtml += '</div>';
+
+        Swal.fire({
+            title: 'Log Eventi Appalto',
+            html: logHtml,
+            width: '90%',
+            confirmButtonText: 'Chiudi'
+        });
+    })
+    .catch(error => {
+        Swal.fire({
+            icon: 'error',
+            title: 'Errore',
+            text: error.message
+        });
+    });
+}
+
+function confirmRestore(logIndex) {
+    const log = appaltoLogs[logIndex];
+    if (!log || !log.raw_payload) {
+        Swal.fire('Errore', 'Dati di log non trovati per il ripristino.', 'error');
+        return;
+    }
+
+    Swal.fire({
+        title: 'Sei sicuro?',
+        html: `Stai per ripristinare lo stato dell'appalto alla versione del <strong>${log.timestamp}</strong>.<br>Tutte le modifiche successive andranno perse. Questa operazione è irreversibile.`,
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Sì, ripristina!',
+        cancelButtonText: 'Annulla'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            restoreState(log.raw_payload);
+        }
+    });
+}
+
+function restoreState(payload) {
+    const id_giorno_appalto = $("#id_giorno_appalto").val();
+    const CSRF_TOKEN = $("#token_csrf").val();
+    const base_path = $("#url").val();
+
+    Swal.fire({
+        title: 'Ripristino in corso...',
+        html: '<i class="fas fa-spinner fa-spin"></i>',
+        allowOutsideClick: false,
+        showConfirmButton: false
+    });
+
+    // Map payload keys to request keys
+    const dataToSend = {
+        _token: CSRF_TOKEN,
+        id_giorno_appalto: id_giorno_appalto,
+        is_restore: 1,
+        from: 1, // To trigger the 'save_all' logic
+        m_e: "",
+        box: 1000,
+        all_id_boxes: payload.all_workers_data || '',
+        carm1: payload.vehicles_morning_1 || '',
+        carm2: payload.vehicles_morning_2 || '',
+        carp1: payload.vehicles_afternoon_1 || '',
+        carp2: payload.vehicles_afternoon_2 || '',
+        ditte: payload.companies_data || '',
+        reper: payload.on_call_data || '',
+        assenti: payload.absent_data || '',
+        targhe_resp: payload.all_responsibles || '',
+        // These are not in the payload but might be needed by the endpoint
+        all_id_box: "",
+        info: 0,
+        servizi: "",
+        car1: "",
+        car2: ""
+    };
+
+    // Convert data to URL-encoded string
+    const body = Object.keys(dataToSend).map(key => encodeURIComponent(key) + '=' + encodeURIComponent(dataToSend[key])).join('&');
+
+    fetch(base_path + "/save_infoapp", {
+        method: 'post',
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: body
+    })
+    .then(response => response.json())
+    .then(resp => {
+        if (resp.header === "OK") {
+            Swal.fire({
+                icon: 'success',
+                title: 'Ripristino completato!',
+                text: 'Lo stato dell\'appalto è stato ripristinato. La pagina verrà ricaricata.',
+                allowOutsideClick: false,
+                showConfirmButton: true,
+                confirmButtonText: 'OK'
+            }).then(() => {
+                location.reload();
+            });
+        } else {
+            Swal.fire('Errore', 'Si è verificato un errore durante il ripristino.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error:', error);
+        Swal.fire('Errore', 'Si è verificato un errore di comunicazione.', 'error');
+    });
+}

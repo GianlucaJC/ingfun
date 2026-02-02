@@ -1,0 +1,6 @@
+[2026-01-12 12:52:28] Metodo esportaFattureCsv chiamato.
+[2026-01-12 12:52:28] Tentativo di upload FTP. Parametri utilizzati: {"driver":"ftp","host":"185.72.42.200","username":"IngFun","password":"********","port":4000,"root":"\/","timeout":10,"passive":true,"ssl":false,"disable_epsv":true}
+[2026-01-12 12:52:28] ERRORE: ftp_fput(): php_connect_nonb() failed: No error (0) in C:\xampp\htdocs\ingfun\vendor\league\flysystem-ftp\FtpAdapter.php on line 171
+[2026-01-12 12:55:26] Metodo esportaFattureCsv chiamato.
+[2026-01-12 12:55:26] Tentativo di upload FTP. Parametri utilizzati: {"driver":"ftp","host":"185.72.42.200","username":"IngFun","password":"********","port":4000,"root":"\/","timeout":10,"passive":true,"ssl":false,"disable_epsv":true}
+[2026-01-12 12:55:26] ERRORE: ftp_fput(): php_connect_nonb() failed: No error (0) in C:\xampp\htdocs\ingfun\vendor\league\flysystem-ftp\FtpAdapter.php on line 171
