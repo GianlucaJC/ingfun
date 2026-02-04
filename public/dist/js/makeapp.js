@@ -12,6 +12,15 @@ var dittall=new Array();
 var alias_mezzi=new Array();
 var appaltoLogs = [];
 
+function resetZoom() {
+    setZoom(zoomI, 0);
+    // Cerca lo slider e reimposta il suo valore
+    const slider = $('input[type="range"][onchange*="setZoom"]');
+    if (slider.length > 0) {
+        slider.val(zoomI);
+    }
+}
+
 
  $(function () {
     class_o="hold-transition sidebar-mini"
@@ -61,6 +70,7 @@ var appaltoLogs = [];
     id_giorno_appalto=$("#id_giorno_appalto").val()
     load_appalti(id_giorno_appalto)
     load_ini_lav();
+
     setZoom(zoomI,0)
 
     $("#div_side").removeClass('control-sidebar-dark')
@@ -71,8 +81,14 @@ var appaltoLogs = [];
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
+    // Aggiunge un bottone per resettare lo zoom
+    const slider = $('input[type="range"][onchange*="setZoom"]');
+    if (slider.length > 0) {
+        const resetButton = $('<button id="resetZoomBtn" class="btn btn-secondary btn-sm" style="margin-left: 10px; display: none;">Ripristina Zoom</button>');
+        resetButton.on('click', resetZoom);
+        slider.after(resetButton);
+    }
 
-    
 } );
 
 ///////// DRAG & DROP RESP Mezzi
@@ -341,11 +357,14 @@ function dropHandler(ev) {
     $("#spanlav"+idlav).hide();
   }
   
-  //in caso il drag proviene dai reperibili NON lo rimuovo dal box-elemento reperibili
+  //in caso il drag proviene dai reperibili lo rimuovo (spostamento) a meno che non sia premuto CTRL (copia)
   if (from.substr(0,3)=="rep") {
-    m_e_f=$("#"+from).data('m_e')
-    el_ref=$("#"+from).data('el')
-    refrep="boxrep"+m_e_f+el_ref
+    if (ctrl==false) {
+        $("#"+from).data("idlav","")
+        $("#"+from).text("__________")
+        remove_impegno(from)
+        $("#"+from).removeClass('impegnato')
+    }
   }
 
   //in caso il drag proviene dagli assenti lo rimuovo dal box-elemento assenti
@@ -380,6 +399,8 @@ function dragoverHandlerAss(ev) {
 }
 //drop on box assenti
 function dropHandlerAss(ev) {
+  ctrl=false
+  if (ev.ctrlKey) ctrl=true
 
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
@@ -430,19 +451,21 @@ function dropHandlerAss(ev) {
         return false
     }
     console.log("idlav",idlav)
-    if (from.substr(0,3)=="ass") {
-        $("#"+from).data("idlav","")
-        $("#"+from).text("__________")
-        $("#"+from).removeClass('impegnato')
-        remove_impegno(from)
+    if (ctrl==false) {
+      if (from.substr(0,3)=="ass") {
+          $("#"+from).data("idlav","")
+          $("#"+from).text("__________")
+          $("#"+from).removeClass('impegnato')
+          remove_impegno(from)
+      }
+      if (from.substr(0,3)=="rep") {
+          $("#"+from).data("idlav","")
+          $("#"+from).text("__________")
+          remove_impegno(from)
+          $("#"+from).removeClass('impegnato')
+      }
     }
-    if (from.substr(0,3)=="rep") {
-        $("#"+from).data("idlav","")
-        $("#"+from).text("__________")
-        remove_impegno(from)
-        $("#"+from).removeClass('impegnato')
-    }
-
+    
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
     
@@ -486,6 +509,8 @@ function dragoverHandlerRep(ev) {
 
 //drop on box reperibilità
 function dropHandlerRep(ev) {
+  ctrl=false
+  if (ev.ctrlKey) ctrl=true
 
   ev.preventDefault();
   const from = ev.dataTransfer.getData("text");
@@ -523,18 +548,21 @@ function dropHandlerRep(ev) {
         return false
     }
     console.log("idlav",idlav)
-    if (from.substr(0,3)=="rep") {
-        $("#"+from).data("idlav","")
-        $("#"+from).text("__________")
-        remove_impegno(from)
-        $("#"+from).removeClass('impegnato')
+    if (ctrl==false) {
+      if (from.substr(0,3)=="rep") {
+          $("#"+from).data("idlav","")
+          $("#"+from).text("__________")
+          remove_impegno(from)
+          $("#"+from).removeClass('impegnato')
+      }
+      if (from.substr(0,3)=="ass") {
+          $("#"+from).data("idlav","")
+          $("#"+from).text("__________")
+          remove_impegno(from)
+          $("#"+from).removeClass('impegnato')
+      }
     }
-    if (from.substr(0,3)=="ass") {
-        $("#"+from).data("idlav","")
-        $("#"+from).text("__________")
-        remove_impegno(from)
-        $("#"+from).removeClass('impegnato')
-    }
+
     reflav="btnlav"+idlav
     nomelav=$("#"+reflav).text().trim()
     
@@ -2477,8 +2505,25 @@ function createNewAppBox(m_e, from) {
 function setZoom(value,from) {
 	$('#div_tb').css('transform','scale('+value+')');
 	$('#div_tb').css('transformOrigin','left top');
+    const divTb = $('#div_tb');
+    if (divTb.length > 0) {
+        const originalHeight = divTb.get(0).scrollHeight;
+        const scaledHeight = originalHeight * value;
+        $('#zoom_wrapper').height(scaledHeight);
+    }
+
     if (from==1) $("#div_side").hide(120)
     if (value<=zoomI) $("#div_side").show(120)
+
+    // Gestisce la visibilità del bottone di reset
+    const resetButton = $('#resetZoomBtn');
+    if (resetButton.length > 0) {
+        if (parseFloat(value) !== zoomI) {
+            resetButton.show();
+        } else {
+            resetButton.hide();
+        }
+    }
 }
 
 
@@ -2662,6 +2707,14 @@ function make_msg(m_e,box,from) {
                         lav_r=lav_resp
                         if (lavall[lav_resp]) lav_r=lavall[lav_resp]  
                         inforesp+="Responsabile mezzo _"+targa_r+"_ : *"+lav_r+"*"
+                        if (lavall[lav_resp]) lav_r=lavall[lav_resp]
+                        
+                        let mezzo_display = targa_r;
+                        if (alias_mezzi[targa_r] && alias_mezzi[targa_r].length > 0) {
+                            mezzo_display = alias_mezzi[targa_r];
+                        }
+                        
+                        inforesp+="Responsabile mezzo _"+mezzo_display+"_ : *"+lav_r+"*"
                     }              
                     html+="\n"+inforesp
                 }

@@ -2,6 +2,7 @@
 /node_modules
 /public/build
 /public/hot
+/public/*.csv
 /public/allegati
 /public/storage
 /public/dist/upload

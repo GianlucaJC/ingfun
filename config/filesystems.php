@@ -28,6 +28,8 @@ return [
     |
     */
 
+    
+
     'disks' => [
 
         'local' => [
@@ -42,6 +44,23 @@ return [
             'url' => env('APP_URL').'/storage',
             'visibility' => 'public',
             'throw' => false,
+        ],
+        
+        
+        'ftp' => [
+            'driver' => 'ftp',
+            'host' => env('FTP_HOST'),
+            'username' => env('FTP_USERNAME'),
+            'password' => env('FTP_PASSWORD'),
+            'port' => (int) env('FTP_PORT', 4000),
+            'root' => env('FTP_ROOT', '/'),
+            'timeout' => (int) env('FTP_TIMEOUT', 30),
+            'passive' => true,
+            // Connessione sicura FTPS (FTP over SSL). Disabilitata perché causa errore di autenticazione su questa porta.
+            'ssl' => false,
+            // Disabilita EPSV per massima compatibilità con firewall/server più datati.
+            // Forza l'uso del comando PASV standard invece di quello esteso.
+            'disable_epsv' => true,
         ],
 
         's3' => [

@@ -75,6 +75,14 @@
             <i class="fas fa-print"></i> Stampa videata
         </button>        
     </div>
+
+    @if (isset($role) && $role=="admin")
+    <div class="ml-3">
+        <button type="button" id='btn_show_logs' class="btn btn-outline-secondary btn-sm mb-2" onclick="showAppaltoLogs()">
+            <i class="fas fa-history"></i> Log Eventi
+        </button>        
+    </div>
+    @endif
     
 
 
@@ -201,7 +209,7 @@
 
                                                         <div style='line-height:0.9;' id='spanlav{{$lavoratore->id}}' class='allnomi'data-nome='{{$lavoratore->nominativo}}' ><font size='1rem'>
                                                             <a href="javascript:void(0)" class="link-{{$color}} link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnlav{{$lavoratore->id}}' data-color='{{$color}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
-                                                            {{$lavoratore->cognome}}
+                                                            <b>{{$lavoratore->cognome}}</b>
                                                             </a>
                                                             </font>
                                                         </div>
@@ -337,51 +345,52 @@
 					<!-- /.col -->
                     
 					<div class="col-md-10">                        
-                        <div id='div_tb' style='border:2px ;width:2500px' >
-                            <?php
-                                $dap=date("Y-m-d");$dap1=$dap;
-                                if (isset($info_app[0]->data_appalto)) {
-                                    $dap=$info_app[0]->data_appalto;
-                                    $dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
-                                    echo "Appalti del <b>".$dap1."</b>";
-                                }
-                            ?>
+                        <div id="zoom_wrapper">
+                            <div id='div_tb' style='border:2px ;width:2500px' >
+                                <?php
+                                    $dap=date("Y-m-d");$dap1=$dap;
+                                    if (isset($info_app[0]->data_appalto)) {
+                                        $dap=$info_app[0]->data_appalto;
+                                        $dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
+                                        echo "Appalti del <b>".$dap1."</b>";
+                                    }
+                                ?>
 
-                            <input type='hidden' id='dap' value='{{$dap}}'>
-                            <input type='hidden' id='dap1' value='{{$dap1}}'>
-                            
-                            <div style='overflow-x:scroll;white-space: nowrap;'>
-                                <span style="float:right">
-                                    <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
-                                    Aggiungi appalto mattutino</a>						
-                                </span>
-                            
-                            
-                                <table id='tbAppM' class='table'>	
-                                    <tbody>
-                                    <tr>
-                                            <!--colonne popolate dinamicamente!-->
-                                    </tr>
-                                    </tbody>
-
-                                </table>
-                            </div>
-                               
-                            <div style='overflow-x:scroll;white-space: nowrap;'>
-                                <span style="float:right">
-                                    <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>
-                                </span>
+                                <input type='hidden' id='dap' value='{{$dap}}'>
+                                <input type='hidden' id='dap1' value='{{$dap1}}'>
                                 
-                                <table id='tbAppP' class='table'>	
-                                    <tbody>
+                                <div style='overflow-x:scroll;white-space: nowrap;'>
+                                    <span style="float:right">
+                                        <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
+                                        Aggiungi appalto mattutino</a>						
+                                    </span>
+                                
+                                
+                                    <table id='tbAppM' class='table'>	
+                                        <tbody>
                                         <tr>
-                                            <!--colonne popolate dinamicamente!-->
+                                                <!--colonne popolate dinamicamente!-->
                                         </tr>
-                                    </tbody>
-                                </table>  
+                                        </tbody>
 
-                                <div id='div_print' style='display: flex;justify-content: space-between;'>
-                                    <!-- 
+                                    </table>
+                                </div>
+                                   
+                                <div style='overflow-x:scroll;white-space: nowrap;'>
+                                    <span style="float:right">
+                                        <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>
+                                    </span>
+                                    
+                                    <table id='tbAppP' class='table'>	
+                                        <tbody>
+                                            <tr>
+                                                <!--colonne popolate dinamicamente!-->
+                                            </tr>
+                                        </tbody>
+                                    </table>  
+
+                                    <div id='div_print' style='display: flex;justify-content: space-between;'>
+                                        <!-- 
                                         div utilizzato dalla stampa
                                         praticamente viene clonato <aside id='div_side'>
                                         ed iniettato quì, questo perchè il browser nasconde <aside>
@@ -389,22 +398,22 @@
                                     !--> 
                                 </div>
                             </div>
-                            
-                            <div class="container-fluid" style="display:none" id='div_urg'>
-                                <h2>Urgenze</h2>
-                                <a href='javascript:void(0)' onclick="urgenze('New')">
-                                    <h3><i class="fas fa-calendar-plus"></i> Nuova urgenza</h3>
-                                </a>    
-                            </div>      
-                                 
-                            <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze'>
                                 
-                            </ul>             
-   
-                                
+    
+						    </div>
+                        </div>
 
-					     </div>
-                     
+                        <div class="container-fluid" style="display:none" id='div_urg'>
+                            <h4>Urgenze</h4>
+                            <a href='javascript:void(0)' onclick="urgenze('New')">
+                                <h5><i class="fas fa-calendar-plus"></i> Nuova urgenza</h5>
+                            </a>    
+                        </div>      
+                             
+                        <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze'>
+                            
+                        </ul>
+
                     </div> 
                      
 					<!-- /.col -->
@@ -476,6 +485,15 @@
 
 	<script src="{{ URL::asset('/') }}dist/js/makeapp.js?ver=<?php echo time(); ?>"></script>
 
+    <script>
+        $(document).ready(function() {
+            const backButtonLink = $('#id_back a');
+            if (backButtonLink.length > 0) {
+                backButtonLink.attr('href', '{{ route("listnewapp") }}');
+                backButtonLink.removeAttr('onclick');
+            }
+        });
+    </script>
 
 	
 

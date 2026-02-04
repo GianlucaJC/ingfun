@@ -23,6 +23,7 @@ use App\Models\appaltinew_urgenze;
 use App\Models\parco_scheda_mezzo;
 use App\Models\parco_marca_mezzo;
 use App\Models\parco_modello_mezzo;
+use App\Models\AppaltoLog; // Import the new model
 use OneSignal;
 use Twilio\Rest\Client;
 use Mail;
@@ -620,6 +621,10 @@ public function __construct()
 	////////////new_function appalti
 
 	public function makeapp($id_giorno_appalto=0) {
+		$infx=Auth::user()->roles->pluck('name');
+		$role=$infx[0];
+
+	
 		$lavoratori=candidati::select('id','nominativo','cognome','tipo_contr','tipo_contratto')
 		->where('dele','=',0)
 		->orderBy('tipo_contratto')	
@@ -667,7 +672,7 @@ public function __construct()
 		->where('dele', "=","0")	
 		->orderBy('targa')->get();
 
-		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','info_app','appaltibox','ditte','marche','modelli','inventario'));
+		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','info_app','appaltibox','ditte','marche','modelli','inventario','role'));
 	}
 
 	public function dele_urg(Request $request) {
@@ -804,11 +809,14 @@ public function __construct()
 		$m_e=$request->input('m_e');
 		$box=$request->input('box');
 		$from=$request->input('from');
+		$is_restore = $request->input('is_restore');
 		//in caso di salvataggio singolo $box contiene il box di riferimento e $arr_box avrà un solo indice
 		//altrimenti ($from==1) $box=1000, popolo l'array $arr_box con un ciclo
 
 		$arr_box=array();
 		if ($from==0) {
+
+
 			$info_appalto=appaltinew_info::where('id_appalto','=',$id_giorno_appalto)
 			->where('m_e','=',$m_e)
 			->where('id_box','=',$box)
@@ -832,7 +840,10 @@ public function __construct()
 
 			$appalto->save();
 		}
-		
+		//da js: targhe_resp=targa+";"+m_e1+";"+box1+";"+elx
+		$targhe_resp=$request->input('targhe_resp');		
+
+
 		$all_id_box=$request->input('all_id_box');
 		$arr_id=explode(";",$all_id_box);
 		
@@ -913,8 +924,7 @@ public function __construct()
 
 		//salvataggio responsabile mezzi
 		
-		//da js: targhe_resp=targa+";"+m_e1+";"+box1+";"+elx
-		$targhe_resp=$request->input('targhe_resp');
+
 		if (strlen($targhe_resp)>0) {
 			$arr_t=explode("|",$targhe_resp);
 			for ($sc=0;$sc<count($arr_t);$sc++) {
@@ -1059,13 +1069,102 @@ public function __construct()
 			$rep->save();				
 		}
 				
-		
+		// --- Logging Start ---
+		$userId = Auth::id();
+		$actionType = ($from == 0) ? 'single_box_save' : 'save_all';
+		if ($is_restore == 1) $actionType = 'ripristino';
+		$logPayload = [];
+
+		if ($from == 0) {
+		    // For single box save, log specific details
+		    $logPayload = [
+		        'luogo_incontro' => $request->input('luogo_incontro'),
+		        'orario_incontro' => $request->input('orario_incontro'),
+		        'luogo_destinazione' => $request->input('luogo_destinazione'),
+		        'ora_destinazione' => $request->input('ora_destinazione'),
+		        'data_servizio' => $request->input('data_servizio'),
+		        'numero_persone' => $request->input('numero_persone'),
+		        'servizi_svolti' => $request->input('servizi'),
+		        'nome_salma' => $request->input('nome_salma'),
+		        'note' => $request->input('note'),
+		        'note_fatturazione' => $request->input('note_fatturazione'),
+		        'ditta_id' => $request->input('ditta'),
+		        'car1_targa' => $request->input('car1'),
+		        'car2_targa' => $request->input('car2'),
+		        'workers_in_box' => $request->input('all_id_box'),
+		        'all_responsibles' => $targhe_resp,
+		    ];
+		} else {
+		    // For save_all, log summary of all changes
+		    $logPayload = [
+		        'all_workers_data' => $request->input('all_id_boxes'),
+		        'vehicles_morning_1' => $request->input('carm1'),
+		        'vehicles_morning_2' => $request->input('carm2'),
+		        'vehicles_afternoon_1' => $request->input('carp1'),
+		        'vehicles_afternoon_2' => $request->input('carp2'),
+		        'companies_data' => $request->input('ditte'),
+		        'on_call_data' => $request->input('reper'),
+		        'absent_data' => $request->input('assenti'),
+		        'all_responsibles' => $targhe_resp,
+		    ];
+		}
+
+
+		AppaltoLog::create([
+		    'user_id' => $userId,
+		    'appalto_id' => $id_giorno_appalto,
+		    'm_e' => ($from == 0) ? $m_e : null,
+		    'box_id' => ($from == 0) ? $box : null,
+		    'action_type' => $actionType,
+		    'payload' => $logPayload,
+		]);
+		// --- Logging End ---		
 
 		$info_appalto=array();
 		$info_appalto['header']="OK";
 		return json_encode($info_appalto);		
 	}
 	///////////////////
+
+	public function getAppaltoLogs(Request $request, $id_giorno_appalto)
+	{
+	    $logs = AppaltoLog::where('appalto_id', $id_giorno_appalto)
+	        ->with('user') // Carica la relazione con l'utente
+	        ->orderByDesc('created_at')
+	        ->get();
+
+	    $formattedLogs = [];
+	    foreach ($logs as $log) {
+	        $userName = $log->user ? $log->user->name : 'Utente Sconosciuto';
+	        $action = '';
+	        $details = '';
+
+	        if ($log->action_type === 'single_box_save') {
+	            $action = "Salvataggio singolo box (Turno: {$log->m_e}, Box: {$log->box_id})";
+	            $payload = $log->payload;
+	            $details = "Luogo Incontro: " . ($payload['luogo_incontro'] ?? 'N/D') . "<br>";
+	            $details .= "Orario Incontro: " . ($payload['orario_incontro'] ?? 'N/D') . "<br>";
+	            $details .= "Lavoratori: " . ($payload['workers_in_box'] ?? 'N/D');
+	        } elseif ($log->action_type === 'save_all') {
+	            $action = "Salvataggio completo di tutti gli appalti";
+	            $details = "Dati riepilogativi salvati."; // Puoi espandere qui con più dettagli se necessario
+	        } elseif ($log->action_type === 'ripristino') {
+	            $action = "Ripristino";
+	            $details = "Ripristino da una versione precedente.";
+	        }
+
+	        $formattedLogs[] = [
+	            'timestamp' => $log->created_at->format('d/m/Y H:i:s'),
+	            'user' => $userName,
+	            'action' => $action,
+	            'details' => $details,
+	            'raw_payload' => $log->payload // Per debug, se necessario
+	        ];
+	    }
+
+	    return response()->json($formattedLogs);
+	}
+
 
 	public function listnewapp(Request $request) {
 		$view_dele=0;
@@ -1078,6 +1177,8 @@ public function __construct()
 			$appalto=new appaltinew;
 			$appalto->data_appalto=$data_appalto;
 			$appalto->save();
+			$new_id = $appalto->id;
+            return redirect()->route('makeapp', ['id_giorno_appalto' => $new_id]);
 		}
 
 		$restore_cand=request()->input("restore_cand");
@@ -1091,7 +1192,7 @@ public function __construct()
 			  ->update(['dele' => 1]);			
 		}		
 		
-		$all_appalti_query=appaltinew::select('appaltinew.id','appaltinew.dele','appaltinew.data_appalto')
+		$all_appalti_query=appaltinew::select('appaltinew.id','appaltinew.dele','appaltinew.data_appalto', 'appaltinew.data_esportazione')
 		->when($view_dele=="0", function ($all_appalti) {
 			return $all_appalti->where('appaltinew.dele', "=","0");
 		})

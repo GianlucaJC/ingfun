@@ -39,6 +39,310 @@ public function __construct()
 		$this->comuni_ref=$comuni_ref;
 	}		
 
+	public function generaFattureDaAppalti(Request $request) {
+		$ids_giorno_appalto = $request->input('ids');
+	
+		if (empty($ids_giorno_appalto)) {
+			return response()->json(['status' => 'error', 'message' => 'Nessun giorno di appalto selezionato.']);
+		}
+	
+		$fatture_generate = []; // Associative array [id_giorno_appalto => [invoices]]
+	
+		foreach ($ids_giorno_appalto as $id_giorno_appalto) {
+			// Get all individual boxes that have a ditta and services assigned
+			$boxes = DB::table('appaltinew_info as i')
+				->join('appaltinew_altro as a', function($join) {
+					$join->on('i.id_appalto', '=', 'a.idapp')
+						 ->on('i.m_e', '=', 'a.m_e')
+						 ->on('i.id_box', '=', 'a.box');
+				})
+				->where('i.id_appalto', '=', $id_giorno_appalto)
+				->whereNotNull('a.ditta')
+				->where('a.ditta', '!=', 0)
+				->whereNotNull('i.servizi_svolti')
+				->where('i.servizi_svolti', '!=', '')
+				->where('i.hide', '!=', 1) // Don't include hidden boxes
+				->select('i.servizi_svolti', 'a.ditta', 'a.box as box_number', 'i.nome_salma', 'i.note_fatturazione', 'i.numero_persone')
+				->get();
+			
+			$fatture_per_giorno = [];
+
+			// Iterate over each box, as each box is a separate invoice
+			foreach ($boxes as $box) {
+				$id_ditta = $box->ditta;
+				$articoli_da_creare = [];
+				$totale_fattura = 0;
+	
+				// Get services for THIS box and prepare invoice lines
+				$service_ids = explode(',', $box->servizi_svolti);
+
+				foreach ($service_ids as $id_servizio) {
+					// Get service details
+					$servizio_dettagli = DB::table('servizi as s')
+						->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
+						->where('s.id', $id_servizio)
+						->where('sd.id_ditta', $id_ditta)
+						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota')
+						->first();
+	
+					if ($servizio_dettagli) {
+						$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
+						$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
+						
+						$quantita = !empty($box->numero_persone) && $box->numero_persone > 0 ? $box->numero_persone : 1;
+
+						$subtotale = ($servizio_dettagli->importo_ditta * $quantita) * (1 + $aliquota_val / 100);
+
+						$descrizione_finale = $servizio_dettagli->descrizione;
+						if (!empty($box->nome_salma)) {
+							$descrizione_finale .= " - Salma: " . $box->nome_salma;
+						}
+						if (!empty($box->note_fatturazione)) {
+							$descrizione_finale .= " - Note: " . $box->note_fatturazione;
+						}
+
+						// Add to an array to be created later
+                        $articoli_da_creare[] = [
+                            'codice' => $servizio_dettagli->id_cod_servizi_ext,
+                            'descrizione' => $descrizione_finale,
+                            'quantita' => $quantita,
+                            'prezzo_unitario' => $servizio_dettagli->importo_ditta,
+                            'aliquota' => $servizio_dettagli->aliquota,
+                            'subtotale' => $subtotale
+                        ];
+	
+						$totale_fattura += $subtotale;
+					}
+				}
+
+				// Only create the invoice if there are lines to add
+                if (!empty($articoli_da_creare)) {
+                    // Create one invoice per box
+                    $fattura = new fatture;
+                    $fattura->id_ditta = $id_ditta;
+                    $fattura->data_invito = now()->toDateString();
+                    $fattura->id_sezionale = 1; // Assuming default
+                    $fattura->totale = $totale_fattura;
+                    $fattura->save();
+                    $id_doc = $fattura->id;
+
+                    // Now create the lines
+                    foreach ($articoli_da_creare as $dati_articolo) {
+                        $articolo = new articoli_fattura;
+                        $articolo->id_doc = $id_doc;
+                        $articolo->codice = $dati_articolo['codice'];
+                        $articolo->descrizione = $dati_articolo['descrizione'];
+                        $articolo->quantita = $dati_articolo['quantita'];
+                        $articolo->prezzo_unitario = $dati_articolo['prezzo_unitario'];
+                        $articolo->aliquota = $dati_articolo['aliquota'];
+                        $articolo->subtotale = $dati_articolo['subtotale'];
+                        $articolo->save();
+                    }
+
+                    // Add to response
+                    $ditta_info = DB::table('ditte')->where('id', $id_ditta)->first();
+                    $ditta_name = $ditta_info ? $ditta_info->denominazione : "Sconosciuta";
+                    
+                    $fatture_per_giorno[] = [
+                        'id_fattura' => $id_doc,
+                        'ditta_name' => $ditta_name . " (Appalto/Box " . $box->box_number . ")"
+                    ];
+                }
+			}
+			if (!empty($fatture_per_giorno)) {
+                $fatture_generate[$id_giorno_appalto] = $fatture_per_giorno;
+            }
+		}
+	
+		return response()->json(['status' => 'ok', 'message' => 'Fatture generate con successo.', 'fatture' => $fatture_generate]);
+	}
+
+	public function esportaFattureCsv(Request $request) {
+		$ids_giorno_appalto = $request->input('ids');
+	
+		if (empty($ids_giorno_appalto)) {
+			return response()->json(['status' => 'error', 'message' => 'Nessun giorno di appalto selezionato.']);
+		}
+	
+		$ditte_processate = [];
+		$generated_files = [];
+
+		// Use Laravel's Storage facade for consistency
+		$temp_dir = 'csv_exports';
+		Storage::disk('public')->makeDirectory($temp_dir);
+
+		try {
+			// First, gather all ditte to avoid creating duplicate client files
+			$all_boxes_query = DB::table('appaltinew_info as i')
+				->join('appaltinew_altro as a', function($join) {
+					$join->on('i.id_appalto', '=', 'a.idapp')
+						 ->on('i.m_e', '=', 'a.m_e')
+						 ->on('i.id_box', '=', 'a.box');
+				})
+				->whereIn('i.id_appalto', $ids_giorno_appalto)
+				->whereNotNull('a.ditta')->where('a.ditta', '!=', 0)
+				->whereNotNull('i.servizi_svolti')->where('i.servizi_svolti', '!=', '')
+				->where('i.hide', '!=', 1);
+			
+			$ditte_ids = (clone $all_boxes_query)->distinct()->pluck('a.ditta');
+	
+			// Generate Client Anagrafica CSV for each unique ditta
+			foreach ($ditte_ids as $id_ditta) {
+				if (in_array($id_ditta, $ditte_processate)) continue;
+				$ditte_processate[] = $id_ditta;
+	
+				$ditta = DB::table('ditte')->where('id', $id_ditta)->first();
+				if (!$ditta) continue;
+				
+				$basename = 'cli_' . $ditta->id . '_' . time() . '.csv';
+				$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
+				$file = fopen($filename, 'w');
+				fputcsv($file, ['codditt', 'an_conto', 'an_tipo', 'an_descr1', 'an_indir', 'an_cap', 'an_citta', 'an_prov', 'an_codfis', 'an_pariva', 'an_codpag', 'an_sdi', 'an_pec', 'an_tel', 'an_email'], ';');
+				$comune = $this->comuni_ref[$ditta->cap . '|' . $ditta->provincia] ?? $ditta->comune;
+				fputcsv($file, ['STD', $ditta->id, 'C', $ditta->denominazione, $ditta->indirizzo, $ditta->cap, $comune, $ditta->provincia, $ditta->cf, $ditta->piva, '', $ditta->sdi, $ditta->pec, $ditta->telefono, $ditta->email], ';');
+				fclose($file);
+				$generated_files[] = $basename;
+			}
+	
+			// Now generate invoice details CSV for each box
+			$all_boxes = $all_boxes_query->select('i.*', 'a.ditta', 'a.box as box_number')->get();
+			
+			$articoli_per_csv = [];
+			foreach ($all_boxes as $box) {
+				$id_ditta = $box->ditta;
+				$ditta_info = DB::table('ditte')->where('id', $id_ditta)->first();
+				if (!$ditta_info) continue;
+	
+				$service_ids = explode(',', $box->servizi_svolti);
+				$articoli_per_csv = [];
+	
+				foreach ($service_ids as $id_servizio) {
+					$servizio_dettagli = DB::table('servizi as s')
+						->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
+						->where('s.id', $id_servizio)->where('sd.id_ditta', $id_ditta)
+						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota')
+						->first();
+	
+					if ($servizio_dettagli) {
+						$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
+						$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
+						$quantita = !empty($box->numero_persone) && $box->numero_persone > 0 ? $box->numero_persone : 1;
+						
+						$descrizione_finale = $servizio_dettagli->descrizione;
+						if (!empty($box->nome_salma)) $descrizione_finale .= " - Salma: " . $box->nome_salma;
+						if (!empty($box->note_fatturazione)) $descrizione_finale .= " - Note: " . $box->note_fatturazione;
+	
+						$articoli_per_csv[] = [
+							'codice' => $servizio_dettagli->id_cod_servizi_ext,
+							'descrizione' => $descrizione_finale,
+							'quantita' => $quantita,
+							'prezzo_unitario' => $servizio_dettagli->importo_ditta,
+							'aliquota_val' => $aliquota_val,
+						];
+					}
+				}
+	
+				if (!empty($articoli_per_csv)) {
+					$unique_invoice_id = date('Ymd') . $box->id_appalto . $box->box_number;
+	
+					$basename = 'ordini_' . $unique_invoice_id . '.csv';
+					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
+					$file = fopen($filename, 'w');
+					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor"], ';');
+	
+					foreach ($articoli_per_csv as $index => $articolo) {
+						$data_riga = [
+							$unique_invoice_id, $index + 1, $box->data_servizio, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
+							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
+							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
+							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
+							$ditta_info->id
+						];
+						fputcsv($file, $data_riga, ';');
+					}
+					fclose($file);
+	
+					$generated_files[] = $basename;
+				}
+			}
+
+			// FTP Upload Attempt
+			if (!empty($generated_files)) {
+				$host = env('FTP_HOST');
+				$port = (int) env('FTP_PORT', 21);
+				$user = env('FTP_USERNAME');
+				$pass = env('FTP_PASSWORD');
+				$timeout = (int) env('FTP_TIMEOUT', 30);
+				$root = env('FTP_ROOT', '/');
+
+				$conn_id = ftp_connect($host, $port, $timeout);
+				if ($conn_id === false) {
+					throw new \Exception("Connessione FTP fallita verso $host:$port");
+				}
+
+				if (ftp_login($conn_id, $user, $pass) === false) {
+					ftp_close($conn_id);
+					throw new \Exception("Autenticazione FTP fallita per l'utente $user");
+				}
+
+				// Imposta l'opzione per problemi con server dietro NAT
+				if (ftp_set_option($conn_id, FTP_USEPASVADDRESS, false) === false) {
+					// Non è un errore fatale, ma logghiamo un avviso
+					\Log::warning("Impossibile impostare l'opzione FTP FTP_USEPASVADDRESS.");
+				}
+
+				// Abilita la modalità passiva, cruciale per superare i firewall
+				if (ftp_pasv($conn_id, true) === false) {
+					ftp_close($conn_id);
+					throw new \Exception("Impossibile abilitare la modalità passiva FTP.");
+				}
+
+				foreach($generated_files as $basename) {
+					$local_file_path = Storage::disk('public')->path($temp_dir . '/' . $basename);
+					$remote_file_path = rtrim($root, '/') . '/Impegni/' . $basename;
+
+					if (file_exists($local_file_path) && !@ftp_put($conn_id, $remote_file_path, $local_file_path, FTP_ASCII)) {
+						throw new \Exception("Upload FTP fallito per il file $basename. Controllare i log del server FTP e le regole del firewall.");
+					}
+				}
+				ftp_close($conn_id);
+			}
+
+			// Mark as exported ONLY if FTP upload was successful (and files were generated)
+			if (count($generated_files) > 0) {
+				DB::table('appaltinew')->whereIn('id', $ids_giorno_appalto)->update(['data_esportazione' => now()]);
+			}
+		} catch (\Exception $e) {
+			return response()->json([
+				'status' => 'error', 
+				'message' => 'Errore durante l\'upload FTP: ' . $e->getMessage() . ". I file CSV sono stati comunque generati e sono scaricabili.",
+				'files' => $generated_files
+			]);
+		}
+	
+		return response()->json([
+			'status' => 'ok', 
+			'message' => count($generated_files) . " file CSV generati e caricati con successo.",
+			'files' => $generated_files
+		]);
+	}
+
+	public function svuotaListaCsv()
+	{
+		try {
+			$files = Storage::disk('public')->files('csv_exports');
+			foreach ($files as $file) {
+				// We only want to delete csv files
+				if (pathinfo($file, PATHINFO_EXTENSION) === 'csv') {
+					Storage::disk('public')->delete($file);
+				}
+			}
+			return response()->json(['status' => 'ok', 'message' => 'Elenco file CSV svuotato con successo.']);
+		} catch (\Exception $e) {
+			return response()->json(['status' => 'error', 'message' => 'Si è verificato un errore durante la pulizia dei file CSV: ' . $e->getMessage()]);
+		}
+	}
+
 	public function save_edit_aliquote($request) {
 		$edit_elem=0;
 		if ($request->has("edit_elem")) $edit_elem=$request->input("edit_elem");

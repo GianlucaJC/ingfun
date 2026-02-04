@@ -12,7 +12,15 @@
 
 
 <style>
-
+.checkbox-td {
+    text-align: center;
+    vertical-align: middle;
+}
+.checkbox-td .form-check-input {
+    margin-left: auto;
+    margin-right: auto;
+    float: none;
+}
 </style>
 @section('content_main')
 
@@ -79,10 +87,35 @@
 				
 			<div class="row">
 			  <div class="col-lg-12">
-				<h5>TOTALE  APPALTI</h5>
-				<table id='tbl_list_pers' class="display">
+				<div class="row mt-2 mb-3">
+					<div class="col-lg-6 d-flex">
+						<button type="button" onclick="new_app()" class="btn btn-primary btn-lg w-100">
+							<i class="fa fa-calendar-plus"></i> Definisci Nuovo Appalto
+						</button>
+					</div>
+					<div class="col-lg-6">
+						<div class="btn-group d-flex" role="group">
+							<div class="input-group">
+								<button type="button" id="genera_fatture" class="btn btn-success btn-lg">
+									<i class="fa fa-file-invoice"></i> Genera Fatture
+								</button>
+								<button class="btn btn-info btn-lg" type="button" id="info_fatturazione" title="Info sulla generazione fatture">
+									<i class="fa fa-info-circle"></i>
+								</button>
+							</div>
+							<button type="button" id="esporta_fatture" class="btn btn-warning btn-lg">
+								<i class="fa fa-upload"></i> Esporta Fatture
+							</button>
+						</div>
+					</div>
+				</div>
+				<h5>TOTALE GIORNI APPALTO</h5>
+				<table id='tbl_list_appalti' class="display">
 					<thead>
 						<tr>
+							<th class="checkbox-td">
+								<input class="form-check-input" type="checkbox" id="select_all">
+							</th>
 							<th style='min-width:220px'>Operazioni</th>
 							<th style='max-width:40px'>ID</th>
 
@@ -92,12 +125,18 @@
 							<th>Mezzi impiegati</th>
 							<th>Appalti valorizzati</th>
 							<th>Urgenze</th>
+							<th>Fatture</th>
+							<th>Data Esportazione</th>
 						</tr>
 					</thead>
 					<tbody>
 			
 					@foreach($all_appalti as $appalti)
 						<tr>
+
+							<td class="checkbox-td">
+								<input class="form-check-input appalto-checkbox" type="checkbox" name="appalti_selezionati[]" value="{{$appalti->id}}">
+							</td>
 
 							<td style='min-width:220px'>
 								
@@ -142,12 +181,21 @@
 							<td>
 								{{$appalti->urgenze}}
 							</td>
+							<td id="fatture-cell-{{$appalti->id}}">
+								<!-- PDF buttons will be injected here by JS -->
+							</td>
+							<td>
+								@if($appalti->data_esportazione)
+									{{ \Carbon\Carbon::parse($appalti->data_esportazione)->format('d/m/Y H:i') }}
+								@endif
+							</td>
 
 						</tr>
 					@endforeach
 					</tbody>
 					<tfoot>
 						<tr>
+							<th class="checkbox-td"></th>
 							<th style='min-width:220px'>Operazioni</th>
 							<th style='max-width:40px'>ID</th>
 							<th>Data</th>
@@ -155,6 +203,8 @@
 							<th>Mezzi impiegati</th>
 							<th>Appalti valorizzati</th>
 							<th>Urgenze</th>
+							<th></th>
+							<th>Data Esportazione</th>
 						</tr>
 					</tfoot>					
 				</table>
@@ -165,18 +215,6 @@
 
 			</div>
 			<!-- /.row -->
-<?php
-
-	//$value="734|2047";
-	//$request->session()->push('onlysel', $value);
-?>	
-
-			<div class="row mt-2">
-				<div class="col-lg-12">
-					
-					<button type="button" onclick="new_app()" class="btn btn-primary btn-lg btn-block">Definisci Nuovo Appalto</button>
-				</div>
-			</div>
 	
 			<!-- DISATTIVATO!
 				<div class="row">
@@ -244,6 +282,9 @@
 	<!-- Bootstrap 5 -->
 	<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-MrcW6ZMFYlzcLA8Nl+NtUVF0sA7MsXsP1UyJoMp4YLEuNSfAP+JcXn/tWtIaxVXM" crossorigin="anonymous"></script>
 	<!-- AdminLTE App -->
+	<!-- SweetAlert2 -->
+	<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 
 	<!-- inclusione standard
@@ -259,6 +300,6 @@
 	<!-- fine DataTables !-->
 
 
-	<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.004"></script>
+<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.011"></script>
 
 @endsection

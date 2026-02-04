@@ -79,6 +79,8 @@ Route::group(['only_log' => ['auth']], function () {
 		Route::post('save_urgenza', [ 'as' => 'save_urgenza', 'uses' => 'App\Http\Controllers\ControllerAppalti@save_urgenza']);				
 		////////////////////////////	
 
+		Route::post('get_appalto_logs/{id_giorno_appalto}', [ 'as' => 'get_appalto_logs', 'uses' => 'App\Http\Controllers\ControllerAppalti@getAppaltoLogs']);
+
 
 		Route::post('load_modello', [ 'as' => 'load_modello', 'uses' => 'App\Http\Controllers\ControllerAppalti@load_modello']);
 
@@ -285,6 +287,12 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::get('lista_inviti', [ 'as' => 'lista_inviti', 'uses' => 'App\Http\Controllers\ControllerInvito@lista_inviti']);
 	
 	Route::post('lista_inviti', [ 'as' => 'lista_inviti', 'uses' => 'App\Http\Controllers\ControllerInvito@lista_inviti']);
+
+	Route::post('esporta_fatture_csv', [ 'as' => 'esporta_fatture_csv', 'uses' => 'App\Http\Controllers\ControllerInvito@esportaFattureCsv']);
+
+	Route::post('svuota_lista_csv', [ 'as' => 'svuota_lista_csv', 'uses' => 'App\Http\Controllers\ControllerInvito@svuotaListaCsv']);
+
+	Route::post('genera_fatture_da_appalti', [ 'as' => 'genera_fatture_da_appalti', 'uses' => 'App\Http\Controllers\ControllerInvito@generaFattureDaAppalti']);
 
 	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo']);
 

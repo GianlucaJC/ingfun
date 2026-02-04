@@ -1,5 +1,7 @@
 $(document).ready(function () {
     $('#tbl_list_appalti').DataTable({
+        "pageLength": 10,
+        "lengthChange": true,
         dom: 'Bfrtip',
         buttons: [
             'excel', 'pdf'
