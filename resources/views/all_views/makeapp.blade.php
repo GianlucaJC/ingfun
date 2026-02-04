@@ -32,64 +32,57 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.9.3/html2pdf.bundle.min.js"></script>
 @endsection
 <style>
-    .itemlist {
-        padding:0.4rem !important;
-    }
-    .panel-footer {
-    display: flex;
-    justify-content: space-between;
-    }
-    .box {
-        
+    .itemlist { padding:0.4rem !important; }
+    .panel-footer { display: flex; justify-content: space-between; }
+    th, td { padding-right: 18px; }
+    .clprint { font-size:1.2rem; }
+</style>
+
+<style>
+    /* Custom styles for fixed sidebar */
+    #side_list {
+        position: fixed;
+        top: 88px; /* Altezza navbar (circa 56px) + padding-top content-wrapper (0.5rem = 8px) + margin-top container-fluid (1.5rem = 24px) */
+        left: 0.6rem; /* Larghezza della sidebar principale collassata in AdminLTE */
+        width: 13.66666667%; /* Corrisponde alla larghezza di col-md-2 */
+        height: calc(100vh - 88px); /* Altezza rimanente del viewport */
+        overflow-y: auto; /* Abilita lo scroll interno alla sidebar */
+        background-color: white; /* Corrisponde al colore di sfondo del content-wrapper */
+        z-index: 1030; /* Assicura che rimanga sopra il contenuto principale */
+        /* Il padding è già gestito dalla classe col-md-2 */
     }
 
-    th, td {
-    padding-right: 18px;
-    }
- 
-    .clprint {
-        font-size:1.2rem;
+    /* Regola la colonna del contenuto principale per lasciare spazio alla sidebar fissa */
+    /* Seleziona specificamente il col-md-10 che è fratello di #side_list */
+    .content-wrapper .content > .container-fluid.mt-4 > form > section.content > .container-fluid > .row > .col-md-10 {
+        margin-left: calc(13.66666667% + 0.6rem); /* Sposta il contenuto principale a destra della sidebar fissa + sidebar principale collassata */
+        width: calc(83.33333333% - 0.6rem); /* Larghezza rimanente */
     }
 </style>
 
 @section('space_top')
+    <div class="d-flex align-items-center">
+        <button type="button" class="btn btn-outline-success btn-sm" id="btn_save_all" onclick="save_all()">
+            <i class="fa-solid fa-floppy-disk"></i> Salva Tutto
+        </button>
 
-    <div class="">
-        <button type="button" class="btn btn-outline-success btn-sm mb-2" id="btn_save_all" onclick="save_all()"><i class="fa-solid fa-floppy-disk"></i> Salva Tutto</button>
-    </div>
-
-    <div class="ml-3">
-        <button type="button" class="btn btn-outline-info btn-sm mb-2" id="btn_check_persone" onclick="check_persone()">
+        <button type="button" class="btn btn-outline-info btn-sm ms-2" id="btn_check_persone" onclick="check_persone()">
             <i class="fa-solid fa-person-circle-check"></i> Check persone
         </button>
-    </div>
 
-    <div class="ml-3">        
-            <button type="button" onclick='make_msg("","",0)' class="btn btn-outline-success btn-sm mb-2">
-                <i class="fab fa-whatsapp"></i> Messaggio libero
-            </button>
-    </div>
+        <button type="button" onclick='make_msg("","",0)' class="btn btn-outline-success btn-sm ms-2">
+            <i class="fab fa-whatsapp"></i> Messaggio libero
+        </button>
 
-    <div class="ml-3">
-        <button type="button" id='btn_print' class="btn btn-outline-success btn-sm mb-2" onclick="generatePDF()">
+        <button type="button" id='btn_print' class="btn btn-outline-success btn-sm ms-2" onclick="generatePDF()">
             <i class="fas fa-print"></i> Stampa videata
-        </button>        
-    </div>
+        </button>
 
-    @if (isset($role) && $role=="admin")
-    <div class="ml-3">
-        <button type="button" id='btn_show_logs' class="btn btn-outline-secondary btn-sm mb-2" onclick="showAppaltoLogs()">
+        @if (isset($role) && $role=="admin")
+        <button type="button" id='btn_show_logs' class="btn btn-outline-secondary btn-sm ms-2" onclick="showAppaltoLogs()">
             <i class="fas fa-history"></i> Log Eventi
-        </button>        
-    </div>
-    @endif
-    
-
-
-    <div class="ml-3">
-        <label for="zoomlevel" class="form-label">Zoom level</label>
-        <input type="range" class="form-range" min="0.10" max="1.05" step="0.02" id="zoomlevel"  onchange="setZoom(this.value,1)">
-
+        </button>
+        @endif
     </div>
 @endsection
 
@@ -108,9 +101,6 @@
     <div class="content" id='div_tbx'>
     
       <div class="container-fluid mt-4">
-	  <!--<div class='onesignal-customlink-container'></div>!-->
-
-
 		<form method='post' action="{{ route('makeapp') }}" id='frm_appalti' name='frm_appalti' autocomplete="off">
 			<input name="_token" type="hidden" value="{{ csrf_token() }}" id='token_csrf'>	
 			<input type="hidden" value="{{url('/')}}" id="url" name="url">
@@ -157,9 +147,6 @@
 
             <input type='hidden' name='strm' id='strm' value='{{$strm}}'> 
             <input type='hidden' name='strp' id='strp' value='{{$strp}}'> 
-
-
-
             <input type='hidden' name='strall' id='strall' value='{{$strall}}'> 
             <input type='hidden' name='maxM' id='maxM' value='{{$maxM}}'> 
             <input type='hidden' name='maxP' id='maxP' value='{{$maxP}}'> 
@@ -167,23 +154,21 @@
 				<section class="content">
 				<div class="container-fluid" id='div_all'>
 
-					<div class="row" style='width:1400px'>
+					<div class="row">
 
 					<div class="col-md-2" id='side_list'>
 
                         <div class="card-body">
-
-
                             <div class="accordion">
 
                                 <!--accordion persone !-->
                                 <div class="accordion-item">
                                     <h2 class="accordion-header">
-                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwox" aria-expanded="false" aria-controls="flush-collapseTwox" >
+                                    <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#flush-collapseTwox" aria-expanded="true" aria-controls="flush-collapseTwox" >
                                         Persone
                                     </button>
                                     </h2>
-                                    <div id="flush-collapseTwox" class="accordion-collapse show" >
+                                    <div id="flush-collapseTwox" class="accordion-collapse collapse show" >
                                         <div class="accordion-body" draggable="true" ondrop="dropHandlerPers(event)" ondragover="dragoverHandlerPers(event)" >
  
                                             <!--testo persone!-->
@@ -204,17 +189,12 @@
                                                             if ($tipo_contratto==5) $color="secondary";
 
                                                         ?>
-                                                        
-
-
                                                         <div style='line-height:0.9;' id='spanlav{{$lavoratore->id}}' class='allnomi'data-nome='{{$lavoratore->nominativo}}' ><font size='1rem'>
                                                             <a href="javascript:void(0)" class="link-{{$color}} link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnlav{{$lavoratore->id}}' data-color='{{$color}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
                                                             <b>{{$lavoratore->cognome}}</b>
                                                             </a>
                                                             </font>
                                                         </div>
-
-
                                                         <div style='display:none' id='unlock{{$lavoratore->id}}'>
                                                             <a href='#' onclick="unlock({{$lavoratore->id}})">
                                                                 <i class="fa-solid fa-unlock"></i>
@@ -249,8 +229,6 @@
                                                             if (strlen($alld)!=0) $alld.="|";
                                                             $alld.=$ditta->id.";".$ditta->denominazione.";".$ditta->alias;
                                                         ?>
-
-
                                                         <div style='line-height:1.2;margin-right:1rem' id='spandit' class='allditte' data-nome='{{$ditta->denominazione}}' ><font size='1rem'>
                                                             <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  data-alias='{{$ditta->alias}}'  id='btndit{{$ditta->id}}' data-iddit='{{$ditta->id}}'  
                                                             draggable="true" ondragstart="dragstartHandlerDitta(event)" >
@@ -303,8 +281,6 @@
                                                                 if (strlen($all_alias_m)!=0) $all_alias_m.="|";
                                                                 $all_alias_m.=$aliasm.";".$targa;
                                                             ?>        
-
-
                                                         <div style='line-height:1.2;margin-right:1rem' id='spanmez' class='allmezzi' data-nome='{{$mezzo}}'><font size='1rem'>
                                                             <a href="javascript:void(0)" class="link-primary link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnmezzo{{$flotta->id}}' data-idmezzo='{{$flotta->id}}' 
                                                                 data-targa='{{$flotta->targa}}' data-mezzo='{{$mezzo}}'
@@ -315,20 +291,15 @@
                                                                 else
                                                                     echo $aliasm;    
                                                             ?>  
-
                                                             </a>
                                                             </font>
                                                         </div>     
-                                                                                                               
                                                             <?php
                                                                 if (strlen($infomezzi)!=0) $infomezzi.=";";
-
                                                                 $infomezzi.="$targa-$marca-$modello";
                                                             ?>
                                                         @endforeach	
-
                                                         <input type='hidden' name='all_alias_m' id='all_alias_m' value='{{$all_alias_m}}'>                                                            
-
                                                     </div>
                                                 </div>       
                                         </div>
@@ -336,72 +307,87 @@
                                 </div>
                                 <input type='hidden' name='infomezzi' id='infomezzi' value='{{$infomezzi}}'>
                                 <!--fine accordion mezzi !-->
-
-
                             </div>
                         </div>
 
 					</div>
 					<!-- /.col -->
                     
-					<div class="col-md-10">                        
-                        <div id="zoom_wrapper">
-                            <div id='div_tb' style='border:2px ;width:2500px' >
-                                <?php
-                                    $dap=date("Y-m-d");$dap1=$dap;
-                                    if (isset($info_app[0]->data_appalto)) {
-                                        $dap=$info_app[0]->data_appalto;
-                                        $dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
-                                        echo "Appalti del <b>".$dap1."</b>";
-                                    }
-                                ?>
+					<div class="col-md-10">
+						<?php
+							$dap=date("Y-m-d");$dap1=$dap;
+							if (isset($info_app[0]->data_appalto)) {
+								$dap=$info_app[0]->data_appalto;
+								$dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
+								echo "Appalti del <b>".$dap1."</b>";
+							}
+						?>
+						<input type='hidden' id='dap' value='{{$dap}}'>
+						<input type='hidden' id='dap1' value='{{$dap1}}'>
 
-                                <input type='hidden' id='dap' value='{{$dap}}'>
-                                <input type='hidden' id='dap1' value='{{$dap1}}'>
-                                
-                                <div style='overflow-x:scroll;white-space: nowrap;'>
-                                    <span style="float:right">
-                                        <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')">
-                                        Aggiungi appalto mattutino</a>						
-                                    </span>
-                                
-                                
-                                    <table id='tbAppM' class='table'>	
-                                        <tbody>
-                                        <tr>
-                                                <!--colonne popolate dinamicamente!-->
-                                        </tr>
-                                        </tbody>
+						<!-- Slider Generale -->
+						<div class="form-group">
+							<label for="zoom_slider_all">Zoom Generale (Mattina e Pomeriggio)</label>
+							<input type="range" class="form-range w-50" id="zoom_slider_all" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomAll(this.value, 1)">
+						</div>
+						<hr>
 
-                                    </table>
-                                </div>
-                                   
-                                <div style='overflow-x:scroll;white-space: nowrap;'>
-                                    <span style="float:right">
-                                        <a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" >Aggiungi appalto pomeridiano</a>
-                                    </span>
-                                    
-                                    <table id='tbAppP' class='table'>	
-                                        <tbody>
-                                            <tr>
-                                                <!--colonne popolate dinamicamente!-->
-                                            </tr>
-                                        </tbody>
-                                    </table>  
+						<!-- Sezione Mattina -->
+						<div class="form-group">
+							<label for="zoom_slider_m">Zoom Mattino</label>
+							<input type="range" class="form-range w-50" id="zoom_slider_m" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomM(this.value, 1)">
+						</div>
+						<div style='background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+							<div style='padding:10px; display: flex; align-items: center;'>
+								<a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')" class="link-light me-2">
+									Aggiungi appalto
+								</a>
+								APPALTI DELLA MATTINA
 
-                                    <div id='div_print' style='display: flex;justify-content: space-between;'>
-                                        <!-- 
-                                        div utilizzato dalla stampa
-                                        praticamente viene clonato <aside id='div_side'>
-                                        ed iniettato quì, questo perchè il browser nasconde <aside>
-                                        forse per spazio o per impostazioni che non trovo
-                                    !--> 
-                                </div>
-                            </div>
-                                
-    
-						    </div>
-                        </div>
+							</div>
+						</div>
+						<div id="zoom_wrapper_m" style="overflow-x: auto;">
+							<div id="div_tb_m">
+								<table id='tbAppM' class='table' style="width:100%">
+									<tbody>
+										<tr class="d-flex">
+											<!-- Colonne popolate dinamicamente -->
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<hr>
+
+						<!-- Sezione Pomeriggio -->
+						<div class="form-group">
+							<label for="zoom_slider_p">Zoom Pomeriggio</label>
+							<input type="range" class="form-range w-50" id="zoom_slider_p" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomP(this.value, 1)">
+						</div>
+						<div style='background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+							<div style='padding:10px; display: flex; align-items: center;'>
+								<a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" class="link-light me-2">
+									Aggiungi appalto
+								</a>
+								APPALTI DEL POMERIGGIO
+							</div>
+						</div>
+						<div id="zoom_wrapper_p" style="overflow-x: auto;">
+							<div id="div_tb_p">
+								<table id='tbAppP' class='table' style="width:100%">
+									<tbody>
+										<tr class="d-flex">
+											<!-- Colonne popolate dinamicamente -->
+										</tr>
+									</tbody>
+								</table>
+							</div>
+						</div>
+
+						<div id='div_print' style='display: flex;justify-content: space-between;'>
+							<!-- div utilizzato dalla stampa -->
+						</div>
 
                         <div class="container-fluid" style="display:none" id='div_urg'>
                             <h4>Urgenze</h4>
@@ -476,10 +462,6 @@
 	<!-- AdminLTE App -->
 	<script src="{{ URL::asset('/') }}dist/js/adminlte.min.js"></script>
 
-
-
-
-
 	<!-- SweetAlert2 -->
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
@@ -494,7 +476,5 @@
             }
         });
     </script>
-
-	
 
 @endsection

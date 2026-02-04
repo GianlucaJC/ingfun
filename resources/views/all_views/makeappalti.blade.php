@@ -97,40 +97,56 @@ th, td {
 					</div>
 					<!-- /.col -->
 					<div class="col-md-9">
-						
-							<!-- THE CALENDAR -->
-						<table>	
-							<tr>
-								<td colspan='7' style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
-									<div style='padding:10px'>APPALTI DELLA MATTINA</div>
-								</td>
-							</tr>
-							<tr>
-								<td><div id="calendar1"></div></td>
-								<td><div id="calendar2"></div></td>
-								<td><div id="calendar3"></div></td>
-								<td><div id="calendar4"></div></td>
-								<td><div id="calendar5"></div></td>
-								<td><div id="calendar6"></div></td>
-								<td><div id="calendar7"></div></td>
-							</tr>
-							<tr><td colspan='7'> </td></tr>
-							<tr><td colspan='7'> </td></tr>
-							<tr>
-								<td colspan='7' style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
-									<div style='padding:10px'>APPALTI DEL POMERIGGIO</div>
-								</td>
-							</tr>							
-							<tr>
-								<td><div id="calendars1"></div></td>
-								<td><div id="calendars2"></div></td>
-								<td><div id="calendars3"></div></td>
-								<td><div id="calendars4"></div></td>
-								<td><div id="calendars5"></div></td>
-								<td><div id="calendars6"></div></td>
-								<td><div id="calendars7"></div></td>
-							</tr>							
-						</table>	
+
+						<!-- Slider per il Mattino -->
+						<div class="form-group">
+							<label for="zoom_slider_m">Zoom Mattino</label>
+							<input type="range" class="form-range w-50" id="zoom_slider_m" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomM(this.value, 1)">
+						</div>
+
+						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+							<div style='padding:10px'>APPALTI DELLA MATTINA</div>
+						</div>
+
+						<div id="zoom_wrapper_m" style="overflow-x: auto;">
+							<div id="div_tb_m">
+								<div class="d-flex flex-row">
+									<div class="p-2" style="min-width: 200px;"><div id="calendar1"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendar2"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendar3"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendar4"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendar5"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendar6"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendar7"></div></div>
+								</div>
+							</div>
+						</div>
+
+						<hr>
+
+						<!-- Slider per il Pomeriggio -->
+						<div class="form-group">
+							<label for="zoom_slider_p">Zoom Pomeriggio</label>
+							<input type="range" class="form-range w-50" id="zoom_slider_p" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomP(this.value, 1)">
+						</div>
+
+						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+							<div style='padding:10px'>APPALTI DEL POMERIGGIO</div>
+						</div>
+
+						<div id="zoom_wrapper_p" style="overflow-x: auto;">
+							<div id="div_tb_p">
+								 <div class="d-flex flex-row">
+									<div class="p-2" style="min-width: 200px;"><div id="calendars1"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendars2"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendars3"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendars4"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendars5"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendars6"></div></div>
+									<div class="p-2" style="min-width: 200px;"><div id="calendars7"></div></div>
+								</div>
+							</div>
+						</div>
 					</div>
 					<!-- /.col -->
 					</div>

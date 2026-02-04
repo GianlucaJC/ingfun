@@ -12,10 +12,29 @@ var dittall=new Array();
 var alias_mezzi=new Array();
 var appaltoLogs = [];
 
-function resetZoom() {
-    setZoom(zoomI, 0);
-    // Cerca lo slider e reimposta il suo valore
-    const slider = $('input[type="range"][onchange*="setZoom"]');
+let storedZoomAll = zoomI;
+let storedZoomM = zoomI;
+let storedZoomP = zoomI;
+
+function resetZoomAll() {
+    setZoomAll(zoomI, 0);
+    const slider = $('#zoom_slider_all');
+    if (slider.length > 0) {
+        slider.val(zoomI);
+    }
+}
+
+function resetZoomM() {
+    setZoomM(zoomI, 0);
+    const slider = $('#zoom_slider_m');
+    if (slider.length > 0) {
+        slider.val(zoomI);
+    }
+}
+
+function resetZoomP() {
+    setZoomP(zoomI, 0);
+    const slider = $('#zoom_slider_p');
     if (slider.length > 0) {
         slider.val(zoomI);
     }
@@ -70,10 +89,10 @@ function resetZoom() {
     id_giorno_appalto=$("#id_giorno_appalto").val()
     load_appalti(id_giorno_appalto)
     load_ini_lav();
+ 
+    setZoomAll(zoomI,0); // Inizializza tutti gli slider e i bottoni di reset
 
-    setZoom(zoomI,0)
-
-    $("#div_side").removeClass('control-sidebar-dark')
+    $("#div_side").removeClass('control-sidebar-dark');
     $('.control-sidebar').ControlSidebar('show');
     $("#div_urg").show(1000);
     //$('[data-toggle="tooltip"]').tooltip(); 
@@ -81,12 +100,28 @@ function resetZoom() {
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
 
-    // Aggiunge un bottone per resettare lo zoom
-    const slider = $('input[type="range"][onchange*="setZoom"]');
-    if (slider.length > 0) {
-        const resetButton = $('<button id="resetZoomBtn" class="btn btn-secondary btn-sm" style="margin-left: 10px; display: none;">Ripristina Zoom</button>');
-        resetButton.on('click', resetZoom);
-        slider.after(resetButton);
+    // Aggiunge un bottone per resettare lo zoom per GENERALE
+    const sliderAll = $('#zoom_slider_all');
+    if (sliderAll.length > 0) {
+        const resetButtonAll = $('<button id="resetZoomBtnAll" class="btn btn-secondary btn-sm" style="margin-left: 10px; display: none;">Ripristina Zoom</button>');
+        resetButtonAll.on('click', resetZoomAll);
+        sliderAll.after(resetButtonAll);
+    }
+
+    // Aggiunge un bottone per resettare lo zoom per MATTINA
+    const sliderM = $('#zoom_slider_m');
+    if (sliderM.length > 0) {
+        const resetButtonM = $('<button id="resetZoomBtnM" class="btn btn-secondary btn-sm" style="margin-left: 10px; display: none;">Ripristina Zoom</button>');
+        resetButtonM.on('click', resetZoomM);
+        sliderM.after(resetButtonM);
+    }
+
+    // Aggiunge un bottone per resettare lo zoom per POMERIGGIO
+    const sliderP = $('#zoom_slider_p');
+    if (sliderP.length > 0) {
+        const resetButtonP = $('<button id="resetZoomBtnP" class="btn btn-secondary btn-sm" style="margin-left: 10px; display: none;">Ripristina Zoom</button>');
+        resetButtonP.on('click', resetZoomP);
+        sliderP.after(resetButtonP);
     }
 
 } );
@@ -2502,30 +2537,61 @@ function createNewAppBox(m_e, from) {
     }
 }
 
-function setZoom(value,from) {
-	$('#div_tb').css('transform','scale('+value+')');
-	$('#div_tb').css('transformOrigin','left top');
-    const divTb = $('#div_tb');
-    if (divTb.length > 0) {
-        const originalHeight = divTb.get(0).scrollHeight;
-        const scaledHeight = originalHeight * value;
-        $('#zoom_wrapper').height(scaledHeight);
+function setZoomGeneric(value, from, targetDiv, wrapperDiv, resetButtonId, sliderId) {
+    const scaleValue = parseFloat(value);
+    if (targetDiv) {
+        $(targetDiv).css({
+            'transform': 'scale(' + scaleValue + ')',
+            'transform-origin': 'left top',
+            'width': (100 / scaleValue) + '%'
+        });
+
+        const divTb = $(targetDiv);
+        if (divTb.length > 0) {
+            const originalHeight = divTb.get(0).scrollHeight;
+            // Use Math.ceil to prevent rounding errors that could make the container too small
+            const scaledHeight = Math.ceil(originalHeight * scaleValue);
+            $(wrapperDiv).css({
+                'height': scaledHeight + 'px',
+                'overflow-y': 'hidden'
+            });
+        }
     }
 
-    if (from==1) $("#div_side").hide(120)
-    if (value<=zoomI) $("#div_side").show(120)
+    if (from == 1) $("#div_side").hide(120);
+    if (scaleValue <= zoomI) $("#div_side").show(120);
 
     // Gestisce la visibilità del bottone di reset
-    const resetButton = $('#resetZoomBtn');
-    if (resetButton.length > 0) {
-        if (parseFloat(value) !== zoomI) {
-            resetButton.show();
+    const btn = $(resetButtonId);
+    if (btn.length > 0) {
+        if (scaleValue.toFixed(2) !== zoomI.toFixed(2)) {
+            btn.show();
         } else {
-            resetButton.hide();
+            btn.hide();
         }
+    }
+
+    if (sliderId) {
+        $(sliderId).val(scaleValue);
     }
 }
 
+function setZoomAll(value, from) {
+    // Update Morning section
+    setZoomGeneric(value, from, '#div_tb_m', '#zoom_wrapper_m', '#resetZoomBtnM', '#zoom_slider_m');
+    // Update Afternoon section
+    setZoomGeneric(value, from, '#div_tb_p', '#zoom_wrapper_p', '#resetZoomBtnP', '#zoom_slider_p');
+    // Update the "All" reset button
+    setZoomGeneric(value, from, null, null, '#resetZoomBtnAll', null);
+}
+
+function setZoomM(value, from) {
+    setZoomGeneric(value, from, '#div_tb_m', '#zoom_wrapper_m', '#resetZoomBtnM', '#zoom_slider_m');
+}
+
+function setZoomP(value, from) {
+    setZoomGeneric(value, from, '#div_tb_p', '#zoom_wrapper_p', '#resetZoomBtnP', '#zoom_slider_p');
+}
 
 function get_msg() {
     msg=$("#txt_msg").val()
