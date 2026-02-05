@@ -42,21 +42,26 @@
     /* Custom styles for fixed sidebar */
     #side_list {
         position: fixed;
-        top: 88px; /* Altezza navbar (circa 56px) + padding-top content-wrapper (0.5rem = 8px) + margin-top container-fluid (1.5rem = 24px) */
-        left: 0.6rem; /* Larghezza della sidebar principale collassata in AdminLTE */
-        width: 13.66666667%; /* Corrisponde alla larghezza di col-md-2 */
-        height: calc(100vh - 88px); /* Altezza rimanente del viewport */
-        overflow-y: auto; /* Abilita lo scroll interno alla sidebar */
+        top: 55px; /* Altezza navbar (~57px) + altezza barra bottoni (~31px) */
+        left: 0.6rem; /* Larghezza della sidebar principale collassata di AdminLTE */
+        width: 190px; /* Larghezza fissa per contenere gli elementi interni */
+        height: calc(100vh - 55px); /* Altezza rimanente del viewport */
         background-color: white; /* Corrisponde al colore di sfondo del content-wrapper */
         z-index: 1030; /* Assicura che rimanga sopra il contenuto principale */
-        /* Il padding è già gestito dalla classe col-md-2 */
+        display: flex; /* Aggiunto per consentire al card-body di espandersi */
+    }
+ 
+    #side_list > .card-body {
+        flex: 1; /* Fa in modo che il card-body occupi tutto lo spazio verticale */
+        overflow-y: auto; /* Abilita lo scroll solo per il corpo della card */
+        padding: 0.5rem; /* Aggiunge un po' di spazio interno */
     }
 
     /* Regola la colonna del contenuto principale per lasciare spazio alla sidebar fissa */
-    /* Seleziona specificamente il col-md-10 che è fratello di #side_list */
-    .content-wrapper .content > .container-fluid.mt-4 > form > section.content > .container-fluid > .row > .col-md-10 {
-        margin-left: calc(13.66666667% + 0.6rem); /* Sposta il contenuto principale a destra della sidebar fissa + sidebar principale collassata */
-        width: calc(83.33333333% - 0.6rem); /* Larghezza rimanente */
+    /* Seleziona specificamente il col-md-11 che è fratello di #side_list */
+    .content-wrapper .content > .container-fluid.mt-4 > form > section.content > .container-fluid > .row > .col-md-11 {
+        margin-left: 190px; /* Sposta il contenuto principale a destra per fare spazio alla sidebar fissa */
+        width: calc(100% - 190px); /* Adatta la larghezza per evitare overflow */
     }
 </style>
 
@@ -74,7 +79,7 @@
             <i class="fab fa-whatsapp"></i> Messaggio libero
         </button>
 
-        <button type="button" id='btn_print' class="btn btn-outline-success btn-sm ms-2" onclick="generatePDF()">
+        <button type="button" id='btn_print' class="btn btn-outline-success btn-sm ms-2" onclick="generatePdfFromData()">
             <i class="fas fa-print"></i> Stampa videata
         </button>
 
@@ -83,6 +88,21 @@
             <i class="fas fa-history"></i> Log Eventi
         </button>
         @endif
+    </div>
+    <!-- Sliders -->
+    <div class="d-flex align-items-center noprint flex-grow-1 mx-3">
+        <div class="form-group mb-0 mx-2 w-100">
+            <label for="zoom_slider_all" class="form-label-sm mb-0" style="font-size: 0.7rem;">Zoom Gen.</label>
+            <input type="range" class="form-range" id="zoom_slider_all" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomAll(this.value, 1)">
+        </div>
+        <div class="form-group mb-0 mx-2 w-100">
+            <label for="zoom_slider_m" class="form-label-sm mb-0" style="font-size: 0.7rem;">Zoom Matt.</label>
+            <input type="range" class="form-range" id="zoom_slider_m" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomM(this.value, 1)">
+        </div>
+        <div class="form-group mb-0 mx-2 w-100">
+            <label for="zoom_slider_p" class="form-label-sm mb-0" style="font-size: 0.7rem;">Zoom Pom.</label>
+            <input type="range" class="form-range" id="zoom_slider_p" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomP(this.value, 1)">
+        </div>
     </div>
 @endsection
 
@@ -154,9 +174,9 @@
 				<section class="content">
 				<div class="container-fluid" id='div_all'>
 
-					<div class="row">
+					<div class="row">					
 
-					<div class="col-md-2" id='side_list'>
+					<div class="col-md-1" id='side_list'>
 
                         <div class="card-body">
                             <div class="accordion">
@@ -172,8 +192,8 @@
                                         <div class="accordion-body" draggable="true" ondrop="dropHandlerPers(event)" ondragover="dragoverHandlerPers(event)" >
  
                                             <!--testo persone!-->
-                                            <input type='text' class='form-control input-sm' id='cerca_nome' placeholder='Cerca nome' style='width:110px'>
-                                            <div id="div_lav" class='mt-2' style='max-height:auto;overflow-y:scroll'>
+                                            <input type='text' class='form-control input-sm' id='cerca_nome' placeholder='Cerca nome' style="width: 100%;">
+                                            <div id="div_lav" class='mt-2'>
                                                 <div class="d-grid gap-1">
                                                 
                                                     <?php $elenco_lav=""; ?>
@@ -220,8 +240,8 @@
                                     <div id="flush-collapseOne" class="accordion-collapse collapse" >
                                         <div class="accordion-body">
                                             <!--testo ditte !-->
-                                            <input type='text' class='form-control mt-2' id='cerca_ditta' placeholder='Cerca Ditta' style='width:110px'>
-                                            <div id="div_dit" class='mt-2' style='max-height:800px;overflow-y:scroll'>
+                                            <input type='text' class='form-control mt-2' id='cerca_ditta' placeholder='Cerca Ditta' style="width: 100%;">
+                                            <div id="div_dit" class='mt-2'>
                                                 <div class="d-grid gap-1">
                                                     <?php $alld=""; ?>
                                                     @foreach ($ditte as $ditta)
@@ -255,8 +275,8 @@
                                     <div id="flush-collapseThree" class="accordion-collapse collapse" >
                                         <div class="accordion-body">
                                             <!--testo mezzi!-->
-                                                <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo' style='width:110px'>
-                                                <div id="div_lav" class='mt-2' style='max-height:800px;overflow-y:scroll'>
+                                                <input type='text' class='form-control mt-2' id='cerca_mezzo' placeholder='Cerca Mezzo' style="width: 100%;">
+                                                <div id="div_mezzi" class='mt-2'>
                                                     <div class="d-grid gap-1">
                                                         <?php 
                                                             $infomezzi="";
@@ -313,7 +333,7 @@
 					</div>
 					<!-- /.col -->
                     
-					<div class="col-md-10">
+					<div class="col-md-11">
 						<?php
 							$dap=date("Y-m-d");$dap1=$dap;
 							if (isset($info_app[0]->data_appalto)) {
@@ -325,25 +345,14 @@
 						<input type='hidden' id='dap' value='{{$dap}}'>
 						<input type='hidden' id='dap1' value='{{$dap1}}'>
 
-						<!-- Slider Generale -->
-						<div class="form-group">
-							<label for="zoom_slider_all">Zoom Generale (Mattina e Pomeriggio)</label>
-							<input type="range" class="form-range w-50" id="zoom_slider_all" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomAll(this.value, 1)">
-						</div>
-						<hr>
+                        
 
-						<!-- Sezione Mattina -->
-						<div class="form-group">
-							<label for="zoom_slider_m">Zoom Mattino</label>
-							<input type="range" class="form-range w-50" id="zoom_slider_m" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomM(this.value, 1)">
-						</div>
-						<div style='background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
-							<div style='padding:10px; display: flex; align-items: center;'>
-								<a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')" class="link-light me-2">
+						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+							<div style='padding:10px'>
+								<a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')" class="link-light float-start">
 									Aggiungi appalto
 								</a>
 								APPALTI DELLA MATTINA
-
 							</div>
 						</div>
 						<div id="zoom_wrapper_m" style="overflow-x: auto;">
@@ -360,14 +369,9 @@
 
 						<hr>
 
-						<!-- Sezione Pomeriggio -->
-						<div class="form-group">
-							<label for="zoom_slider_p">Zoom Pomeriggio</label>
-							<input type="range" class="form-range w-50" id="zoom_slider_p" min="0.2" max="2.5" step="0.05" value="0.54" oninput="setZoomP(this.value, 1)">
-						</div>
-						<div style='background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
-							<div style='padding:10px; display: flex; align-items: center;'>
-								<a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" class="link-light me-2">
+						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
+							<div style='padding:10px'>
+								<a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" class="link-light float-start">
 									Aggiungi appalto
 								</a>
 								APPALTI DEL POMERIGGIO
@@ -396,7 +400,7 @@
                             </a>    
                         </div>      
                              
-                        <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze'>
+                        <ul class="list-group list-group-horizontal-md" id='div_lista_urgenze' style="flex-wrap: wrap;">
                             
                         </ul>
 
@@ -466,6 +470,8 @@
 	<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
 
 	<script src="{{ URL::asset('/') }}dist/js/makeapp.js?ver=<?php echo time(); ?>"></script>
+	<script src="{{ URL::asset('/') }}dist/js/pdf_builder.js?ver=<?php echo time(); ?>"></script>
+
 
     <script>
         $(document).ready(function() {

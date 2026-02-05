@@ -2804,137 +2804,6 @@ function make_msg(m_e,box,from) {
     }
 }
 
-function printall() {
-    const originalDiv = document.getElementById('div_side');
-    const newDiv = document.getElementById('div_print');
-    newDiv.innerHTML = originalDiv.innerHTML;
-    window.print()
-    $("#div_print").empty();
-}
-
-function check_persone() {
-    let inconsistencies = [];
-
-    // Check Mattina
-    for (let box = 0; box < numBox; box++) {
-        if ($("#tdboxM" + box).length === 0) continue;
-
-        const info_app = $("#infoappM" + box);
-        if (info_app.hasClass('bg-success')) {
-            const expected_persons_text = info_app.text().trim().split(' ')[0];
-            const expected_persons = parseInt(expected_persons_text, 10);
-
-            if (!isNaN(expected_persons)) {
-                let assigned_persons = 0;
-                $(".boxM" + box).each(function() {
-                    if ($(this).data('idlav')) {
-                        assigned_persons++;
-                    }
-                });
-
-                if (assigned_persons !== expected_persons) {
-                    inconsistencies.push(`Appalto Mattina (Box ${box}): Previste ${expected_persons} persone, assegnate ${assigned_persons}.`);
-                }
-            }
-        }
-    }
-
-    if (inconsistencies.length > 0) {
-        Swal.fire({
-            icon: 'warning',
-            title: 'Sono state trovate delle incongruenze',
-            html: inconsistencies.join('<br>')
-        });
-    } else {
-        Swal.fire({
-            icon: 'success',
-            title: 'Verifica completata',
-            text: 'Nessuna incongruenza trovata.'
-        });
-    }
-}
-
-function generatePDF() {
-    // Get the element to be converted
-    $("#btn_print").removeClass('btn-outline-success').addClass('btn-success')
-    $("#btn_print").prop('disabled',true)
-    $("#btn_print").text('Preparazione PDF di stampa...')
-
-    $(".box").each(function(){
-        id_ref=$(this).data( "idlav")
-        console.log("id_ref all:",id_ref)
-        if (!id_ref) $(this).hide()
-    })    
-
-    $(".rep, .ass").each(function(){
-        $(this).removeClass('noprint')
-    })
-    $(".rep, .ass").each(function(){
-        id_ref=$(this).data( "idlav")
-        if (!id_ref) {
-            $(this).addClass('noprint')
-        }
-    })
-
-
-    timer = setTimeout(function() {	
-        $(".repview").removeClass('clprint').addClass('clprint')
-        $(".assview").removeClass('clprint').addClass('clprint')
-        $("#div_urg").hide()
-        $("#div_lista_urgenze").hide()
-        $("#side_list").show()
-
-
-        html = $("#div_side").html();
-        html="<div style='width: 50%;padding: 20px;'>"+html+"</div>"
-        $("#div_print").append(html)
-
-        html=$("#div_lista_urgenze").html()
-        html="<div style='width: 50%;padding: 20px;'>"+html+"</div>"
-        $("#div_print").append(html)
-        /*
-            div_print: utilizzato dalla stampa
-            praticamente viene clonato <aside id='div_side'>
-            ed iniettato quì, questo perchè il browser nasconde <aside>
-            forse per spazio o per impostazioni che non trovo
-        */     
-
-
-        const element = document.getElementById('div_all');
-        $(".noprint").hide();
-        // Define options for the PDF
-        const options = {
-            margin: 1,
-            filename: 'export_appalti.pdf',
-            image: { type: 'jpeg', quality: 0.98 },
-            html2canvas: { scale: 2 },
-            jsPDF: { unit: 'mm', format: 'a3', orientation: 'landscape' }
-        };
-
-        // Use the library to generate and save the PDF
-        html2pdf().set(options).from(element).save();
-        
-        t1 = setTimeout(function() {	
-            $("#btn_print").prop('disabled',false)
-            $("#btn_print").text('Stampa videata')
-            $("#btn_print").removeClass('btn-success').addClass('btn-outline-success')
-
-            $(".noprint").show();
-            $("#div_urg").show()
-            $("#div_lista_urgenze").show()
-            $("#div_print").empty();
-            $(".repview").removeClass('clprint')
-            $(".assview").removeClass('clprint')
-            $(".box").each(function(){
-                $(this).show()
-            })            
-        } ,1000)
-
-        
-    }, 800)
-
-  }
-
 //#region Funzioni di formattazione per i Log
 const logKeyLabels = {
     'all_workers_data': 'Lavoratori Appalti',
@@ -3367,4 +3236,46 @@ function restoreState(payload) {
         console.error('Error:', error);
         Swal.fire('Errore', 'Si è verificato un errore di comunicazione.', 'error');
     });
+}
+
+function check_persone() {
+    let inconsistencies = [];
+
+    // Check Mattina
+    for (let box = 0; box < numBox; box++) {
+        if ($("#tdboxM" + box).length === 0) continue;
+
+        const info_app = $("#infoappM" + box);
+        if (info_app.hasClass('bg-success')) {
+            const expected_persons_text = info_app.text().trim().split(' ')[0];
+            const expected_persons = parseInt(expected_persons_text, 10);
+
+            if (!isNaN(expected_persons)) {
+                let assigned_persons = 0;
+                $(".boxM" + box).each(function() {
+                    if ($(this).data('idlav')) {
+                        assigned_persons++;
+                    }
+                });
+
+                if (assigned_persons !== expected_persons) {
+                    inconsistencies.push(`Appalto Mattina (Box ${box}): Previste ${expected_persons} persone, assegnate ${assigned_persons}.`);
+                }
+            }
+        }
+    }
+
+    if (inconsistencies.length > 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sono state trovate delle incongruenze',
+            html: inconsistencies.join('<br>')
+        });
+    } else {
+        Swal.fire({
+            icon: 'success',
+            title: 'Verifica completata',
+            text: 'Nessuna incongruenza trovata.'
+        });
+    }
 }
