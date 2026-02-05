@@ -1293,12 +1293,71 @@ function save_appalto() {
 
 }
 
+function getPersonInconsistencies() {
+    let inconsistencies = [];
+
+    const checkShift = (shift, shiftName) => {
+        // Itera su tutti i box visibili per il turno specificato
+        $(`[id^=tdbox${shift}]`).each(function() {
+            if (!$(this).is(':visible')) return;
+
+            const boxId = $(this).attr('id');
+            const boxIndex = parseInt(boxId.replace(`tdbox${shift}`, ''));
+            
+            const info_app = $(`#infoapp${shift}${boxIndex}`);
+            if (info_app.hasClass('bg-success')) {
+                const expected_persons_text = info_app.text().trim().split(' ')[0];
+                const expected_persons = parseInt(expected_persons_text, 10);
+
+                if (!isNaN(expected_persons)) {
+                    let assigned_persons = 0;
+                    $(`.box${shift}${boxIndex}`).each(function() {
+                        if ($(this).data('idlav')) {
+                            assigned_persons++;
+                        }
+                    });
+
+                    if (assigned_persons !== expected_persons) {
+                        inconsistencies.push(`Appalto ${shiftName} (Box ${boxIndex + 1}): Previste ${expected_persons} persone, assegnate ${assigned_persons}.`);
+                    }
+                }
+            }
+        });
+    };
+
+    checkShift('M', 'Mattina');
+    checkShift('P', 'Pomeriggio');
+    return inconsistencies;
+}
+
 function save_all() {
-    id_giorno_appalto=$("#id_giorno_appalto").val()
-    save_info(id_giorno_appalto,"",1000,1)
-    $("#btn_save_all").prop('disabled',true)
-    $("#btn_save_all").text("Salvataggio in corso...")
-    save_appalto()
+    const inconsistencies = getPersonInconsistencies();
+
+    const performSave = () => {
+        const id_giorno_appalto = $("#id_giorno_appalto").val();
+        save_info(id_giorno_appalto, "", 1000, 1);
+        $("#btn_save_all").prop('disabled', true).html("<i class='fas fa-spinner fa-spin'></i> Salvataggio in corso...");
+        save_appalto();
+    };
+
+    if (inconsistencies.length > 0) {
+        Swal.fire({
+            icon: 'warning',
+            title: 'Sono state trovate delle incongruenze',
+            html: inconsistencies.join('<br>') + '<br><br><strong>Vuoi salvare comunque?</strong>',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sì, salva!',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                performSave();
+            }
+        });
+    } else {
+        performSave();
+    }
 }
 
 function save_info(id_giorno_appalto,m_e,box,from){
@@ -2771,8 +2830,6 @@ function make_msg(m_e,box,from) {
                         targa_r=resp_targa[sca].split("|")[0]
                         lav_resp=resp_targa[sca].split("|")[1]
                         lav_r=lav_resp
-                        if (lavall[lav_resp]) lav_r=lavall[lav_resp]  
-                        inforesp+="Responsabile mezzo _"+targa_r+"_ : *"+lav_r+"*"
                         if (lavall[lav_resp]) lav_r=lavall[lav_resp]
                         
                         let mezzo_display = targa_r;
@@ -3239,31 +3296,7 @@ function restoreState(payload) {
 }
 
 function check_persone() {
-    let inconsistencies = [];
-
-    // Check Mattina
-    for (let box = 0; box < numBox; box++) {
-        if ($("#tdboxM" + box).length === 0) continue;
-
-        const info_app = $("#infoappM" + box);
-        if (info_app.hasClass('bg-success')) {
-            const expected_persons_text = info_app.text().trim().split(' ')[0];
-            const expected_persons = parseInt(expected_persons_text, 10);
-
-            if (!isNaN(expected_persons)) {
-                let assigned_persons = 0;
-                $(".boxM" + box).each(function() {
-                    if ($(this).data('idlav')) {
-                        assigned_persons++;
-                    }
-                });
-
-                if (assigned_persons !== expected_persons) {
-                    inconsistencies.push(`Appalto Mattina (Box ${box}): Previste ${expected_persons} persone, assegnate ${assigned_persons}.`);
-                }
-            }
-        }
-    }
+    const inconsistencies = getPersonInconsistencies();
 
     if (inconsistencies.length > 0) {
         Swal.fire({
