@@ -1391,8 +1391,6 @@ function info_box(m_e,box) {
           if (resp.header=="OK") {
             $(".dati").val('');
             dap=$("#dap").val();
-            all_servizi=$("#all_servizi").val().split("|");
-            servizi_svolti=new Array()
             if (resp.info_appalto[0]) {
                 $("#luogo_incontro").val(resp.info_appalto[0].luogo_incontro)
                 $("#orario_incontro").val(resp.info_appalto[0].orario_incontro)
@@ -1401,31 +1399,19 @@ function info_box(m_e,box) {
                 //$("#data_servizio").val(resp.info_appalto[0].data_servizio)
                 $("#data_servizio").val(dap)
                 $("#numero_persone").val(resp.info_appalto[0].numero_persone)
-                
                 $("#nome_salma").val(resp.info_appalto[0].nome_salma)
                 $("#note").val(resp.info_appalto[0].note)
                 $("#note_fatturazione").val(resp.info_appalto[0].note_fatturazione)
-                sv=resp.info_appalto[0].servizi_svolti
-                if (sv && sv.length>0)
-                    servizi_svolti=resp.info_appalto[0].servizi_svolti.split(",")
             } 
 
-            html=`
-                <select class="form-select select2" name="servizi_svolti[]" id="servizi_svolti" multiple>`
-                for (sc=0;sc<all_servizi.length;sc++) {
-                    id_serv=all_servizi[sc].split(";")[0]
-                    serv=all_servizi[sc].split(";")[1]
-                    html+="<option value='"+id_serv+"' ";
-                    //if (in_array($id_servizio,$id_servizi)) echo " selected ";
-                    if (servizi_svolti.includes(id_serv)) html+=" selected ";
-                    if (resp.info_appalto.length==0) {
-                        if (id_serv==3) html+=" selected "
-                    }
-                    html+=">"+serv+"</option>";
-                }
-            html+=`</select>`
-            $("#div_serv").html(html)
-            $('.select2').select2()
+            // NEW SERVICE LOGIC
+            const allServiziData = $("#all_servizi").val();
+            const serviziSvoltiRaw = resp.info_appalto.length > 0 ? resp.info_appalto[0].servizi_svolti : "";
+            const numeroPersone = resp.info_appalto.length > 0 ? (resp.info_appalto[0].numero_persone || 1) : 1;
+            
+            // Inizializza il componente dei servizi
+            setupServiziComponent('#servizi-appalto-container', allServiziData, serviziSvoltiRaw, numeroPersone);
+            // END NEW SERVICE LOGIC
 
             $("#div_wait").empty()
             html=`
@@ -1484,18 +1470,20 @@ function detail_appalto(m_e,box) {
                 </div>     
 
                 <div class="row">
-                    <div class="col-md-8">
-                        <label for="servizi_svolti" class="col-form-label">Servizi svolti</label>
-                        <div id='div_serv'>
-                            <i class='fas fa-spinner fa-spin'></i>
-                        </div>
-                    </div>
-
-                    <div class="col-md-4">
+                    <div class="col-md-12">
                         <label for="nome_salma" class="col-form-label">Nome salma</label>
                         <input type='text' class="form-control dati" id="nome_salma" name='nome_salma'>
                     </div>
                 </div>    
+
+                <div class="row">
+                    <div class="col-md-12">
+                        <label for="servizi_svolti" class="col-form-label">Servizi svolti</label>
+                        <div id='servizi-appalto-container'>
+                            <i class='fas fa-spinner fa-spin'></i>
+                        </div>
+                    </div>
+                </div>
 
                 <div class="row">
 
@@ -1558,6 +1546,152 @@ function removemezzo(dest) {
         $("#"+dest).data( "targa", "");
         $("#"+dest).removeClass('bg-warning').addClass('bg-secondary')
 
+            }
+        });
+    }
+}
+
+function setupServiziComponent(containerSelector, allServiziData, serviziSvoltiRaw, numeroPersone) {
+    const container = $(containerSelector);
+    if (!container.length) return;
+
+    // 1. Prepara i dati dei servizi
+    const all_servizi_map = new Map();
+    if (allServiziData) {
+        allServiziData.split('|').forEach(service_string => {
+            const [id, name, moltiplica] = service_string.split(';');
+            if (id && name) {
+                all_servizi_map.set(id, { name: name, moltiplica: moltiplica || '0' });
+            }
+        });
+    }
+
+    // 2. Crea l'HTML per il componente
+    let services_html = `
+        <div class="mb-2">
+            <label for="service_picker" class="form-label">Aggiungi servizio</label>
+            <select class="form-select" id="service_picker">
+                <option value="">Seleziona un servizio...</option>`;
+    
+    all_servizi_map.forEach((service, id) => {
+        services_html += `<option value="${id}">${service.name}</option>`;
+    });
+
+    services_html += `
+            </select>
+        </div>
+        <table class="table table-sm table-bordered" id="servizi_table">
+            <thead>
+                <tr>
+                    <th>Servizio</th>
+                    <th style="width: 100px;">Quantità</th>
+                    <th style="width: 40px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- Le righe dei servizi verranno aggiunte qui -->
+            </tbody>
+        </table>
+        <input type="hidden" name="servizi_svolti" id="servizi_svolti">
+    `;
+    
+    container.html(services_html);
+
+    // 3. Funzioni di utilità e gestione eventi
+    const updateHiddenInput = () => {
+        let data = [];
+        $('#servizi_table tbody tr').each(function() {
+            const serviceId = $(this).data('service-id');
+            const quantity = $(this).find('.service-quantity').val();
+            data.push(`${serviceId}:${quantity}`);
+        });
+        $('#servizi_svolti').val(data.join(','));
+    };
+
+    const addServiceToTable = (serviceId, quantity) => {
+        if (!serviceId || $('#servizi_table tbody').find(`tr[data-service-id="${serviceId}"]`).length > 0) {
+            return; // Non aggiungere se vuoto o già presente
+        }
+        const serviceInfo = all_servizi_map.get(serviceId);
+        if (!serviceInfo) return;
+
+        const isMoltiplicabile = serviceInfo.moltiplica == '1';
+
+        // Get current value from input, not from the initial `numeroPersone` variable
+        const currentNumeroPersone = $('#numero_persone').val();
+        const finalQuantity = isMoltiplicabile ? (currentNumeroPersone > 0 ? currentNumeroPersone : 1) : (quantity || 1);
+
+        const readonly = isMoltiplicabile ? 'readonly' : '';
+
+        const row = `
+            <tr data-service-id="${serviceId}" data-moltiplica="${serviceInfo.moltiplica}">
+                <td>${serviceInfo.name}</td>
+                <td>
+                    <input type="number" class="form-control form-control-sm service-quantity" value="${finalQuantity}" min="1" ${readonly}>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-danger btn-sm remove-service" title="Rimuovi servizio">
+                        <i class="fa fa-trash"></i>
+                    </button>
+                </td>
+            </tr>`;
+        $('#servizi_table tbody').append(row);
+        updateHiddenInput();
+    };
+
+    // 4. Associa eventi
+    $('#service_picker').on('change', function() {
+        const selectedId = $(this).val();
+        if (selectedId) {
+            const serviceInfo = all_servizi_map.get(selectedId);
+            if (serviceInfo && serviceInfo.moltiplica == '1') {
+                const numPersone = $('#numero_persone').val();
+                if (!numPersone || parseInt(numPersone) <= 0) {
+                    Swal.fire({
+                        icon: 'warning',
+                        title: 'Numero Persone non specificato',
+                        text: 'Per questo servizio, la quantità viene impostata in base al "Numero persone". Il campo non è valorizzato, quindi la quantità è stata impostata a 1.'
+                    });
+                }
+            }
+
+            addServiceToTable(selectedId, 1); // Pass quantity 1 as default for non-multipliable
+            $(this).val(''); // Resetta il picker
+        }
+    });
+
+    $('#servizi_table').on('click', '.remove-service', function() {
+        $(this).closest('tr').remove();
+        updateHiddenInput();
+    });
+
+    $('#servizi_table').on('input', '.service-quantity:not([readonly])', function() {
+        updateHiddenInput();
+    });
+
+    // Aggiorna le quantità se il numero di persone cambia
+    $('#numero_persone').on('input', function() {
+        const newNumeroPersone = $(this).val() || 1;
+        $('#servizi_table tbody tr').each(function() {
+            if ($(this).data('moltiplica') == '1') {
+                $(this).find('.service-quantity').val(newNumeroPersone);
+            }
+        });
+        updateHiddenInput();
+    });
+
+    // 5. Popola la tabella con i dati esistenti
+    if (serviziSvoltiRaw) {
+        const isNewFormat = serviziSvoltiRaw.includes(':');
+        const services = serviziSvoltiRaw.split(',');
+        
+        services.forEach(service => {
+            if (isNewFormat) {
+                const [id, qty] = service.split(':');
+                if(id) addServiceToTable(id, qty);
+            } else {
+                // Compatibilità con il vecchio formato (solo ID)
+                if(service) addServiceToTable(service, 1);
             }
         });
     }
@@ -2824,22 +2958,32 @@ function make_msg(m_e,box,from) {
                 
                 resplav="";inforesp="";
                 if (resp.resp_targa && resp.resp_targa.length>0) {
-                    resp_targa=resp.resp_targa.split(";")
-                    for (sca=0;sca<resp_targa.length;sca++) {
-                        if (inforesp.length>0) inforesp+=", "
-                        targa_r=resp_targa[sca].split("|")[0]
-                        lav_resp=resp_targa[sca].split("|")[1]
-                        lav_r=lav_resp
-                        if (lavall[lav_resp]) lav_r=lavall[lav_resp]
+                    const processed_lavs = new Set();
+                    const inforesp_parts = [];
+
+                    const resp_targa_array = resp.resp_targa.split(";")
+                    for (let sca = 0; sca < resp_targa_array.length; sca++) {
+                        const targa_r = resp_targa_array[sca].split("|")[0];
+                        const lav_resp = resp_targa_array[sca].split("|")[1];
+
+                        if (!targa_r || !lav_resp) continue;
+
+                        if (processed_lavs.has(lav_resp)) continue; // Skip if already processed
+
+                        let lav_r = lavall[lav_resp] || lav_resp;
                         
                         let mezzo_display = targa_r;
                         if (alias_mezzi[targa_r] && alias_mezzi[targa_r].length > 0) {
                             mezzo_display = alias_mezzi[targa_r];
                         }
                         
-                        inforesp+="Responsabile mezzo _"+mezzo_display+"_ : *"+lav_r+"*"
-                    }              
-                    html+="\n"+inforesp
+                        inforesp_parts.push("Responsabile mezzo _"+mezzo_display+"_ : *"+lav_r+"*");
+                        processed_lavs.add(lav_resp);
+                    }
+                    inforesp = inforesp_parts.join(', ');
+                    if (inforesp.length > 0) {
+                        html+="\n"+inforesp
+                    }
                 }
 
                 $("#txt_msg").val(html)

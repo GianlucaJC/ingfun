@@ -130,7 +130,8 @@
                 $all_servizi="";
                 foreach($servizi as $servizio) {
                     if (strlen($all_servizi)>0) $all_servizi.="|";
-                    $all_servizi.=$servizio->id.";".$servizio->descrizione;
+                    $da_moltiplicare = $servizio->da_moltiplicare ?? 0;
+                    $all_servizi.=$servizio->id.";".$servizio->descrizione.";".$da_moltiplicare;
                 }
                 echo "<input type='hidden' name='all_servizi' id='all_servizi' value='$all_servizi'>";
 

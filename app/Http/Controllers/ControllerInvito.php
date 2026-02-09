@@ -19,6 +19,7 @@ use App\Models\italy_cities;
 use App\Models\prod_prodotti;
 use App\Models\prod_magazzini;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Log;
 use DB;
 use PDF;
 
@@ -40,15 +41,21 @@ public function __construct()
 	}		
 
 	public function generaFattureDaAppalti(Request $request) {
+		Log::info('--- Inizio Generazione Fatture da Appalti ---');
+		DB::enableQueryLog();
+
 		$ids_giorno_appalto = $request->input('ids');
+		Log::info('ID giorni appalto ricevuti: ' . json_encode($ids_giorno_appalto));
 	
 		if (empty($ids_giorno_appalto)) {
+			Log::warning('Nessun ID giorno appalto fornito.');
 			return response()->json(['status' => 'error', 'message' => 'Nessun giorno di appalto selezionato.']);
 		}
 	
 		$fatture_generate = []; // Associative array [id_giorno_appalto => [invoices]]
 	
 		foreach ($ids_giorno_appalto as $id_giorno_appalto) {
+			Log::info("Processing giorno appalto ID: $id_giorno_appalto");
 			// Get all individual boxes that have a ditta and services assigned
 			$boxes = DB::table('appaltinew_info as i')
 				->join('appaltinew_altro as a', function($join) {
@@ -74,23 +81,35 @@ public function __construct()
 				$totale_fattura = 0;
 	
 				// Get services for THIS box and prepare invoice lines
-				$service_ids = explode(',', $box->servizi_svolti);
+				$service_entries = explode(',', $box->servizi_svolti);
 
-				foreach ($service_ids as $id_servizio) {
+				foreach ($service_entries as $entry) {
+                    $parts = explode(':', $entry); // Analizza la stringa per ID e quantità
+                    $id_servizio = $parts[0];
+                    $quantita_servizio = isset($parts[1]) ? intval($parts[1]) : 1; // Default a 1 se non specificata
+
 					// Get service details
 					$servizio_dettagli = DB::table('servizi as s')
 						->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
-						->where('s.id', $id_servizio)
+						->where('s.id', $id_servizio) // Usa l'ID del servizio corretto
 						->where('sd.id_ditta', $id_ditta)
-						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota')
+						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota', 's.da_moltiplicare')
 						->first();
+					Log::info('Query dettagli servizio: ', DB::getQueryLog());
 	
 					if ($servizio_dettagli) {
+						Log::info('Dettagli servizio trovati: ' . json_encode($servizio_dettagli));
 						$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
 						$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
 						
-						$quantita = !empty($box->numero_persone) && $box->numero_persone > 0 ? $box->numero_persone : 1;
-
+						// Se il servizio è da moltiplicare, usa il numero di persone dell'appalto.
+						// Altrimenti, usa la quantità salvata.
+						if ($servizio_dettagli->da_moltiplicare == 1) {
+							$quantita = $box->numero_persone > 0 ? $box->numero_persone : 1;
+						} else {
+							$quantita = $quantita_servizio;
+						}
+						
 						$subtotale = ($servizio_dettagli->importo_ditta * $quantita) * (1 + $aliquota_val / 100);
 
 						$descrizione_finale = $servizio_dettagli->descrizione;
@@ -102,7 +121,7 @@ public function __construct()
 						}
 
 						// Add to an array to be created later
-                        $articoli_da_creare[] = [
+                        $riga_fattura = [
                             'codice' => $servizio_dettagli->id_cod_servizi_ext,
                             'descrizione' => $descrizione_finale,
                             'quantita' => $quantita,
@@ -110,13 +129,18 @@ public function __construct()
                             'aliquota' => $servizio_dettagli->aliquota,
                             'subtotale' => $subtotale
                         ];
+						$articoli_da_creare[] = $riga_fattura;
+						Log::info('Riga fattura preparata: ' . json_encode($riga_fattura));
 	
 						$totale_fattura += $subtotale;
+					} else {
+						Log::warning("Nessun dettaglio servizio trovato per ID: $id_servizio e Ditta ID: $id_ditta");
 					}
 				}
 
 				// Only create the invoice if there are lines to add
                 if (!empty($articoli_da_creare)) {
+                    Log::info('Creazione fattura per ditta ID ' . $id_ditta . ' con ' . count($articoli_da_creare) . ' righe. Totale: ' . $totale_fattura);
                     // Create one invoice per box
                     $fattura = new fatture;
                     $fattura->id_ditta = $id_ditta;
@@ -125,6 +149,7 @@ public function __construct()
                     $fattura->totale = $totale_fattura;
                     $fattura->save();
                     $id_doc = $fattura->id;
+                    Log::info("Fattura creata con ID: $id_doc");
 
                     // Now create the lines
                     foreach ($articoli_da_creare as $dati_articolo) {
@@ -137,6 +162,7 @@ public function __construct()
                         $articolo->aliquota = $dati_articolo['aliquota'];
                         $articolo->subtotale = $dati_articolo['subtotale'];
                         $articolo->save();
+						Log::info('Riga articolo salvata per fattura ID ' . $id_doc . ': ' . json_encode($dati_articolo));
                     }
 
                     // Add to response
@@ -147,20 +173,29 @@ public function __construct()
                         'id_fattura' => $id_doc,
                         'ditta_name' => $ditta_name . " (Appalto/Box " . $box->box_number . ")"
                     ];
-                }
+                } else {
+					Log::warning('Nessuna riga da fatturare per il Box ' . $box->box_number);
+				}
+				Log::info('--- Fine elaborazione Box ' . $box->box_number . ' ---');
 			}
 			if (!empty($fatture_per_giorno)) {
                 $fatture_generate[$id_giorno_appalto] = $fatture_per_giorno;
             }
 		}
 	
+		Log::info('--- Fine Generazione Fatture da Appalti ---');
 		return response()->json(['status' => 'ok', 'message' => 'Fatture generate con successo.', 'fatture' => $fatture_generate]);
 	}
 
 	public function esportaFattureCsv(Request $request) {
+		Log::info('--- Inizio Esportazione CSV da Appalti ---');
+		DB::enableQueryLog();
+
 		$ids_giorno_appalto = $request->input('ids');
+		Log::info('ID giorni appalto ricevuti per export: ' . json_encode($ids_giorno_appalto));
 	
 		if (empty($ids_giorno_appalto)) {
+			Log::warning('Nessun ID giorno appalto fornito per export.');
 			return response()->json(['status' => 'error', 'message' => 'Nessun giorno di appalto selezionato.']);
 		}
 	
@@ -185,6 +220,8 @@ public function __construct()
 				->where('i.hide', '!=', 1);
 			
 			$ditte_ids = (clone $all_boxes_query)->distinct()->pluck('a.ditta');
+			Log::info('Query per ditte: ', DB::getQueryLog());
+			Log::info('Ditte uniche trovate per export: ' . json_encode($ditte_ids));
 	
 			// Generate Client Anagrafica CSV for each unique ditta
 			foreach ($ditte_ids as $id_ditta) {
@@ -192,7 +229,10 @@ public function __construct()
 				$ditte_processate[] = $id_ditta;
 	
 				$ditta = DB::table('ditte')->where('id', $id_ditta)->first();
-				if (!$ditta) continue;
+				if (!$ditta) {
+					Log::warning("Ditta non trovata per ID: $id_ditta");
+					continue;
+				}
 				
 				$basename = 'cli_' . $ditta->id . '_' . time() . '.csv';
 				$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
@@ -202,43 +242,63 @@ public function __construct()
 				fputcsv($file, ['STD', $ditta->id, 'C', $ditta->denominazione, $ditta->indirizzo, $ditta->cap, $comune, $ditta->provincia, $ditta->cf, $ditta->piva, '', $ditta->sdi, $ditta->pec, $ditta->telefono, $ditta->email], ';');
 				fclose($file);
 				$generated_files[] = $basename;
+				Log::info("Generato file anagrafica cliente: $basename");
 			}
 	
 			// Now generate invoice details CSV for each box
 			$all_boxes = $all_boxes_query->select('i.*', 'a.ditta', 'a.box as box_number')->get();
+			Log::info('Trovati ' . count($all_boxes) . ' box totali da esportare.');
 			
 			$articoli_per_csv = [];
 			foreach ($all_boxes as $box) {
+				Log::info('--- Inizio elaborazione export Box ' . $box->box_number . ' per ditta ID: ' . $box->ditta . ' ---');
 				$id_ditta = $box->ditta;
 				$ditta_info = DB::table('ditte')->where('id', $id_ditta)->first();
-				if (!$ditta_info) continue;
+				if (!$ditta_info) {
+					Log::warning("Ditta non trovata per ID: $id_ditta nel ciclo dei box.");
+					continue;
+				}
 	
-				$service_ids = explode(',', $box->servizi_svolti);
+				$service_entries = explode(',', $box->servizi_svolti);
+				Log::info('Servizi per il box (export): ' . $box->servizi_svolti);
 				$articoli_per_csv = [];
 	
-				foreach ($service_ids as $id_servizio) {
+				foreach ($service_entries as $entry) {
+					$parts = explode(':', $entry); // Analizza la stringa per ID e quantità
+                    $id_servizio = $parts[0];
+                    $quantita_servizio = isset($parts[1]) ? intval($parts[1]) : 1; // Default a 1 se non specificata
+					Log::info("Servizio (export): ID=$id_servizio, Quantità=$quantita_servizio");
+
+					DB::enableQueryLog();
 					$servizio_dettagli = DB::table('servizi as s')
 						->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
-						->where('s.id', $id_servizio)->where('sd.id_ditta', $id_ditta)
-						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota')
+						->where('s.id', $id_servizio)->where('sd.id_ditta', $id_ditta) // Usa l'ID del servizio corretto
+						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota', 's.da_moltiplicare')
 						->first();
 	
 					if ($servizio_dettagli) {
+						Log::info('Dettagli servizio trovati (export): ' . json_encode($servizio_dettagli));
+						Log::info('Query dettagli servizio (export): ', DB::getQueryLog());
+
 						$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
 						$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
-						$quantita = !empty($box->numero_persone) && $box->numero_persone > 0 ? $box->numero_persone : 1;
+						$quantita = $quantita_servizio; // Usa direttamente la quantità dal frontend
 						
 						$descrizione_finale = $servizio_dettagli->descrizione;
 						if (!empty($box->nome_salma)) $descrizione_finale .= " - Salma: " . $box->nome_salma;
 						if (!empty($box->note_fatturazione)) $descrizione_finale .= " - Note: " . $box->note_fatturazione;
 	
-						$articoli_per_csv[] = [
+						$riga_csv = [
 							'codice' => $servizio_dettagli->id_cod_servizi_ext,
 							'descrizione' => $descrizione_finale,
 							'quantita' => $quantita,
 							'prezzo_unitario' => $servizio_dettagli->importo_ditta,
 							'aliquota_val' => $aliquota_val,
 						];
+						$articoli_per_csv[] = $riga_csv;
+						Log::info('Riga CSV preparata: ' . json_encode($riga_csv));
+					} else {
+						Log::warning("Nessun dettaglio servizio trovato per export per ID: $id_servizio e Ditta ID: $id_ditta");
 					}
 				}
 	
@@ -263,7 +323,11 @@ public function __construct()
 					fclose($file);
 	
 					$generated_files[] = $basename;
+					Log::info("Generato file ordini: $basename");
+				} else {
+					Log::warning('Nessuna riga da esportare per il Box ' . $box->box_number);
 				}
+				Log::info('--- Fine elaborazione export Box ' . $box->box_number . ' ---');
 			}
 
 			// FTP Upload Attempt
@@ -313,6 +377,7 @@ public function __construct()
 				DB::table('appaltinew')->whereIn('id', $ids_giorno_appalto)->update(['data_esportazione' => now()]);
 			}
 		} catch (\Exception $e) {
+			Log::error('Errore durante esportazione CSV o FTP: ' . $e->getMessage());
 			return response()->json([
 				'status' => 'error', 
 				'message' => 'Errore durante l\'upload FTP: ' . $e->getMessage() . ". I file CSV sono stati comunque generati e sono scaricabili.",
@@ -320,6 +385,7 @@ public function __construct()
 			]);
 		}
 	
+		Log::info('--- Fine Esportazione CSV da Appalti ---');
 		return response()->json([
 			'status' => 'ok', 
 			'message' => count($generated_files) . " file CSV generati e caricati con successo.",
