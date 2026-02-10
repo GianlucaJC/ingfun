@@ -1,8 +1,14 @@
+// Set globali per memorizzare lo stato della selezione e delle fatture generate
+var selectedAppaltiIds = new Set();
+var generatedInvoicesHtml = new Map();
+
 $(document).ready(function () {
-    $('#tbl_list_appalti').DataTable({
+    var table = $('#tbl_list_appalti').DataTable({ // Assegna l'istanza di DataTable a una variabile
         "pageLength": 10,
+        "order": [[3, "desc"]], // Ordina per la colonna "Data" (indice 3) in ordine decrescente
         "lengthChange": true,
-        dom: 'Bfrtip',
+        "lengthMenu": [[5, 10, 25, 50, -1], [5, 10, 25, 50, "All"]],
+        dom: 'lBfrtip',
         buttons: [
             'excel', 'pdf'
         ],
@@ -15,24 +21,81 @@ $(document).ready(function () {
         },
     });
 
+    // Funzione per aggiornare lo stato del checkbox globale 'select all'
+    function updateSelectAllCheckboxState() {
+        const visibleCheckboxes = table.rows({ page: 'current' }).nodes().to$().find('.appalto-checkbox');
+        if (visibleCheckboxes.length === 0) {
+            $('#select_all').prop('checked', false).prop('indeterminate', false);
+            return;
+        }
+
+        let allVisibleChecked = true;
+        let anyVisibleChecked = false;
+
+        visibleCheckboxes.each(function() {
+            const id = $(this).val();
+            if (selectedAppaltiIds.has(id)) {
+                anyVisibleChecked = true;
+            } else {
+                allVisibleChecked = false;
+            }
+        });
+
+        if (allVisibleChecked && anyVisibleChecked) { // Tutti i checkbox visibili sono selezionati
+            $('#select_all').prop('checked', true).prop('indeterminate', false);
+        } else if (anyVisibleChecked) { // Alcuni checkbox visibili sono selezionati, ma non tutti
+            $('#select_all').prop('checked', false).prop('indeterminate', true);
+        } else { // Nessun checkbox visibile è selezionato
+            $('#select_all').prop('checked', false).prop('indeterminate', false);
+        }
+    }
+
     // Select all checkbox
-    $('#select_all').on('click', function () {
-        $('.appalto-checkbox').prop('checked', this.checked);
+    $('#select_all').on('click', function (e) {
+        e.stopPropagation(); // Impedisce la propagazione dell'evento per evitare il trigger di ordinamento
+        const isChecked = this.checked;
+        table.rows({ page: 'current' }).nodes().to$().find('.appalto-checkbox').each(function() {
+            const id = $(this).val();
+            if (isChecked) {
+                selectedAppaltiIds.add(id);
+            } else {
+                selectedAppaltiIds.delete(id);
+            }
+            $(this).prop('checked', isChecked);
+        });
+        updateSelectAllCheckboxState();
     });
 
     // Individual checkbox
     $('#tbl_list_appalti tbody').on('click', '.appalto-checkbox', function () {
-        if (!this.checked) {
-            $('#select_all').prop('checked', false);
+        const id = $(this).val();
+        if ($(this).is(':checked')) {
+            selectedAppaltiIds.add(id);
+        } else {
+            selectedAppaltiIds.delete(id);
         }
+        updateSelectAllCheckboxState();
+    });
+
+    // Al cambio pagina o ad ogni ridisegno della tabella, aggiorna lo stato dei checkbox
+    table.on('draw.dt', function () {
+        // Aggiorna i checkbox individuali e le icone delle fatture sulla nuova pagina
+        table.rows({ page: 'current' }).nodes().to$().find('.appalto-checkbox').each(function() {
+            const id = $(this).val();
+            // Ripristina lo stato del checkbox
+            $(this).prop('checked', selectedAppaltiIds.has(id));
+
+            // Ripristina l'icona PDF se è stata generata in questa sessione
+            if (generatedInvoicesHtml.has(id)) {
+                $(this).closest('tr').find(`#fatture-cell-${id}`).html(generatedInvoicesHtml.get(id));
+            }
+        });
+        updateSelectAllCheckboxState();
     });
 
     // Generate invoices button
     $('#genera_fatture').on('click', function () {
-        const selectedIds = [];
-        $('.appalto-checkbox:checked').each(function () {
-            selectedIds.push($(this).val());
-        });
+        const selectedIds = Array.from(selectedAppaltiIds); // Usa il set globale
 
         if (selectedIds.length === 0) {
             Swal.fire('Attenzione', 'Selezionare almeno un giorno di appalto per generare le fatture.', 'warning');
@@ -54,11 +117,8 @@ $(document).ready(function () {
     });
 
     // Export invoices button
-    $('#esporta_fatture').on('click', function () {
-        const selectedIds = [];
-        $('.appalto-checkbox:checked').each(function () {
-            selectedIds.push($(this).val());
-        });
+    $('#esporta_fatture').on('click', function () { // Usa il set globale
+        const selectedIds = Array.from(selectedAppaltiIds);
 
         if (selectedIds.length === 0) {
             Swal.fire('Attenzione', 'Selezionare almeno un giorno di appalto per esportare le fatture.', 'warning');
@@ -97,14 +157,14 @@ $(document).ready(function () {
         });
     });
 
-    function generazioneFatture(ids) {
-        const url = $('#url').val() + '/genera_fatture_da_appalti';
+    // Export previous month invoices button
+    $('#esporta_fatture_mese_precedente').on('click', function () {
+        const url = $('#url').val() + '/get_appalti_previous_month';
         const token = $('#token_csrf').val();
 
-        // Show a loading indicator
         Swal.fire({
-            title: 'Generazione in corso...',
-            text: 'Attendere la generazione delle fatture.',
+            title: 'Ricerca appalti del mese precedente...',
+            text: 'Attendere mentre cerchiamo gli appalti fatturabili.',
             allowOutsideClick: false,
             didOpen: () => {
                 Swal.showLoading();
@@ -115,65 +175,138 @@ $(document).ready(function () {
             url: url,
             type: 'POST',
             data: {
-                _token: token,
-                ids: ids
+                _token: token
             },
             success: function (response) {
+                Swal.close();
                 if (response.status === 'ok') {
-                    Swal.fire({
-                        icon: 'success',
-                        title: 'Successo!',
-                        text: response.message
-                    });
-
-                    const fatture = response.fatture;
-                    const baseUrl = $('#url').val();
-
-                    for (const id_giorno_appalto in fatture) {
-                        const invoices = fatture[id_giorno_appalto];
-                        const cell = $(`#fatture-cell-${id_giorno_appalto}`);
-                        cell.empty(); // Clear previous content
-
-                        if (invoices.length === 1) {
-                            // Single invoice
-                            const invoice = invoices[0];
-                            const pdfUrl = `${baseUrl}/invito/${invoice.id_fattura}?genera_pdf=genera&preview_pdf=preview`;
-                            const buttonHtml = `
-                                <a href="${pdfUrl}" target="_blank" class="btn btn-danger btn-sm" title="Visualizza Fattura ${invoice.ditta_name}">
-                                    <i class="fa fa-file-pdf"></i>
-                                </a>`;
-                            cell.html(buttonHtml);
-                        } else if (invoices.length > 1) {
-                            // Multiple invoices, use a dropdown
-                            let dropdownItems = '';
-                            invoices.forEach(invoice => {
-                                const pdfUrl = `${baseUrl}/invito/${invoice.id_fattura}?genera_pdf=genera&preview_pdf=preview`;
-                                dropdownItems += `<li><a class="dropdown-item" href="${pdfUrl}" target="_blank">${invoice.ditta_name}</a></li>`;
-                            });
-
-                            const dropdownHtml = `
-                                <div class="btn-group">
-                                    <button type="button" class="btn btn-danger btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-file-pdf"></i>
-                                    </button>
-                                    <ul class="dropdown-menu">
-                                        ${dropdownItems}
-                                    </ul>
-                                </div>`;
-                            cell.html(dropdownHtml);
-                        }
+                    const ids = response.ids;
+                    const dateRange = response.date_range;
+                    if (ids.length > 0) {
+                        Swal.fire({
+                            title: 'Esportazione Mese Precedente',
+                            html: `Sono stati trovati <strong>${ids.length}</strong> giorni di appalto fatturabili per il periodo <strong>${dateRange}</strong>.<br>Vuoi procedere con l'esportazione?`,
+                            icon: 'question',
+                            showCancelButton: true,
+                            confirmButtonText: 'Sì, esporta!',
+                            cancelButtonText: 'Annulla'
+                        }).then((result) => {
+                            if (result.isConfirmed) {
+                                esportazioneFatture(ids);
+                            }
+                        });
+                    } else {
+                        Swal.fire('Informazione', `Nessun giorno di appalto fatturabile trovato per il periodo <strong>${dateRange}</strong>.`, 'info');
                     }
                 } else {
-                    Swal.fire('Errore', response.message || 'Si è verificato un errore durante la generazione delle fatture.', 'error');
+                    Swal.fire('Errore', response.message || 'Si è verificato un errore durante la ricerca degli appalti.', 'error');
                 }
             },
             error: function (xhr, status, error) {
+                Swal.close();
                 Swal.fire('Errore', 'Si è verificato un errore di comunicazione con il server.', 'error');
                 console.error(error);
             }
         });
-    }
+    });
 });
+
+function generazioneFatture(ids) {
+    const url = $('#url').val() + '/genera_fatture_da_appalti';
+    const token = $('#token_csrf').val();
+
+    // Show a loading indicator
+    Swal.fire({
+        title: 'Generazione in corso...',
+        text: 'Attendere la generazione delle fatture.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            _token: token,
+            ids: ids
+        },
+        success: function (response) {
+            if (response.status === 'ok') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Successo!',
+                    text: response.message
+                });
+
+                const fatture = response.fatture;
+                const baseUrl = $('#url').val();
+
+                for (const id_giorno_appalto in fatture) {
+                    const invoices = fatture[id_giorno_appalto];
+                    const cell = $(`#fatture-cell-${id_giorno_appalto}`);
+                    cell.empty(); // Clear previous content
+
+                    if (invoices.length === 1) {
+                        // Single invoice
+                        const invoice = invoices[0];
+                        const pdfUrl = `${baseUrl}/invito/${invoice.id_fattura}?genera_pdf=genera&preview_pdf=preview`;
+                        const buttonHtml = `
+                            <a href="${pdfUrl}" target="_blank" class="btn btn-danger btn-sm" title="Visualizza Fattura ${invoice.ditta_name}">
+                                <i class="fa fa-file-pdf"></i>
+                            </a>`;
+                        cell.html(buttonHtml);
+                    } else if (invoices.length > 1) {
+                        // Multiple invoices, use a dropdown
+                        let dropdownItems = '';
+                        invoices.forEach(invoice => {
+                            const pdfUrl = `${baseUrl}/invito/${invoice.id_fattura}?genera_pdf=genera&preview_pdf=preview`;
+                            dropdownItems += `<li><a class="dropdown-item" href="${pdfUrl}" target="_blank">${invoice.ditta_name}</a></li>`;
+                        });
+
+                        const dropdownHtml = `
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-danger btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                    <i class="fa fa-file-pdf"></i>
+                                </button>
+                                <ul class="dropdown-menu">
+                                    ${dropdownItems}
+                                </ul>
+                            </div>`;
+                        cell.html(dropdownHtml);
+                        }
+
+                        // Memorizza l'HTML generato per la persistenza nella sessione della pagina
+                        if (invoices.length > 0) {
+                            generatedInvoicesHtml.set(id_giorno_appalto.toString(), cell.html());
+                    }
+                }
+            } else {
+                Swal.fire('Errore', response.message || 'Si è verificato un errore durante la generazione delle fatture.', 'error');
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire('Errore', 'Si è verificato un errore di comunicazione con il server.', 'error');
+            console.error(error);
+        }
+    });
+}
+
+function generaFatturaSingola(id) {
+    Swal.fire({
+        title: 'Conferma generazione',
+        text: `Verrà generata la/e fattura/e per il giorno di appalto selezionato. Procedere?`,
+        icon: 'question',
+        showCancelButton: true,
+        confirmButtonText: 'Sì, genera!',
+        cancelButtonText: 'Annulla'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            generazioneFatture([id]);
+        }
+    });
+}
 
 function esportazioneFatture(ids) {
     const url = $('#url').val() + '/esporta_fatture_csv';

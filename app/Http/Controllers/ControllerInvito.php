@@ -21,6 +21,7 @@ use App\Models\prod_magazzini;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Log;
 use DB;
+use Carbon\Carbon;
 use PDF;
 
 class ControllerInvito extends Controller
@@ -617,6 +618,41 @@ public function __construct()
 		}
 		return $importi;
 	}
+
+	/**
+	 * Retrieves appalto IDs for the previous month that are eligible for invoicing.
+	 * @param Request $request
+	 * @return \Illuminate\Http\JsonResponse
+	 */
+	public function getAppaltiIdsForPreviousMonth(Request $request)
+	{
+		$today = Carbon::now();
+		$previousMonth = $today->subMonth();
+		$startDate = $previousMonth->startOfMonth()->toDateString();
+		$endDate = $previousMonth->endOfMonth()->toDateString();
+
+		// Imposta la locale a italiano prima di formattare
+		$dateRange = $previousMonth->locale('it')->translatedFormat('F Y'); // e.g., "Gennaio 2023"
+
+		$eligibleAppaltiIds = DB::table('appaltinew_info as i')
+			->join('appaltinew_altro as a', function ($join) {
+				$join->on('i.id_appalto', '=', 'a.idapp')
+					->on('i.m_e', '=', 'a.m_e')
+					->on('i.id_box', '=', 'a.box');
+			})
+			->whereBetween('i.data_servizio', [$startDate, $endDate])
+			->whereNotNull('a.ditta')
+			->where('a.ditta', '!=', 0)
+			->whereNotNull('i.servizi_svolti')
+			->where('i.servizi_svolti', '!=', '')
+			->where('i.hide', '!=', 1)
+			->distinct()
+			->pluck('i.id_appalto')
+			->toArray();
+
+		return response()->json(['status' => 'ok', 'ids' => $eligibleAppaltiIds, 'date_range' => $dateRange]);
+	}
+
 
 	public function edit_riga($id_row) {
 		$request=request();

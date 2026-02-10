@@ -93,9 +93,8 @@ function resetZoomP() {
     setZoomAll(zoomI,0); // Inizializza tutti gli slider e i bottoni di reset
 
     $("#div_side").removeClass('control-sidebar-dark');
-    $('.control-sidebar').ControlSidebar('show');
+    $('[data-widget="control-sidebar"]').ControlSidebar('show');
     $("#div_urg").show(1000);
-    //$('[data-toggle="tooltip"]').tooltip(); 
     
     const tooltipTriggerList = document.querySelectorAll('[data-bs-toggle="tooltip"]')
     const tooltipList = [...tooltipTriggerList].map(tooltipTriggerEl => new bootstrap.Tooltip(tooltipTriggerEl))
@@ -134,47 +133,16 @@ function resetZoomP() {
     $(window).on('resize', setHeaderHeightCssVar); // Riesegui al resize della finestra
 
     // Inietta CSS custom per rendere la sidebar di destra fissa
-    const sidebarWidth = $('.control-sidebar').outerWidth() || 250;
     const customCss = `
         .control-sidebar {
             position: fixed !important;
             top: var(--main-header-height, 57px);
-            right: -${sidebarWidth}px;
-            width: ${sidebarWidth}px;
             height: calc(100vh - var(--main-header-height, 57px));
             overflow-y: auto;
-            transition: right 0.3s ease-in-out;
-        }
-        .control-sidebar.control-sidebar-open {
-            right: 0;
         }
     `;
     $('head').append(`<style>${customCss}</style>`);
 
-    // Rimuove il bottone originale di AdminLTE e lo sostituisce con uno custom
-    const originalToggleButton = $('[data-widget="control-sidebar"]').parent(); // Seleziona l'elemento <li>
-    if (originalToggleButton.length > 0) {
-        originalToggleButton.remove();
-    }
-
-    // Crea un nuovo bottone custom con la stessa icona
-    const customToggleButton = $(`
-        <li class="nav-item">
-            <a class="nav-link" id="custom-control-sidebar-toggle" href="#" role="button" title="Reperibilità/Assenti">
-                <i class="fas fa-th-large"></i>
-            </a>
-        </li>
-    `);
-
-    // Aggiunge il nuovo bottone alla fine della navbar di destra
-    $('ul.navbar-nav.ml-auto').append(customToggleButton);
-
-    // Associa l'evento di toggle al nuovo bottone
-    $('#custom-control-sidebar-toggle').on('click', function(e) {
-        e.preventDefault();
-        $('.control-sidebar').toggle();
-        
-    });
 } );
 
 ///////// DRAG & DROP RESP Mezzi
@@ -2590,12 +2558,12 @@ function urgenze(id_urg) {
 
     if (indice_resp!="New") {
         id_ditta=resp[indice_resp].id_ditta
-        $("#ditta_urg").val(id_ditta)
+        $("#ditta_urg").val(id_ditta).trigger('change');
         id_servizio=resp[indice_resp].id_servizio
-        $("#servizi_urg").val(id_servizio)
+        $("#servizi_urg").val(id_servizio).trigger('change');
         id_lavoratore=resp[indice_resp].id_lavoratore
         arrl=id_lavoratore.split(",")
-        $("#lav_urg").val(arrl);
+        $("#lav_urg").val(arrl).trigger('change');
         descr_urgenza=resp[indice_resp].descrizione
         $("#descr_urgenza").val(descr_urgenza)
     }

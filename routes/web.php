@@ -294,6 +294,8 @@ Route::group(['only_log' => ['auth']], function () {
 
 	Route::post('genera_fatture_da_appalti', [ 'as' => 'genera_fatture_da_appalti', 'uses' => 'App\Http\Controllers\ControllerInvito@generaFattureDaAppalti']);
 
+	Route::post('get_appalti_previous_month', [ 'as' => 'get_appalti_previous_month', 'uses' => 'App\Http\Controllers\ControllerInvito@getAppaltiIdsForPreviousMonth']);
+
 	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo']);
 
 	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo']);	

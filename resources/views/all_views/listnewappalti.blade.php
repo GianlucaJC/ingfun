@@ -104,7 +104,10 @@
 								</button>
 							</div>
 							<button type="button" id="esporta_fatture" class="btn btn-warning btn-lg">
-								<i class="fa fa-upload"></i> Esporta Fatture
+								<i class="fa fa-upload"></i> Esporta Selezione
+							</button>
+							<button type="button" id="esporta_fatture_mese_precedente" class="btn btn-secondary btn-lg ms-2">
+								<i class="fa fa-calendar-alt"></i> Esporta Mese Precedente
 							</button>
 						</div>
 					</div>
@@ -144,6 +147,12 @@
 								@if ($appalti->dele=="0") 
 									<a href="{{ route('makeapp',['id_giorno_appalto'=>$appalti->id])}}" >
 										<button type="button" class="btn btn-info" alt='Edit' title="Modifica Appalti del giorno"><i class="fas fa-edit"></i></button>
+									</a>
+								@endif
+
+								@if (\Carbon\Carbon::parse($appalti->data_appalto) < \Carbon\Carbon::today())
+									<a href='#' onclick="event.preventDefault();generaFatturaSingola({{$appalti->id}})">
+										<button type="button" class="btn btn-success" title="Genera Prefattura"><i class="fas fa-file-invoice"></i></button>
 									</a>
 								@endif
 
@@ -300,6 +309,6 @@
 	<!-- fine DataTables !-->
 
 
-<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.011"></script>
+<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.024"></script>
 
 @endsection
