@@ -77,7 +77,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 
 	
   <!-- Theme style -->
-  <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/styles.css">
+  <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/styles.css?ver=1.015">
   <link rel="stylesheet" href="{{ URL::asset('/') }}dist/css/adminlte.min.css">
 
   

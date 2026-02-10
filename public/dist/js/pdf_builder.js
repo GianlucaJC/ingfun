@@ -228,9 +228,9 @@ function buildUrgenzeHtml(urgenzeData) {
 
 
 /**
- * Main function to generate the PDF from scratch using data.
+ * The core logic for PDF generation, to be called after checks.
  */
-function generatePdfFromData() {
+function proceedWithPdfGeneration() {
     $("#btn_print").prop('disabled', true).removeClass('btn-outline-success').addClass('btn-success').html('<i class="fas fa-spinner fa-spin"></i> Preparazione PDF...');
 
     setTimeout(function() {
@@ -297,4 +297,22 @@ function generatePdfFromData() {
             $("#btn_print").prop('disabled', false).removeClass('btn-success').addClass('btn-outline-success').html('<i class="fas fa-print"></i> Stampa videata');
         });
     }, 100); // Small delay to allow UI to update
+}
+
+/**
+ * Main function to generate the PDF from scratch using data.
+ */
+function generatePdfFromData() {
+    const hasUnsavedChanges = $("#btn_save_all").hasClass('btn-warning');
+
+    if (hasUnsavedChanges) {
+        Swal.fire({
+            title: 'Salvataggio Richiesto',
+            text: "Ci sono modifiche non salvate. Per favore, salva prima di procedere con la stampa.",
+            icon: 'error',
+            confirmButtonText: 'OK'
+        });
+    } else {
+        proceedWithPdfGeneration();
+    }
 }

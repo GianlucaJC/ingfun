@@ -124,6 +124,57 @@ function resetZoomP() {
         sliderP.after(resetButtonP);
     }
 
+    // Imposta la variabile CSS per l'altezza dell'header e fissa la sidebar di destra
+    function setHeaderHeightCssVar() {
+        const headerHeight = $('.main-header').outerHeight() || 50;
+        document.documentElement.style.setProperty('--main-header-height', `${headerHeight}px`);
+    }
+
+    setHeaderHeightCssVar();
+    $(window).on('resize', setHeaderHeightCssVar); // Riesegui al resize della finestra
+
+    // Inietta CSS custom per rendere la sidebar di destra fissa
+    const sidebarWidth = $('.control-sidebar').outerWidth() || 250;
+    const customCss = `
+        .control-sidebar {
+            position: fixed !important;
+            top: var(--main-header-height, 57px);
+            right: -${sidebarWidth}px;
+            width: ${sidebarWidth}px;
+            height: calc(100vh - var(--main-header-height, 57px));
+            overflow-y: auto;
+            transition: right 0.3s ease-in-out;
+        }
+        .control-sidebar.control-sidebar-open {
+            right: 0;
+        }
+    `;
+    $('head').append(`<style>${customCss}</style>`);
+
+    // Rimuove il bottone originale di AdminLTE e lo sostituisce con uno custom
+    const originalToggleButton = $('[data-widget="control-sidebar"]').parent(); // Seleziona l'elemento <li>
+    if (originalToggleButton.length > 0) {
+        originalToggleButton.remove();
+    }
+
+    // Crea un nuovo bottone custom con la stessa icona
+    const customToggleButton = $(`
+        <li class="nav-item">
+            <a class="nav-link" id="custom-control-sidebar-toggle" href="#" role="button" title="Reperibilità/Assenti">
+                <i class="fas fa-th-large"></i>
+            </a>
+        </li>
+    `);
+
+    // Aggiunge il nuovo bottone alla fine della navbar di destra
+    $('ul.navbar-nav.ml-auto').append(customToggleButton);
+
+    // Associa l'evento di toggle al nuovo bottone
+    $('#custom-control-sidebar-toggle').on('click', function(e) {
+        e.preventDefault();
+        $('.control-sidebar').toggle();
+        
+    });
 } );
 
 ///////// DRAG & DROP RESP Mezzi
@@ -159,6 +210,17 @@ function dropHandlerMezzi(ev) {
     }
     mezzo=$("#"+from).data('mezzo')
     targa=$("#"+from).data('targa')
+    
+    // Inibisci il drop se lo slot è già occupato da un mezzo
+    const currentTargaInSlot = $("#" + ev.target.id).data('targa');
+    if (currentTargaInSlot && currentTargaInSlot.length > 0) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Slot già occupato',
+            text: 'Questo slot è già occupato da un mezzo. Rimuovere prima il mezzo esistente.'
+        });
+        return false;
+    }
     dest=ev.target.id
     m_e=$("#"+dest).data('m_e')
     box=$("#"+dest).data('box')
@@ -646,6 +708,17 @@ function dropHandlerDitta(ev) {
     return false
   }
   dest=ev.target.id
+
+  // Inibisci il drop se lo slot è già occupato da una ditta
+  const currentIdDitInSlot = $("#" + dest).data('iddit');
+  if (currentIdDitInSlot && currentIdDitInSlot !== 0 && currentIdDitInSlot.length > 0) {
+      Swal.fire({
+          icon: 'error',
+          title: 'Slot già occupato',
+          text: 'Questo slot è già occupato da una ditta. Rimuovere prima la ditta esistente.'
+      });
+      return false;
+  }
 
   ditta=$("#"+from).data("nome");d_origin=ditta
   alias=$("#"+from).data("alias");
@@ -2580,10 +2653,7 @@ function inirep(sc) {
     if (sc==1) {
         html+=`
             <div class="alert alert-light" role="alert">
-                Reperibilità
-                    <a class="link-success noprint" style="color: #22391478 !important;" href='#' onclick="msg_rep()"><i class="fab fa-whatsapp"></i>  
-                        Genera
-                    </a>
+                <a class="link-success noprint" style="color: #22391478 !important; white-space: nowrap;" href='#' onclick="msg_rep()"><i class="fab fa-whatsapp"></i> Reperibili</a>
             </div>
         `    
     }
