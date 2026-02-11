@@ -143,6 +143,17 @@
 
 							<td style='min-width:220px'>
 								
+								@if ($appalti->dele=="0") 
+									<button type="button" class="btn btn-outline-primary btn-sm"
+										onclick="edit_layout(this)"
+										data-id="{{ $appalti->id }}"
+										data-num_box="{{ $appalti->num_box ?? 20 }}"
+										data-elem_box="{{ $appalti->elem_box ?? 6 }}"
+										data-elem_rep="{{ $appalti->elem_rep ?? 15 }}"
+										data-elem_ass="{{ $appalti->elem_ass ?? 15 }}">
+										<i class="fas fa-edit"></i>
+									</button>
+								@endif
 						
 								@if ($appalti->dele=="0") 
 									<a href="{{ route('makeapp',['id_giorno_appalto'=>$appalti->id])}}" >
@@ -309,6 +320,6 @@
 	<!-- fine DataTables !-->
 
 
-<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.024"></script>
+<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.026"></script>
 
 @endsection

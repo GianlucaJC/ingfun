@@ -397,16 +397,34 @@ function restore_element(id) {
 
 function new_app() {
     Swal.fire({
-        title: 'Data del nuovo gruppo di appalti',
-        html: `<input type="date" id="data_appalto" class="swal2-input" value="${$('#data_app').val()}">`,
+        title: 'Nuovo gruppo di appalti',
+        html:
+            `<h6>Data Appalto</h6><input type="date" id="data_appalto" class="swal2-input" value="${$('#data_app').val()}">
+            <hr>
+            <h6>Impostazioni Layout (opzionale)</h6>
+            <div style="display: flex; justify-content: space-around; text-align: left; gap: 15px;">
+                <div><label for="num_box" class="swal2-label" style="font-size:1em">Box per turno:</label><input type="number" id="num_box" class="swal2-input" value="20" style="width: 80px;"></div>
+                <div><label for="elem_box" class="swal2-label" style="font-size:1em">Lavoratori per box:</label><input type="number" id="elem_box" class="swal2-input" value="6" style="width: 80px;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-around; text-align: left; margin-top: 1em; gap: 15px;">
+                <div><label for="elem_rep" class="swal2-label" style="font-size:1em">Slot reperibilità:</label><input type="number" id="elem_rep" class="swal2-input" value="15" style="width: 80px;"></div>
+                <div><label for="elem_ass" class="swal2-label" style="font-size:1em">Slot assenti:</label><input type="number" id="elem_ass" class="swal2-input" value="15" style="width: 80px;"></div>
+            </div>`,
         confirmButtonText: 'Crea',
         focusConfirm: false,
         preConfirm: () => {
-            const data_appalto = Swal.getPopup().querySelector('#data_appalto').value
+            const data_appalto = Swal.getPopup().querySelector('#data_appalto').value;
             if (!data_appalto) {
-                Swal.showValidationMessage(`Per favore inserisci una data`)
+                Swal.showValidationMessage(`Per favore inserisci una data`);
+                return false;
             }
-            return { data_appalto: data_appalto }
+            return {
+                data_appalto: data_appalto,
+                num_box: Swal.getPopup().querySelector('#num_box').value,
+                elem_box: Swal.getPopup().querySelector('#elem_box').value,
+                elem_rep: Swal.getPopup().querySelector('#elem_rep').value,
+                elem_ass: Swal.getPopup().querySelector('#elem_ass').value
+            }
         }
     }).then((result) => {
         if (result.isConfirmed) {
@@ -420,7 +438,62 @@ function new_app() {
                 name: 'data_appalto',
                 value: result.value.data_appalto
             }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'num_box', value: result.value.num_box }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'elem_box', value: result.value.elem_box }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'elem_rep', value: result.value.elem_rep }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'elem_ass', value: result.value.elem_ass }).appendTo('#frm_appalti');
             $('#frm_appalti').submit();
         }
     })
+}
+
+function edit_layout(element) {
+    const id = $(element).data('id');
+    const num_box = $(element).data('num_box') || 20;
+    const elem_box = $(element).data('elem_box') || 6;
+    const elem_rep = $(element).data('elem_rep') || 15;
+    const elem_ass = $(element).data('elem_ass') || 15;
+
+    Swal.fire({
+        title: `Modifica Layout Appalto #${id}`,
+        html:
+            `<h6>Impostazioni Layout</h6>
+            <div style="display: flex; justify-content: space-around; text-align: left; gap: 15px;">
+                <div><label for="num_box" class="swal2-label" style="font-size:1em">Box per turno:</label><input type="number" id="num_box" class="swal2-input" value="${num_box}" style="width: 80px;"></div>
+                <div><label for="elem_box" class="swal2-label" style="font-size:1em">Lavoratori per box:</label><input type="number" id="elem_box" class="swal2-input" value="${elem_box}" style="width: 80px;"></div>
+            </div>
+            <div style="display: flex; justify-content: space-around; text-align: left; margin-top: 1em; gap: 15px;">
+                <div><label for="elem_rep" class="swal2-label" style="font-size:1em">Slot reperibilità:</label><input type="number" id="elem_rep" class="swal2-input" value="${elem_rep}" style="width: 80px;"></div>
+                <div><label for="elem_ass" class="swal2-label" style="font-size:1em">Slot assenti:</label><input type="number" id="elem_ass" class="swal2-input" value="${elem_ass}" style="width: 80px;"></div>
+            </div>`,
+        confirmButtonText: 'Salva Modifiche',
+        focusConfirm: false,
+        preConfirm: () => {
+            return {
+                id_appalto: id,
+                num_box: Swal.getPopup().querySelector('#num_box').value,
+                elem_box: Swal.getPopup().querySelector('#elem_box').value,
+                elem_rep: Swal.getPopup().querySelector('#elem_rep').value,
+                elem_ass: Swal.getPopup().querySelector('#elem_ass').value
+            }
+        }
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'edit_layout',
+                value: '1'
+            }).appendTo('#frm_appalti');
+            $('<input>').attr({
+                type: 'hidden',
+                name: 'id_appalto_edit',
+                value: result.value.id_appalto
+            }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'num_box', value: result.value.num_box }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'elem_box', value: result.value.elem_box }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'elem_rep', value: result.value.elem_rep }).appendTo('#frm_appalti');
+            $('<input>').attr({ type: 'hidden', name: 'elem_ass', value: result.value.elem_ass }).appendTo('#frm_appalti');
+            $('#frm_appalti').submit();
+        }
+    });
 }

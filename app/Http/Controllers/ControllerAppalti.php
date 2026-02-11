@@ -641,6 +641,15 @@ public function __construct()
 		->where('a.id','=',$id_giorno_appalto)
 		->get();
 
+		$appalto_config = $info_app->first();
+
+        $config = [
+            'numBox' => $appalto_config && isset($appalto_config->num_box) ? $appalto_config->num_box : 20,
+            'elemBox' => $appalto_config && isset($appalto_config->elem_box) ? $appalto_config->elem_box : 6,
+            'elemRep' => $appalto_config && isset($appalto_config->elem_rep) ? $appalto_config->elem_rep : 15,
+            'elemAss' => $appalto_config && isset($appalto_config->elem_ass) ? $appalto_config->elem_ass : 15,
+        ];
+
 		$info_box=appaltinew_info::from('appaltinew_info as a')
 		->select('a.*')
 		->where('a.id_appalto','=',$id_giorno_appalto)
@@ -672,7 +681,7 @@ public function __construct()
 		->where('dele', "=","0")	
 		->orderBy('targa')->get();
 
-		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','info_app','appaltibox','ditte','marche','modelli','inventario','role'));
+		return view('all_views/makeapp',compact('lavoratori','servizi','id_giorno_appalto','info_box','info_app','appaltibox','ditte','marche','modelli','inventario','role', 'config'));
 	}
 
 	public function dele_urg(Request $request) {
@@ -1140,7 +1149,7 @@ public function __construct()
 	        $details = '';
 
 	        if ($log->action_type === 'single_box_save') {
-	            $action = "Salvataggio singolo box (Turno: {$log->m_e}, Box: {$log->box_id})";
+	            $action = "Salvataggio singolo box (Turno: {$log->m_e}, Box: " . ($log->box_id + 1) . ")";
 	            $payload = $log->payload;
 	            $details = "Luogo Incontro: " . ($payload['luogo_incontro'] ?? 'N/D') . "<br>";
 	            $details .= "Orario Incontro: " . ($payload['orario_incontro'] ?? 'N/D') . "<br>";
@@ -1172,10 +1181,27 @@ public function __construct()
 		$data_app = Carbon::now()->addDay()->toDateString();
 
 		if ($view_dele=="on") $view_dele=1;
+
+		if (request()->has("edit_layout")) {
+			$id_appalto = $request->input('id_appalto_edit');
+			$appalto = appaltinew::find($id_appalto);
+			if ($appalto) {
+				$appalto->num_box = $request->input('num_box');
+				$appalto->elem_box = $request->input('elem_box');
+				$appalto->elem_rep = $request->input('elem_rep');
+				$appalto->elem_ass = $request->input('elem_ass');
+				$appalto->save();
+			}
+		}
+
 		if (request()->has("newapp"))  {
 			$data_appalto=request()->input('data_appalto');
 			$appalto=new appaltinew;
 			$appalto->data_appalto=$data_appalto;
+			$appalto->num_box = $request->input('num_box', 20);
+            $appalto->elem_box = $request->input('elem_box', 6);
+            $appalto->elem_rep = $request->input('elem_rep', 15);
+            $appalto->elem_ass = $request->input('elem_ass', 15);
 			$appalto->save();
 			$new_id = $appalto->id;
             return redirect()->route('makeapp', ['id_giorno_appalto' => $new_id]);

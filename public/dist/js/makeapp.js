@@ -1,7 +1,3 @@
-const numBox=7
-const elemBox=6
-const elemRep=15
-const elemAss=15
 const maxI=20
 const zoomI=0.54
 var saveall=false
@@ -1996,24 +1992,16 @@ function accordion(m_e,box) {
                         <i class="ml-3 fa-solid fa-clock"></i>
                     </span>    
                 </font>    
-                <span class="pull-right noprint">
-
-                    <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> Option
-                    </a><hr>
-
-                    <a class="link-secondary" href='#' onclick="resetbox('`+m_e+`',`+box+`,0)">
-                    <i class="fas fa-trash"></i>   
-                        Reset box
-                    </a>
-
-
-                    <a class="ml-2 btn_make_msg link-secondary" href='#' onclick="make_msg('`+m_e+`',`+box+`,1)"><i class="fab fa-whatsapp"></i>  
-                        Genera
-                    </a>
-
-
-
-                </span>                
+                <div class="pull-right noprint">
+                    <div style='display:none'>    
+                        <a class="link-secondary" href='#' onclick="optionbox('`+m_e+`',`+box+`)"><i class="fa-solid fa-gears"></i> Option
+                        </a><hr>
+                    </div>
+                    <div style="width:160px;display: flex;justify-content: space-between;">
+                        <a class="link-secondary" href='#' onclick="resetbox('`+m_e+`',`+box+`,0)"><i class="fas fa-trash"></i> Reset box</a>
+                        <a class="btn_make_msg link-secondary" href='#' onclick="make_msg('`+m_e+`',`+box+`,1)"><i class="fab fa-whatsapp"></i> Genera</a>
+                    </div>
+                </div>                
             </div>
             <div id='ditte_info`+m_e+box+`' class='mb-2'>`
             html+=initditte(m_e,box)
