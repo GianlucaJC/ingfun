@@ -350,9 +350,11 @@
 
 						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
 							<div style='padding:10px'>
-								<a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')" class="link-light float-start">
+								<!--
+                                <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')" class="link-light float-start">
 									Aggiungi appalto
 								</a>
+                                !-->
 								APPALTI DELLA MATTINA
 							</div>
 						</div>
@@ -372,9 +374,11 @@
 
 						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
 							<div style='padding:10px'>
+                                <!--
 								<a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" class="link-light float-start">
 									Aggiungi appalto
 								</a>
+                                !-->
 								APPALTI DEL POMERIGGIO
 							</div>
 						</div>
