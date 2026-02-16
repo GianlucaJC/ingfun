@@ -295,7 +295,7 @@ function proceedWithPdfGeneration() {
         };
 
         html2pdf().from(contentHtml).set(options).save().then(function() {
-            $("#btn_print").prop('disabled', false).removeClass('btn-success').addClass('btn-outline-success').html('<i class="fas fa-print"></i> Stampa videata');
+            $("#btn_print").prop('disabled', false).removeClass('btn-success').addClass('btn-outline-success').html('<i class="fas fa-print"></i> Stampa Squadre');
         });
     }, 100); // Small delay to allow UI to update
 }
