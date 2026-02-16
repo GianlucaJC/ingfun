@@ -241,6 +241,7 @@ function proceedWithPdfGeneration() {
         const assenti = getAssentiData();
         const urgenze = getUrgenzeData();
         const dataAppalto = $("#dap1").val();
+        const id_giorno_appalto = $("#id_giorno_appalto").val();
 
         // 2. Build HTML string
         const contentHtml = `
@@ -248,7 +249,7 @@ function proceedWithPdfGeneration() {
             <html>
             <head>
                 <meta charset="UTF-8">
-                <title>Appalti del ${dataAppalto}</title>
+                <title>Appalti del ${dataAppalto} (ID: ${id_giorno_appalto})</title>
                 <style>
                     body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; font-size: 10px; }
                     .pdf-page { padding: 10px; }
@@ -274,7 +275,7 @@ function proceedWithPdfGeneration() {
             </head>
             <body>
                 <div class="pdf-page">
-                    <div class="pdf-header">Appalti del ${dataAppalto}</div>
+                    <div class="pdf-header">Appalti del ${dataAppalto} (ID: ${id_giorno_appalto})</div>
                     ${buildAppaltiHtml(appaltiMattina, 'APPALTI DELLA MATTINA')}
                     ${buildAppaltiHtml(appaltiPomeriggio, 'APPALTI DEL POMERIGGIO')}
                     ${buildSideInfoHtml(reperibilita, assenti)}
@@ -308,9 +309,18 @@ function generatePdfFromData() {
     if (hasUnsavedChanges) {
         Swal.fire({
             title: 'Salvataggio Richiesto',
-            text: "Ci sono modifiche non salvate. Per favore, salva prima di procedere con la stampa.",
-            icon: 'error',
-            confirmButtonText: 'OK'
+            text: "Ci sono modifiche non salvate. Vuoi salvarle prima di stampare?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Salva e Stampa',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Chiama save_all e passa la funzione di generazione PDF come callback
+                save_all(proceedWithPdfGeneration);
+            }
         });
     } else {
         proceedWithPdfGeneration();

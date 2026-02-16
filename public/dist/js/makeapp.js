@@ -1123,7 +1123,7 @@ function load_ini_lav() {
 
 }
 
-function save_appalto() {
+function save_appalto(callback) {
     $("#btn_save").prop('disabled',true)
     
     $("#btn_save").text('Salvataggio in corso...')
@@ -1316,6 +1316,11 @@ function save_appalto() {
 
             }
 
+            // Esegui la callback se fornita
+            if (callback && typeof callback === 'function') {
+                callback();
+            }
+
           }
           else {
             $("#div_wait").html("<font color='red'>Errore durante il salvataggio dei dati</font>")
@@ -1367,14 +1372,14 @@ function getPersonInconsistencies() {
     return inconsistencies;
 }
 
-function save_all() {
+function save_all(callback) {
     const inconsistencies = getPersonInconsistencies();
 
     const performSave = () => {
         const id_giorno_appalto = $("#id_giorno_appalto").val();
         save_info(id_giorno_appalto, "", 1000, 1);
         $("#btn_save_all").prop('disabled', true).html("<i class='fas fa-spinner fa-spin'></i> Salvataggio in corso...");
-        save_appalto();
+        save_appalto(callback);
     };
 
     if (inconsistencies.length > 0) {
@@ -1998,9 +2003,10 @@ function accordion(m_e,box) {
                         </a><hr>
                     </div>
                     <div style="width:160px;display: flex;justify-content: space-between;">
-                        <a class="link-secondary" href='#' onclick="resetbox('`+m_e+`',`+box+`,0)"><i class="fas fa-trash"></i> Reset box</a>
+                        <a class="link-secondary" href='#' onclick="resetbox('`+m_e+`',`+box+`,0)"><i class="fas fa-trash"></i> Reset</a>
                         <a class="btn_make_msg link-secondary" href='#' onclick="make_msg('`+m_e+`',`+box+`,1)"><i class="fab fa-whatsapp"></i> Genera</a>
                     </div>
+                    <div class="text-center"><small class="text-muted">Box `+(box+1)+`</small></div>
                 </div>                
             </div>
             <div id='ditte_info`+m_e+box+`' class='mb-2'>`

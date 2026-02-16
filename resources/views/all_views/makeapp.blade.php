@@ -80,7 +80,7 @@
         </button>
 
         <button type="button" id='btn_print' class="btn btn-outline-success btn-sm ms-2" onclick="generatePdfFromData()">
-            <i class="fas fa-print"></i> Stampa videata
+            <i class="fas fa-print"></i> Stampa Squadre
         </button>
 
         @if (isset($role) && $role=="admin")
@@ -340,7 +340,7 @@
 							if (isset($info_app[0]->data_appalto)) {
 								$dap=$info_app[0]->data_appalto;
 								$dap1=substr($dap,8,2)."-".substr($dap,5,2)."-".substr($dap,0,4);
-								echo "Appalti del <b>".$dap1."</b>";
+								echo "Appalti del <b>".$dap1."</b> (ID: $id_giorno_appalto)";
 							}
 						?>
 						<input type='hidden' id='dap' value='{{$dap}}'>

@@ -70,7 +70,9 @@ public function __construct()
 				->whereNotNull('i.servizi_svolti')
 				->where('i.servizi_svolti', '!=', '')
 				->where('i.hide', '!=', 1) // Don't include hidden boxes
-				->select('i.servizi_svolti', 'a.ditta', 'a.box as box_number', 'i.nome_salma', 'i.note_fatturazione', 'i.numero_persone')
+				->select('i.*', 'a.ditta', 'a.box as box_number')
+				->orderBy('i.m_e')
+				->orderBy('i.id_box')
 				->get();
 			
 			$fatture_per_giorno = [];
@@ -152,7 +154,6 @@ public function __construct()
                     $id_doc = $fattura->id;
                     Log::info("Fattura creata con ID: $id_doc");
 
-                    // Now create the lines
                     foreach ($articoli_da_creare as $dati_articolo) {
                         $articolo = new articoli_fattura;
                         $articolo->id_doc = $id_doc;
@@ -169,16 +170,99 @@ public function __construct()
                     // Add to response
                     $ditta_info = DB::table('ditte')->where('id', $id_ditta)->first();
                     $ditta_name = $ditta_info ? $ditta_info->denominazione : "Sconosciuta";
+                    $shift_name = ($box->m_e == 'M') ? 'Mattina' : 'Pomeriggio';
                     
                     $fatture_per_giorno[] = [
                         'id_fattura' => $id_doc,
-                        'ditta_name' => $ditta_name . " (Appalto/Box " . $box->box_number . ")"
+                        'ditta_name' => $ditta_name . " (Appalto $shift_name / Box " . ($box->box_number + 1) . ")"
                     ];
                 } else {
 					Log::warning('Nessuna riga da fatturare per il Box ' . $box->box_number);
 				}
 				Log::info('--- Fine elaborazione Box ' . $box->box_number . ' ---');
 			}
+
+			// Iterate over each urgency, as each could be a separate invoice
+			$urgenze = DB::table('appaltinew_urgenze')
+				->where('idapp', $id_giorno_appalto)
+				->whereNotNull('id_ditta')->where('id_ditta', '!=', 0)
+				->whereNotNull('id_servizio')
+				->get();
+
+			foreach ($urgenze as $urgenza) {
+				$id_ditta = $urgenza->id_ditta;
+				$articoli_da_creare = [];
+				$totale_fattura = 0;
+				$id_servizio = $urgenza->id_servizio;
+
+				$servizio_dettagli = DB::table('servizi as s')
+					->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
+					->where('s.id', $id_servizio)
+					->where('sd.id_ditta', $id_ditta)
+					->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota')
+					->first();
+				
+				if ($servizio_dettagli) {
+					$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
+					$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
+					
+					$lavoratori_ids = explode(',', $urgenza->id_lavoratore);
+					$quantita = count($lavoratori_ids) > 0 ? count($lavoratori_ids) : 1;
+
+					$subtotale = ($servizio_dettagli->importo_ditta * $quantita) * (1 + $aliquota_val / 100);
+
+					$descrizione_finale = $servizio_dettagli->descrizione;
+					if (!empty($urgenza->descrizione)) {
+						$descrizione_finale .= " - Urgenza: " . $urgenza->descrizione;
+					}
+
+					$riga_fattura = [
+						'codice' => $servizio_dettagli->id_cod_servizi_ext,
+						'descrizione' => $descrizione_finale,
+						'quantita' => $quantita,
+						'prezzo_unitario' => $servizio_dettagli->importo_ditta,
+						'aliquota' => $servizio_dettagli->aliquota,
+						'subtotale' => $subtotale
+					];
+					$articoli_da_creare[] = $riga_fattura;
+					$totale_fattura += $subtotale;
+				} else {
+					Log::warning("Nessun dettaglio servizio trovato per urgenza ID: {$urgenza->id}, Servizio ID: {$id_servizio}, Ditta ID: {$id_ditta}");
+				}
+
+				if (!empty($articoli_da_creare)) {
+                    $fattura = new fatture;
+                    $fattura->id_ditta = $id_ditta;
+                    $fattura->data_invito = now()->toDateString();
+                    $fattura->id_sezionale = 1; // Assuming default
+                    $fattura->totale = $totale_fattura;
+                    $fattura->save();
+                    $id_doc = $fattura->id;
+                    Log::info("Fattura creata per urgenza con ID: $id_doc");
+
+                    foreach ($articoli_da_creare as $dati_articolo) {
+                        $articolo = new articoli_fattura;
+                        $articolo->id_doc = $id_doc;
+                        $articolo->codice = $dati_articolo['codice'];
+                        $articolo->descrizione = $dati_articolo['descrizione'];
+                        $articolo->quantita = $dati_articolo['quantita'];
+                        $articolo->prezzo_unitario = $dati_articolo['prezzo_unitario'];
+                        $articolo->aliquota = $dati_articolo['aliquota'];
+                        $articolo->subtotale = $dati_articolo['subtotale'];
+                        $articolo->save();
+						Log::info('Riga articolo salvata per fattura ID ' . $id_doc . ': ' . json_encode($dati_articolo));
+                    }
+
+                    $ditta_info = DB::table('ditte')->where('id', $id_ditta)->first();
+                    $ditta_name = $ditta_info ? $ditta_info->denominazione : "Sconosciuta";
+                    
+                    $fatture_per_giorno[] = [
+                        'id_fattura' => $id_doc,
+                        'ditta_name' => $ditta_name . " (Urgenza ID: " . $urgenza->id . ")"
+                    ];
+				}
+			}
+
 			if (!empty($fatture_per_giorno)) {
                 $fatture_generate[$id_giorno_appalto] = $fatture_per_giorno;
             }
@@ -218,9 +302,23 @@ public function __construct()
 				->whereIn('i.id_appalto', $ids_giorno_appalto)
 				->whereNotNull('a.ditta')->where('a.ditta', '!=', 0)
 				->whereNotNull('i.servizi_svolti')->where('i.servizi_svolti', '!=', '')
-				->where('i.hide', '!=', 1);
+				->where('i.hide', '!=', 1)
+				->orderBy('i.id_appalto')
+                ->orderBy('i.m_e')
+                ->orderBy('i.id_box');
 			
-			$ditte_ids = (clone $all_boxes_query)->distinct()->pluck('a.ditta');
+			// Get ditte from boxes
+			$ditte_ids_from_boxes = (clone $all_boxes_query)->distinct()->pluck('a.ditta');
+
+			// Get ditte from urgencies
+			$ditte_ids_from_urgenze = DB::table('appaltinew_urgenze')
+				->whereIn('idapp', $ids_giorno_appalto)
+				->whereNotNull('id_ditta')->where('id_ditta', '!=', 0)
+				->distinct()
+				->pluck('id_ditta');
+
+			// Merge and get unique ditte
+			$ditte_ids = $ditte_ids_from_boxes->merge($ditte_ids_from_urgenze)->unique();
 			Log::info('Query per ditte: ', DB::getQueryLog());
 			Log::info('Ditte uniche trovate per export: ' . json_encode($ditte_ids));
 	
@@ -246,74 +344,67 @@ public function __construct()
 				Log::info("Generato file anagrafica cliente: $basename");
 			}
 	
-			// Now generate invoice details CSV for each box
-			$all_boxes = $all_boxes_query->select('i.*', 'a.ditta', 'a.box as box_number')->get();
-			Log::info('Trovati ' . count($all_boxes) . ' box totali da esportare.');
-			
-			$articoli_per_csv = [];
-			foreach ($all_boxes as $box) {
-				Log::info('--- Inizio elaborazione export Box ' . $box->box_number . ' per ditta ID: ' . $box->ditta . ' ---');
-				$id_ditta = $box->ditta;
+			$all_urgenze = DB::table('appaltinew_urgenze')
+				->whereIn('idapp', $ids_giorno_appalto)
+				->whereNotNull('id_ditta')->where('id_ditta', '!=', 0)
+				->whereNotNull('id_servizio')
+				->orderBy('idapp')
+				->get();
+			Log::info('Trovate ' . count($all_urgenze) . ' urgenze totali da esportare.');
+
+			foreach ($all_urgenze as $urgenza) {
+				Log::info('--- Inizio elaborazione export Urgenza ID: ' . $urgenza->id . ' per ditta ID: ' . $urgenza->id_ditta . ' ---');
+				$id_ditta = $urgenza->id_ditta;
 				$ditta_info = DB::table('ditte')->where('id', $id_ditta)->first();
 				if (!$ditta_info) {
-					Log::warning("Ditta non trovata per ID: $id_ditta nel ciclo dei box.");
+					Log::warning("Ditta non trovata per ID: $id_ditta nel ciclo delle urgenze.");
 					continue;
 				}
-	
-				$service_entries = explode(',', $box->servizi_svolti);
-				Log::info('Servizi per il box (export): ' . $box->servizi_svolti);
+
 				$articoli_per_csv = [];
-	
-				foreach ($service_entries as $entry) {
-					$parts = explode(':', $entry); // Analizza la stringa per ID e quantità
-                    $id_servizio = $parts[0];
-                    $quantita_servizio = isset($parts[1]) ? intval($parts[1]) : 1; // Default a 1 se non specificata
-					Log::info("Servizio (export): ID=$id_servizio, Quantità=$quantita_servizio");
+				$id_servizio = $urgenza->id_servizio;
 
-					DB::enableQueryLog();
-					$servizio_dettagli = DB::table('servizi as s')
-						->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
-						->where('s.id', $id_servizio)->where('sd.id_ditta', $id_ditta) // Usa l'ID del servizio corretto
-						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota', 's.da_moltiplicare')
-						->first();
-	
-					if ($servizio_dettagli) {
-						Log::info('Dettagli servizio trovati (export): ' . json_encode($servizio_dettagli));
-						Log::info('Query dettagli servizio (export): ', DB::getQueryLog());
+				$servizio_dettagli = DB::table('servizi as s')
+					->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
+					->where('s.id', $id_servizio)->where('sd.id_ditta', $id_ditta)
+					->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota')
+					->first();
 
-						$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
-						$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
-						$quantita = $quantita_servizio; // Usa direttamente la quantità dal frontend
-						
-						$descrizione_finale = $servizio_dettagli->descrizione;
-						if (!empty($box->nome_salma)) $descrizione_finale .= " - Salma: " . $box->nome_salma;
-						if (!empty($box->note_fatturazione)) $descrizione_finale .= " - Note: " . $box->note_fatturazione;
-	
-						$riga_csv = [
-							'codice' => $servizio_dettagli->id_cod_servizi_ext,
-							'descrizione' => $descrizione_finale,
-							'quantita' => $quantita,
-							'prezzo_unitario' => $servizio_dettagli->importo_ditta,
-							'aliquota_val' => $aliquota_val,
-						];
-						$articoli_per_csv[] = $riga_csv;
-						Log::info('Riga CSV preparata: ' . json_encode($riga_csv));
-					} else {
-						Log::warning("Nessun dettaglio servizio trovato per export per ID: $id_servizio e Ditta ID: $id_ditta");
-					}
+				if ($servizio_dettagli) {
+					$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
+					$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
+
+					$lavoratori_ids = explode(',', $urgenza->id_lavoratore);
+					$quantita = count($lavoratori_ids) > 0 ? count($lavoratori_ids) : 1;
+
+					$descrizione_finale = $servizio_dettagli->descrizione;
+					if (!empty($urgenza->descrizione)) $descrizione_finale .= " - Urgenza: " . $urgenza->descrizione;
+
+					$riga_csv = [
+						'codice' => $servizio_dettagli->id_cod_servizi_ext,
+						'descrizione' => $descrizione_finale,
+						'quantita' => $quantita,
+						'prezzo_unitario' => $servizio_dettagli->importo_ditta,
+						'aliquota_val' => $aliquota_val,
+					];
+					$articoli_per_csv[] = $riga_csv;
+					Log::info('Riga CSV per urgenza preparata: ' . json_encode($riga_csv));
+				} else {
+					Log::warning("Nessun dettaglio servizio trovato per export per urgenza ID: {$urgenza->id}, Servizio ID: {$id_servizio}, Ditta ID: {$id_ditta}");
 				}
-	
+
 				if (!empty($articoli_per_csv)) {
-					$unique_invoice_id = date('Ymd') . $box->id_appalto . $box->box_number;
-	
+					$unique_invoice_id = date('Ymd') . '_URG_' . $urgenza->id;
 					$basename = 'ordini_' . $unique_invoice_id . '.csv';
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
 					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor"], ';');
-	
+					
+					$data_servizio_urgenza = DB::table('appaltinew')->where('id', $urgenza->idapp)->value('data_appalto');
+
 					foreach ($articoli_per_csv as $index => $articolo) {
 						$data_riga = [
-							$unique_invoice_id, $index + 1, $box->data_servizio, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
+							$unique_invoice_id, $index + 1, $data_servizio_urgenza, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
 							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
 							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
 							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
@@ -322,13 +413,9 @@ public function __construct()
 						fputcsv($file, $data_riga, ';');
 					}
 					fclose($file);
-	
 					$generated_files[] = $basename;
-					Log::info("Generato file ordini: $basename");
-				} else {
-					Log::warning('Nessuna riga da esportare per il Box ' . $box->box_number);
+					Log::info("Generato file ordini per urgenza: $basename");
 				}
-				Log::info('--- Fine elaborazione export Box ' . $box->box_number . ' ---');
 			}
 
 			// FTP Upload Attempt
@@ -626,31 +713,67 @@ public function __construct()
 	 */
 	public function getAppaltiIdsForPreviousMonth(Request $request)
 	{
-		$today = Carbon::now();
-		$previousMonth = $today->subMonth();
-		$startDate = $previousMonth->startOfMonth()->toDateString();
-		$endDate = $previousMonth->endOfMonth()->toDateString();
+        $targetDate = Carbon::now()->subMonth();
+        $startDate = $targetDate->copy()->startOfMonth()->toDateString();
+        $endDate = $targetDate->copy()->endOfMonth()->toDateString();
 
 		// Imposta la locale a italiano prima di formattare
-		$dateRange = $previousMonth->locale('it')->translatedFormat('F Y'); // e.g., "Gennaio 2023"
+		$dateRange = $targetDate->locale('it')->translatedFormat('F Y');
 
-		$eligibleAppaltiIds = DB::table('appaltinew_info as i')
+		// 1. Trova ID da appalti "box"
+		$detailsFromBoxes = DB::table('appaltinew_info as i')
 			->join('appaltinew_altro as a', function ($join) {
 				$join->on('i.id_appalto', '=', 'a.idapp')
 					->on('i.m_e', '=', 'a.m_e')
 					->on('i.id_box', '=', 'a.box');
 			})
+			->join('appaltinew as an', 'i.id_appalto', '=', 'an.id')
 			->whereBetween('i.data_servizio', [$startDate, $endDate])
-			->whereNotNull('a.ditta')
-			->where('a.ditta', '!=', 0)
+			->whereNotNull('a.ditta')->where('a.ditta', '!=', 0)
 			->whereNotNull('i.servizi_svolti')
 			->where('i.servizi_svolti', '!=', '')
 			->where('i.hide', '!=', 1)
 			->distinct()
-			->pluck('i.id_appalto')
-			->toArray();
+			->select('i.id_appalto', 'an.data_appalto', 'i.m_e', 'i.id_box')
+			->get();
 
-		return response()->json(['status' => 'ok', 'ids' => $eligibleAppaltiIds, 'date_range' => $dateRange]);
+		// 2. Trova ID da "urgenze"
+		$detailsFromUrgenze = DB::table('appaltinew_urgenze as u')
+			->join('appaltinew as an', 'u.idapp', '=', 'an.id')
+			->whereBetween('an.data_appalto', [$startDate, $endDate])
+			->whereNotNull('u.id_ditta')->where('u.id_ditta', '!=', 0)
+			->whereNotNull('u.id_servizio')
+			->distinct()
+			->select('u.idapp as id_appalto', 'an.data_appalto', 'u.id as id_urgenza')
+			->get();
+
+		// 3. Raggruppa per id_appalto per il conteggio
+		$idsFromBoxes = $detailsFromBoxes->pluck('id_appalto')->unique();
+		$idsFromUrgenze = $detailsFromUrgenze->pluck('id_appalto')->unique();
+
+		// 4. Calcola i conteggi e i dettagli per la risposta
+		$count_boxes = $idsFromBoxes->count();
+		$urgenze_only_ids = $idsFromUrgenze->diff($idsFromBoxes);
+		$count_urgenze = $urgenze_only_ids->count();
+
+		// Filtra i dettagli per la risposta
+		$details_urgenze_filtered = $detailsFromUrgenze->whereIn('id_appalto', $urgenze_only_ids);
+
+		// Conta solo le urgenze che non sono già presenti nei box
+
+		// 4. Unisci e rendi unici gli ID per l'esportazione
+		$eligibleAppaltiIds = $idsFromBoxes->merge($idsFromUrgenze)->unique()->values()->toArray();
+
+		return response()->json([
+			'status' => 'ok',
+			'ids' => $eligibleAppaltiIds,
+			'date_range' => $dateRange,
+			'count_boxes' => $count_boxes,
+			'count_urgenze' => $count_urgenze,
+			'total_count' => count($eligibleAppaltiIds),
+			'details_boxes' => $detailsFromBoxes,
+			'details_urgenze' => $details_urgenze_filtered->values()
+		]);
 	}
 
 

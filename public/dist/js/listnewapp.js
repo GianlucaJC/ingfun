@@ -23,27 +23,27 @@ $(document).ready(function () {
 
     // Funzione per aggiornare lo stato del checkbox globale 'select all'
     function updateSelectAllCheckboxState() {
-        const visibleCheckboxes = table.rows({ page: 'current' }).nodes().to$().find('.appalto-checkbox');
-        if (visibleCheckboxes.length === 0) {
+        const allFilteredRows = table.rows({ search: 'applied' });
+        const totalFilteredRows = allFilteredRows.count();
+
+        if (totalFilteredRows === 0) {
             $('#select_all').prop('checked', false).prop('indeterminate', false);
             return;
         }
 
-        let allVisibleChecked = true;
-        let anyVisibleChecked = false;
-
-        visibleCheckboxes.each(function() {
-            const id = $(this).val();
-            if (selectedAppaltiIds.has(id)) {
-                anyVisibleChecked = true;
-            } else {
-                allVisibleChecked = false;
+        let selectedInFilterCount = 0;
+        allFilteredRows.data().each(function(rowData) {
+            // Estrai l'ID dal checkbox nella prima colonna
+            const checkboxHtml = rowData[0];
+            const id = $(checkboxHtml).val();
+            if (id && selectedAppaltiIds.has(id)) {
+                selectedInFilterCount++;
             }
         });
 
-        if (allVisibleChecked && anyVisibleChecked) { // Tutti i checkbox visibili sono selezionati
+        if (selectedInFilterCount === totalFilteredRows) { // Tutti i checkbox visibili sono selezionati
             $('#select_all').prop('checked', true).prop('indeterminate', false);
-        } else if (anyVisibleChecked) { // Alcuni checkbox visibili sono selezionati, ma non tutti
+        } else if (selectedInFilterCount > 0) { // Alcuni checkbox visibili sono selezionati, ma non tutti
             $('#select_all').prop('checked', false).prop('indeterminate', true);
         } else { // Nessun checkbox visibile è selezionato
             $('#select_all').prop('checked', false).prop('indeterminate', false);
@@ -54,16 +54,22 @@ $(document).ready(function () {
     $('#select_all').on('click', function (e) {
         e.stopPropagation(); // Impedisce la propagazione dell'evento per evitare il trigger di ordinamento
         const isChecked = this.checked;
-        table.rows({ page: 'current' }).nodes().to$().find('.appalto-checkbox').each(function() {
-            const id = $(this).val();
-            if (isChecked) {
-                selectedAppaltiIds.add(id);
-            } else {
-                selectedAppaltiIds.delete(id);
+
+        // Itera su tutti i dati delle righe filtrate (non solo sulla pagina corrente)
+        table.rows({ search: 'applied' }).data().each(function (rowData) {
+            // Estrai l'ID dal checkbox nella prima colonna
+            const checkboxHtml = rowData[0];
+            const id = $(checkboxHtml).val();
+
+            if (id) {
+                if (isChecked) {
+                    selectedAppaltiIds.add(id);
+                } else {
+                    selectedAppaltiIds.delete(id);
+                }
             }
-            $(this).prop('checked', isChecked);
         });
-        updateSelectAllCheckboxState();
+        table.draw(false); // Ridisegna la tabella per aggiornare i checkbox visibili
     });
 
     // Individual checkbox
@@ -182,14 +188,47 @@ $(document).ready(function () {
                 if (response.status === 'ok') {
                     const ids = response.ids;
                     const dateRange = response.date_range;
-                    if (ids.length > 0) {
+                    const totalCount = response.total_count;
+                    const details_boxes = response.details_boxes;
+                    const details_urgenze = response.details_urgenze;
+hy
+                    if (totalCount > 0) {
+                        // Costruisci il dettaglio in HTML
+                        let detailHtml = `
+                            <div style="text-align: left; margin-top: 20px; padding: 10px; border: 1px solid #ddd; border-radius: 5px; background-color: #f9f9f9;">
+                                <strong>Dettaglio (clicca sui numeri per vedere gli ID):</strong>
+                                <ul class="list-unstyled mt-2" style="padding-left: 0;">
+                                    <li style="display: flex; justify-content: space-between; padding: 5px 0;">
+                                        Appalti Standard: 
+                                        <a href="#" id="show-details-boxes" class="badge bg-primary" style="text-decoration: none;">${response.count_boxes}</a>
+                                    </li>
+                                    <li style="display: flex; justify-content: space-between; padding: 5px 0;">
+                                        Urgenze: 
+                                        <a href="#" id="show-details-urgenze" class="badge bg-warning text-dark" style="text-decoration: none;">${response.count_urgenze}</a>
+                                    </li>
+                                </ul>
+                            </div>
+                        `;
+
                         Swal.fire({
                             title: 'Esportazione Mese Precedente',
-                            html: `Sono stati trovati <strong>${ids.length}</strong> giorni di appalto fatturabili per il periodo <strong>${dateRange}</strong>.<br>Vuoi procedere con l'esportazione?`,
+                            html: `Sono stati trovati <strong>${totalCount}</strong> giorni di appalto fatturabili per il periodo <strong>${dateRange}</strong>.<br>
+                                   ${detailHtml}<br>
+                                   Vuoi procedere con l'esportazione?`,
                             icon: 'question',
                             showCancelButton: true,
                             confirmButtonText: 'Sì, esporta!',
-                            cancelButtonText: 'Annulla'
+                            cancelButtonText: 'Annulla',
+                            didOpen: () => {
+                                $('#show-details-boxes').on('click', function(e) {
+                                    e.preventDefault();
+                                    showDetailsModal('Dettaglio Appalti Standard', details_boxes, 'boxes');
+                                });
+                                $('#show-details-urgenze').on('click', function(e) {
+                                    e.preventDefault();
+                                    showDetailsModal('Dettaglio Urgenze', details_urgenze, 'urgenze');
+                                });
+                            }
                         }).then((result) => {
                             if (result.isConfirmed) {
                                 esportazioneFatture(ids);
@@ -210,6 +249,64 @@ $(document).ready(function () {
         });
     });
 });
+
+function showDetailsModal(title, details, type) {
+    let tableHtml = '<div style="max-height: 400px; overflow-y: auto; text-align: left;">';
+    tableHtml += '<table class="table table-bordered table-striped">';
+    
+    if (type === 'boxes') {
+        tableHtml += `
+            <thead>
+                <tr>
+                    <th>ID Appalto</th>
+                    <th>Data</th>
+                    <th>Turno</th>
+                    <th>Box</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+        details.forEach(item => {
+            tableHtml += `
+                <tr>
+                    <td>${item.id_appalto}</td>
+                    <td>${new Date(item.data_appalto).toLocaleDateString('it-IT')}</td>
+                    <td>${item.m_e === 'M' ? 'Mattina' : 'Pomeriggio'}</td>
+                    <td>${item.id_box + 1}</td>
+                </tr>
+            `;
+        });
+    } else if (type === 'urgenze') {
+        tableHtml += `
+            <thead>
+                <tr>
+                    <th>ID Appalto</th>
+                    <th>Data</th>
+                    <th>ID Urgenza</th>
+                </tr>
+            </thead>
+            <tbody>
+        `;
+        details.forEach(item => {
+            tableHtml += `
+                <tr>
+                    <td>${item.id_appalto}</td>
+                    <td>${new Date(item.data_appalto).toLocaleDateString('it-IT')}</td>
+                    <td>${item.id_urgenza}</td>
+                </tr>
+            `;
+        });
+    }
+
+    tableHtml += '</tbody></table></div>';
+
+    Swal.fire({
+        title: title,
+        html: tableHtml,
+        width: '800px',
+        confirmButtonText: 'Chiudi'
+    });
+}
 
 function generazioneFatture(ids) {
     const url = $('#url').val() + '/genera_fatture_da_appalti';
@@ -245,18 +342,16 @@ function generazioneFatture(ids) {
 
                 for (const id_giorno_appalto in fatture) {
                     const invoices = fatture[id_giorno_appalto];
-                    const cell = $(`#fatture-cell-${id_giorno_appalto}`);
-                    cell.empty(); // Clear previous content
+                    let finalHtml = '';
 
                     if (invoices.length === 1) {
                         // Single invoice
                         const invoice = invoices[0];
                         const pdfUrl = `${baseUrl}/invito/${invoice.id_fattura}?genera_pdf=genera&preview_pdf=preview`;
-                        const buttonHtml = `
+                        finalHtml = `
                             <a href="${pdfUrl}" target="_blank" class="btn btn-danger btn-sm" title="Visualizza Fattura ${invoice.ditta_name}">
                                 <i class="fa fa-file-pdf"></i>
                             </a>`;
-                        cell.html(buttonHtml);
                     } else if (invoices.length > 1) {
                         // Multiple invoices, use a dropdown
                         let dropdownItems = '';
@@ -265,7 +360,7 @@ function generazioneFatture(ids) {
                             dropdownItems += `<li><a class="dropdown-item" href="${pdfUrl}" target="_blank">${invoice.ditta_name}</a></li>`;
                         });
 
-                        const dropdownHtml = `
+                        finalHtml = `
                             <div class="btn-group">
                                 <button type="button" class="btn btn-danger btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
                                     <i class="fa fa-file-pdf"></i>
@@ -274,12 +369,17 @@ function generazioneFatture(ids) {
                                     ${dropdownItems}
                                 </ul>
                             </div>`;
-                        cell.html(dropdownHtml);
-                        }
+                    }
 
-                        // Memorizza l'HTML generato per la persistenza nella sessione della pagina
-                        if (invoices.length > 0) {
-                            generatedInvoicesHtml.set(id_giorno_appalto.toString(), cell.html());
+                    // Memorizza l'HTML generato per la persistenza nella sessione della pagina
+                    if (invoices.length > 0) {
+                        generatedInvoicesHtml.set(id_giorno_appalto.toString(), finalHtml);
+                    }
+
+                    // Aggiorna la cella solo se è attualmente visibile nel DOM
+                    const cell = $(`#fatture-cell-${id_giorno_appalto}`);
+                    if (cell.length) {
+                        cell.html(finalHtml);
                     }
                 }
             } else {
