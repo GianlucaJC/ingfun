@@ -191,7 +191,7 @@ $(document).ready(function () {
                     const totalCount = response.total_count;
                     const details_boxes = response.details_boxes;
                     const details_urgenze = response.details_urgenze;
-hy
+
                     if (totalCount > 0) {
                         // Costruisci il dettaglio in HTML
                         let detailHtml = `
