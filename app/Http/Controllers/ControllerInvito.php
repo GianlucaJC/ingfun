@@ -292,7 +292,6 @@ public function __construct()
 		Storage::disk('public')->makeDirectory($temp_dir);
 
 		try {
-			// First, gather all ditte to avoid creating duplicate client files
 			$all_boxes_query = DB::table('appaltinew_info as i')
 				->join('appaltinew_altro as a', function($join) {
 					$join->on('i.id_appalto', '=', 'a.idapp')
@@ -304,44 +303,83 @@ public function __construct()
 				->whereNotNull('i.servizi_svolti')->where('i.servizi_svolti', '!=', '')
 				->where('i.hide', '!=', 1)
 				->orderBy('i.id_appalto')
-                ->orderBy('i.m_e')
-                ->orderBy('i.id_box');
-			
-			// Get ditte from boxes
-			$ditte_ids_from_boxes = (clone $all_boxes_query)->distinct()->pluck('a.ditta');
+				->orderBy('i.m_e')
+				->orderBy('i.id_box');
 
-			// Get ditte from urgencies
-			$ditte_ids_from_urgenze = DB::table('appaltinew_urgenze')
-				->whereIn('idapp', $ids_giorno_appalto)
-				->whereNotNull('id_ditta')->where('id_ditta', '!=', 0)
-				->distinct()
-				->pluck('id_ditta');
+			// Generate Orders CSV for each box
+			$all_boxes = $all_boxes_query->select('i.*', 'a.ditta', 'a.box as box_number')->get();
+			Log::info('Trovati ' . count($all_boxes) . ' box totali da esportare.');
 
-			// Merge and get unique ditte
-			$ditte_ids = $ditte_ids_from_boxes->merge($ditte_ids_from_urgenze)->unique();
-			Log::info('Query per ditte: ', DB::getQueryLog());
-			Log::info('Ditte uniche trovate per export: ' . json_encode($ditte_ids));
-	
-			// Generate Client Anagrafica CSV for each unique ditta
-			foreach ($ditte_ids as $id_ditta) {
-				if (in_array($id_ditta, $ditte_processate)) continue;
-				$ditte_processate[] = $id_ditta;
-	
-				$ditta = DB::table('ditte')->where('id', $id_ditta)->first();
-				if (!$ditta) {
-					Log::warning("Ditta non trovata per ID: $id_ditta");
+			foreach ($all_boxes as $box) {
+				Log::info('--- Inizio elaborazione export Box ' . ($box->box_number + 1) . ' per ditta ID: ' . $box->ditta . ' ---');
+				$id_ditta = $box->ditta;
+				$ditta_info = DB::table('ditte')->where('id', $id_ditta)->first();
+				if (!$ditta_info) {
+					Log::warning("Ditta non trovata per ID: $id_ditta nel ciclo dei box.");
 					continue;
 				}
-				
-				$basename = 'cli_' . $ditta->id . '_' . time() . '.csv';
-				$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
-				$file = fopen($filename, 'w');
-				fputcsv($file, ['codditt', 'an_conto', 'an_tipo', 'an_descr1', 'an_indir', 'an_cap', 'an_citta', 'an_prov', 'an_codfis', 'an_pariva', 'an_codpag', 'an_sdi', 'an_pec', 'an_tel', 'an_email'], ';');
-				$comune = $this->comuni_ref[$ditta->cap . '|' . $ditta->provincia] ?? $ditta->comune;
-				fputcsv($file, ['STD', $ditta->id, 'C', $ditta->denominazione, $ditta->indirizzo, $ditta->cap, $comune, $ditta->provincia, $ditta->cf, $ditta->piva, '', $ditta->sdi, $ditta->pec, $ditta->telefono, $ditta->email], ';');
-				fclose($file);
-				$generated_files[] = $basename;
-				Log::info("Generato file anagrafica cliente: $basename");
+
+				$articoli_per_csv = [];
+				$service_entries = explode(',', $box->servizi_svolti);
+
+				foreach ($service_entries as $entry) {
+					$parts = explode(':', $entry);
+					$id_servizio = $parts[0];
+					$quantita_servizio = isset($parts[1]) ? intval($parts[1]) : 1;
+
+					$servizio_dettagli = DB::table('servizi as s')
+						->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
+						->where('s.id', $id_servizio)
+						->where('sd.id_ditta', $id_ditta)
+						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota', 's.da_moltiplicare')
+						->first();
+
+					if ($servizio_dettagli) {
+						$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
+						$aliquota_val = $aliquota_db ? $aliquota_db->aliquota : 0;
+
+						if ($servizio_dettagli->da_moltiplicare == 1) {
+							$quantita = $box->numero_persone > 0 ? $box->numero_persone : 1;
+						} else {
+							$quantita = $quantita_servizio;
+						}
+
+						$descrizione_finale = $servizio_dettagli->descrizione;
+						if (!empty($box->nome_salma)) $descrizione_finale .= " - Salma: " . $box->nome_salma;
+						if (!empty($box->note_fatturazione)) $descrizione_finale .= " - Note: " . $box->note_fatturazione;
+
+						$articoli_per_csv[] = [
+							'codice' => $servizio_dettagli->id_cod_servizi_ext,
+							'descrizione' => $descrizione_finale,
+							'quantita' => $quantita,
+							'prezzo_unitario' => $servizio_dettagli->importo_ditta,
+							'aliquota_val' => $aliquota_val,
+						];
+					}
+				}
+
+				if (!empty($articoli_per_csv)) {
+					$data_fattura = Carbon::parse($box->data_servizio)->format('Ymd');
+					$basename = 'ordini_' . $data_fattura . '_' . $box->id_appalto . '_' . ($box->id_box + 1) . '.csv';
+
+					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
+					$file = fopen($filename, 'w');
+					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor"], ';');
+					
+					foreach ($articoli_per_csv as $index => $articolo) {
+						$data_riga = [
+							$box->id, $index + 1, $box->data_servizio, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
+							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
+							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
+							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
+							$ditta_info->id
+						];
+						fputcsv($file, $data_riga, ';');
+					}
+					fclose($file);
+					$generated_files[] = $basename;
+					Log::info("Generato file ordini per box: $basename");
+				}
 			}
 	
 			$all_urgenze = DB::table('appaltinew_urgenze')
@@ -394,17 +432,18 @@ public function __construct()
 				}
 
 				if (!empty($articoli_per_csv)) {
-					$unique_invoice_id = date('Ymd') . '_URG_' . $urgenza->id;
-					$basename = 'ordini_' . $unique_invoice_id . '.csv';
+					$data_servizio_urgenza = DB::table('appaltinew')->where('id', $urgenza->idapp)->value('data_appalto');
+					$data_fattura = Carbon::parse($data_servizio_urgenza)->format('Ymd');
+					$basename = 'ordini_' . $data_fattura . '_URG_' . $urgenza->id . '.csv';
+
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
 					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor"], ';');
 					
-					$data_servizio_urgenza = DB::table('appaltinew')->where('id', $urgenza->idapp)->value('data_appalto');
 
 					foreach ($articoli_per_csv as $index => $articolo) {
 						$data_riga = [
-							$unique_invoice_id, $index + 1, $data_servizio_urgenza, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
+							$urgenza->id, $index + 1, $data_servizio_urgenza, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
 							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
 							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
 							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
