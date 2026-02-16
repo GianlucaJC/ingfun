@@ -364,7 +364,7 @@ public function __construct()
 
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
-					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor"], ';');
+					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor", "codice_conto"], ';');
 					
 					foreach ($articoli_per_csv as $index => $articolo) {
 						$data_riga = [
@@ -372,7 +372,8 @@ public function __construct()
 							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
 							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
 							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
-							$ditta_info->id
+							$ditta_info->id,
+							$ditta_info->codice_conto
 						];
 						fputcsv($file, $data_riga, ';');
 					}
@@ -438,7 +439,7 @@ public function __construct()
 
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
-					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor"], ';');
+					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor", "codice_conto"], ';');
 					
 
 					foreach ($articoli_per_csv as $index => $articolo) {
@@ -447,7 +448,8 @@ public function __construct()
 							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
 							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
 							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
-							$ditta_info->id
+							$ditta_info->id,
+							$ditta_info->codice_conto
 						];
 						fputcsv($file, $data_riga, ';');
 					}
