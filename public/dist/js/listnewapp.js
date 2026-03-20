@@ -433,24 +433,11 @@ function esportazioneFatture(ids) {
             // Se ci sono file (anche in caso di errore parziale come fallimento FTP),
             // mostriamo la lista e il pulsante per svuotarla.
             if (data.files && data.files.length > 0) {
-                let fileListHtml = '';
-                const baseUrl = $('#url').val();
-                fileListHtml = '<p class="text-left mt-3">File generati:</p><ul class="list-group text-left">';
-                data.files.forEach(file => {
-                    const fileUrl = `${baseUrl}/storage/csv_exports/${file}`;
-                    fileListHtml += `<li class="list-group-item"><a href="${fileUrl}" download>${file}</a></li>`;
-                });
-                fileListHtml += '</ul>';
-
                 Swal.fire({
                     title: data.status === 'ok' ? 'Esportazione completata!' : 'Errore Esportazione',
-                    html: `<div>${data.message}</div>${fileListHtml}`,
+                    html: `<div>${data.message}</div>`,
                     icon: data.status === 'ok' ? 'success' : 'warning', // 'warning' se ci sono file ma lo stato è 'error'
-                    showDenyButton: true,
                     showCancelButton: false,
-                    confirmButtonText: 'OK',
-                    denyButtonText: `Svuota Lista CSV`,
-                    denyButtonColor: '#d33',
                 }).then((result) => {
                     if (!result.isDenied) return;
 

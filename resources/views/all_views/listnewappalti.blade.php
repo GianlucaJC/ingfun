@@ -320,6 +320,6 @@
 	<!-- fine DataTables !-->
 
 
-<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.031"></script>
+<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.033"></script>
 
 @endsection

@@ -359,8 +359,14 @@ public function __construct()
 				}
 
 				if (!empty($articoli_per_csv)) {
-					$data_fattura = Carbon::parse($box->data_servizio)->format('Ymd');
-					$basename = 'ordini_' . $data_fattura . '_' . $box->id_appalto . '_' . ($box->id_box + 1) . '.csv';
+					$data_fattura = Carbon::parse($box->data_servizio)->format('Ymd'); // yyyymmdd
+					$box_suffix = 0;
+					if ($box->m_e == 'M') { // Mattina
+						$box_suffix = 100 + ($box->box_number + 1);
+					} else { // Pomeriggio
+						$box_suffix = 200 + ($box->box_number + 1);
+					}
+					$basename = 'ordini_' . $data_fattura . '_' . $box->id_appalto . '_' . $box_suffix . '.csv';
 
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
@@ -388,6 +394,9 @@ public function __construct()
 				->whereNotNull('id_ditta')->where('id_ditta', '!=', 0)
 				->whereNotNull('id_servizio')
 				->orderBy('idapp')
+				->orderBy('id') // Ensure consistent ordering for urgency counter
+
+
 				->get();
 			Log::info('Trovate ' . count($all_urgenze) . ' urgenze totali da esportare.');
 
@@ -434,8 +443,14 @@ public function __construct()
 
 				if (!empty($articoli_per_csv)) {
 					$data_servizio_urgenza = DB::table('appaltinew')->where('id', $urgenza->idapp)->value('data_appalto');
-					$data_fattura = Carbon::parse($data_servizio_urgenza)->format('Ymd');
-					$basename = 'ordini_' . $data_fattura . '_URG_' . $urgenza->id . '.csv';
+					$data_fattura = Carbon::parse($data_servizio_urgenza)->format('Ymd'); // yyyymmdd
+
+					// Calculate urgency suffix (301..399)
+					static $current_appalto_id = null;
+					static $urgency_counter = 0;
+					if ($urgenza->idapp !== $current_appalto_id) { $current_appalto_id = $urgenza->idapp; $urgency_counter = 0; }
+					$urgency_suffix = 300 + (++$urgency_counter);
+					$basename = 'ordini_' . $data_fattura . '_' . $urgenza->idapp . '_' . $urgency_suffix . '.csv';
 
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
