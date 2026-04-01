@@ -111,6 +111,7 @@ public function __construct()
 		$telefono=$request->input("telefono");
 		$fax=$request->input("fax");
 		$sdi=$request->input("sdi");
+		$codice_conto=$request->input("codice_conto");
 		$tipo_pagamento=$request->input("tipo_pagamento");
 		$str_pagamento=null;
 		if (is_array($tipo_pagamento))
@@ -127,7 +128,7 @@ public function __construct()
 		$dele_contr=$request->input("dele_contr");
 		$restore_contr=$request->input("restore_contr");
 		
-		$data=['dele'=>0,'pf_pi'=>$pf_pi, 'denominazione' => $descr_contr,'alias' => $alias,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'indirizzo'=>$indirizzo, 'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento];
+		$data=['dele'=>0,'pf_pi'=>$pf_pi, 'denominazione' => $descr_contr,'alias' => $alias,'cognome'=>$cognome,'nome'=>$nome,'cap' => $cap,'comune' => $comune,'provincia' => $provincia,'indirizzo'=>$indirizzo, 'piva' => $piva,'cf' => $cf,'email' => $email,'pec' => $pec,'telefono' => $telefono,'fax' => $fax, 'sdi'=>$sdi,'tipo_pagamento'=>$str_pagamento, 'codice_conto' => $codice_conto];
 
 		$id_ref=0;
 		//Creazione nuovo elemento
@@ -171,7 +172,7 @@ public function __construct()
 		if (strlen($view_dele)==0) $view_dele=0;
 		if ($view_dele=="on") $view_dele=1;
 		$ditte=DB::table('ditte as d')
-		->select("d.id","d.dele","d.denominazione","d.alias","d.cognome","d.nome")
+		->select("d.id","d.dele","d.denominazione","d.alias","d.cognome","d.nome","d.codice_conto")
 		->when($view_dele=="0", function ($ditte) {
 			return $ditte->where('d.dele', "=","0");
 		})

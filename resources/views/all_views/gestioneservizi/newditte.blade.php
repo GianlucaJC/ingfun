@@ -193,6 +193,18 @@
 			</div>
 			
 			<div class="row mb-3">
+				<div class="col-md-4">
+					<div class="input-group mb-3">
+					  <div class="input-group-prepend">
+						<span class="input-group-text" id="basic-addon-conto">Codice Conto</span>
+					  </div>
+					  <input type="text" class="form-control" placeholder="Codice Conto" id="codice_conto" name='codice_conto' maxlength=20>
+					</div>			
+				</div>
+			</div>
+
+			
+			<div class="row mb-3">
 				<div class="col-md-12">
 					<div class="form-floating mb-3 mb-md-0">
 						<select class="form-select select2" style='height:auto' name="tipo_pagamento[]" id="tipo_pagamento" multiple>

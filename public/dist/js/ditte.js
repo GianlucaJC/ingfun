@@ -181,6 +181,7 @@ function edit_elem(id_ditta) {
 			$("#telefono").val(info[0].telefono)
 			$("#fax").val(info[0].fax)
 			$("#sdi").val(info[0].sdi)
+			$("#codice_conto").val(info[0].codice_conto)
 			var selectedValues = new Array();
 			
 			tipo_pagamento=info[0].tipo_pagamento

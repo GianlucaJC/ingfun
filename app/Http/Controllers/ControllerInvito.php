@@ -370,15 +370,13 @@ public function __construct()
 
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
-					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor", "codice_conto"], ';');
+					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "des_nome", "codice_conto"], ';');
 					
 					foreach ($articoli_per_csv as $index => $articolo) {
 						$data_riga = [
 							$box->id, $index + 1, $box->data_servizio, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
-							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
-							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
-							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
-							$ditta_info->id,
+							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'],
+							$ditta_info->nome,
 							$ditta_info->codice_conto
 						];
 						fputcsv($file, $data_riga, ';');
@@ -454,16 +452,14 @@ public function __construct()
 
 					$filename = Storage::disk('public')->path($temp_dir . '/' . $basename);
 					$file = fopen($filename, 'w');
-					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "Raee", "Imballo/Bancale", "cf", "piva", "mobile", "email", "peso", "des_nome", "des_cognome", "des_indir", "des_citta", "des_cap", "des_prov", "codfor", "codice_conto"], ';');
+					fputcsv($file, ["Nr", "N_Riga", "Data", "Barcode", "CodArt", "QTA_Impegnata", "Prezzo", "Al_iva", "des_nome", "codice_conto"], ';');
 					
 
 					foreach ($articoli_per_csv as $index => $articolo) {
 						$data_riga = [
 							$urgenza->id, $index + 1, $data_servizio_urgenza, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
-							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'], 0, 0,
-							$ditta_info->cf, $ditta_info->piva, $ditta_info->telefono, $ditta_info->email, '',
-							$ditta_info->nome, $ditta_info->cognome, $ditta_info->indirizzo, ($this->comuni_ref[$ditta_info->cap . '|' . $ditta_info->provincia] ?? $ditta_info->comune), $ditta_info->cap, $ditta_info->provincia,
-							$ditta_info->id,
+							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'],
+							$ditta_info->nome,
 							$ditta_info->codice_conto
 						];
 						fputcsv($file, $data_riga, ';');
@@ -1573,7 +1569,7 @@ public function __construct()
 			$fatture=DB::table('fatture as f')
 			->join('articoli_fattura as a','f.id','a.id_doc')
 			->join('ditte as d','f.id_ditta','d.id')
-			->select("f.id",DB::raw("DATE_FORMAT(f.data_invito,'%Y-%m-%d') as data_invito"),"a.codice","a.quantita","a.prezzo_unitario","a.aliquota","a.testo_libero_appalti","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli")
+			->select("f.id",DB::raw("DATE_FORMAT(f.data_invito,'%Y-%m-%d') as data_invito"),"a.codice","a.quantita","a.prezzo_unitario","a.aliquota","a.testo_libero_appalti","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli", "d.codice_conto")
 			->whereIn('f.id',$ids)
 			->orderBy('id_doc')
 			->orderBy('ordine')
@@ -1615,7 +1611,7 @@ public function __construct()
 
 					$riga=1;
 		
-					$row=array("Nr","N_Riga","Data","Barcode","CodArt","QTA_Impegnata","Prezzo","Al_iva","Raee","Imballo/Bancale","cf","piva","mobile","email","peso","des_nome","des_cognome","des_indir","des_citta","des_cap","des_prov","codfor");
+					$row=array("Nr","N_Riga","Data","Barcode","CodArt","QTA_Impegnata","Prezzo","Al_iva","des_nome","codice_conto");
 					fputcsv($file, $row,";"," ");
 
 					$entr=true;
@@ -1630,19 +1626,10 @@ public function __construct()
 				$value_aliquota=0;
 				if (isset($arr_aliquota[$aliquota])) $value_aliquota=$arr_aliquota[$aliquota];
 				$cf=$fattura->cf;
-				$piva=$fattura->piva;
-				$email=$fattura->email;
-				$telefono=$fattura->telefono;
 				$nome=$fattura->testo_libero_appalti;
-				$cognome=$fattura->cognome;
-				$indirizzo=$fattura->indirizzo;
-				$comune=$fattura->comune;
-				if (array_key_exists($comune,$comuni_ref)) $comune=$comuni_ref[$comune];
-				$cap=$fattura->cap;
-				$provincia=$fattura->provincia;
-				$id_cli=$fattura->id_cli;
-				$peso="";
-				$row=array($id_f,$riga,$data_invito,$codice,$codice,$quantita,$prezzo_unitario,$value_aliquota,0,0,$cf,$piva,$telefono,$email,$peso,$nome,$cognome,$indirizzo,$comune,$cap,$provincia,$id_cli);
+				if (strlen(trim($nome))==0) $nome=$fattura->nome;
+
+				$row=array($id_f,$riga,$data_invito,$codice,$codice,$quantita,$prezzo_unitario,$value_aliquota,$nome,$fattura->codice_conto);
 				fputcsv($file, $row,";"," ");
 			}
 			if ($entr==true) {

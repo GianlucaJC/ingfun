@@ -80,6 +80,7 @@
 							<th>Denominazione</th>
 							<th>Alias</th>
 							<th>Nominativo</th>
+							<th>Codice Conto</th>
 							<th>Operazioni</th>
 						</tr>
 					</thead>
@@ -103,6 +104,9 @@
 								<td>
 									{{ $ditta->cognome }} 
 									{{ $ditta->nome }}
+								</td>
+								<td>
+									{{ $ditta->codice_conto }}
 								</td>
 								<td>
 
@@ -139,6 +143,7 @@
 							<th>Denominazione</th>
 							<th>Alias</th>
 							<th>Nominativo</th>
+							<th>Codice Conto</th>
 							<th></th>
 						</tr>
 					</tfoot>					
@@ -206,6 +211,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2094"></script>
+	<script src="{{ URL::asset('/') }}dist/js/ditte.js?ver=1.2095"></script>
 
 @endsection
