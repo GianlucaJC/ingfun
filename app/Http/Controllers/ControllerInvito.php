@@ -331,7 +331,7 @@ public function __construct()
 						->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
 						->where('s.id', $id_servizio)
 						->where('sd.id_ditta', $id_ditta)
-						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota', 's.da_moltiplicare')
+						->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota', 's.da_moltiplicare', 's.barcode')
 						->first();
 
 					if ($servizio_dettagli) {
@@ -349,6 +349,7 @@ public function __construct()
 						if (!empty($box->note_fatturazione)) $descrizione_finale .= " - Note: " . $box->note_fatturazione;
 
 						$articoli_per_csv[] = [
+							'barcode' => $servizio_dettagli->barcode, // Add barcode here
 							'codice' => $servizio_dettagli->id_cod_servizi_ext,
 							'descrizione' => $descrizione_finale,
 							'quantita' => $quantita,
@@ -374,7 +375,7 @@ public function __construct()
 					
 					foreach ($articoli_per_csv as $index => $articolo) {
 						$data_riga = [
-							$box->id, $index + 1, $box->data_servizio, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
+							$box->id, $index + 1, $box->data_servizio, $articolo['barcode'], $articolo['codice'], $articolo['quantita'],
 							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'],
 							$ditta_info->nome,
 							$ditta_info->codice_conto
@@ -414,7 +415,7 @@ public function __construct()
 					->join('servizi_ditte as sd', 's.id', '=', 'sd.id_servizio')
 					->where('s.id', $id_servizio)->where('sd.id_ditta', $id_ditta)
 					->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota')
-					->first();
+					->select('s.id_cod_servizi_ext', 's.descrizione', 'sd.importo_ditta', 'sd.aliquota', 's.barcode')->first();
 
 				if ($servizio_dettagli) {
 					$aliquota_db = aliquote_iva::find($servizio_dettagli->aliquota);
@@ -427,6 +428,7 @@ public function __construct()
 					if (!empty($urgenza->descrizione)) $descrizione_finale .= " - Urgenza: " . $urgenza->descrizione;
 
 					$riga_csv = [
+						'barcode' => $servizio_dettagli->barcode, // Add barcode here
 						'codice' => $servizio_dettagli->id_cod_servizi_ext,
 						'descrizione' => $descrizione_finale,
 						'quantita' => $quantita,
@@ -457,7 +459,7 @@ public function __construct()
 
 					foreach ($articoli_per_csv as $index => $articolo) {
 						$data_riga = [
-							$urgenza->id, $index + 1, $data_servizio_urgenza, $articolo['codice'], $articolo['codice'], $articolo['quantita'],
+							$urgenza->id, $index + 1, $data_servizio_urgenza, $articolo['barcode'], $articolo['codice'], $articolo['quantita'],
 							number_format($articolo['prezzo_unitario'], 2, "", ""), $articolo['aliquota_val'],
 							$ditta_info->nome,
 							$ditta_info->codice_conto
@@ -1569,7 +1571,7 @@ public function __construct()
 			$fatture=DB::table('fatture as f')
 			->join('articoli_fattura as a','f.id','a.id_doc')
 			->join('ditte as d','f.id_ditta','d.id')
-			->select("f.id",DB::raw("DATE_FORMAT(f.data_invito,'%Y-%m-%d') as data_invito"),"a.codice","a.quantita","a.prezzo_unitario","a.aliquota","a.testo_libero_appalti","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli", "d.codice_conto")
+			->select("f.id",DB::raw("DATE_FORMAT(f.data_invito,'%Y-%m-%d') as data_invito"),"a.barcode","a.codice","a.quantita","a.prezzo_unitario","a.aliquota","a.testo_libero_appalti","d.cf","d.piva","d.email","d.telefono","d.nome","d.cognome","d.indirizzo","d.comune","d.cap","d.provincia","d.id as id_cli", "d.codice_conto")
 			->whereIn('f.id',$ids)
 			->orderBy('id_doc')
 			->orderBy('ordine')
@@ -1618,6 +1620,7 @@ public function __construct()
 					$old=$id_f;
 				}
 				$codice=$fattura->codice;
+				$barcode=$fattura->barcode;
 				$data_invito=$fattura->data_invito;
 				$quantita=$fattura->quantita;
 				$prezzo_unitario=$fattura->prezzo_unitario;
@@ -1629,7 +1632,7 @@ public function __construct()
 				$nome=$fattura->testo_libero_appalti;
 				if (strlen(trim($nome))==0) $nome=$fattura->nome;
 
-				$row=array($id_f,$riga,$data_invito,$codice,$codice,$quantita,$prezzo_unitario,$value_aliquota,$nome,$fattura->codice_conto);
+				$row=array($id_f,$riga,$data_invito,$barcode,$codice,$quantita,$prezzo_unitario,$value_aliquota,$nome,$fattura->codice_conto);
 				fputcsv($file, $row,";"," ");
 			}
 			if ($entr==true) {

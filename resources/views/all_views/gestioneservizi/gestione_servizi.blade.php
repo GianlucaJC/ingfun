@@ -67,6 +67,7 @@
 							
 							<th>Servizio</th>
 							<th>Acronimo</th>
+							<th>Barcode</th>
 							<th>da moltiplicare</th>
 							<th>Operazioni</th>
 						</tr>
@@ -89,6 +90,9 @@
 									{{ $servizio->acronimo }}
 								</td>
 								<td>
+									{{ $servizio->barcode }}
+								</td>
+								<td>
 									<?php
 									if ($servizio->da_moltiplicare==0) 	echo "N";
 									else
@@ -101,6 +105,7 @@
 									<span id='info_s{{$servizio->id}}' 
 									data-descr_servizio='{{$servizio->descrizione}}'
 									data-acronimo='{{$servizio->acronimo}}'
+									data-barcode='{{$servizio->barcode}}'
 									data-da_moltiplicare='{{$servizio->da_moltiplicare}}'
 									>
 									</span>
@@ -130,6 +135,7 @@
 							
 							<th>Servizio</th>
 							<th>Acronimo</th>
+							<th>Barcode</th>
 							<th>da moltiplicare</th>
 							<th></th>
 						</tr>

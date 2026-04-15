@@ -41,11 +41,18 @@
 						 
 						</div>			
 					</div>					
-				
+					<div class="col-md-3"> 
+						<div class="input-group mb-3">
+						  <div class="input-group-prepend">
+							<span class="input-group-text" id="basic-addon1">Barcode</span>
+						  </div>
+						  <input type="text" class="form-control" placeholder="EAN 13 Barcode" aria-label="Barcode" name="barcode" id="barcode" maxlength="13">
+						</div>			
+					</div>				
 					<div class="col-md-3">
 						<button type="submit" class="btn btn-success" >Crea/Modifica Servizio</button>
 						<button type="button" class="btn btn-secondary" onclick="$('#div_definition').toggle(150)">
-						Chiudixx
+						Chiudi
 						</button>
 						
 					</div>
