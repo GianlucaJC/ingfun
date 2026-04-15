@@ -197,6 +197,6 @@
 	
 	
 
-	<script src="{{ URL::asset('/') }}dist/js/gestione_servizi.js?ver=1.17"></script>
+	<script src="{{ URL::asset('/') }}dist/js/gestione_servizi.js?ver=1.18"></script>
 
 @endsection
