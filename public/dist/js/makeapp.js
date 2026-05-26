@@ -43,6 +43,22 @@ function resetZoomP() {
     $("body").removeClass(class_o).addClass(class_n)
     $("#credit_top").hide()
 
+    const lockCss = `
+        .locked-box .lock-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(108, 117, 125, 0.2);
+            z-index: 10;
+            cursor: not-allowed;
+        }
+        .locked-box .panel-footer .lock-icon { color: #6c757d; font-size: 1.2em; }
+    `;
+    $('head').append(`<style>${lockCss}</style>`);
+
+
     elenco_lav=$("#elenco_lav").val().split("|");
     for (sc=0;sc<elenco_lav.length;sc++) {
         id_l=elenco_lav[sc].split(";")[0]
@@ -807,6 +823,10 @@ function load_inf() {
                 hide=resp[sca].hide
                 box=resp[sca].id_box
                 m_e=resp[sca].m_e
+                const locked = resp[sca].locked;
+                if (locked == 1) {
+                    lock_box(m_e, box, false);
+                }
                 if (hide==1) $("#tdbox"+m_e+box).hide()
                 numero_persone=resp[sca].numero_persone
                 orario_incontro=resp[sca].orario_incontro
@@ -1409,7 +1429,8 @@ function save_info(id_giorno_appalto,m_e,box,from){
     save_appalto.from=from
     //save_appalto() viene invocato dal submit controllato da validation_form()
 }
-function info_box(m_e,box) {
+
+function info_box(m_e, box, isLocked) {
     $("#div_save").empty();
     id_giorno_appalto=$("#id_giorno_appalto").val()
     let CSRF_TOKEN = $("#token_csrf").val();
@@ -1452,16 +1473,21 @@ function info_box(m_e,box) {
             const numeroPersone = resp.info_appalto.length > 0 ? (resp.info_appalto[0].numero_persone || 1) : 1;
             
             // Inizializza il componente dei servizi
-            setupServiziComponent('#servizi-appalto-container', allServiziData, serviziSvoltiRaw, numeroPersone);
+            setupServiziComponent('#servizi-appalto-container', allServiziData, serviziSvoltiRaw, numeroPersone, isLocked);
             // END NEW SERVICE LOGIC
 
             $("#div_wait").empty()
-            html=`
-                <button type="submit" id='btn_save' class="btn btn-primary" onclick="save_info(`+id_giorno_appalto+`,'`+m_e+`',`+box+`,0)">Salva dati appalto</button>
-            `
-            $("#div_save").html(html)
-            validation_form()
-
+            if (!isLocked) { // Box non bloccato: mostra il pulsante Salva
+                html = `<button type="submit" id='btn_save' class="btn btn-primary" onclick="save_info(${id_giorno_appalto},'${m_e}',${box},0)">Salva dati appalto</button>`;
+                $("#div_save").html(html);
+                validation_form();
+            } else { // Box bloccato: mostra il pulsante per richiedere lo sblocco
+                html = `<button type="button" id='btn_unlock_req' class="btn btn-success" onclick="request_unlock_msg('${m_e}', ${box})"><i class="fab fa-whatsapp"></i> Richiedi Sblocco</button>`;
+                if (window.role === 'admin') {
+                    html += ` <button type="button" class="btn btn-info" onclick="showLastWaMessage('${m_e}', ${box})"><i class="fas fa-info-circle"></i> Info Messaggio</button>`;
+                }
+                $("#div_save").html(html);
+            }
           }
           else {
             $("#div_wait").html("<font color='red'>Errore durante il recupero dei dati</font>")
@@ -1477,29 +1503,32 @@ function info_box(m_e,box) {
 }
 
 
-function detail_appalto(m_e,box) {
-    html=`
+function detail_appalto(m_e, box) {
+    const isLocked = $(`#tdbox${m_e}${box}`).hasClass('locked-box');
+    const readonlyAttr = isLocked ? 'readonly' : '';
+
+    let html = `
         <form id='form_info' method='post' action="" name='form_info' class="needs-validation" autocomplete="off" novalidate>
             <div class="container-fluid">
                 <div class="row">
                     <div class="col-md-5">
                         <label for="luogo_incontro" class="col-form-label">Luogo incontro</label>
-                        <input type="text" class="form-control dati" id="luogo_incontro" name='luogo_incontro' required>
+                        <input type="text" class="form-control dati" id="luogo_incontro" name='luogo_incontro' required ${readonlyAttr}>
                     </div>
                     <div class="col-md-2">
                         <label for="orario_incontro" class="col-form-label">Orario incontro</label>
-                        <input type='time' class="form-control dati" id="orario_incontro" required name='orario_incontro'>
+                        <input type='time' class="form-control dati" id="orario_incontro" required name='orario_incontro' ${readonlyAttr}>
                     </div>
                     <div class="col-md-5">
                         <label for="luogo_destinazione" class="col-form-label">Luogo destinazione</label>
-                        <input type="text" class="form-control dati" id="luogo_destinazione" name='luogo_destinazione' required>
+                        <input type="text" class="form-control dati" id="luogo_destinazione" name='luogo_destinazione' required ${readonlyAttr}>
                     </div>                            
                 </div>     
 
                 <div class="row">
                     <div class="col-md-4">
                         <label for="ora_destinazione" class="col-form-label">Ora destinazione</label>
-                        <input type="time" class="form-control dati" id="ora_destinazione" name='ora_destinazione' required>
+                        <input type="time" class="form-control dati" id="ora_destinazione" name='ora_destinazione' required ${readonlyAttr}>
                     </div>
                     <div class="col-md-4">
                         <label for="data_servizio" class="col-form-label">Data servizio</label>
@@ -1507,14 +1536,14 @@ function detail_appalto(m_e,box) {
                     </div>
                     <div class="col-md-4">
                         <label for="numero_persone" class="col-form-label">Numero persone</label>
-                        <input type="number" class="form-control dati" id="numero_persone" name='numero_persone' required>
+                        <input type="number" class="form-control dati" id="numero_persone" name='numero_persone' required ${readonlyAttr}>
                     </div>                            
                 </div>     
 
                 <div class="row">
                     <div class="col-md-12">
                         <label for="nome_salma" class="col-form-label">Nome salma</label>
-                        <input type='text' class="form-control dati" id="nome_salma" name='nome_salma'>
+                        <input type='text' class="form-control dati" id="nome_salma" name='nome_salma' ${readonlyAttr}>
                     </div>
                 </div>    
 
@@ -1531,13 +1560,13 @@ function detail_appalto(m_e,box) {
 
                     <div class="col-md-12">
                         <label for="note" class="col-form-label">Note</label>
-                        <textarea class="form-control dati" id="note" name="note" row=4></textarea>
+                        <textarea class="form-control dati" id="note" name="note" row=4 ${readonlyAttr}></textarea>
                     </div>                            
                 </div>       
                 <div class="row">
                     <div class="col-md-12">
                         <label for="note_fatturazione" class="col-form-label">Note Fatturazione</label>
-                        <textarea class="form-control dati" id="note_fatturazione" name="note_fatturazione" row=4></textarea>
+                        <textarea class="form-control dati" id="note_fatturazione" name="note_fatturazione" row=4 ${readonlyAttr}></textarea>
                     </div>
                 </div>          
             </div>
@@ -1546,11 +1575,10 @@ function detail_appalto(m_e,box) {
             
         </form>    
     `
-    $("#body_content").html(html)
-    
+    $("#body_content").html(html);
 
-    info_box(m_e,box)
-    $("#modalinfo").modal('show')
+    info_box(m_e, box, isLocked);
+    $("#modalinfo").modal('show');
 }
 
 function removemezzo(dest) {
@@ -1593,7 +1621,7 @@ function removemezzo(dest) {
     }
 }
 
-function setupServiziComponent(containerSelector, allServiziData, serviziSvoltiRaw, numeroPersone) {
+function setupServiziComponent(containerSelector, allServiziData, serviziSvoltiRaw, numeroPersone, isLocked = false) {
     const container = $(containerSelector);
     if (!container.length) return;
 
@@ -1608,11 +1636,13 @@ function setupServiziComponent(containerSelector, allServiziData, serviziSvoltiR
         });
     }
 
+    const disabledAttr = isLocked ? 'disabled' : '';
+
     // 2. Crea l'HTML per il componente
     let services_html = `
         <div class="mb-2">
             <label for="service_picker" class="form-label">Aggiungi servizio</label>
-            <select class="form-select" id="service_picker">
+            <select class="form-select" id="service_picker" ${disabledAttr}>
                 <option value="">Seleziona un servizio...</option>`;
     
     all_servizi_map.forEach((service, id) => {
@@ -1663,16 +1693,16 @@ function setupServiziComponent(containerSelector, allServiziData, serviziSvoltiR
         const currentNumeroPersone = $('#numero_persone').val();
         const finalQuantity = isMoltiplicabile ? (currentNumeroPersone > 0 ? currentNumeroPersone : 1) : (quantity || 1);
 
-        const readonly = isMoltiplicabile ? 'readonly' : '';
+        const readonly = (isMoltiplicabile || isLocked) ? 'readonly' : '';
 
         const row = `
             <tr data-service-id="${serviceId}" data-moltiplica="${serviceInfo.moltiplica}">
                 <td>${serviceInfo.name}</td>
                 <td>
-                    <input type="number" class="form-control form-control-sm service-quantity" value="${finalQuantity}" min="1" ${readonly}>
+                    <input type="number" class="form-control form-control-sm service-quantity" value="${finalQuantity}" min="1" ${readonly} >
                 </td>
                 <td>
-                    <button type="button" class="btn btn-danger btn-sm remove-service" title="Rimuovi servizio">
+                    <button type="button" class="btn btn-danger btn-sm remove-service" title="Rimuovi servizio" ${disabledAttr}>
                         <i class="fa fa-trash"></i>
                     </button>
                 </td>
@@ -1682,45 +1712,47 @@ function setupServiziComponent(containerSelector, allServiziData, serviziSvoltiR
     };
 
     // 4. Associa eventi
-    $('#service_picker').on('change', function() {
-        const selectedId = $(this).val();
-        if (selectedId) {
-            const serviceInfo = all_servizi_map.get(selectedId);
-            if (serviceInfo && serviceInfo.moltiplica == '1') {
-                const numPersone = $('#numero_persone').val();
-                if (!numPersone || parseInt(numPersone) <= 0) {
-                    Swal.fire({
-                        icon: 'warning',
-                        title: 'Numero Persone non specificato',
-                        text: 'Per questo servizio, la quantità viene impostata in base al "Numero persone". Il campo non è valorizzato, quindi la quantità è stata impostata a 1.'
-                    });
+    if (!isLocked) {
+        $('#service_picker').on('change', function() {
+            const selectedId = $(this).val();
+            if (selectedId) {
+                const serviceInfo = all_servizi_map.get(selectedId);
+                if (serviceInfo && serviceInfo.moltiplica == '1') {
+                    const numPersone = $('#numero_persone').val();
+                    if (!numPersone || parseInt(numPersone) <= 0) {
+                        Swal.fire({
+                            icon: 'warning',
+                            title: 'Numero Persone non specificato',
+                            text: 'Per questo servizio, la quantità viene impostata in base al "Numero persone". Il campo non è valorizzato, quindi la quantità è stata impostata a 1.'
+                        });
+                    }
                 }
-            }
 
-            addServiceToTable(selectedId, 1); // Pass quantity 1 as default for non-multipliable
-            $(this).val(''); // Resetta il picker
-        }
-    });
-
-    $('#servizi_table').on('click', '.remove-service', function() {
-        $(this).closest('tr').remove();
-        updateHiddenInput();
-    });
-
-    $('#servizi_table').on('input', '.service-quantity:not([readonly])', function() {
-        updateHiddenInput();
-    });
-
-    // Aggiorna le quantità se il numero di persone cambia
-    $('#numero_persone').on('input', function() {
-        const newNumeroPersone = $(this).val() || 1;
-        $('#servizi_table tbody tr').each(function() {
-            if ($(this).data('moltiplica') == '1') {
-                $(this).find('.service-quantity').val(newNumeroPersone);
+                addServiceToTable(selectedId, 1); // Pass quantity 1 as default for non-multipliable
+                $(this).val(''); // Resetta il picker
             }
         });
-        updateHiddenInput();
-    });
+
+        $('#servizi_table').on('click', '.remove-service', function() {
+            $(this).closest('tr').remove();
+            updateHiddenInput();
+        });
+
+        $('#servizi_table').on('input', '.service-quantity:not([readonly])', function() {
+            updateHiddenInput();
+        });
+
+        // Aggiorna le quantità se il numero di persone cambia
+        $('#numero_persone').on('input', function() {
+            const newNumeroPersone = $(this).val() || 1;
+            $('#servizi_table tbody tr').each(function() {
+                if ($(this).data('moltiplica') == '1') {
+                    $(this).find('.service-quantity').val(newNumeroPersone);
+                }
+            });
+            updateHiddenInput();
+        });
+    }
 
     // 5. Popola la tabella con i dati esistenti
     if (serviziSvoltiRaw) {
@@ -2818,11 +2850,146 @@ function setZoomP(value, from) {
     setZoomGeneric(value, from, '#div_tb_p', '#zoom_wrapper_p', '#resetZoomBtnP', '#zoom_slider_p');
 }
 
-function get_msg() {
-    msg=$("#txt_msg").val()
-    msg=msg.replace(/\n/g,'%0A')
-    $("#a_send").attr('href', 'whatsapp://send?text='+msg);
-    $("#modalinfo").modal('hide')
+function lock_box(m_e, box, persist = true, wa_message = null) {
+    const box_td = $(`#tdbox${m_e}${box}`);
+
+    // Add a class to the main container to apply styles
+    box_td.addClass('locked-box');
+    box_td.css('position', 'relative'); // Needed for overlay positioning
+
+    // Add a lock icon to the header
+    const header = box_td.find('.panel-footer');
+    if (header.find('.lock-icon').length === 0) {
+        header.prepend('<i class="fas fa-lock lock-icon"></i> ');
+    }
+
+    // Keep info button enabled and on top of the overlay
+    $(`#btnbox${m_e}${box}`).css({'position': 'relative', 'z-index': 11});
+    box_td.find('a[onclick*="resetbox"]').css({'pointer-events': 'none', 'opacity': '0.5'});    
+    box_td.find('.panel-footer a[onclick*="make_msg"]').css({'pointer-events': 'none', 'opacity': '0.5'});
+
+    // Add an overlay to prevent all interactions within the box content
+    if (box_td.find('.lock-overlay').length === 0) {
+        box_td.append('<div class="lock-overlay"></div>');
+    }
+
+    if (persist) {
+        const id_giorno_appalto = $("#id_giorno_appalto").val();
+        const CSRF_TOKEN = $("#token_csrf").val();
+        const base_path = $("#url").val();
+
+        let body = `_token=${CSRF_TOKEN}&id_giorno_appalto=${id_giorno_appalto}&m_e=${m_e}&box=${box}&is_locked=1`;
+        if (wa_message !== null) {
+            body += `&wa_message=${encodeURIComponent(wa_message)}`;
+        }
+        fetch(`${base_path}/set_lock_state`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+                'X-CSRF-TOKEN': CSRF_TOKEN
+            },
+            body: body
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status !== 'ok') {
+                console.error('Failed to save lock state:', data.message);
+            }
+        })
+        .catch(error => {
+            console.error('Error saving lock state:', error);
+        });
+    }
+}
+
+function request_unlock_msg(m_e, box) {
+    const id_giorno_appalto = $("#id_giorno_appalto").val();
+    const CSRF_TOKEN = $("#token_csrf").val();
+    const base_path = $("#url").val();
+
+    Swal.fire({
+        title: 'Creazione link di sblocco...',
+        html: '<i class="fas fa-spinner fa-spin"></i>',
+        allowOutsideClick: false,
+        showConfirmButton: false
+    });
+
+    fetch(`${base_path}/generate_unlock_token`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-CSRF-TOKEN': CSRF_TOKEN
+        },
+        body: `_token=${CSRF_TOKEN}&id_giorno_appalto=${id_giorno_appalto}&m_e=${m_e}&box=${box}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        Swal.close();
+        if (data.status === 'ok' && data.token) {
+            const unlockUrl = `${base_path}/unlock_appalto?token=${data.token}`;
+            const ditta = $(`#ditta${m_e}${box}`).text().trim();
+            const data_appalto = $("#dap1").val();
+
+            const message = `Richiesta di sblocco per l'appalto del ${data_appalto}, ditta "${ditta}" (Box ${box + 1}).\n\nPer sbloccare, utilizzare il seguente link:\n${unlockUrl}`;
+
+            const modalHtml = `
+                <div class="mb-3">
+                    <label for="txt_unlock_msg" class="form-label">Testo del messaggio</label>
+                    <textarea class="form-control" id="txt_unlock_msg" rows="10" readonly>${message}</textarea>
+                </div>
+                <hr>
+                <a aria-label="Send Unlock Request" id='a_send_unlock' href="whatsapp://send?text=${encodeURIComponent(message)}">
+                    <button type="button" class="btn btn-success btn-sm">
+                        <i class="fab fa-whatsapp"></i> Invia tramite WhatsApp
+                    </button>
+                </a>
+            `;
+            $("#body_content").html(modalHtml);
+            $("#modalinfo").modal('show');
+        } else {
+            Swal.fire('Errore', data.message || 'Impossibile generare il link di sblocco.', 'error');
+        }
+    })
+    .catch(error => {
+        Swal.close();
+        console.error('Error generating unlock token:', error);
+        Swal.fire('Errore', 'Si è verificato un errore di comunicazione.', 'error');
+    });
+}
+
+function get_msg(m_e, box) {
+    const sendMessage = () => {
+        let msg = $("#txt_msg").val();
+        let msg_encoded = msg.replace(/\n/g, '%0A');
+        const whatsappLink = 'whatsapp://send?text=' + msg_encoded;
+
+        $("#modalinfo").modal('hide');
+        if (m_e && box !== undefined) {
+            lock_box(m_e, box, true, msg);
+        }
+
+        window.location.href = whatsappLink;
+    };
+
+    // The lock confirmation is only for box-specific messages
+    if (m_e && box !== undefined) {
+        Swal.fire({
+            title: 'Conferma invio e blocco',
+            html: "Stai per inviare il messaggio e <b>bloccare</b> questo box. Una volta bloccato, non sarà più modificabile. Procedere?",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Sì, invia e blocca!',
+            cancelButtonText: 'Annulla'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                sendMessage();
+            }
+        });
+    } else {
+        sendMessage();
+    }
 }
 
 function msg_rep() {
@@ -2845,7 +3012,7 @@ function msg_rep() {
         </div>
         <hr>
         <a aria-label="Send Appalto" id='a_send' href="#">
-            <button type="button" class="btn btn-success btn-sm" onclick='get_msg()'>
+            <button type="button" class="btn btn-success btn-sm" onclick="get_msg()">
                 <i class="fab fa-whatsapp"></i> Invia
             </button>
         </a>
@@ -2894,7 +3061,8 @@ function make_msg(m_e,box,from) {
         }
     }
     testo="";load=""
-    if (from==1) load="<i class='fas fa-spinner fa-spin'></i>"
+    if (from==1) load="<i class='fas fa-spinner fa-spin'></i>";
+
     html=`
         <div id='div_load_msg'>`+load+`</div>
         <div class="mb-3">
@@ -2903,7 +3071,7 @@ function make_msg(m_e,box,from) {
         </div>
         <hr>
         <a aria-label="Send Appalto" id='a_send' href="#">
-            <button type="button" class="btn btn-success btn-sm" onclick='get_msg()'>
+            <button type="button" class="btn btn-success btn-sm" onclick="get_msg('${m_e}', ${box})">
                 <i class="fab fa-whatsapp"></i> Invia
             </button>
         </a>
@@ -3035,6 +3203,45 @@ function make_msg(m_e,box,from) {
 
         }, 800)    
     }
+}
+
+function showLastWaMessage(m_e, box) {
+    const id_giorno_appalto = $("#id_giorno_appalto").val();
+    const CSRF_TOKEN = $("#token_csrf").val();
+    const base_path = $("#url").val();
+
+    Swal.fire({
+        title: 'Caricamento Messaggio...',
+        html: '<i class="fas fa-spinner fa-spin"></i>',
+        allowOutsideClick: false,
+        showConfirmButton: false
+    });
+
+    fetch(`${base_path}/get_last_wa_message`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8',
+            'X-CSRF-TOKEN': CSRF_TOKEN
+        },
+        body: `_token=${CSRF_TOKEN}&id_giorno_appalto=${id_giorno_appalto}&m_e=${m_e}&box=${box}`
+    })
+    .then(response => response.json())
+    .then(data => {
+        if (data.status === 'ok') {
+            Swal.fire({
+                title: 'Ultimo Messaggio WhatsApp Inviato',
+                html: `<textarea class="form-control" rows="10" readonly>${data.message}</textarea>`,
+                icon: 'info',
+                width: '800px'
+            });
+        } else {
+            Swal.fire('Informazione', data.message, 'info');
+        }
+    })
+    .catch(error => {
+        console.error('Error fetching WA message:', error);
+        Swal.fire('Errore', 'Impossibile recuperare il messaggio.', 'error');
+    });
 }
 
 //#region Funzioni di formattazione per i Log

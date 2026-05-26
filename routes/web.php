@@ -63,8 +63,20 @@ Route::group(['only_log' => ['auth']], function () {
 				Route::post('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
 
 				Route::get('makeappalti', [ 'as' => 'makeappalti', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeappalti']);
+
+					
+				Route::post('set_lock_state', ['as' => 'setLockState', 'uses' =>'App\Http\Controllers\ControllerAppalti@setLockState']);
+
+				Route::post('get_last_wa_message', ['as' => 'getLastWaMessage', 'uses' => 'App\Http\Controllers\ControllerAppalti@getLastWaMessage']);
 		/////////////
 		Route::post('makeapp/{id_giorno_appalto?}', [ 'as' => 'makeapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeapp']);
+
+// Rotte per la gestione dello sblocco appalti
+Route::post('generate_unlock_token', ['as' => 'generate_unlock_token', 'uses' => 'App\Http\Controllers\ControllerAppalti@generateUnlockToken']);
+Route::get('unlock_appalto', [ 'as' => 'unlock_appalto.show', 'uses' => 'App\Http\Controllers\ControllerAppalti@showUnlockPage']);
+
+Route::post('unlock_appalto', ['as' => 'unlock_appalto.process', 'uses' => 'App\Http\Controllers\ControllerAppalti@processUnlock']);
+
 
 		Route::get('makeapp/{id_giorno_appalto?}', [ 'as' => 'makeapp', 'uses' => 'App\Http\Controllers\ControllerAppalti@makeapp']);
 
@@ -536,6 +548,7 @@ Route::group(['only_log' => ['auth']], function () {
 	Route::post('remove_doc_ditta', 'App\Http\Controllers\AjaxControllerServ@remove_doc_ditta');	
 	
 	Route::post('edit_row_fattura', 'App\Http\Controllers\AjaxControllerFatture@edit_row_fattura');
+
 
 });
 

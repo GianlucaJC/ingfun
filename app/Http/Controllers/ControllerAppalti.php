@@ -24,6 +24,8 @@ use App\Models\parco_scheda_mezzo;
 use App\Models\parco_marca_mezzo;
 use App\Models\parco_modello_mezzo;
 use App\Models\AppaltoLog; // Import the new model
+use Illuminate\Support\Str;
+
 use OneSignal;
 use Twilio\Rest\Client;
 use Mail;
@@ -716,7 +718,7 @@ public function __construct()
 
 
 		$info_appalto=appaltinew_info::from('appaltinew_info as a')
-		->select('a.id','a.hide','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note','a.note_fatturazione')
+		->select('a.id','a.hide','a.id_box','a.m_e','a.luogo_incontro','a.orario_incontro','a.luogo_destinazione','a.ora_destinazione','a.data_servizio','a.numero_persone','a.servizi_svolti','a.nome_salma','a.note','a.note_fatturazione', 'a.locked')
 		->join('appaltinew as an','a.id_appalto','an.id')
 		->where('a.id_appalto','=',$id_giorno_appalto)
 		->when($from=="0", function ($info_appalto) use($m_e,$box) {
@@ -1172,6 +1174,145 @@ public function __construct()
 	    }
 
 	    return response()->json($formattedLogs);
+	}
+
+	public function setLockState(Request $request)
+    {
+        $id_giorno_appalto = $request->input('id_giorno_appalto');
+        $m_e = $request->input('m_e');
+        $box = $request->input('box');
+        $is_locked = $request->input('is_locked');
+        $wa_message = $request->input('wa_message');
+
+        try {
+            $update_data = ['locked' => $is_locked ? 1 : 0];
+            if ($is_locked && !is_null($wa_message)) {
+                $update_data['last_wa_message'] = $wa_message;
+            }
+
+            appaltinew_info::updateOrCreate(
+                [
+                    'id_appalto' => $id_giorno_appalto,
+                    'm_e' => $m_e,
+                    'id_box' => $box,
+                ],
+                $update_data
+            );
+            return response()->json(['status' => 'ok', 'message' => 'Stato di blocco aggiornato.']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Impossibile aggiornare lo stato di blocco: ' . $e->getMessage()]);
+        }
+    }
+
+	public function getLastWaMessage(Request $request)
+	{
+		$id_giorno_appalto = $request->input('id_giorno_appalto');
+		$m_e = $request->input('m_e');
+		$box = $request->input('box');
+
+		$info = appaltinew_info::where('id_appalto', $id_giorno_appalto)
+			->where('m_e', $m_e)
+			->where('id_box', $box)
+			->first();
+
+		if ($info && $info->last_wa_message) {
+			return response()->json(['status' => 'ok', 'message' => $info->last_wa_message]);
+		}
+
+		return response()->json(['status' => 'not_found', 'message' => 'Nessun messaggio salvato per questo appalto.']);
+	}
+
+	public function generateUnlockToken(Request $request)
+	{
+		$request->validate([
+			'id_giorno_appalto' => 'required|integer',
+			'm_e' => 'required|string|size:1',
+			'box' => 'required|integer',
+		]);
+
+		try {
+			$token = Str::random(40);
+
+			DB::table('appalto_unlock_tokens')->insert([
+				'token' => $token,
+				'id_giorno_appalto' => $request->id_giorno_appalto,
+				'm_e' => $request->m_e,
+				'box_id' => $request->box,
+				'created_at' => now(),
+				'updated_at' => now(),
+				'expires_at' => now()->addHours(24), // Il token scade dopo 24 ore
+			]);
+
+			return response()->json(['status' => 'ok', 'token' => $token]);
+
+		} catch (\Exception $e) {
+			//Log::error("Errore generazione token sblocco: " . $e->getMessage());
+			return response()->json(['status' => 'error', 'message' => 'Errore interno del server.'], 500);
+		}
+	}
+
+	public function showUnlockPage(Request $request)
+	{
+		$token = $request->query('token');
+		if (!$token) {
+			return view('all_views.appalti.unlock_error', ['message' => 'Token di sblocco mancante o non valido.']);
+		}
+
+		$tokenData = DB::table('appalto_unlock_tokens')
+			->where('token', $token)
+			->first();
+
+		if (!$tokenData) {
+			return view('all_views.appalti.unlock_error', ['message' => 'Token di sblocco non valido.']);
+		}
+
+		if ($tokenData->used_at) {
+			return view('all_views.appalti.unlock_error', ['message' => 'Questo link di sblocco è già stato utilizzato.']);
+		}
+
+		if (Carbon::parse($tokenData->expires_at)->isPast()) {
+			return view('all_views.appalti.unlock_error', ['message' => 'Questo link di sblocco è scaduto. Richiederne uno nuovo.']);
+		}
+
+		// Passa il token alla vista
+		return view('all_views.appalti.unlock_page', ['token' => $token]);
+	}
+
+	public function processUnlock(Request $request)
+	{
+		$request->validate([
+			'token' => 'required|string',
+			'password' => 'required|string',
+		]);
+
+		$token = $request->input('token');
+		$password = $request->input('password');
+
+		$tokenData = DB::table('appalto_unlock_tokens')->where('token', $token)->first();
+
+		if (!$tokenData || $tokenData->used_at || Carbon::parse($tokenData->expires_at)->isPast()) {
+			return view('all_views.appalti.unlock_error', ['message' => 'Token non valido, scaduto o già utilizzato.']);
+		}
+
+		$unlockPassword = env('APPALTO_UNLOCK_PASSWORD');
+		if (!$unlockPassword || $password !== $unlockPassword) {
+			return redirect()->route('unlock_appalto.show', ['token' => $token])->with('error', 'Password errata.');
+		}
+
+		appaltinew_info::updateOrCreate(
+			[
+				'id_appalto' => $tokenData->id_giorno_appalto,
+				'm_e' => $tokenData->m_e,
+				'id_box' => $tokenData->box_id,
+			],
+			[
+				'locked' => 0
+			]
+		);
+
+		DB::table('appalto_unlock_tokens')->where('id', $tokenData->id)->update(['used_at' => now()]);
+
+		return view('all_views.appalti.unlock_success');
 	}
 
 

@@ -479,6 +479,7 @@
         const elemBox = {{ $config['elemBox'] ?? 6 }};
         const elemRep = {{ $config['elemRep'] ?? 15 }};
         const elemAss = {{ $config['elemAss'] ?? 15 }};
+        window.role = '{{ $role }}';
     </script>
 	<script src="{{ URL::asset('/') }}dist/js/makeapp.js?ver=<?php echo time(); ?>"></script>
 	<script src="{{ URL::asset('/') }}dist/js/pdf_builder.js?ver=<?php echo time(); ?>"></script>
