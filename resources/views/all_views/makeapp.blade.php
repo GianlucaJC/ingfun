@@ -179,7 +179,7 @@
 
 					<div class="col-md-1" id='side_list'>
 
-                        <div class="card-body">
+                        <div class="card-body" style='min-width:180px'>
                             <div class="accordion">
 
                                 <!--accordion persone !-->
@@ -210,7 +210,7 @@
                                                             if ($tipo_contratto==5) $color="secondary";
 
                                                         ?>
-                                                        <div style='line-height:0.9;' id='spanlav{{$lavoratore->id}}' class='allnomi'data-nome='{{$lavoratore->nominativo}}' ><font size='1rem'>
+                                                        <div style='line-height:0.9;' id='spanlav{{$lavoratore->id}}' class='allnomi'data-nome='{{$lavoratore->nominativo}}' ><font size='4rem'>
                                                             <a href="javascript:void(0)" class="link-{{$color}} link-offset-2 link-underline-opacity-25 link-underline-opacity-100-hover"  id='btnlav{{$lavoratore->id}}' data-color='{{$color}}' data-idlav='{{$lavoratore->id}}' onclick='impegnalav({{$lavoratore->id}})' draggable="true" ondragstart="dragstartHandler(event)" >
                                                             <b>{{$lavoratore->cognome}}</b>
                                                             </a>
