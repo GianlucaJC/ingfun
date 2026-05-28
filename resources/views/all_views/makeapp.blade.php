@@ -346,18 +346,6 @@
 						<input type='hidden' id='dap' value='{{$dap}}'>
 						<input type='hidden' id='dap1' value='{{$dap1}}'>
 
-                        
-
-						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
-							<div style='padding:10px'>
-								<!--
-                                <a href='#' onclick="newapp('M','man');$('.collapse').collapse('hide')" class="link-light float-start">
-									Aggiungi appalto
-								</a>
-                                !-->
-								APPALTI DELLA MATTINA
-							</div>
-						</div>
 						<div id="zoom_wrapper_m" style="overflow-x: auto;">
 							<div id="div_tb_m">
 								<table id='tbAppM' class='table' style="width:100%">
@@ -372,16 +360,6 @@
 
 						<hr>
 
-						<div style='text-align:center;background-color:rgb(30, 139, 255);color:rgb(255, 255, 30)'>
-							<div style='padding:10px'>
-                                <!--
-								<a href='#' onclick="newapp('P','man');$('.collapse').collapse('hide')" class="link-light float-start">
-									Aggiungi appalto
-								</a>
-                                !-->
-								APPALTI DEL POMERIGGIO
-							</div>
-						</div>
 						<div id="zoom_wrapper_p" style="overflow-x: auto;">
 							<div id="div_tb_p">
 								<table id='tbAppP' class='table' style="width:100%">
