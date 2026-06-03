@@ -308,6 +308,10 @@ Route::post('unlock_appalto', ['as' => 'unlock_appalto.process', 'uses' => 'App\
 
 	Route::post('get_appalti_previous_month', [ 'as' => 'get_appalti_previous_month', 'uses' => 'App\Http\Controllers\ControllerInvito@getAppaltiIdsForPreviousMonth']);
 
+	Route::post('get_dettagli_appalti_per_preventivo', [ 'as' => 'get_dettagli_appalti_per_preventivo', 'uses' => 'App\Http\Controllers\ControllerInvito@getDettagliAppaltiPerPreventivo']);
+
+	Route::post('genera_preventivo_pdf', [ 'as' => 'genera_preventivo_pdf', 'uses' => 'App\Http\Controllers\ControllerInvito@generaPreventivoPdf']);
+
 	Route::post('scheda_mezzo', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo']);
 
 	Route::get('scheda_mezzo/{id?}', [ 'as' => 'scheda_mezzo', 'uses' => 'App\Http\Controllers\ControllerParco@scheda_mezzo']);	

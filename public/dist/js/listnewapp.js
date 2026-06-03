@@ -33,10 +33,9 @@ $(document).ready(function () {
 
         let selectedInFilterCount = 0;
         allFilteredRows.data().each(function(rowData) {
-            // Estrai l'ID dal checkbox nella prima colonna
-            const checkboxHtml = rowData[0];
-            const id = $(checkboxHtml).val();
-            if (id && selectedAppaltiIds.has(id)) {
+        // Estrai l'ID dalla terza colonna (indice 2)
+        const id = rowData[2];
+        if (id && selectedAppaltiIds.has(id.toString())) {
                 selectedInFilterCount++;
             }
         });
@@ -57,15 +56,14 @@ $(document).ready(function () {
 
         // Itera su tutti i dati delle righe filtrate (non solo sulla pagina corrente)
         table.rows({ search: 'applied' }).data().each(function (rowData) {
-            // Estrai l'ID dal checkbox nella prima colonna
-            const checkboxHtml = rowData[0];
-            const id = $(checkboxHtml).val();
+        // Estrai l'ID dalla terza colonna (indice 2)
+        const id = rowData[2];
 
             if (id) {
                 if (isChecked) {
-                    selectedAppaltiIds.add(id);
+                selectedAppaltiIds.add(id.toString());
                 } else {
-                    selectedAppaltiIds.delete(id);
+                selectedAppaltiIds.delete(id.toString());
                 }
             }
         });
@@ -76,9 +74,9 @@ $(document).ready(function () {
     $('#tbl_list_appalti tbody').on('click', '.appalto-checkbox', function () {
         const id = $(this).val();
         if ($(this).is(':checked')) {
-            selectedAppaltiIds.add(id);
+            selectedAppaltiIds.add(id.toString());
         } else {
-            selectedAppaltiIds.delete(id);
+            selectedAppaltiIds.delete(id.toString());
         }
         updateSelectAllCheckboxState();
     });
@@ -89,11 +87,11 @@ $(document).ready(function () {
         table.rows({ page: 'current' }).nodes().to$().find('.appalto-checkbox').each(function() {
             const id = $(this).val();
             // Ripristina lo stato del checkbox
-            $(this).prop('checked', selectedAppaltiIds.has(id));
+            $(this).prop('checked', selectedAppaltiIds.has(id.toString()));
 
             // Ripristina l'icona PDF se è stata generata in questa sessione
-            if (generatedInvoicesHtml.has(id)) {
-                $(this).closest('tr').find(`#fatture-cell-${id}`).html(generatedInvoicesHtml.get(id));
+            if (generatedInvoicesHtml.has(id.toString())) {
+                $(this).closest('tr').find(`#fatture-cell-${id}`).html(generatedInvoicesHtml.get(id.toString()));
             }
         });
         updateSelectAllCheckboxState();
@@ -243,6 +241,126 @@ $(document).ready(function () {
             },
             error: function (xhr, status, error) {
                 Swal.close();
+                Swal.fire('Errore', 'Si è verificato un errore di comunicazione con il server.', 'error');
+                console.error(error);
+            }
+        });
+    });    
+
+    // New button handler for generating quotes
+    $('#genera_preventivi').on('click', function () {
+        const selectedIds = Array.from(selectedAppaltiIds);
+
+        if (selectedIds.length === 0) {
+            Swal.fire('Attenzione', 'Selezionare almeno un giorno di appalto per generare i preventivi.', 'warning');
+            return;
+        }
+
+        // AJAX call to get appalti details
+        const url = $('#url').val() + '/get_dettagli_appalti_per_preventivo';
+        const token = $('#token_csrf').val();
+
+        Swal.fire({
+            title: 'Caricamento...',
+            text: 'Recupero dei dettagli degli appalti selezionati.',
+            allowOutsideClick: false,
+            didOpen: () => {
+                Swal.showLoading();
+            }
+        });
+
+        $.ajax({
+            url: url,
+            type: 'POST',
+            data: {
+                _token: token,
+                ids: selectedIds
+            },
+            success: function (response) {
+                if (response.status === 'ok' && response.appalti.length > 0) {
+                    let modalContent = `
+                        <div class="mb-2 text-start">
+                            <label class="form-check-label">
+                                <input class="form-check-input" type="checkbox" id="select-all-preventivi"> Seleziona/Deseleziona Tutti
+                            </label>
+                        </div>
+                        <div id="preventivi-appalti-list" style="max-height: 45vh; overflow-y: auto; border: 1px solid #ddd; padding: 5px; text-align:left;">
+                            <table class="table table-sm table-hover">
+                                <thead style="position: sticky; top: 0; background-color: white; z-index: 1;">
+                                    <tr>
+                                        <th style="width: 5%;">Sel.</th>
+                                        <th style="width: 15%;">ID Giorno</th>
+                                        <th style="width: 15%;">Data</th>
+                                        <th style="width: 35%;">Ditta</th>
+                                        <th style="width: 30%;">Dettaglio</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                    `;
+
+                    response.appalti.forEach(appalto => {
+                        modalContent += `
+                            <tr>
+                                <td class="text-center"><input class="preventivo-checkbox" type="checkbox" value="${appalto.id_appalto_info}" style="float: none; margin-left: 0;"></td>
+                                <td>${appalto.id_appalto}</td>
+                                <td>${new Date(appalto.data_servizio).toLocaleDateString('it-IT')}</td>
+                                <td>${appalto.ditta_name}</td>
+                                <td>Turno: ${appalto.m_e === 'M' ? 'Mattina' : 'Pomeriggio'}, Box: ${appalto.box_number + 1}</td>
+                            </tr>
+                        `;
+                    });
+                    modalContent += `
+                                </tbody>
+                            </table>
+                        </div>
+                    `;
+
+                    Swal.fire({
+                        title: 'Seleziona Appalti per il Preventivo',
+                        html: modalContent,
+                        width: '800px',
+                        showCancelButton: true,
+                        confirmButtonText: 'Genera Preventivi Selezionati',
+                        cancelButtonText: 'Annulla',
+                        didOpen: () => {
+                            // Logic for select/deselect all
+                            $('#select-all-preventivi').on('click', function() {
+                                const isChecked = $(this).is(':checked');
+                                $('.preventivo-checkbox').prop('checked', isChecked);
+                            });
+                            // If an individual checkbox is unchecked, uncheck the "select all"
+                            $('.preventivo-checkbox').on('click', function() {
+                                if (!$(this).is(':checked')) {
+                                    $('#select-all-preventivi').prop('checked', false);
+                                } else {
+                                    // Check if all are checked now
+                                    if ($('.preventivo-checkbox:checked').length === $('.preventivo-checkbox').length) {
+                                        $('#select-all-preventivi').prop('checked', true);
+                                    }
+                                }
+                            });
+                        },
+                        preConfirm: () => {
+                            const selectedAppaltiInfoIds = [];
+                            $('#preventivi-appalti-list input.preventivo-checkbox:checked').each(function() {
+                                selectedAppaltiInfoIds.push($(this).val());
+                            });
+                            if (selectedAppaltiInfoIds.length === 0) {
+                                Swal.showValidationMessage('Devi selezionare almeno un appalto.');
+                            }
+                            return selectedAppaltiInfoIds;
+                        }
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            generazionePreventivi(result.value);
+                        }
+                    });
+
+                } else {
+                    Swal.fire('Nessun Appalto Valido', response.message || 'Nessun appalto valido per la generazione di preventivi trovato tra quelli selezionati.', 'info');
+                }
+            },
+            error: function (xhr, status, error) {
                 Swal.fire('Errore', 'Si è verificato un errore di comunicazione con il server.', 'error');
                 console.error(error);
             }
@@ -404,6 +522,102 @@ function generaFatturaSingola(id) {
     }).then((result) => {
         if (result.isConfirmed) {
             generazioneFatture([id]);
+        }
+    });
+}
+
+function generazionePreventivi(ids) {
+    if (ids.length === 0) {
+        Swal.fire('Attenzione', 'Nessun appalto selezionato.', 'warning');
+        return;
+    }
+
+    const url = $('#url').val() + '/genera_preventivo_pdf';
+    const token = $('#token_csrf').val();
+
+    Swal.fire({
+        title: 'Generazione Preventivi...',
+        text: 'Attendere la creazione dei file.',
+        allowOutsideClick: false,
+        didOpen: () => {
+            Swal.showLoading();
+        }
+    });
+
+    $.ajax({
+        url: url,
+        type: 'POST',
+        data: {
+            _token: token,
+            ids: ids
+        },
+        success: function (response) {
+            if (response.status === 'ok') {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Successo!',
+                    html: response.message
+                });
+
+                // Inject PDFs into the table
+                if (response.quotes) {
+                    // This map will store HTML for each day's cell
+                    const dayCells = new Map();
+
+                    response.quotes.forEach(quote => {
+                        const pdfUrl = $('#url').val() + '/' + quote.pdf_url;
+                        const html = `
+                            <a href="${pdfUrl}" target="_blank" class="btn btn-info btn-sm" title="Visualizza Preventivo ${quote.ditta_name}">
+                                <i class="fa fa-file-signature"></i>
+                            </a>`;
+                        
+                        quote.associated_days.forEach(dayId => {
+                            if (!dayCells.has(dayId)) {
+                                dayCells.set(dayId, []);
+                            }
+                            dayCells.get(dayId).push({
+                                html: html,
+                                ditta_name: quote.ditta_name,
+                                pdf_url: pdfUrl
+                            });
+                        });
+                    });
+
+                    // Now update the DOM
+                    dayCells.forEach((quotesForDay, dayId) => {
+                        let finalHtml = '';
+                        if (quotesForDay.length === 1) {
+                            finalHtml = quotesForDay[0].html;
+                        } else if (quotesForDay.length > 1) {
+                            let dropdownItems = '';
+                            quotesForDay.forEach(q => {
+                                dropdownItems += `<li><a class="dropdown-item" href="${q.pdf_url}" target="_blank">${q.ditta_name}</a></li>`;
+                            });
+                            finalHtml = `
+                                <div class="btn-group">
+                                    <button type="button" class="btn btn-info btn-sm dropdown-toggle" data-bs-toggle="dropdown" aria-expanded="false">
+                                        <i class="fa fa-file-signature"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        ${dropdownItems}
+                                    </ul>
+                                </div>`;
+                        }
+                        
+                        const cell = $(`#preventivi-cell-${dayId}`);
+                        if (cell.length) {
+                            cell.html(finalHtml);
+                        }
+                    });
+                }
+
+            } else {
+                Swal.fire('Errore', response.message || 'Si è verificato un errore durante la generazione dei preventivi.', 'error');
+            }
+        },
+        error: function (xhr, status, error) {
+            Swal.fire('Errore', 'Si è verificato un errore di comunicazione con il server.', 'error');
+            console.error(error);
         }
     });
 }

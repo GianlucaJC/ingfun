@@ -1465,6 +1465,7 @@ function info_box(m_e, box, isLocked) {
                 $("#nome_salma").val(resp.info_appalto[0].nome_salma)
                 $("#note").val(resp.info_appalto[0].note)
                 $("#note_fatturazione").val(resp.info_appalto[0].note_fatturazione)
+                $("#prezzo_a_corpo").val(resp.info_appalto[0].prezzo_a_corpo)
             } 
 
             // NEW SERVICE LOGIC
@@ -1475,6 +1476,28 @@ function info_box(m_e, box, isLocked) {
             // Inizializza il componente dei servizi
             setupServiziComponent('#servizi-appalto-container', allServiziData, serviziSvoltiRaw, numeroPersone, isLocked);
             // END NEW SERVICE LOGIC
+
+            const prezzoACorpoInput = $('#prezzo_a_corpo');
+            const serviziContainer = $('#servizi-appalto-container');
+
+            const toggleServiziState = () => {
+                const prezzo = parseFloat(prezzoACorpoInput.val());
+                const hasPrezzoACorpo = prezzo > 0;
+
+                if (hasPrezzoACorpo) {
+                    serviziContainer.css({ 'opacity': '0.4', 'pointer-events': 'none' });
+                } else {
+                    if (!isLocked) {
+                         serviziContainer.css({ 'opacity': '1', 'pointer-events': 'auto' });
+                    }
+                }
+            };
+
+            if (!isLocked) {
+                prezzoACorpoInput.on('input', toggleServiziState);
+            }
+            
+            setTimeout(toggleServiziState, 150); // Set initial state
 
             $("#div_wait").empty()
             if (!isLocked) { // Box non bloccato: mostra il pulsante Salva
@@ -1567,6 +1590,15 @@ function detail_appalto(m_e, box) {
                     <div class="col-md-12">
                         <label for="note_fatturazione" class="col-form-label">Note Fatturazione</label>
                         <textarea class="form-control dati" id="note_fatturazione" name="note_fatturazione" row=4 ${readonlyAttr}></textarea>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-4">
+                        <label for="prezzo_a_corpo" class="col-form-label">Prezzo a corpo</label>
+                        <div class="input-group">
+                            <span class="input-group-text">€</span>
+                            <input type="number" step="0.01" class="form-control dati" id="prezzo_a_corpo" name="prezzo_a_corpo" ${readonlyAttr}>
+                        </div>
                     </div>
                 </div>          
             </div>
@@ -1791,8 +1823,31 @@ function removeditta(id) {
     });
 }
 
+function clearInfoData(m_e, box) {
+    const id_giorno_appalto = $("#id_giorno_appalto").val();
+    const CSRF_TOKEN = $("#token_csrf").val();
+    const base_path = $("#url").val();
+
+    fetch(base_path + "/deletebox", {
+        method: 'post',
+        headers: {
+            "Content-type": "application/x-www-form-urlencoded; charset=UTF-8"
+        },
+        body: `_token=${CSRF_TOKEN}&id_giorno_appalto=${id_giorno_appalto}&m_e=${m_e}&box=${box}&action=resetinfo`
+    })
+    .then(response => response.json())
+    .then(resp => {
+        if (resp.header !== "OK") {
+            Swal.fire('Errore', 'Impossibile resettare i dati informativi del box.', 'error');
+        }
+    })
+    .catch(error => {
+        console.error('Error clearing info data:', error);
+        Swal.fire('Errore', 'Errore di comunicazione durante il reset.', 'error');
+    });
+}
+
 function resetbox(m_e,box,from) {
-    html="";
     //from==0 || from==2 chiamata con riferimento a singolo box
     //from==1 chiamata con riferimento a tutti i box
     //from==2: da spostamento squadra da box a box
@@ -1801,18 +1856,24 @@ function resetbox(m_e,box,from) {
     if (from!=2) {
         if (from === 0) {
             Swal.fire({
-                title: 'Sei sicuro?',
-                text: "Verranno resettati tutti i dati del box!",
-                icon: 'warning',
+                title: 'Cosa vuoi resettare?',
+                html: "Scegli l'opzione di reset per questo box.<br><small>L'operazione verrà salvata solo cliccando su 'Salva Tutto'.</small>",
+                icon: 'question',
+                showDenyButton: true,
                 showCancelButton: true,
-                confirmButtonText: 'Sì, resetta!',
-                cancelButtonText: 'Annulla'
+                confirmButtonText: `Resetta tutto (incluso Info)`,
+                denyButtonText: `Resetta solo squadre/mezzi`,
+                cancelButtonText: 'Annulla',
+                confirmButtonColor: '#d33',
+                denyButtonColor: '#ffc107',
             }).then((result) => {
-                if (!result.isConfirmed) {
-                    return false;
+                if (result.isConfirmed) {
+                    // Reset everything
+                    performReset(m_e, box, from, true); // new parameter to reset info
+                } else if (result.isDenied) {
+                    // Reset only box content
+                    performReset(m_e, box, from, false);
                 }
-                // Continue with reset if confirmed
-                performReset(m_e, box, from);
             });
             return; // Stop execution here, will be continued in then()
         } else {
@@ -1823,41 +1884,9 @@ function resetbox(m_e,box,from) {
             performReset(m_e, box, from);
         }
     }
-
-    if (from==0) {
-        html=inibox(m_e,box)
-        $("#boxinfo"+m_e+box).html(html)
-        html=inimezzi(m_e,box)
-        $("#mezzi_info"+m_e+box).html(html)
-        html=initditte(m_e,box)
-        $("#ditte_info"+m_e+box).html(html)
-        for (el=0;el<elemBox;el++) {
-            setresp(m_e,box,el,0,1) 
-        }
-    }    
-    else if (from!=2) {
-        $(".box").each(function(){
-            m_e=$(this).data( "m_e")
-            box=$(this).data( "box")
-            html=inibox(m_e,box)
-            $("#boxinfo"+m_e+box).html(html)
-            html=inimezzi(m_e,box)
-            $("#mezzi_info"+m_e+box).html(html)
-            html=initditte(m_e,box)
-            $("#ditte_info"+m_e+box).html(html)
-            for (el=0;el<elemBox;el++) {
-                setresp(m_e,box,el,0,1) 
-            }
-
-        })
-    }    
-    $("#modalinfo").modal('hide')
-    if (from==0)
-        $("#btn_save_all").removeClass('btn-outline-success').removeClass('btn-warning').addClass('btn-warning')
-    
 }
 
-function performReset(m_e, box, from) {
+function performReset(m_e, box, from, resetInfo = false) {
     let html = "";
     if (from == 0) {
         html = inibox(m_e, box);
@@ -1868,6 +1897,17 @@ function performReset(m_e, box, from) {
         $("#ditte_info" + m_e + box).html(html);
         for (let el = 0; el < elemBox; el++) {
             setresp(m_e, box, el, 0, 1);
+        }
+        if (resetInfo) {
+            // UI reset for info badge
+            const infoApp = $(`#infoapp${m_e}${box}`);
+            if (infoApp.length) {
+                infoApp.removeClass('bg-success').addClass('bg-secondary');
+                infoApp.html(`<i class="fa-solid fa-person"></i> <i class="ml-3 fa-solid fa-clock"></i>`);
+            }
+            
+            // AJAX call to clear info data in DB
+            clearInfoData(m_e, box);
         }
     } else if (from != 2) {
         $(".box").each(function () {
@@ -3267,6 +3307,7 @@ const logKeyLabels = {
     'nome_salma': 'Nome Salma',
     'note': 'Note',
     'note_fatturazione': 'Note Fatturazione',
+    'prezzo_a_corpo': 'Prezzo a corpo',
     'ditta_id': 'Ditta',
     'car1_targa': 'Targa Mezzo 1',
     'car2_targa': 'Targa Mezzo 2',
@@ -3439,7 +3480,7 @@ function formatLogValue(key, value, payload) {
         case 'luogo_destinazione': case 'ora_destinazione':
         case 'data_servizio': case 'numero_persone':
         case 'nome_salma': case 'note':
-        case 'note_fatturazione':
+        case 'note_fatturazione': case 'prezzo_a_corpo':
             return value;
         default:
             return value;

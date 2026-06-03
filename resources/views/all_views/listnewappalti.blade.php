@@ -103,6 +103,9 @@
 									<i class="fa fa-info-circle"></i>
 								</button>
 							</div>
+							<button type="button" id="genera_preventivi" class="btn btn-primary btn-lg ms-2">
+								<i class="fas fa-file-signature"></i> Genera Preventivi
+							</button>
 							<button type="button" id="esporta_fatture" class="btn btn-warning btn-lg">
 								<i class="fa fa-upload"></i> Esporta Selezione
 							</button>
@@ -129,6 +132,7 @@
 							<th>Appalti valorizzati</th>
 							<th>Urgenze</th>
 							<th>Fatture</th>
+							<th>Preventivi</th>
 							<th>Data Esportazione</th>
 						</tr>
 					</thead>
@@ -204,6 +208,9 @@
 							<td id="fatture-cell-{{$appalti->id}}">
 								<!-- PDF buttons will be injected here by JS -->
 							</td>
+							<td id="preventivi-cell-{{$appalti->id}}">
+								<!-- Quote PDFs will be injected here by JS -->
+							</td>
 							<td>
 								@if($appalti->data_esportazione)
 									{{ \Carbon\Carbon::parse($appalti->data_esportazione)->format('d/m/Y H:i') }}
@@ -223,6 +230,7 @@
 							<th>Mezzi impiegati</th>
 							<th>Appalti valorizzati</th>
 							<th>Urgenze</th>
+							<th></th>
 							<th></th>
 							<th>Data Esportazione</th>
 						</tr>
@@ -320,6 +328,6 @@
 	<!-- fine DataTables !-->
 
 
-<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.033"></script>
+<script src="{{ URL::asset('/') }}dist/js/listnewapp.js?ver=1.041"></script>
 
 @endsection

@@ -26,5 +26,6 @@ class appaltinew_info extends Model
         'hide',
         'locked',
         'last_wa_message',
+        'prezzo_a_corpo',
     ];
 }
