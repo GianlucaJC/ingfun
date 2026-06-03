@@ -1090,7 +1090,7 @@ public function __construct()
 	
 			// --- 6. Prepare data for JSON response ---
 			$generated_quotes_info[] = [
-				'pdf_url' => 'storage/' . $storage_path . '/' . $filename,
+				'pdf_url' => Storage::url($storage_path . '/' . $filename),
 				'ditta_name' => $primo_appalto->ditta_denominazione,
 				'associated_days' => array_unique($associated_days)
 			];
