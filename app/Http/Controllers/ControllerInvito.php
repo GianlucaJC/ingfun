@@ -19,6 +19,7 @@ use App\Models\italy_cities;
 use App\Models\prod_prodotti;
 use App\Models\prod_magazzini;
 use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Facades\Log;
 use DB;
 use Carbon\Carbon;
@@ -40,6 +41,89 @@ public function __construct()
 		}
 		$this->comuni_ref=$comuni_ref;
 	}		
+
+	public function invito($id_doc = 0)
+	{
+		$request = request();
+
+		$fattura = fatture::find($id_doc);
+		if (!$fattura) {
+			abort(404, 'Fattura non trovata');
+		}
+
+		if (Schema::hasColumn('fatture', 'note')) {
+			if ($request->has('note')) {
+				$fattura->note = $request->input('note');
+				$fattura->save();
+			}
+		}
+
+		$query = DB::table('fatture as f')
+			->leftJoin('societa as s', 'f.id_sezionale', 's.id')
+			->select('f.id_ditta', DB::raw("DATE_FORMAT(f.data_invito,'%d-%m-%Y') as data_fattura"), "s.descrizione", "s.id as sezionale");
+
+		if (Schema::hasColumn('fatture', 'note')) {
+			$query->addSelect('f.note');
+		}
+
+		$load_fatt = $query->where('f.id', '=', $id_doc)->first();
+
+		$ditta_id = $load_fatt->id_ditta;
+		$data_fattura = $load_fatt->data_fattura;
+		$azienda_prop = $load_fatt->descrizione;
+		$sezionale = $load_fatt->sezionale;
+		$note = $load_fatt->note ?? '';
+
+		$info_ditta = ditte::find($ditta_id);
+
+		$denominazione = ""; $piva = ""; $cf = ""; $indirizzo = "";
+		$cap = ""; $comune = ""; $provincia = "";
+		$sdi = ""; $pec = "";
+		if ($info_ditta) {
+			$denominazione = $info_ditta->denominazione;
+			$piva = $info_ditta->piva;
+			$indirizzo = $info_ditta->indirizzo;
+			$cf = $info_ditta->cf;
+			$cap = $info_ditta->cap;
+			$provincia = $info_ditta->provincia;
+			$sdi = $info_ditta->sdi;
+			$pec = $info_ditta->pec;
+			$ref = "$cap|$provincia";
+			if (isset($this->comuni_ref[$ref])) {
+				$comune = $this->comuni_ref[$ref];
+			} else {
+				$comune = $info_ditta->comune;
+			}
+		}
+
+		$articoli_fattura = articoli_fattura::where('id_doc', "=", $id_doc)
+			->orderBy('id')
+			->get();
+
+		$aliquote_iva = aliquote_iva::pluck('aliquota', 'id');
+
+		$data['id_doc'] = $id_doc;
+		$data['data_fattura'] = $data_fattura;
+		$data['note'] = $note;
+		$data['denominazione'] = $denominazione;
+		$data['piva'] = $piva;
+		$data['indirizzo'] = $indirizzo;
+		$data['cf'] = $cf;
+		$data['cap'] = $cap;
+		$data['comune'] = $comune;
+		$data['provincia'] = $provincia;
+		$data['sezionale'] = $sezionale;
+		$data['azienda_prop'] = $azienda_prop;
+		$data['articoli_fattura'] = $articoli_fattura;
+		$data['arr_aliquota'] = $aliquote_iva;
+		$data['sdi'] = $sdi;
+		$data['pec'] = $pec;
+		$data['elenco_pagamenti_presenti'] = []; // Assuming empty for now
+		$data['tipo_pagamento'] = "?"; // Assuming
+
+		$pdf = PDF::loadView('all_views.invitofatt.invito_pdf', $data);
+		return $pdf->stream('fattura_' . $id_doc . '.pdf');
+	}
 
 	public function generaFattureDaAppalti(Request $request) {
 		Log::info('--- Inizio Generazione Fatture da Appalti ---');
