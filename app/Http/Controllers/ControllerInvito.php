@@ -1002,7 +1002,7 @@ public function __construct()
 	
 		// --- 2. Setup for PDF/ZIP generation ---
 		$azienda_emittente = [
-			'nome' => 'LA MISERICORDIA S.R.L.',
+			'nome' => 'INGENIOUS FUNERAL S.R.L.',
 			'indirizzo' => 'VIA GIOVANNI BATTISTA TIEPOLO 21 – 00196 ROMA',
 			'piva' => 'IT01922690670', 'cf' => '01922690670', 'rea' => 'RM-1725305',
 			'telefono' => '08528879', 'sdi' => '1N74KED', 'pec' => 'LAMISERICORDIA15@PEC.IT',
